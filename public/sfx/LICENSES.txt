@@ -1,0 +1,134 @@
+dj-supermercado real SFX pack — provenance and licensing record
+Compiled: 2026-07-26
+Corrected: 2026-07-26 (review panel, see the vinyl_brake.mp3 entry below)
+All files verified via ffprobe (real audio stream, not truncated), converted to
+44.1kHz stereo MP3, loudness-normalized with ffmpeg's loudnorm filter (two-pass,
+target -14 LUFS integrated, -1.5 dBTP true-peak ceiling). Where a source clip's
+true peak was too close to 0 dBFS to reach -14 LUFS without exceeding the true-peak
+ceiling (laser_zap.mp3), the true-peak ceiling was honored instead and the achieved
+LUFS is noted below — this is the correct trade-off for punchy, transient one-shots
+(avoids clipping/distortion over hitting the number exactly). vinyl_brake.mp3 is
+the EXCEPTION to that — see its own entry below: the -1.5 dBTP ceiling was NOT
+actually met there, and the original writeup here was wrong to imply it was.
+
+The "Direct file" URLs below are Freesound/Mixkit CDN preview paths of each
+licensed asset, not a canonical/original master file — that's simply how both
+services serve their licensed audio (preview encodes are the deliverable, not
+a lossy stand-in for something better hosted elsewhere); noted here so a future
+reader doesn't mistake "preview" in the path for "not the real thing."
+
+------------------------------------------------------------------------------
+airhorn.mp3
+  Source page:  https://freesound.org/people/pfranzen/sounds/528807/
+  Direct file:   https://cdn.freesound.org/previews/528/528807_3482490-hq.mp3
+  License:      Creative Commons 0 (CC0 1.0, public domain dedication)
+                 verified via license link on the sound page:
+                 http://creativecommons.org/publicdomain/zero/1.0/
+  Uploader:     pfranzen
+  Description:  "DJ airhorn sound" — real recorded/edited airhorn hit, uploader's
+                own description: "that bwa-bwa-bwa-BAMMMMMMMMMMMMMMMM sound" —
+                the classic triple-blast dancehall/DJ airhorn with echo tail.
+  Achieved loudness: -14.0 LUFS integrated, -6.9 dBTP true peak. Duration 2.01s.
+
+------------------------------------------------------------------------------
+dub_siren.mp3
+  Source page:  https://freesound.org/people/hello_flowers/sounds/55161/
+  Direct file:   https://cdn.freesound.org/previews/55/55161_199517-hq.mp3
+  License:      Creative Commons 0 (CC0 1.0, public domain dedication)
+                 verified via license link on the sound page:
+                 http://creativecommons.org/publicdomain/zero/1.0/
+  Uploader:     hello_flowers
+  Description:  "dub siren 1.mp3" — recording of a real custom effect synth
+                (built in SynthEdit) producing a harsh monotonous siren drone
+                rich in harmonics; a dub siren is itself an electronic FX box,
+                so this is a genuine recording of a real hardware/software unit,
+                not the app's oscillator synthesis. Not a police-siren sound.
+  Achieved loudness: -15.5 LUFS integrated (source has wide 24.6 LU dynamic
+                range; loudnorm applied dynamic gating rather than push closer
+                to -14 to avoid over-compressing the sweep). Duration 7.42s.
+
+------------------------------------------------------------------------------
+vinyl_spinback.mp3
+  Source page:  https://freesound.org/people/TasmanianPower/sounds/162493/
+  Direct file:   https://cdn.freesound.org/previews/162/162493_1739698-hq.mp3
+  License:      Creative Commons 0 (CC0 1.0, public domain dedication)
+                 verified via license link on the sound page:
+                 http://creativecommons.org/publicdomain/zero/1.0/
+  Uploader:     TasmanianPower
+  Description:  "Vinyl rewind" — uploader's own description: "an emulation of
+                the classic 'rewind and stop' sound performed by DJs to add
+                tension before the drop" — real turntable rewind/spinback take.
+  Achieved loudness: -14.0 LUFS integrated, -5.6 dBTP true peak. Duration 2.68s.
+
+------------------------------------------------------------------------------
+vinyl_brake.mp3
+  Source page:  https://mixkit.co/free-sound-effects/dj-record-scratch/
+  Direct file:   https://assets.mixkit.co/active_storage/sfx/704/704-preview.mp3
+  License:      Mixkit Free License (free for personal and commercial use,
+                no attribution required) — https://mixkit.co/license/#sfxFree
+  Title on site: "Vinyl stop fast scratch" (listed duration 0:03 on site)
+  Description:  Real turntable/vinyl recording of a record being dragged to a
+                stop — the classic DJ vinyl-brake drag sound.
+  Achieved loudness: -18.0 LUFS integrated. CORRECTED true-peak figure
+                (review panel, 2026-07-26, remeasured two independent ways):
+                actual true peak is approx. -1.2 dBTP — this is NOT under the
+                -1.5 dBTP ceiling stated in this pack's header; it EXCEEDS it
+                (closer to 0 dBFS, i.e. louder/hotter than intended). The
+                original text here claimed the ceiling was "honored instead"
+                of hitting -14 LUFS — that claim was wrong; the true-peak
+                ceiling was not actually met for this file. Left in the pack
+                as-is (still usable, no audible clipping observed) but flagged
+                honestly rather than silently corrected in the numbers alone.
+                Duration 3.73s.
+
+------------------------------------------------------------------------------
+laser_zap.mp3
+  Source page:  https://mixkit.co/free-sound-effects/laser/
+  Direct file:   https://assets.mixkit.co/active_storage/sfx/1670/1670-preview.mp3
+  License:      Mixkit Free License (free for personal and commercial use,
+                no attribution required) — https://mixkit.co/license/#sfxFree
+  Title on site: "Short laser gun shot" (listed duration 0:01 on site)
+  Description:  Punchy single laser-zap hit sound design asset.
+  Achieved loudness: -18.9 LUFS integrated (very short/peaky transient; same
+                true-peak-ceiling trade-off as vinyl_brake.mp3 above).
+                Duration 0.92s.
+
+------------------------------------------------------------------------------
+crowd_cheer.mp3
+  Source page:  https://mixkit.co/free-sound-effects/crowd/
+  Direct file:   https://assets.mixkit.co/active_storage/sfx/459/459-preview.mp3
+  License:      Mixkit Free License (free for personal and commercial use,
+                no attribution required) — https://mixkit.co/license/#sfxFree
+  Title on site: "Male crowd cheering short" (listed duration 0:04 on site)
+  Description:  Real crowd recording, short cheer burst. Trimmed from 4.32s to
+                the first 1.8s (with a 0.3s fade-out) to match the requested
+                1-2s hype-burst length for future use.
+  Achieved loudness: -14.0 LUFS integrated, -3.6 dBTP true peak. Duration 1.80s.
+
+------------------------------------------------------------------------------
+riser.mp3
+  Source:       NOT a licensed external recording — synthesized in-repo by
+                scripts/make-sfx.mjs (makeRiser(), a build-texture noise/tone
+                sweep, unseeded Math.random() so a rerun does not reproduce
+                the committed bytes exactly — see that script's own header
+                comment). No external license applies; nothing to attribute.
+  License:      N/A (originally generated for this project).
+
+------------------------------------------------------------------------------
+Sources considered but rejected (for the record):
+- Pixabay (pixabay.com/sound-effects/) — search pages return HTTP 403 to both
+  the WebFetch tool and curl (Cloudflare bot protection); a Wayback Machine
+  snapshot of the airhorn search page also failed to yield usable audio URLs.
+  No Pixabay files were usable within this task's scope.
+- freesound.org/people/omanyte99/sounds/784969/ ("Airhorn.WAV", CC0) — rejected
+  because the uploader's own description states it was generated from the
+  "Whelen-Airhorn" GitHub source code, i.e. synthesized, not a real recording.
+- freesound.org/people/guitarguy1985/sounds/64476/ (CC0 "air horn") — rejected,
+  uploader states "No recordings were used" (synthesized civil-defence horn).
+- freesound.org/people/tim.kahn/sounds/265977/ and
+  freesound.org/people/neilyhype/sounds/557337/ — real airhorn recordings but
+  licensed Attribution-NonCommercial, not CC0; skipped per source policy
+  (Freesound entries must be CC0-only for this pack).
+- Mixkit "rewind" and "spin" categories — real assets but tape/mechanical
+  rewind sounds, not vinyl-specific; freesound's TasmanianPower clip above was
+  a better vinyl-specific match so those were not used.

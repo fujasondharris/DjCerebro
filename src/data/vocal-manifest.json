@@ -1,0 +1,150 @@
+[
+  {
+    "file": "adlib-asimismo.mp3",
+    "category": "adlib"
+  },
+  {
+    "file": "adlib-eso.mp3",
+    "category": "adlib"
+  },
+  {
+    "file": "adlib-otra.mp3",
+    "category": "adlib"
+  },
+  {
+    "file": "adlib-oyeme.mp3",
+    "category": "adlib"
+  },
+  {
+    "file": "adlib-padonde.mp3",
+    "category": "adlib"
+  },
+  {
+    "file": "adlib-sepone.mp3",
+    "category": "adlib"
+  },
+  {
+    "file": "adlib-wepa.mp3",
+    "category": "adlib"
+  },
+  {
+    "file": "crowd-callresponse.mp3",
+    "category": "crowd"
+  },
+  {
+    "file": "crowd-countdown.mp3",
+    "category": "crowd"
+  },
+  {
+    "file": "crowd-manos.mp3",
+    "category": "crowd"
+  },
+  {
+    "file": "crowd-palante.mp3",
+    "category": "crowd"
+  },
+  {
+    "file": "cue-abajo-hype.mp3",
+    "category": "cue_hype"
+  },
+  {
+    "file": "cue-abajo-warm.mp3",
+    "category": "cue_warm"
+  },
+  {
+    "file": "cue-dale-hype.mp3",
+    "category": "cue_hype"
+  },
+  {
+    "file": "cue-dale-warm.mp3",
+    "category": "cue_warm"
+  },
+  {
+    "file": "cue-escuche-hype.mp3",
+    "category": "cue_hype"
+  },
+  {
+    "file": "cue-escuche-warm.mp3",
+    "category": "cue_warm"
+  },
+  {
+    "file": "cue-eso-hype.mp3",
+    "category": "cue_hype"
+  },
+  {
+    "file": "cue-eso-warm.mp3",
+    "category": "cue_warm"
+  },
+  {
+    "file": "cue-manos-hype.mp3",
+    "category": "cue_hype"
+  },
+  {
+    "file": "cue-manos-warm.mp3",
+    "category": "cue_warm"
+  },
+  {
+    "file": "drop-cerebro-nohands.mp3",
+    "category": "drop"
+  },
+  {
+    "file": "drop-cheer-cerebro.mp3",
+    "category": "drop"
+  },
+  {
+    "file": "drop-horseman.mp3",
+    "category": "drop"
+  },
+  {
+    "file": "drop-ones-twos.mp3",
+    "category": "drop"
+  },
+  {
+    "file": "drop-purocerebro-laser.mp3",
+    "category": "drop"
+  },
+  {
+    "file": "tag-dale.mp3",
+    "category": "tag"
+  },
+  {
+    "file": "tag-horseman.mp3",
+    "category": "tag"
+  },
+  {
+    "file": "tag-jinete.mp3",
+    "category": "tag"
+  },
+  {
+    "file": "tag-look-mom.mp3",
+    "category": "tag"
+  },
+  {
+    "file": "tag-ones-twos.mp3",
+    "category": "tag"
+  },
+  {
+    "file": "tag-puro-cerebro.mp3",
+    "category": "tag"
+  },
+  {
+    "file": "tag2-eyyy.mp3",
+    "category": "tag"
+  },
+  {
+    "file": "tag2-fiesta.mp3",
+    "category": "tag"
+  },
+  {
+    "file": "tag2-fuego.mp3",
+    "category": "tag"
+  },
+  {
+    "file": "tag2-manos.mp3",
+    "category": "tag"
+  },
+  {
+    "file": "tag2-sube.mp3",
+    "category": "tag"
+  }
+]

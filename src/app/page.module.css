@@ -1,0 +1,893 @@
+/* Mobile-first: single column, big touch targets, no hover-dependent affordances. */
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+  min-height: 100dvh;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+.loadRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.bigButton {
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: none;
+  background: #171717;
+  color: #fff;
+  min-height: 3.25rem;
+}
+
+.secondaryButton {
+  font-size: 0.95rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #d0d0d0;
+  background: transparent;
+  color: #171717;
+  min-height: 2.75rem;
+}
+
+.trackInfo {
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.trackName {
+  font-size: 1rem;
+  font-weight: 600;
+  word-break: break-word;
+  margin: 0 0 0.25rem;
+}
+
+.metaLine {
+  font-size: 0.95rem;
+  color: #444;
+  margin: 0;
+}
+
+.errorText {
+  color: #b00020;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.playButton {
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 1.25rem;
+  border-radius: 999px;
+  border: none;
+  background: #0a7d43;
+  color: #fff;
+  min-height: 4rem;
+}
+
+.playButton:disabled {
+  opacity: 0.6;
+}
+
+.progressWrap {
+  position: relative; /* anchors .cueMarker dots (cue-point live-firing UI) above the clipped track below */
+}
+
+.progressTrack {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #e5e5e5;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #0a7d43;
+  transition: width 0.1s linear;
+}
+
+.tempoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.tempoHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.tempoValue {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.resetButton {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d0d0d0;
+  background: transparent;
+  min-height: 2.25rem;
+}
+
+.tempoSlider {
+  width: 100%;
+  height: 2.5rem;
+  touch-action: pan-y;
+}
+
+.tempoLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.effectiveBpm {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.25rem 0 0;
+}
+
+.hint {
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.nudgeSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+.nudgeLabel {
+  font-size: 0.85rem;
+  color: #666;
+  margin-right: auto;
+}
+
+.nudgeButton {
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  min-height: 2.5rem;
+}
+
+.deckPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 2px solid transparent;
+}
+
+.deckA {
+  border-color: #1c6fd6;
+  background: rgba(28, 111, 214, 0.06);
+}
+
+.deckB {
+  border-color: #d6621c;
+  background: rgba(214, 98, 28, 0.06);
+}
+
+.deckHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.deckLabel {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.syncButton {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  min-height: 2.25rem;
+}
+
+.syncButton:disabled {
+  opacity: 0.45;
+}
+
+.syncNotice {
+  color: #b06a00;
+  font-size: 0.85rem;
+  margin: 0.4rem 0 0;
+}
+
+.crossfaderSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.crossfaderLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.crossfaderSlider {
+  width: 100%;
+  height: 2.75rem;
+  touch-action: pan-y;
+}
+
+.cratePanel,
+.brainPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 2px solid #d0d0d0;
+}
+
+.crateList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 14rem;
+  overflow-y: auto;
+}
+
+.crateItemButton {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.65rem;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  min-height: 2.75rem;
+}
+
+.crateItemName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.crateItemMeta {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.chatRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chatInput {
+  flex: 1;
+  font-size: 0.95rem;
+  padding: 0.75rem;
+  border-radius: 0.65rem;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  min-height: 2.75rem;
+}
+
+.brainLog {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 10rem;
+  overflow-y: auto;
+}
+
+.brainLogEntry {
+  font-size: 0.85rem;
+  color: #333;
+}
+
+/* --- EQ section (M4, styled in M5) --- */
+
+.eqSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e5e5;
+}
+
+.eqHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.eqBands {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.eqBand {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.eqBandLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #666;
+}
+
+.eqSliderWrap {
+  display: flex;
+  align-items: center;
+  height: 6rem;
+}
+
+.eqSlider {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 2.5rem;
+  height: 6rem;
+  touch-action: pan-x;
+}
+
+.eqBandValue {
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: #444;
+}
+
+.killButton {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  min-height: 2.25rem;
+  min-width: 3.5rem;
+}
+
+.killButtonActive {
+  background: #b00020;
+  border-color: #b00020;
+  color: #fff;
+}
+
+/* --- FX panel (M4, styled in M5) --- */
+
+.fxPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 2px solid #d0d0d0;
+}
+
+.fxRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.fxButton {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.85rem 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  color: #171717;
+  min-height: 3rem;
+}
+
+.fxButton:disabled {
+  opacity: 0.45;
+}
+
+/* --- Transition history panel (M4, styled in M5) --- */
+
+.historyPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 2px solid #d0d0d0;
+}
+
+.historyList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 14rem;
+  overflow-y: auto;
+}
+
+.historyItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.historyItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.historyLine {
+  font-size: 0.9rem;
+  margin: 0;
+  word-break: break-word;
+}
+
+.historyRateRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rateButton {
+  font-size: 1.1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  min-height: 2.5rem;
+  min-width: 2.75rem;
+}
+
+.rateButtonActive {
+  background: #0a7d43;
+  border-color: #0a7d43;
+}
+
+.historyNoteInput {
+  flex: 1;
+  font-size: 0.85rem;
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  min-height: 2.5rem;
+}
+
+/* --- Drive crate loader (M5) --- */
+
+.driveSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e5e5;
+}
+
+.driveRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.driveNotices {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: #b06a00;
+}
+
+/* --- Cost ticker (M5) --- */
+
+.costTicker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.costTotal {
+  font-variant-numeric: tabular-nums;
+}
+
+.costLastCall {
+  margin-right: auto;
+  color: #666;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Cue points (rehearsal → mark → assign → live-fire) --- */
+
+.cueMarker {
+  position: absolute;
+  top: 50%;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #b06a00;
+  border: 1px solid #fff;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.cueSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e5e5;
+}
+
+.cueHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.rehearseButton {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  min-height: 2.25rem;
+}
+
+.rehearseButtonActive {
+  background: #b06a00;
+  border-color: #b06a00;
+  color: #fff;
+}
+
+.markButton {
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: none;
+  background: #b06a00;
+  color: #fff;
+  min-height: 3.25rem;
+}
+
+.cueList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.cueItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.65rem;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+}
+
+.cueTime {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Suggested cues (scripts/suggest-cues.mjs's synced-lyrics pipeline) — dashed
+   border + the lyric label distinguish an unassigned suggestion from a
+   plain rehearsal-marked cue, per "assign and nudge" instead of "hunt and
+   mark". Cleared automatically (see cue-store.ts) the moment the user
+   assigns a clip/sing-along or nudges the timestamp. */
+.cueItemSuggested {
+  border-style: dashed;
+  border-color: #b06a00;
+}
+
+.cueLabel {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #666;
+}
+
+.cueSelect {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  min-height: 2.5rem;
+}
+
+.cueDurationLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.cueDurationInput {
+  width: 4rem;
+  padding: 0.4rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  min-height: 2rem;
+}
+
+.cueNudgeRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.deleteCueButton {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #b00020;
+  background: transparent;
+  color: #b00020;
+  min-height: 2.25rem;
+  margin-left: auto;
+}
+
+/* --- Host-only pads (shout-outs — never brain-triggered, see FxPanel) --- */
+
+.hostSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed #d0d0d0;
+}
+
+.hostLabel {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #b06a00;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.hostButton {
+  border-color: #b06a00;
+  color: #b06a00;
+}
+
+@media (prefers-color-scheme: dark) {
+  .secondaryButton,
+  .resetButton {
+    border-color: #444;
+    color: #ededed;
+  }
+
+  .metaLine {
+    color: #bbb;
+  }
+
+  .progressTrack {
+    background: #2a2a2a;
+  }
+
+  .hint {
+    color: #999;
+  }
+
+  .nudgeLabel {
+    color: #999;
+  }
+
+  .nudgeButton {
+    background: #1a1a1a;
+    border-color: #444;
+    color: #ededed;
+  }
+
+  .deckA {
+    background: rgba(28, 111, 214, 0.12);
+  }
+
+  .deckB {
+    background: rgba(214, 98, 28, 0.12);
+  }
+
+  .syncButton {
+    background: #1a1a1a;
+    border-color: #444;
+    color: #ededed;
+  }
+
+  .crossfaderLabels {
+    color: #bbb;
+  }
+
+  .cratePanel,
+  .brainPanel {
+    border-color: #444;
+  }
+
+  .crateItemButton {
+    background: #1a1a1a;
+    border-color: #444;
+    color: #ededed;
+  }
+
+  .crateItemMeta {
+    color: #999;
+  }
+
+  .chatInput {
+    background: #1a1a1a;
+    border-color: #444;
+    color: #ededed;
+  }
+
+  .brainLogEntry {
+    color: #ccc;
+  }
+
+  .eqSection {
+    border-color: #444;
+  }
+
+  .eqBandLabel {
+    color: #999;
+  }
+
+  .eqBandValue {
+    color: #ccc;
+  }
+
+  .killButton {
+    background: #1a1a1a;
+    border-color: #444;
+    color: #ededed;
+  }
+
+  .fxPanel,
+  .historyPanel {
+    border-color: #444;
+  }
+
+  .fxButton {
+    background: #1a1a1a;
+    border-color: #444;
+    color: #ededed;
+  }
+
+  .historyItem {
+    border-color: #333;
+  }
+
+  .rateButton {
+    background: #1a1a1a;
+    border-color: #444;
+    color: #ededed;
+  }
+
+  .historyNoteInput {
+    background: #1a1a1a;
+    border-color: #444;
+    color: #ededed;
+  }
+
+  .driveSection {
+    border-color: #444;
+  }
+
+  .costTicker {
+    color: #ededed;
+  }
+
+  .costLastCall {
+    color: #bbb;
+  }
+
+  .cueSection {
+    border-color: #444;
+  }
+
+  .rehearseButton {
+    background: #1a1a1a;
+    border-color: #444;
+    color: #ededed;
+  }
+
+  .cueItem {
+    background: #1a1a1a;
+    border-color: #444;
+  }
+
+  .cueItemSuggested {
+    border-color: #d99a3f;
+  }
+
+  .cueLabel {
+    color: #999;
+  }
+
+  .cueSelect,
+  .cueDurationInput {
+    background: #1a1a1a;
+    border-color: #444;
+    color: #ededed;
+  }
+
+  .cueDurationLabel {
+    color: #999;
+  }
+
+  .cueMarker {
+    border-color: #1a1a1a;
+  }
+
+  .hostSection {
+    border-color: #444;
+  }
+}
