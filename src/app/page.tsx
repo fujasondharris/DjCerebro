@@ -232,14 +232,14 @@ const STUDIO_TRACK_IDS = new Set([
   "costa_dorada_bachata_vip",
 ]);
 
-function resolveAudioAssetUrl(idOrPath: string): { url: string; needsPasscode: boolean } {
+function resolveAudioAssetUrl(idOrPath: string): { url: string } {
   if (idOrPath.startsWith("/audio/")) {
-    return { url: idOrPath, needsPasscode: false };
+    return { url: idOrPath };
   }
   if (STUDIO_TRACK_IDS.has(idOrPath)) {
-    return { url: `/audio/tracks/${idOrPath}.mp3`, needsPasscode: false };
+    return { url: `/audio/tracks/${idOrPath}.mp3` };
   }
-  return { url: `/api/crate/${encodeURIComponent(idOrPath)}`, needsPasscode: true };
+  return { url: `/api/crate/${encodeURIComponent(idOrPath)}` };
 }
 
 // Drive tag-probe throttle (M6.2 probe-storm fix): a manifest/already-known
@@ -2891,9 +2891,7 @@ export default function Home() {
       track.id,
       async () => {
         const asset = resolveAudioAssetUrl(track.id);
-        const response = asset.needsPasscode
-          ? await fetchWithPasscode(asset.url, { signal })
-          : await fetch(asset.url, { signal });
+        const response = await fetchWithPasscode(asset.url, { signal });
         if (!response.ok) throw new Error(`download failed (HTTP ${response.status})`);
         return response.blob();
       },
@@ -4008,9 +4006,7 @@ export default function Home() {
           id,
           async () => {
             const asset = resolveAudioAssetUrl(id);
-            const response = asset.needsPasscode
-              ? await fetchWithPasscode(asset.url, { signal: aborter.signal })
-              : await fetch(asset.url, { signal: aborter.signal });
+            const response = await fetchWithPasscode(asset.url, { signal: aborter.signal });
             if (!response.ok) throw new Error(`stem download HTTP ${response.status}`);
             return response.blob();
           },
@@ -4223,9 +4219,7 @@ export default function Home() {
       const fetchBytes = async (id: string) => {
         const stemBlob = await getTrackBlob(id, async () => {
           const asset = resolveAudioAssetUrl(id);
-          const response = asset.needsPasscode
-            ? await fetchWithPasscode(asset.url, { signal: aborter.signal })
-            : await fetch(asset.url, { signal: aborter.signal });
+          const response = await fetchWithPasscode(asset.url, { signal: aborter.signal });
           if (!response.ok) throw new Error(`stem download HTTP ${response.status}`);
           return response.blob();
         }, { store: trackCacheStoreRef.current });
