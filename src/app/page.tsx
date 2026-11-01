@@ -1534,7 +1534,13 @@ function ClubBoothHud({
       <div className={styles.hudTopRow}>
         <div className={styles.hudBrandBlock}>
           <span className={anyActive ? styles.liveStatusText : styles.idleStatusText}>
-            {anyActive ? "● ON AIR · LIVE TELEMETRY" : "○ TELEMETRY STANDBY"}
+            {transitionRunning
+              ? "⚡ TRANSITION ACTIVE"
+              : autopilot
+                ? "● AUTOPILOT TELEMETRY"
+                : anyActive
+                  ? "● ON AIR · LIVE TELEMETRY"
+                  : "○ TELEMETRY STANDBY"}
           </span>
           <span className={styles.hudSubtitle}>
             Music Theory Master · 1,605 Pre-Computed Recipes · 599 4-Stem Packs
