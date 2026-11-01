@@ -1707,6 +1707,7 @@ function LiveStemMixerPanel({
   onPlayingChange,
   stopRef,
   onBeforePlay,
+  onPurgeMasterBus,
 }: {
   core: AudioCore;
   activeDeckTrackId: string | null;
@@ -1716,6 +1717,7 @@ function LiveStemMixerPanel({
   onPlayingChange?: (playing: boolean, bpm: number | null, title: string | null) => void;
   stopRef?: React.MutableRefObject<(() => void) | null>;
   onBeforePlay?: () => void;
+  onPurgeMasterBus?: () => void;
 }) {
   const [selectedId, setSelectedId] = useState<string>(STUDIO_VIP_TRACKS[0].id);
   const [trackTitle, setTrackTitle] = useState<string>(STUDIO_VIP_TRACKS[0].title);
@@ -1753,6 +1755,7 @@ function LiveStemMixerPanel({
   const startedAtCtxTimeRef = useRef<number>(0);
   const offsetSecRef = useRef<number>(0);
   const isPlayingRef = useRef(false);
+  const loadGenRef = useRef<number>(0);
 
   const computeEffectiveGain = (
     role: StemRoleKey,
@@ -1780,6 +1783,9 @@ function LiveStemMixerPanel({
   };
 
   const stopSources = () => {
+    // Invalidate any in-flight loadStemsForTrack so an async decode never auto-starts after stop!
+    loadGenRef.current += 1;
+    setLoadingStems(false);
     for (const { key } of STEM_ROLES) {
       try {
         if (gainsRef.current[key]) gainsRef.current[key]!.gain.value = 0;
@@ -1803,6 +1809,15 @@ function LiveStemMixerPanel({
     isPlayingRef.current = false;
     setIsPlaying(false);
     onPlayingChange?.(false, trackBpm * stemTempo, trackTitle);
+  };
+
+  const handleHardStopStems = () => {
+    stopSources();
+    offsetSecRef.current = 0;
+    setPositionSec(0);
+    setStemStatus("🛑 4-Stem Mixer OFF (All Stems Silenced)");
+    onLog("stem_mixer", "🛑 Turned OFF 4-Stem Mixer (All Stems Silenced)");
+    onPurgeMasterBus?.();
   };
 
   if (stopRef) {
@@ -1904,36 +1919,38 @@ function LiveStemMixerPanel({
   }
 
   async function handleSelectAndPlayVip(vip: StudioVipTrackMeta) {
-    if (selectedId === vip.id && isPlayingRef.current) {
-      stopSources();
-      setStemStatus(`⏹ Stopped 4-Stem Mixer ("${vip.title}")`);
-      onLog("stem_mixer", `⏹ Stopped 4-Stem Studio Pack: "${vip.title}"`);
+    if (isPlayingRef.current && selectedId === vip.id) {
+      handleHardStopStems();
       return;
     }
+    stopSources();
+    const myGen = ++loadGenRef.current;
     setSelectedId(vip.id);
     setTrackTitle(vip.title);
     setTrackBpm(vip.bpm);
     setTrackCamelot(vip.camelot);
     const ok = await loadStemsForTrack(vip.id, vip.title, vip.bpm, vip.camelot);
-    if (ok) {
+    if (ok && loadGenRef.current === myGen) {
       startPlaybackFromOffset(0, vip.title, vip.bpm);
       onLog("stem_mixer", `🎛️ Playing 4-Stem Studio Pack: "${vip.title}" (${vip.bpm} BPM · ${vip.camelot})`);
     }
   }
 
   async function handleTogglePlay() {
-    if (isPlayingRef.current) {
+    if (isPlayingRef.current || loadingStems) {
       const ctx = core.ensureContext();
       const dur = durationSec || 19.94;
       const elapsed = (ctx.currentTime - startedAtCtxTimeRef.current) * stemTempo + offsetSecRef.current;
       offsetSecRef.current = dur > 0 ? elapsed % dur : 0;
       stopSources();
-      setStemStatus(`⏸ Paused 4-Stem Mixer at ${formatMmSs(offsetSecRef.current)}`);
+      onPurgeMasterBus?.();
+      setStemStatus(`⏹ Stopped 4-Stem Mixer at ${formatMmSs(offsetSecRef.current)}`);
       return;
     }
+    const myGen = ++loadGenRef.current;
     if (loadedTrackIdRef.current !== selectedId || Object.keys(buffersRef.current).length === 0) {
       const ok = await loadStemsForTrack(selectedId, trackTitle, trackBpm, trackCamelot);
-      if (!ok) return;
+      if (!ok || loadGenRef.current !== myGen) return;
     }
     startPlaybackFromOffset(offsetSecRef.current);
     setStemStatus(`🔊 Playing 4-Stem Live Mix: ${trackTitle}`);
@@ -1942,6 +1959,8 @@ function LiveStemMixerPanel({
 
   async function handleLoadActiveDeckStems() {
     if (!activeDeckTrackId) return;
+    stopSources();
+    const myGen = ++loadGenRef.current;
     const manifestEntry = PLAYBACK_MANIFEST.get(activeDeckTrackId);
     const title = activeDeckTrackName ? musicLabel({ name: activeDeckTrackName }) : activeDeckTrackId;
     const bpm = manifestEntry?.bpm ?? 110;
@@ -1951,7 +1970,7 @@ function LiveStemMixerPanel({
     setTrackBpm(bpm);
     setTrackCamelot(camelot);
     const ok = await loadStemsForTrack(activeDeckTrackId, title, bpm, camelot);
-    if (ok) {
+    if (ok && loadGenRef.current === myGen) {
       startPlaybackFromOffset(0, title, bpm);
       onLog("stem_mixer", `🎛️ Loaded active deck "${title}" into 4-Stem Live Mixer`);
     }
@@ -1984,6 +2003,21 @@ function LiveStemMixerPanel({
           </p>
         </div>
         <div className={styles.stemHeaderActions}>
+          <button
+            type="button"
+            className={styles.stemActionBtn}
+            onClick={handleHardStopStems}
+            style={{
+              background: "linear-gradient(135deg, #ef4444, #991b1b)",
+              color: "#ffffff",
+              fontWeight: 800,
+              border: "2px solid #f87171",
+              boxShadow: isPlaying ? "0 0 14px rgba(239, 68, 68, 0.75)" : undefined,
+            }}
+            title="Immediately turn off all 4-Stem Mixer channels and silence any looping stem"
+          >
+            🛑 STOP STEMS / TURN OFF STEM MIXER
+          </button>
           {activeDeckTrackId && (STEM_MANIFEST as Record<string, StemManifestEntry>)[activeDeckTrackId] && (
             <button
               type="button"
@@ -1997,7 +2031,10 @@ function LiveStemMixerPanel({
           <button
             type="button"
             className={styles.stemSendDeckBtn}
-            onClick={() => onLoadVipToDeck(selectedId)}
+            onClick={() => {
+              handleHardStopStems();
+              onLoadVipToDeck(selectedId);
+            }}
           >
             📥 Send &ldquo;{trackTitle.split("—")[0].trim()}&rdquo; to Idle Deck
           </button>
@@ -2055,9 +2092,21 @@ function LiveStemMixerPanel({
           type="button"
           className={`${styles.stemMasterPlayBtn} ${isPlaying ? styles.stemMasterPlayBtnActive : ""}`}
           onClick={() => void handleTogglePlay()}
-          disabled={loadingStems}
         >
-          {loadingStems ? "⏳ Decoding Stems…" : isPlaying ? "⏸ PAUSE 4-STEM MIXER" : "▶ PLAY 4-STEM MIXER"}
+          {loadingStems ? "🛑 CANCEL / STOP STEMS" : isPlaying ? "⏹ STOP / PAUSE 4-STEM MIXER" : "▶ PLAY 4-STEM MIXER"}
+        </button>
+        <button
+          type="button"
+          className={styles.stemMasterPlayBtn}
+          onClick={handleHardStopStems}
+          style={{
+            background: "linear-gradient(135deg, #ef4444, #991b1b)",
+            color: "#ffffff",
+            fontWeight: 800,
+            borderColor: "#f87171",
+          }}
+        >
+          🛑 TURN OFF STEMS
         </button>
 
         <div className={styles.stemReadoutBox}>
@@ -2165,6 +2214,19 @@ function LiveStemMixerPanel({
           }
         >
           🎹 Melodic Breakdown
+        </button>
+        <button
+          type="button"
+          className={styles.stemPresetBtn}
+          onClick={handleHardStopStems}
+          style={{
+            background: "#991b1b",
+            color: "#ffffff",
+            fontWeight: 800,
+            borderColor: "#ef4444",
+          }}
+        >
+          🛑 OFF / SILENCE ALL STEMS
         </button>
       </div>
 
@@ -8175,6 +8237,7 @@ export default function Home() {
         onPlayingChange={(playing, bpm, title) => setStemMixerState({ playing, bpm, title })}
         stopRef={stopStemMixerRef}
         onBeforePlay={handleStopDecksForStemMixer}
+        onPurgeMasterBus={purgeMasterBus}
       />
 
       <div className={styles.deckGrid}>
