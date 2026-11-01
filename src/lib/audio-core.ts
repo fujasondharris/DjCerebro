@@ -53,4 +53,25 @@ export class AudioCore {
     }
     return false;
   }
+
+  /**
+   * Hard-severs any orphaned or background AudioBufferSourceNodes (stems, loops,
+   * rolls, or stingers) connected to the current master GainNode by muting and
+   * disconnecting the old master GainNode, replacing it with a fresh GainNode
+   * connected to destination, and invoking `reconnectDecks()` so only Deck A
+   * and Deck B remain wired to the speakers.
+   */
+  purgeOrphanedNodes(reconnectDecks?: () => void): void {
+    if (!this.context || !this.masterGain) return;
+    try {
+      this.masterGain.gain.cancelScheduledValues(this.context.currentTime);
+      this.masterGain.gain.setValueAtTime(0, this.context.currentTime);
+      this.masterGain.disconnect();
+    } catch {
+      // ignore already disconnected
+    }
+    this.masterGain = this.context.createGain();
+    this.masterGain.connect(this.context.destination);
+    reconnectDecks?.();
+  }
 }

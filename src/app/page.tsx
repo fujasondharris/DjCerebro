@@ -589,6 +589,8 @@ function useDeckController(
     onTempoGlideCancel?: () => void;
     /** Phrase-aligned firing (Part 2): a manual pause on THIS deck means the DJ took over — cancel any pending phrase-delayed transition start (see page.tsx's pendingTransitionTimeoutRef/cancelPendingTransitionStart()). */
     onManualPause?: () => void;
+    /** Manual Play on THIS deck: stops any background 4-Stem Mixer or secondary deck so two tracks never play at once. */
+    onManualPlay?: () => void;
   } = {}
 ) {
   const deckRef = useRef<Deck | null>(null);
@@ -781,6 +783,7 @@ function useDeckController(
     const ok = await decodeIfNeeded();
     if (!ok) return;
 
+    opts.onManualPlay?.();
     deck.play();
     wentLiveAtRef.current = Date.now(); // in-and-out mixing: feeds DjLiveState.playedSeconds
     setIsPlaying(true);
@@ -1340,6 +1343,8 @@ function ClubBoothHud({
   crate,
   onPickHarmonicNext,
   onFireTurntablistCombo,
+  onSoloActiveDeck,
+  onStopAllAudio,
 }: {
   deckA: DeckController;
   deckB: DeckController;
@@ -1353,6 +1358,8 @@ function ClubBoothHud({
   crate: CrateTrack[];
   onPickHarmonicNext: (targetTrackId: string, comboId: string) => void;
   onFireTurntablistCombo: (comboId: string) => void;
+  onSoloActiveDeck: () => void;
+  onStopAllAudio: () => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const anyActive = deckA.isPlaying || deckB.isPlaying || stemMixerPlaying;
@@ -1625,6 +1632,32 @@ function ClubBoothHud({
             >
               🎛️ Fire 4-Stage Combo Now
             </button>
+            <button
+              type="button"
+              className={styles.theoryComboBtn}
+              onClick={onSoloActiveDeck}
+              style={{
+                background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                color: "#090d16",
+                fontWeight: 800,
+              }}
+              title="Stop any background track, 4-stem loop, or held sample and solo ONLY the active deck at 100% volume"
+            >
+              🎯 Kill Background Track / Solo Active Song
+            </button>
+            <button
+              type="button"
+              className={styles.theoryComboBtn}
+              onClick={onStopAllAudio}
+              style={{
+                background: "linear-gradient(135deg, #ef4444, #991b1b)",
+                color: "#fff",
+                fontWeight: 800,
+              }}
+              title="Immediately stop all decks, 4-stem loops, transitions, and autopilot"
+            >
+              🛑 STOP ALL AUDIO
+            </button>
           </div>
         </div>
 
@@ -1672,6 +1705,8 @@ function LiveStemMixerPanel({
   onLoadVipToDeck,
   onLog,
   onPlayingChange,
+  stopRef,
+  onBeforePlay,
 }: {
   core: AudioCore;
   activeDeckTrackId: string | null;
@@ -1679,6 +1714,8 @@ function LiveStemMixerPanel({
   onLoadVipToDeck: (trackId: string) => void;
   onLog: (action: string, say: string) => void;
   onPlayingChange?: (playing: boolean, bpm: number | null, title: string | null) => void;
+  stopRef?: React.MutableRefObject<(() => void) | null>;
+  onBeforePlay?: () => void;
 }) {
   const [selectedId, setSelectedId] = useState<string>(STUDIO_VIP_TRACKS[0].id);
   const [trackTitle, setTrackTitle] = useState<string>(STUDIO_VIP_TRACKS[0].title);
@@ -1745,20 +1782,36 @@ function LiveStemMixerPanel({
   const stopSources = () => {
     for (const { key } of STEM_ROLES) {
       try {
+        if (gainsRef.current[key]) gainsRef.current[key]!.gain.value = 0;
+        gainsRef.current[key]?.disconnect();
+      } catch {
+        // ignore
+      }
+      try {
         sourcesRef.current[key]?.stop();
-        sourcesRef.current[key]?.disconnect();
       } catch {
         // ignore already stopped
       }
+      try {
+        sourcesRef.current[key]?.disconnect();
+      } catch {
+        // ignore already disconnected
+      }
     }
     sourcesRef.current = {};
+    gainsRef.current = {};
     isPlayingRef.current = false;
     setIsPlaying(false);
     onPlayingChange?.(false, trackBpm * stemTempo, trackTitle);
   };
 
+  if (stopRef) {
+    stopRef.current = stopSources;
+  }
+
   useEffect(() => {
     return () => {
+      if (stopRef) stopRef.current = null;
       stopSources();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1818,6 +1871,7 @@ function LiveStemMixerPanel({
   }
 
   function startPlaybackFromOffset(startOffset: number, currentTitle = trackTitle, currentBpm = trackBpm) {
+    onBeforePlay?.();
     const ctx = core.ensureContext();
     stopSources();
     const newSources: Partial<Record<StemRoleKey, AudioBufferSourceNode>> = {};
@@ -1850,6 +1904,12 @@ function LiveStemMixerPanel({
   }
 
   async function handleSelectAndPlayVip(vip: StudioVipTrackMeta) {
+    if (selectedId === vip.id && isPlayingRef.current) {
+      stopSources();
+      setStemStatus(`⏹ Stopped 4-Stem Mixer ("${vip.title}")`);
+      onLog("stem_mixer", `⏹ Stopped 4-Stem Studio Pack: "${vip.title}"`);
+      return;
+    }
     setSelectedId(vip.id);
     setTrackTitle(vip.title);
     setTrackBpm(vip.bpm);
@@ -1971,12 +2031,15 @@ function LiveStemMixerPanel({
                   onClick={() => void handleSelectAndPlayVip(vip)}
                   disabled={loadingStems}
                 >
-                  {active && isPlaying ? "🔊 Playing 4-Stems" : "🎛️ Play in 4-Stem Mixer"}
+                  {active && isPlaying ? "⏹ Stop 4-Stems (Playing)" : "🎛️ Play in 4-Stem Mixer"}
                 </button>
                 <button
                   type="button"
                   className={styles.vipLoadDeckBtn}
-                  onClick={() => onLoadVipToDeck(vip.id)}
+                  onClick={() => {
+                    stopSources();
+                    onLoadVipToDeck(vip.id);
+                  }}
                 >
                   ▶️ Load to Deck
                 </button>
@@ -2418,6 +2481,8 @@ function BrainPanel({
   onSeekLive,
   onJumpToBeatLive,
   hasLiveTrack,
+  onSoloActiveDeck,
+  onStopAllAudio,
 }: {
   autopilot: boolean;
   onToggleAutopilot: () => void;
@@ -2445,6 +2510,8 @@ function BrainPanel({
   onSeekLive: (deltaSeconds: number) => void;
   onJumpToBeatLive: () => void;
   hasLiveTrack: boolean;
+  onSoloActiveDeck: () => void;
+  onStopAllAudio: () => void;
 }) {
   return (
     <section className={styles.brainPanel}>
@@ -2508,6 +2575,34 @@ function BrainPanel({
           style={{ fontWeight: 700 }}
         >
           ⚡ Cut to Next
+        </button>
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={onSoloActiveDeck}
+          title="Stop any background track, 4-stem loop, or held sample and solo ONLY the active deck at 100% volume"
+          style={{
+            fontWeight: 800,
+            background: "linear-gradient(135deg, #f59e0b, #d97706)",
+            color: "#090d16",
+            borderColor: "#f59e0b",
+          }}
+        >
+          🎯 Kill Background Track / Solo Song
+        </button>
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={onStopAllAudio}
+          title="Immediately stop all decks, 4-stem loops, transitions, and autopilot"
+          style={{
+            fontWeight: 800,
+            background: "linear-gradient(135deg, #ef4444, #991b1b)",
+            color: "#fff",
+            borderColor: "#ef4444",
+          }}
+        >
+          🛑 STOP ALL AUDIO
         </button>
         <button
           type="button"
@@ -3131,15 +3226,19 @@ export default function Home() {
   // body (near the transition engine, its closest logical home) — fully
   // hoisted within this function's scope, so referencing it in a wrapper
   // closure here (only ever CALLED later, after mount) is safe.
+  const stopStemMixerRef = useRef<(() => void) | null>(null);
+
   const deckA = useDeckController(coreRef.current, FIXTURE_A, {
     onCueKeyKnown: setCueKeyA,
     onTempoGlideCancel: () => cancelTempoGlide("A"),
     onManualPause: () => handleManualPauseDuringTransition(),
+    onManualPlay: () => handleManualPlayDeck("A"),
   });
   const deckB = useDeckController(coreRef.current, FIXTURE_B, {
     onCueKeyKnown: setCueKeyB,
     onTempoGlideCancel: () => cancelTempoGlide("B"),
     onManualPause: () => handleManualPauseDuringTransition(),
+    onManualPlay: () => handleManualPlayDeck("B"),
   });
 
   // Refs mirroring the latest deckA/deckB/crate/crossfade every render, so
@@ -4012,6 +4111,7 @@ export default function Home() {
   }
 
   function handleCrateTap(track: CrateTrack) {
+    stopStemMixerRef.current?.();
     performanceControlVersionRef.current += 1;
     queuePreparationRef.current?.abort(new Error("Playback changed manually"));
     teardownMigration();
@@ -5246,6 +5346,7 @@ export default function Home() {
 
   /** Prepared performance; all audible handoffs are scheduled before the first fade. */
   async function executeStemMigrateCommand(command: StemMigrateCommand | TranceBreakdownCommand, cooldownReason: ConsultReason) {
+    stopStemMixerRef.current?.();
     const controlVersion = performanceControlVersionRef.current;
     const action = command.action;
     const liveLabel = getLiveDeckLabel();
@@ -5293,7 +5394,13 @@ export default function Home() {
     const core = coreRef.current!, ctx = core.ensureContext();
     const idleLabel: DeckLabel = liveLabel === "A" ? "B" : "A";
     const idleCtrl = deckByLabel(idleLabel);
-    if (idleCtrl.deck.playing) { refuse("the other deck is already playing"); return; }
+    if (idleCtrl.deck.playing) {
+      // If the idle deck was left playing from an interrupted transition, stop it cleanly instead of stranding both decks!
+      idleCtrl.deck.pause();
+      idleCtrl.markPaused();
+      idleCtrl.deck.allNeutral();
+      idleCtrl.deck.clearAllDucks();
+    }
     cancelTempoGlide();
     const aborter = new AbortController();
     migrationPreparingRef.current = aborter;
@@ -5500,6 +5607,7 @@ export default function Home() {
 
   async function executeRoutineCommand(command: RoutineCommand, cooldownReason: ConsultReason) {
     if (command.routine !== "sample_mix") return;
+    stopStemMixerRef.current?.();
     const controlVersion = performanceControlVersionRef.current;
     const originalLiveLabel = getLiveDeckLabel();
     const originalLiveId = originalLiveLabel ? deckByLabel(originalLiveLabel).trackId : null;
@@ -5563,6 +5671,12 @@ export default function Home() {
 
     const idleLabel = pickIdleDeckLabel();
     const idleCtrl = deckByLabel(idleLabel);
+    if (idleCtrl.deck.playing) {
+      idleCtrl.deck.pause();
+      idleCtrl.markPaused();
+      idleCtrl.deck.allNeutral();
+      idleCtrl.deck.clearAllDucks();
+    }
     queueInFlightRef.current = true;
     clearRoutineTimers();
 
@@ -6032,32 +6146,181 @@ export default function Home() {
    * carries on past this point (ties into C4's deferred-release fix, whose
    * own timer this also cancels).
    */
+  /**
+   * Hardware-level master bus purge: stops the Live 4-Stem Mixer and replaces
+   * AudioCore's masterGain node while reconnecting ONLY Deck A and Deck B.
+   * Any orphaned loop buffer, stem migration source, or stuck background audio
+   * connected to the previous masterGain is physically severed from the speakers.
+   */
+  function purgeMasterBus() {
+    stopStemMixerRef.current?.();
+    coreRef.current?.purgeOrphanedNodes(() => {
+      deckARef.current.deck.reconnectToMaster();
+      deckBRef.current.deck.reconnectToMaster();
+    });
+  }
+
+  /**
+   * Ensures at most ONE deck is playing outside of an active transition.
+   * Pauses and silences the non-primary deck, clears all ducks/filters on
+   * the primary deck, and snaps the crossfader to the active deck.
+   */
+  function enforceSingleLiveDeck(preferredLabel?: DeckLabel) {
+    const aPlaying = deckARef.current.deck.playing;
+    const bPlaying = deckBRef.current.deck.playing;
+    if (!aPlaying && !bPlaying) return;
+    const keepLabel: DeckLabel =
+      preferredLabel ??
+      (aPlaying && !bPlaying
+        ? "A"
+        : bPlaying && !aPlaying
+          ? "B"
+          : (deckBRef.current.wentLiveAtMs() ?? 0) > (deckARef.current.wentLiveAtMs() ?? 0)
+            ? "B"
+            : crossfadeRef.current <= 0.5
+              ? "A"
+              : "B");
+    const otherLabel: DeckLabel = keepLabel === "A" ? "B" : "A";
+    const keepCtrl = deckByLabel(keepLabel);
+    const otherCtrl = deckByLabel(otherLabel);
+    if (otherCtrl.deck.playing) {
+      otherCtrl.deck.pause();
+    }
+    otherCtrl.markPaused();
+    otherCtrl.deck.allNeutral();
+    otherCtrl.deck.clearAllDucks();
+    otherCtrl.deck.setGain(0);
+
+    keepCtrl.deck.clearAllDucks();
+    keepCtrl.deck.allNeutral();
+    keepCtrl.deck.setEq({ low: 0, mid: 0, high: 0 });
+    keepCtrl.deck.setGain(1);
+    setCrossfade(keepLabel === "A" ? 0 : 1);
+  }
+
+  function handleManualPlayDeck(label: DeckLabel) {
+    stopStemMixerRef.current?.();
+    handleManualPauseDuringTransition();
+    const otherLabel: DeckLabel = label === "A" ? "B" : "A";
+    const otherCtrl = deckByLabel(otherLabel);
+    if (otherCtrl.deck.playing) {
+      otherCtrl.deck.pause();
+      otherCtrl.markPaused();
+      otherCtrl.deck.allNeutral();
+      otherCtrl.deck.clearAllDucks();
+      otherCtrl.deck.setGain(0);
+    }
+    const thisCtrl = deckByLabel(label);
+    thisCtrl.deck.clearAllDucks();
+    thisCtrl.deck.allNeutral();
+    thisCtrl.deck.setEq({ low: 0, mid: 0, high: 0 });
+    thisCtrl.deck.setGain(1);
+    setCrossfade(label === "A" ? 0 : 1);
+    purgeMasterBus();
+  }
+
+  function handleStopDecksForStemMixer() {
+    performanceControlVersionRef.current += 1;
+    queuePreparationRef.current?.abort(new Error("Live 4-Stem Mixer started"));
+    queuePreparationRef.current = null;
+    pendingGapRef.current = null;
+    cancelPendingTransitionStart();
+    teardownMigration();
+    cleanupHeldLoopAndRoutine("stopped for Live 4-Stem Mixer");
+    clearPendingMaskFxRelease();
+    transitionEngineRef.current.cancel();
+    setTransitionRunning(false);
+    queueInFlightRef.current = false;
+    if (autopilotRef.current) {
+      autopilotRef.current = false;
+      setAutopilot(false);
+      cancelFollowUp();
+    }
+    for (const ctrl of [deckARef.current, deckBRef.current]) {
+      if (ctrl.deck.playing) ctrl.deck.pause();
+      ctrl.markPaused();
+      ctrl.deck.allNeutral();
+      ctrl.deck.clearAllDucks();
+    }
+  }
+
+  function handleKillBackgroundAndSoloActiveDeck() {
+    coreRef.current?.ensureContext();
+    stopStemMixerRef.current?.();
+    performanceControlVersionRef.current += 1;
+    queuePreparationRef.current?.abort(new Error("Soloed active deck"));
+    queuePreparationRef.current = null;
+    pendingGapRef.current = null;
+    cancelPendingTransitionStart();
+    teardownMigration();
+    cleanupHeldLoopAndRoutine("killed background audio — soloed active deck");
+    clearPendingMaskFxRelease();
+    transitionEngineRef.current.cancel();
+    setTransitionRunning(false);
+    queueInFlightRef.current = false;
+    askedForTrackRef.current = null;
+    purgeMasterBus();
+    enforceSingleLiveDeck();
+    pushBrainLog("transition", "🎯 Killed background audio & loops — soloed active track at 100% volume");
+  }
+
+  function handleStopAllAudio() {
+    coreRef.current?.ensureContext();
+    stopStemMixerRef.current?.();
+    performanceControlVersionRef.current += 1;
+    queuePreparationRef.current?.abort(new Error("Stopped all audio"));
+    queuePreparationRef.current = null;
+    pendingGapRef.current = null;
+    showcaseQueueRef.current = [];
+    setShowcaseRemaining(0);
+    cancelPendingTransitionStart();
+    teardownMigration();
+    cleanupHeldLoopAndRoutine("stopped all audio");
+    clearPendingMaskFxRelease();
+    transitionEngineRef.current.cancel();
+    setTransitionRunning(false);
+    queueInFlightRef.current = false;
+    askedForTrackRef.current = null;
+    cancelFollowUp();
+    if (autopilotRef.current) {
+      autopilotRef.current = false;
+      setAutopilot(false);
+    }
+    for (const ctrl of [deckARef.current, deckBRef.current]) {
+      if (ctrl.deck.playing) ctrl.deck.pause();
+      ctrl.markPaused();
+      ctrl.deck.allNeutral();
+      ctrl.deck.clearAllDucks();
+      ctrl.deck.setGain(1);
+    }
+    purgeMasterBus();
+    pushBrainLog("transition", "🛑 Stopped all audio, background loops, stems, and decks");
+  }
+
   function handleManualPauseDuringTransition() {
+    stopStemMixerRef.current?.();
     performanceControlVersionRef.current += 1;
     queuePreparationRef.current?.abort(new Error("Playback changed manually"));
     pendingGapRef.current = null;
     cancelPendingTransitionStart();
     teardownMigration();
-    cleanupHeldLoopAndRoutine("canceled held loop/routine â€” a deck was paused manually");
+    cleanupHeldLoopAndRoutine("canceled held loop/routine — a deck was paused manually");
     if (transitionEngineRef.current.isRunning) {
-      // clearPendingMaskFxRelease() lives INSIDE this branch, not
-      // unconditionally above it (self-review catch): a deferred maskFx
-      // release can still be legitimately pending AFTER a transition has
-      // already completed normally (see C4) — an unrelated manual pause on
-      // some other deck a moment later must not silently drop that timer
-      // without ever applying the release, which would leave a swept
-      // filter/reverb stuck forever. allNeutral() below already covers the
-      // release for the transition actually being canceled here.
       clearPendingMaskFxRelease();
       transitionEngineRef.current.cancel();
       setTransitionRunning(false);
       deckA.deck.allNeutral();
       deckB.deck.allNeutral();
+      deckA.deck.clearAllDucks();
+      deckB.deck.clearAllDucks();
       pushBrainLog("transition", "canceled — a deck was paused manually mid-transition");
     }
+    purgeMasterBus();
+    enforceSingleLiveDeck();
   }
 
   async function executeQueueCommand(command: QueueCommand, residencyTimed = false) {
+    stopStemMixerRef.current?.();
     const fullSongRequested = command.transition === "gap";
     // Choir round #2 (P1): single-flight the queue path — this async setup
     // window (download/decode/up-to-16s phrase-wait) used to have NO guard
@@ -6120,8 +6383,12 @@ export default function Home() {
 
     const idleLabel = pickIdleDeckLabel();
     const idleCtrl = deckByLabel(idleLabel);
-
-    // Lazy-crate: resolve the real audio (cache hit, or download through
+    if (idleCtrl.deck.playing) {
+      idleCtrl.deck.pause();
+      idleCtrl.markPaused();
+      idleCtrl.deck.allNeutral();
+      idleCtrl.deck.clearAllDucks();
+    }
     // the proxy — see getTrackForPlayback()) BEFORE handing it to the deck.
     // A download failure (dead wifi, Drive error) goes through the exact
     // same guard-reset-and-log path as the pre-existing "not found"/
@@ -6920,17 +7187,23 @@ export default function Home() {
     // here (kept in sync every render, same pattern as every other *Ref
     // mirror in this component).
     const turningOn = !autopilotRef.current;
+    stopStemMixerRef.current?.();
     // Stopping automation invalidates its pending performance preparations.
     if (!turningOn) {
       performanceControlVersionRef.current += 1;
       teardownMigration();
+      cleanupHeldLoopAndRoutine("autopilot stopped");
       queuePreparationRef.current?.abort(new Error("Autopilot stopped"));
       cancelPendingTransitionStart();
-      if (pendingGapRef.current) {
+      if (pendingGapRef.current || transitionEngineRef.current.isRunning) {
         transitionEngineRef.current.cancel();
         pendingGapRef.current = null;
         setTransitionRunning(false);
       }
+      purgeMasterBus();
+      enforceSingleLiveDeck();
+    } else {
+      enforceSingleLiveDeck();
     }
     setAutopilot((prev) => {
       const next = !prev;
@@ -6965,6 +7238,8 @@ export default function Home() {
 
   function handleStartReggaetonShowcase() {
     coreRef.current?.ensureContext();
+    stopStemMixerRef.current?.();
+    enforceSingleLiveDeck();
     void handleWarmUpFx();
     const noteText =
       "10 songs high energy reggaeton with 45 seconds each total including transitions and use all the skills, efx, loops, stems, hot lead ins";
@@ -7068,6 +7343,7 @@ export default function Home() {
 
   function handleSkipToNextSong(instantCut: boolean) {
     coreRef.current?.ensureContext();
+    stopStemMixerRef.current?.();
     const liveLabel = getLiveDeckLabel();
     const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
     const liveId = liveCtrl?.trackId ?? null;
@@ -7085,12 +7361,19 @@ export default function Home() {
     queueInFlightRef.current = false;
     askedForTrackRef.current = null;
     lastPerformanceAtRef.current = null;
+    purgeMasterBus();
 
-    if (instantCut && liveCtrl) {
-      // Immediately silence the current song so the next track cuts in right away at its hot lead-in!
-      liveCtrl.deck.pause();
-      liveCtrl.markPaused();
-      liveCtrl.deck.allNeutral();
+    if (instantCut) {
+      // Immediately silence BOTH decks so the next track cuts in cleanly with zero overlap!
+      for (const ctrl of [deckARef.current, deckBRef.current]) {
+        if (ctrl.deck.playing) ctrl.deck.pause();
+        ctrl.markPaused();
+        ctrl.deck.allNeutral();
+        ctrl.deck.clearAllDucks();
+      }
+    } else if (liveLabel) {
+      // Ensure the non-live deck is paused before queuing the mix-in so two tracks never overlap
+      enforceSingleLiveDeck(liveLabel);
     }
 
     // If showcase queue has tracks remaining, advance the showcase immediately
@@ -7830,6 +8113,24 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autopilot, crate.length]);
 
+  // Automatic single-deck guard: if both Deck A and Deck B end up playing simultaneously
+  // while NO transition, routine, or stem migration is running, immediately enforce a
+  // single live deck so a background track can never stay stuck underneath the active track.
+  useEffect(() => {
+    if (
+      deckA.isPlaying &&
+      deckB.isPlaying &&
+      !transitionRunning &&
+      !transitionEngineRef.current.isRunning &&
+      !migrationRef.current &&
+      !heldLoopRef.current &&
+      !queueInFlightRef.current
+    ) {
+      enforceSingleLiveDeck();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deckA.isPlaying, deckB.isPlaying, transitionRunning]);
+
   // Clear any pending autopilot retry timer (and any pending deferred
   // re-consult) on unmount.
   useEffect(() => {
@@ -7857,6 +8158,8 @@ export default function Home() {
         crate={crate}
         onPickHarmonicNext={handlePickHarmonicNext}
         onFireTurntablistCombo={handleFireTurntablistCombo}
+        onSoloActiveDeck={handleKillBackgroundAndSoloActiveDeck}
+        onStopAllAudio={handleStopAllAudio}
       />
 
       <LiveStemMixerPanel
@@ -7870,6 +8173,8 @@ export default function Home() {
         onLoadVipToDeck={handleLoadVipToDeck}
         onLog={pushBrainLog}
         onPlayingChange={(playing, bpm, title) => setStemMixerState({ playing, bpm, title })}
+        stopRef={stopStemMixerRef}
+        onBeforePlay={handleStopDecksForStemMixer}
       />
 
       <div className={styles.deckGrid}>
@@ -7957,6 +8262,8 @@ export default function Home() {
         onSeekLive={handleSeekLive}
         onJumpToBeatLive={() => handleJumpToBeat()}
         hasLiveTrack={anyPlaying || Boolean(deckA.trackName || deckB.trackName)}
+        onSoloActiveDeck={handleKillBackgroundAndSoloActiveDeck}
+        onStopAllAudio={handleStopAllAudio}
       />
 
       <FxPanel

@@ -710,6 +710,34 @@ export class Deck {
     if (this.duckState.count === 0) this.rampGainTo(composeGain(this.gainValue, this.duckState), rampSeconds);
   }
 
+  /** Force-clears any stuck duck refcount or overlay duck so the deck plays at clean full logical gain. */
+  clearAllDucks(): void {
+    this.duckState = duckStateInitial();
+    this.overlayDuckUntil = 0;
+    this.overlayDuckFactor = 1;
+    if (this.overlayDucker) {
+      const ctx = this.core.ensureContext();
+      this.overlayDucker.gain.cancelScheduledValues(ctx.currentTime);
+      this.overlayDucker.gain.setValueAtTime(1, ctx.currentTime);
+    }
+    this.setGain(this.gainValue);
+  }
+
+  /** Reconnects this deck's output nodes to a freshly recreated AudioCore.master after purgeOrphanedNodes(). */
+  reconnectToMaster(): void {
+    if (!this.gainNode) return;
+    try { this.gainNode.disconnect(); } catch { /* ignore */ }
+    this.gainNode.connect(this.core.master);
+    if (this.wetGain) {
+      try { this.wetGain.disconnect(); } catch { /* ignore */ }
+      this.wetGain.connect(this.core.master);
+    }
+    if (this.reverbWetGain) {
+      try { this.reverbWetGain.disconnect(); } catch { /* ignore */ }
+      this.reverbWetGain.connect(this.core.master);
+    }
+  }
+
   private rampGainTo(target: number, rampSeconds: number): void {
     if (!this.gainNode) return;
     const ctx = this.core.ensureContext();
