@@ -1,26 +1,623 @@
-/* Mobile-first: single column, big touch targets, no hover-dependent affordances. */
+/* Pioneer CDJ-3000 / Rane Club Booth Dark Glassmorphic Theme */
 
 .main {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  max-width: 480px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 1.5rem 1.25rem 3rem;
+  padding: 1.25rem 1.25rem 3.5rem;
   min-height: 100dvh;
+  color: #f1f5f9;
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.85rem;
+  font-weight: 800;
   text-align: center;
-  margin: 0.5rem 0;
+  margin: 0.25rem 0;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #38bdf8 0%, #c084fc 48%, #fb923c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* --- CLUB BOOTH HUD & MUSIC THEORY MASTER --- */
+
+.boothHud {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.15rem;
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(9, 13, 24, 0.98));
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+}
+
+.hudTopRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.hudBrandBlock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.hudLiveBadge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid #10b981;
+  color: #34d399;
+}
+
+.hudSubtitle {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.hudStatsPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.hudPill {
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.28rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  color: #e2e8f0;
+}
+
+.hudPillAccent {
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 0.28rem 0.68rem;
+  border-radius: 999px;
+  background: rgba(249, 115, 22, 0.2);
+  border: 1px solid #f97316;
+  color: #fdba74;
+}
+
+.hudCanvasWrap {
+  width: 100%;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #050811;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.hudCanvas {
+  width: 100%;
+  height: 86px;
+  display: block;
+}
+
+.hudTelemetryGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 860px) {
+  .hudTelemetryGrid {
+    grid-template-columns: 1.15fr 1fr 1.15fr;
+  }
+}
+
+.hudDeckCardA,
+.hudDeckCardB,
+.hudCenterBridge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.75);
+}
+
+.hudDeckCardA {
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.hudDeckCardB {
+  border: 1px solid rgba(249, 115, 22, 0.4);
+}
+
+.hudCenterBridge {
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hudDeckHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hudDeckTagA {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #38bdf8;
+}
+
+.hudDeckTagB {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #fb923c;
+}
+
+.hudCamelotBadge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.4rem;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  color: #d8b4fe;
+}
+
+.hudTrackTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hudMetricsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.hudBridgeTitle {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #c084fc;
+}
+
+.hudBridgeLock {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.hudBridgeSub {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* --- MUSIC THEORY MASTER BOX --- */
+
+.theoryMasterBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.95rem 1rem;
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.65), rgba(15, 23, 42, 0.9));
+  border: 1px solid rgba(168, 85, 247, 0.45);
+}
+
+.theoryHeaderRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.theoryTitleBadge {
+  display: inline-block;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #f0abfc;
+  margin-bottom: 0.2rem;
+}
+
+.theoryCoachingText {
+  font-size: 0.84rem;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.theoryActionButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.theoryPickBtn {
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.55rem 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid #38bdf8;
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.theoryComboBtn {
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.55rem 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid #f97316;
+  background: linear-gradient(135deg, #ea580c, #db2777);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+}
+
+.theoryMetricsBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.theoryMetricPill {
+  font-size: 0.75rem;
+  padding: 0.28rem 0.6rem;
+  border-radius: 0.5rem;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: #cbd5e1;
+}
+
+.theoryMetricPillHighlight {
+  font-size: 0.75rem;
+  padding: 0.28rem 0.65rem;
+  border-radius: 0.5rem;
+  background: rgba(16, 185, 129, 0.16);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  color: #6ee7b7;
+}
+
+.choreographyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.55rem;
+}
+
+.choreographyStageCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.65rem;
+  background: rgba(9, 13, 24, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+}
+
+.choreographyStageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.choreographyStageNum {
+  color: #38bdf8;
+}
+
+.choreographyTiming {
+  color: #f59e0b;
+}
+
+.choreographyMoveName {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.choreographyReason {
+  font-size: 0.73rem;
+  color: #94a3b8;
+}
+
+/* --- LIVE 4-STEM STUDIO MIXER PANEL --- */
+
+.stemMixerPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.15rem;
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.94), rgba(10, 15, 29, 0.98));
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+.stemHeaderRight {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stemEngineBadge {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(168, 85, 247, 0.18);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  color: #e9d5ff;
+}
+
+.vipCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.65rem;
+}
+
+.vipCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.55rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.8rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.vipCardActive {
+  border-color: #38bdf8;
+  background: rgba(14, 116, 144, 0.18);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.2);
+}
+
+.vipCardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.vipBadge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.18rem 0.5rem;
+  border-radius: 0.35rem;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.55);
+  color: #fde68a;
+}
+
+.vipMeta {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.vipTitle {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.vipTagline {
+  font-size: 0.76rem;
+  color: #94a3b8;
+}
+
+.vipBtnRow {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.vipPlayBtn {
+  flex: 1;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.48rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid #38bdf8;
+  background: rgba(2, 132, 199, 0.28);
+  color: #e0f2fe;
+}
+
+.vipDeckBtn {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.48rem 0.65rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(30, 41, 59, 0.9);
+  color: #e2e8f0;
+}
+
+.stemTransportBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  background: rgba(9, 13, 24, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+}
+
+.stemTransportLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.stemPlayButton {
+  font-size: 0.92rem;
+  font-weight: 800;
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+}
+
+.stemNowPlaying {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.stemTrackName {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.stemStatusText {
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.stemPresetRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.stemPresetBtn {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.42rem 0.68rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  background: rgba(88, 28, 135, 0.28);
+  color: #f3e8ff;
+}
+
+.stemChannelsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.65rem;
+}
+
+.stemChannelCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.75rem;
+  background: rgba(9, 13, 24, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.stemChannelMuted {
+  opacity: 0.5;
+}
+
+.stemChannelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stemRoleLabel {
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.stemGainPct {
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #e2e8f0;
+}
+
+.stemMeterTrack {
+  height: 0.42rem;
+  border-radius: 999px;
+  background: #1e293b;
+  overflow: hidden;
+}
+
+.stemMeterFill {
+  height: 100%;
+  transition: width 0.08s linear;
+}
+
+.stemSlider {
+  width: 100%;
+  height: 1.75rem;
+}
+
+.stemMuteSoloRow {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.stemMuteBtn,
+.stemSoloBtn {
+  flex: 1;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.38rem 0.5rem;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(30, 41, 59, 0.85);
+  color: #cbd5e1;
+}
+
+.stemMuteBtnActive {
+  background: #dc2626;
+  border-color: #ef4444;
+  color: #fff;
+}
+
+.stemSoloBtnActive {
+  background: #eab308;
+  border-color: #facc15;
+  color: #0f172a;
+}
+
+/* --- DECK A / CROSSFADER / DECK B GRID --- */
+
+.deckGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .deckGrid {
+    grid-template-columns: 1fr 220px 1fr;
+  }
 }
 
 .loadRow {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .hiddenInput {
@@ -28,198 +625,210 @@
 }
 
 .bigButton {
-  font-size: 1.1rem;
-  font-weight: 600;
-  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.85rem 1rem;
   border-radius: 0.75rem;
-  border: none;
-  background: #171717;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  background: linear-gradient(135deg, #0284c7, #1d4ed8);
   color: #fff;
-  min-height: 3.25rem;
+  min-height: 3rem;
 }
 
 .secondaryButton {
-  font-size: 0.95rem;
-  padding: 0.75rem;
-  border-radius: 0.75rem;
-  border: 1px solid #d0d0d0;
-  background: transparent;
-  color: #171717;
-  min-height: 2.75rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(30, 41, 59, 0.85);
+  color: #f1f5f9;
+  min-height: 2.5rem;
 }
 
 .trackInfo {
   text-align: center;
-  padding: 0.5rem 0;
+  padding: 0.35rem 0;
 }
 
 .trackName {
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   word-break: break-word;
   margin: 0 0 0.25rem;
+  color: #f8fafc;
 }
 
 .metaLine {
-  font-size: 0.95rem;
-  color: #444;
+  font-size: 0.88rem;
+  color: #94a3b8;
   margin: 0;
 }
 
 .errorText {
-  color: #b00020;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+  color: #f87171;
+  font-size: 0.88rem;
+  margin-top: 0.4rem;
 }
 
 .playButton {
-  font-size: 1.4rem;
-  font-weight: 700;
-  padding: 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  padding: 1rem;
   border-radius: 999px;
   border: none;
-  background: #0a7d43;
+  background: linear-gradient(135deg, #10b981, #059669);
   color: #fff;
-  min-height: 4rem;
+  min-height: 3.5rem;
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3);
 }
 
 .playButton:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .progressWrap {
-  position: relative; /* anchors .cueMarker dots (cue-point live-firing UI) above the clipped track below */
+  position: relative;
 }
 
 .progressTrack {
-  height: 0.5rem;
+  height: 0.55rem;
   border-radius: 999px;
-  background: #e5e5e5;
+  background: #1e293b;
   overflow: hidden;
 }
 
 .progressFill {
   height: 100%;
-  background: #0a7d43;
+  background: linear-gradient(90deg, #06b6d4, #10b981);
   transition: width 0.1s linear;
 }
 
 .tempoSection {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding-top: 0.5rem;
+  gap: 0.45rem;
+  padding-top: 0.4rem;
 }
 
 .tempoHeader {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.92rem;
+  font-weight: 700;
 }
 
 .tempoValue {
   margin-left: auto;
   font-variant-numeric: tabular-nums;
+  color: #38bdf8;
 }
 
 .resetButton {
-  font-size: 0.85rem;
-  padding: 0.4rem 0.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid #d0d0d0;
-  background: transparent;
-  min-height: 2.25rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.68rem;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(30, 41, 59, 0.85);
+  color: #e2e8f0;
+  min-height: 2.1rem;
 }
 
 .tempoSlider {
   width: 100%;
-  height: 2.5rem;
+  height: 2.25rem;
   touch-action: pan-y;
 }
 
 .tempoLabels {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8rem;
-  color: #666;
+  font-size: 0.76rem;
+  color: #94a3b8;
 }
 
 .effectiveBpm {
   text-align: center;
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0.2rem 0 0;
+  color: #e2e8f0;
 }
 
 .hint {
   text-align: center;
-  color: #666;
-  font-size: 0.9rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
 }
 
 .nudgeSection {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
   padding-top: 0.25rem;
 }
 
 .nudgeLabel {
-  font-size: 0.85rem;
-  color: #666;
+  font-size: 0.82rem;
+  color: #94a3b8;
   margin-right: auto;
 }
 
 .nudgeButton {
-  font-size: 0.9rem;
-  font-weight: 600;
-  padding: 0.6rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
-  border: 1px solid #d0d0d0;
-  background: #fff;
-  min-height: 2.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(30, 41, 59, 0.9);
+  color: #f1f5f9;
+  min-height: 2.35rem;
 }
 
 .deckPanel {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 0.9rem;
+  padding: 1.05rem;
   border-radius: 1rem;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
 }
 
 .deckA {
-  border-color: #1c6fd6;
-  background: rgba(28, 111, 214, 0.06);
+  border-color: rgba(56, 189, 248, 0.5);
+  background: linear-gradient(155deg, rgba(14, 116, 144, 0.16), rgba(15, 23, 42, 0.95));
 }
 
 .deckB {
-  border-color: #d6621c;
-  background: rgba(214, 98, 28, 0.06);
+  border-color: rgba(249, 115, 22, 0.5);
+  background: linear-gradient(155deg, rgba(194, 65, 12, 0.16), rgba(15, 23, 42, 0.95));
 }
 
 .deckHeader {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
 }
 
 .deckLabel {
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #f8fafc;
 }
 
 .syncButton {
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.5rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.48rem 0.8rem;
   border-radius: 0.5rem;
-  border: 1px solid #d0d0d0;
-  background: #fff;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  background: rgba(14, 116, 144, 0.25);
+  color: #e0f2fe;
   min-height: 2.25rem;
 }
 
@@ -228,24 +837,29 @@
 }
 
 .syncNotice {
-  color: #b06a00;
-  font-size: 0.85rem;
-  margin: 0.4rem 0 0;
+  color: #fbbf24;
+  font-size: 0.82rem;
+  margin: 0.3rem 0 0;
 }
 
 .crossfaderSection {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  padding: 0.25rem 0 0.5rem;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  align-self: stretch;
 }
 
 .crossfaderLabels {
   display: flex;
   justify-content: space-between;
   font-size: 0.85rem;
-  font-weight: 600;
-  color: #444;
+  font-weight: 700;
+  color: #cbd5e1;
 }
 
 .crossfaderSlider {
@@ -254,14 +868,34 @@
   touch-action: pan-y;
 }
 
+/* --- CRATE & BRAIN PANELS --- */
+
 .cratePanel,
 .brainPanel {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 1rem;
+  gap: 0.8rem;
+  padding: 1.1rem;
   border-radius: 1rem;
-  border: 2px solid #d0d0d0;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+}
+
+.crateHeaderBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.crateSummaryPill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.24rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.16);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #bae6fd;
 }
 
 .crateList {
@@ -270,46 +904,119 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  max-height: 14rem;
+  gap: 0.45rem;
+  max-height: 22rem;
   overflow-y: auto;
 }
 
-.crateControls, .brainModelRow {
+.crateControls,
+.brainModelRow {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
 }
-.crateControls .chatInput { min-width: 12rem; }
-.modelLabel { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
-.modelTestLabel { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; }
-.modelLabel select { max-width: 100%; }
-.genreEditor { display: flex; gap: 0.5rem; align-items: center; font-size: 0.75rem; padding: 0.2rem 0.85rem; }
-.genreEditor input { max-width: 16rem; min-width: 0; width: 100%; font: inherit; padding: 0.4rem; border: 1px solid #777; border-radius: 0.3rem; }
+
+.crateControls .chatInput {
+  min-width: 12rem;
+}
+
+.modelLabel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modelTestLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+}
+
+.modelLabel select {
+  max-width: 100%;
+  background: #0f172a;
+  color: #f1f5f9;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 0.45rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.genreEditor {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.85rem;
+  color: #94a3b8;
+}
+
+.genreEditor input {
+  max-width: 16rem;
+  min-width: 0;
+  width: 100%;
+  font: inherit;
+  padding: 0.38rem 0.55rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 0.35rem;
+  background: #0f172a;
+  color: #f1f5f9;
+}
 
 .crateItemButton {
   width: 100%;
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.22rem;
   padding: 0.65rem 0.85rem;
   border-radius: 0.65rem;
-  border: 1px solid #d0d0d0;
-  background: #fff;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: rgba(30, 41, 59, 0.75);
+  color: #f1f5f9;
   min-height: 2.75rem;
 }
 
+.crateItemStudioVip {
+  border-color: rgba(245, 158, 11, 0.65);
+  background: linear-gradient(90deg, rgba(120, 53, 15, 0.35), rgba(30, 41, 59, 0.85));
+}
+
 .crateItemName {
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 0.92rem;
+  font-weight: 700;
   word-break: break-word;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.studioVipInlineBadge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.12rem 0.45rem;
+  border-radius: 0.35rem;
+  background: rgba(245, 158, 11, 0.22);
+  border: 1px solid #f59e0b;
+  color: #fde68a;
+}
+
+.stemReadyBadge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.12rem 0.42rem;
+  border-radius: 0.35rem;
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  color: #e9d5ff;
 }
 
 .crateItemMeta {
-  font-size: 0.8rem;
-  color: #666;
+  font-size: 0.78rem;
+  color: #94a3b8;
 }
 
 .chatRow {
@@ -319,46 +1026,50 @@
 
 .chatInput {
   flex: 1;
-  font-size: 0.95rem;
-  padding: 0.75rem;
+  font-size: 0.92rem;
+  padding: 0.68rem 0.85rem;
   border-radius: 0.65rem;
-  border: 1px solid #d0d0d0;
-  background: #fff;
-  min-height: 2.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: #0f172a;
+  color: #f1f5f9;
+  min-height: 2.65rem;
 }
 
 .brainLog {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  max-height: 10rem;
+  max-height: 11rem;
   overflow-y: auto;
+  border-radius: 0.65rem;
+  background: rgba(9, 13, 24, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.18);
 }
 
 .brainLogEntry {
-  font-size: 0.85rem;
-  color: #333;
+  font-size: 0.82rem;
+  color: #cbd5e1;
 }
 
-/* --- EQ section (M4, styled in M5) --- */
+/* --- EQ SECTION --- */
 
 .eqSection {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding-top: 0.5rem;
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
 }
 
 .eqHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 700;
 }
 
 .eqBands {
@@ -372,93 +1083,266 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
 .eqBandLabel {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #666;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #94a3b8;
 }
 
 .eqSliderWrap {
   display: flex;
   align-items: center;
-  height: 6rem;
+  height: 5.5rem;
 }
 
 .eqSlider {
   writing-mode: vertical-lr;
   direction: rtl;
-  width: 2.5rem;
-  height: 6rem;
+  width: 2.25rem;
+  height: 5.5rem;
   touch-action: pan-x;
 }
 
 .eqBandValue {
   font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
-  color: #444;
+  color: #cbd5e1;
 }
 
 .killButton {
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.5rem 0.6rem;
-  border-radius: 0.5rem;
-  border: 1px solid #d0d0d0;
-  background: #fff;
-  min-height: 2.25rem;
-  min-width: 3.5rem;
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(30, 41, 59, 0.85);
+  color: #e2e8f0;
+  min-height: 2.15rem;
+  min-width: 3.4rem;
 }
 
 .killButtonActive {
-  background: #b00020;
-  border-color: #b00020;
+  background: #dc2626;
+  border-color: #ef4444;
   color: #fff;
 }
 
-/* --- FX panel (M4, styled in M5) --- */
+/* --- FX PANEL, RGB HARDWARE PADS & 38-CLIP PAISA SOUNDBOARD --- */
 
 .fxPanel {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 1rem;
+  gap: 0.85rem;
+  padding: 1.15rem;
   border-radius: 1rem;
-  border: 2px solid #d0d0d0;
+  background: rgba(15, 23, 42, 0.94);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.fxHeaderRight {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.autoFxActiveBtn {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.22);
+  color: #6ee7b7;
+}
+
+.fxGroupTitle {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.comboSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(9, 13, 24, 0.75);
+  border: 1px solid rgba(249, 115, 22, 0.32);
+}
+
+.fxComboRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.5rem;
+}
+
+.fxComboBtn {
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(249, 115, 22, 0.55);
+  background: linear-gradient(135deg, rgba(194, 65, 12, 0.35), rgba(15, 23, 42, 0.92));
+  color: #ffedd5;
+  text-align: left;
 }
 
 .fxRow {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 0.5rem;
 }
 
 .fxButton {
-  flex: 1;
-  font-size: 0.9rem;
-  font-weight: 600;
-  padding: 0.85rem 0.5rem;
-  border-radius: 0.75rem;
-  border: 1px solid #d0d0d0;
-  background: #fff;
-  color: #171717;
-  min-height: 3rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  padding: 0.78rem 0.55rem;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  background: rgba(30, 41, 59, 0.9);
+  color: #f8fafc;
+  min-height: 2.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
 }
 
 .fxButton:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
 }
 
-/* --- Transition history panel (M4, styled in M5) --- */
+.fxPadHype {
+  border-color: rgba(249, 115, 22, 0.55);
+  background: linear-gradient(160deg, rgba(154, 52, 18, 0.35), rgba(15, 23, 42, 0.95));
+}
+
+.fxPadSub {
+  border-color: rgba(168, 85, 247, 0.55);
+  background: linear-gradient(160deg, rgba(107, 33, 168, 0.35), rgba(15, 23, 42, 0.95));
+}
+
+.fxPadSweep {
+  border-color: rgba(56, 189, 248, 0.55);
+  background: linear-gradient(160deg, rgba(3, 105, 161, 0.35), rgba(15, 23, 42, 0.95));
+}
+
+.fxPadPerc {
+  border-color: rgba(234, 179, 8, 0.55);
+  background: linear-gradient(160deg, rgba(161, 98, 7, 0.35), rgba(15, 23, 42, 0.95));
+}
+
+.fxPadVinyl {
+  border-color: rgba(236, 72, 153, 0.55);
+  background: linear-gradient(160deg, rgba(157, 23, 77, 0.35), rgba(15, 23, 42, 0.95));
+}
+
+.fxPadRoll {
+  border-color: rgba(16, 185, 129, 0.55);
+  background: linear-gradient(160deg, rgba(6, 95, 70, 0.35), rgba(15, 23, 42, 0.95));
+}
+
+.fxPadVocal {
+  border-color: rgba(251, 191, 36, 0.55);
+  background: linear-gradient(160deg, rgba(146, 64, 14, 0.35), rgba(15, 23, 42, 0.95));
+}
+
+.fxNewBadge {
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 0.08rem 0.34rem;
+  border-radius: 0.3rem;
+  background: rgba(56, 189, 248, 0.25);
+  border: 1px solid #38bdf8;
+  color: #bae6fd;
+}
+
+/* --- 38-CLIP PAISA VOCAL SOUNDBOARD --- */
+
+.vocalSoundboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.85rem;
+  border-radius: 0.8rem;
+  background: rgba(9, 13, 24, 0.82);
+  border: 1px solid rgba(251, 191, 36, 0.32);
+}
+
+.soundboardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vocalFilterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.vocalFilterPill {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.32rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(30, 41, 59, 0.85);
+  color: #cbd5e1;
+}
+
+.vocalFilterPillActive {
+  border-color: #fbbf24;
+  background: rgba(245, 158, 11, 0.25);
+  color: #fef3c7;
+}
+
+.vocalClipsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 0.45rem;
+  max-height: 16rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.vocalClipCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(251, 191, 36, 0.28);
+  background: rgba(30, 41, 59, 0.85);
+  color: #f8fafc;
+  text-align: left;
+}
+
+.vocalClipTitle {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #fef3c7;
+}
+
+.vocalClipMeta {
+  font-size: 0.68rem;
+  color: #94a3b8;
+}
+
+/* --- TRANSITION HISTORY & LESSONS PANELS --- */
 
 .historyPanel {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  padding: 1rem;
+  padding: 1.05rem;
   border-radius: 1rem;
-  border: 2px solid #d0d0d0;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.28);
 }
 
 .historyList {
@@ -477,7 +1361,7 @@
   flex-direction: column;
   gap: 0.35rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
 }
 
 .historyItem:last-child {
@@ -486,9 +1370,10 @@
 }
 
 .historyLine {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   margin: 0;
   word-break: break-word;
+  color: #e2e8f0;
 }
 
 .historyRateRow {
@@ -498,38 +1383,41 @@
 }
 
 .rateButton {
-  font-size: 1.1rem;
-  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  padding: 0.45rem 0.7rem;
   border-radius: 0.5rem;
-  border: 1px solid #d0d0d0;
-  background: #fff;
-  min-height: 2.5rem;
-  min-width: 2.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(30, 41, 59, 0.85);
+  color: #f1f5f9;
+  min-height: 2.35rem;
+  min-width: 2.6rem;
 }
 
 .rateButtonActive {
-  background: #0a7d43;
-  border-color: #0a7d43;
+  background: #10b981;
+  border-color: #10b981;
+  color: #fff;
 }
 
 .historyNoteInput {
   flex: 1;
-  font-size: 0.85rem;
-  padding: 0.6rem;
+  font-size: 0.84rem;
+  padding: 0.55rem 0.7rem;
   border-radius: 0.5rem;
-  border: 1px solid #d0d0d0;
-  background: #fff;
-  min-height: 2.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: #0f172a;
+  color: #f1f5f9;
+  min-height: 2.35rem;
 }
 
-/* --- Drive crate loader (M5) --- */
+/* --- DRIVE CRATE LOADER & COST TICKER --- */
 
 .driveSection {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding-top: 0.5rem;
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
 }
 
 .driveRow {
@@ -546,18 +1434,16 @@
   flex-direction: column;
   gap: 0.25rem;
   font-size: 0.8rem;
-  color: #b06a00;
+  color: #fbbf24;
 }
-
-/* --- Cost ticker (M5) --- */
 
 .costTicker {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
-  font-size: 0.85rem;
-  color: #333;
+  font-size: 0.84rem;
+  color: #cbd5e1;
 }
 
 .costTotal {
@@ -566,11 +1452,11 @@
 
 .costLastCall {
   margin-right: auto;
-  color: #666;
+  color: #94a3b8;
   font-variant-numeric: tabular-nums;
 }
 
-/* --- Cue points (rehearsal → mark → assign → live-fire) --- */
+/* --- CUE POINTS --- */
 
 .cueMarker {
   position: absolute;
@@ -578,8 +1464,8 @@
   width: 0.55rem;
   height: 0.55rem;
   border-radius: 50%;
-  background: #b06a00;
-  border: 1px solid #fff;
+  background: #f59e0b;
+  border: 1px solid #0f172a;
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
@@ -589,42 +1475,43 @@
   flex-direction: column;
   gap: 0.5rem;
   padding-top: 0.5rem;
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
 }
 
 .cueHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 700;
 }
 
 .rehearseButton {
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.5rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.45rem 0.8rem;
   border-radius: 0.5rem;
-  border: 1px solid #d0d0d0;
-  background: #fff;
-  min-height: 2.25rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(30, 41, 59, 0.85);
+  color: #f1f5f9;
+  min-height: 2.2rem;
 }
 
 .rehearseButtonActive {
-  background: #b06a00;
-  border-color: #b06a00;
+  background: #d97706;
+  border-color: #f59e0b;
   color: #fff;
 }
 
 .markButton {
-  font-size: 1.1rem;
-  font-weight: 700;
-  padding: 1rem;
-  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 800;
+  padding: 0.85rem;
+  border-radius: 0.7rem;
   border: none;
-  background: #b06a00;
+  background: #d97706;
   color: #fff;
-  min-height: 3.25rem;
+  min-height: 3rem;
 }
 
 .cueList {
@@ -633,7 +1520,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.55rem;
 }
 
 .cueItem {
@@ -642,8 +1529,8 @@
   gap: 0.4rem;
   padding: 0.6rem 0.75rem;
   border-radius: 0.65rem;
-  border: 1px solid #d0d0d0;
-  background: #fff;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(9, 13, 24, 0.75);
 }
 
 .cueTime {
@@ -651,45 +1538,42 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Suggested cues (scripts/suggest-cues.mjs's synced-lyrics pipeline) — dashed
-   border + the lyric label distinguish an unassigned suggestion from a
-   plain rehearsal-marked cue, per "assign and nudge" instead of "hunt and
-   mark". Cleared automatically (see cue-store.ts) the moment the user
-   assigns a clip/sing-along or nudges the timestamp. */
 .cueItemSuggested {
   border-style: dashed;
-  border-color: #b06a00;
+  border-color: #f59e0b;
 }
 
 .cueLabel {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-style: italic;
-  color: #666;
+  color: #94a3b8;
 }
 
 .cueSelect {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.48rem;
   border-radius: 0.5rem;
-  border: 1px solid #d0d0d0;
-  background: #fff;
-  min-height: 2.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: #0f172a;
+  color: #f1f5f9;
+  min-height: 2.4rem;
 }
 
 .cueDurationLabel {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.85rem;
-  color: #666;
+  font-size: 0.82rem;
+  color: #94a3b8;
 }
 
 .cueDurationInput {
   width: 4rem;
-  padding: 0.4rem;
-  border-radius: 0.5rem;
-  border: 1px solid #d0d0d0;
-  background: #fff;
+  padding: 0.38rem;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: #0f172a;
+  color: #f1f5f9;
   min-height: 2rem;
 }
 
@@ -699,322 +1583,34 @@
 }
 
 .deleteCueButton {
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid #b00020;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.45rem 0.7rem;
+  border-radius: 0.45rem;
+  border: 1px solid #ef4444;
   background: transparent;
-  color: #b00020;
-  min-height: 2.25rem;
+  color: #f87171;
+  min-height: 2.15rem;
   margin-left: auto;
 }
-
-/* --- Host-only pads (shout-outs — never brain-triggered, see FxPanel) --- */
 
 .hostSection {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding-top: 0.5rem;
-  border-top: 1px dashed #d0d0d0;
+  border-top: 1px dashed rgba(148, 163, 184, 0.3);
 }
 
 .hostLabel {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #b06a00;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #fbbf24;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
 
 .hostButton {
-  border-color: #b06a00;
-  color: #b06a00;
-}
-
-@media (prefers-color-scheme: dark) {
-  .secondaryButton,
-  .resetButton {
-    border-color: #444;
-    color: #ededed;
-  }
-
-  .metaLine {
-    color: #bbb;
-  }
-
-  .progressTrack {
-    background: #2a2a2a;
-  }
-
-  .hint {
-    color: #999;
-  }
-
-  .nudgeLabel {
-    color: #999;
-  }
-
-  .nudgeButton {
-    background: #1a1a1a;
-    border-color: #444;
-    color: #ededed;
-  }
-
-  .deckA {
-    background: rgba(28, 111, 214, 0.12);
-  }
-
-  .deckB {
-    background: rgba(214, 98, 28, 0.12);
-  }
-
-  .syncButton {
-    background: #1a1a1a;
-    border-color: #444;
-    color: #ededed;
-  }
-
-  .crossfaderLabels {
-    color: #bbb;
-  }
-
-  .cratePanel,
-  .brainPanel {
-    border-color: #444;
-  }
-
-  .crateItemButton {
-    background: #1a1a1a;
-    border-color: #444;
-    color: #ededed;
-  }
-
-  .crateItemMeta {
-    color: #999;
-  }
-
-  .chatInput {
-    background: #1a1a1a;
-    border-color: #444;
-    color: #ededed;
-  }
-
-  .brainLogEntry {
-    color: #ccc;
-  }
-
-  .eqSection {
-    border-color: #444;
-  }
-
-  .eqBandLabel {
-    color: #999;
-  }
-
-  .eqBandValue {
-    color: #ccc;
-  }
-
-  .killButton {
-    background: #1a1a1a;
-    border-color: #444;
-    color: #ededed;
-  }
-
-  .fxPanel,
-  .historyPanel {
-    border-color: #444;
-  }
-
-  .fxButton {
-    background: #1a1a1a;
-    border-color: #444;
-    color: #ededed;
-  }
-
-  .historyItem {
-    border-color: #333;
-  }
-
-  .rateButton {
-    background: #1a1a1a;
-    border-color: #444;
-    color: #ededed;
-  }
-
-  .historyNoteInput {
-    background: #1a1a1a;
-    border-color: #444;
-    color: #ededed;
-  }
-
-  .driveSection {
-    border-color: #444;
-  }
-
-  .costTicker {
-    color: #ededed;
-  }
-
-  .costLastCall {
-    color: #bbb;
-  }
-
-  .cueSection {
-    border-color: #444;
-  }
-
-  .rehearseButton {
-    background: #1a1a1a;
-    border-color: #444;
-    color: #ededed;
-  }
-
-  .cueItem {
-    background: #1a1a1a;
-    border-color: #444;
-  }
-
-  .cueItemSuggested {
-    border-color: #d99a3f;
-  }
-
-  .cueLabel {
-    color: #999;
-  }
-
-  .cueSelect,
-  .cueDurationInput {
-    background: #1a1a1a;
-    border-color: #444;
-    color: #ededed;
-  }
-
-  .cueDurationLabel {
-    color: #999;
-  }
-
-  .cueMarker {
-    border-color: #1a1a1a;
-  }
-
-  .hostSection {
-    border-color: #444;
-  }
-
-  .visualizerPanel {
-    border-color: #334155;
-    background: #0b1120;
-  }
-
-  .visualizerPill {
-    background: #1a2234;
-    border-color: #334155;
-    color: #e2e8f0;
-  }
-}
-
-.visualizerPanel {
-  position: relative;
-  border: 1px solid #cbd5e1;
-  border-radius: 14px;
-  padding: 0.85rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  background: #0f172a;
-  color: #f8fafc;
-  overflow: hidden;
-  box-shadow: 0 10px 28px rgba(2, 6, 23, 0.35);
-}
-
-.visualizerStage {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 6.5;
-  min-height: 150px;
-  max-height: 230px;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  background: #020617;
-}
-
-.visualizerVideo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.visualizerOverlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 0.65rem 0.85rem;
-  background: linear-gradient(180deg, rgba(2, 6, 23, 0.62) 0%, rgba(2, 6, 23, 0.08) 45%, rgba(2, 6, 23, 0.78) 100%);
-  pointer-events: none;
-}
-
-.visualizerTopRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #38bdf8;
-}
-
-.visualizerBottomRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  font-size: 0.82rem;
-  color: #f1f5f9;
-}
-
-.visualizerControls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  align-items: center;
-}
-
-.visualizerPill {
-  font-size: 0.76rem;
-  font-weight: 600;
-  padding: 0.35rem 0.65rem;
-  border-radius: 999px;
-  border: 1px solid #334155;
-  background: #1e293b;
-  color: #cbd5e1;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.visualizerPillActive {
-  background: linear-gradient(135deg, #0284c7, #eab308);
-  border-color: #fde047;
-  color: #020617;
-  font-weight: 700;
-}
-
-.ambientVideoBg {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-  opacity: 0.14;
-  pointer-events: none;
-  z-index: -1;
-  filter: saturate(1.2) contrast(1.08);
+  border-color: #f59e0b;
+  color: #fde68a;
 }

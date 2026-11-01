@@ -50,6 +50,13 @@ import {
 import lessonsSeedJson from "@/data/lessons-seed.json";
 import { computeRmsPerSecond, findMixPoints, applyMixInCueOverride, avoidEarlyVocalIntro, type MixPoints } from "@/lib/energy";
 import { toCamelot } from "@/lib/camelot";
+import {
+  analyzeHarmonicRelationship,
+  analyzeGrooveInterlock,
+  planTurntablistChoreography,
+  rankCandidatesByMusicTheory,
+  type MusicTheoryTrackInput,
+} from "@/lib/music-theory-master";
 import { nextPhraseBoundaries } from "@/lib/phrase";
 import {
   getVocalIntervals,
@@ -100,14 +107,6 @@ const PARTY_LENGTH_OPTIONS: { label: string; seconds: number | null }[] = [
   { label: "2h", seconds: 7200 },
   { label: "3h", seconds: 10800 },
   { label: "4h", seconds: 14400 },
-];
-const STAGE_VISUALIZER_LOOPS: { id: string; label: string; shortLabel: string; src: string }[] = [
-  { id: "cerebro-neural-core", label: "El Cerebro Neural Core", shortLabel: "Neural Core", src: "/videos/cerebro-neural-core.mp4" },
-  { id: "supermercado-neon-crate", label: "Supermercado Neon Crate", shortLabel: "Neon Crate", src: "/videos/supermercado-neon-crate.mp4" },
-  { id: "bass-spectrum-tunnel", label: "Sub-Bass Spectrum Tunnel", shortLabel: "Bass Tunnel", src: "/videos/bass-spectrum-tunnel.mp4" },
-  { id: "vinyl-cyber-strobe", label: "Vinyl Cyber Strobe", shortLabel: "Vinyl Strobe", src: "/videos/vinyl-cyber-strobe.mp4" },
-  { id: "latin-gold-equalizer", label: "Latin Gold Equalizer", shortLabel: "Latin Gold", src: "/videos/latin-gold-equalizer.mp4" },
-  { id: "hypnotic-laser-club", label: "Hypnotic Laser Club", shortLabel: "Laser Club", src: "/videos/hypnotic-laser-club.mp4" },
 ];
 // Vocal-clash awareness (Part 1): the minimum instrumental-gap length considered
 // a real "next vocal gap" — matches the ~8s FACTS convention buildVocalIntervalsFromLines
@@ -231,6 +230,114 @@ const STUDIO_TRACK_IDS = new Set([
   "medianoche_tech_guaracha",
   "costa_dorada_bachata_vip",
 ]);
+
+interface StudioVipTrackMeta {
+  id: string;
+  title: string;
+  subtitle: string;
+  genre: string;
+  bpm: number;
+  camelot: string;
+  key: string;
+  lufs: number;
+  accent: string;
+}
+
+const STUDIO_VIP_TRACKS: StudioVipTrackMeta[] = [
+  {
+    id: "el_cerebro_dembow_fuego",
+    title: "El Cerebro — Dembow Fuego",
+    subtitle: "VIP Club Mix · RoFormer + HTDemucs 4-Stem",
+    genre: "Reggaeton / Dembow",
+    bpm: 96,
+    camelot: "8A",
+    key: "Am",
+    lufs: -14.4,
+    accent: "#f97316",
+  },
+  {
+    id: "supermercado_salsa_brava",
+    title: "Supermercado — Salsa Brava",
+    subtitle: "Descarga en Vivo · Brass & Montuno 4-Stem",
+    genre: "Salsa / Tropical",
+    bpm: 104,
+    camelot: "9A",
+    key: "Em",
+    lufs: -14.5,
+    accent: "#eab308",
+  },
+  {
+    id: "medianoche_tech_guaracha",
+    title: "Medianoche — Tech Guaracha",
+    subtitle: "Aleteo Club Tool · Tribal Brass 4-Stem",
+    genre: "Latin Tech House / Guaracha",
+    bpm: 126,
+    camelot: "11A",
+    key: "F#m",
+    lufs: -14.5,
+    accent: "#06b6d4",
+  },
+  {
+    id: "costa_dorada_bachata_vip",
+    title: "Costa Dorada — Bachata Sensual",
+    subtitle: "VIP Dub · Requinto & Bongó 4-Stem",
+    genre: "Bachata",
+    bpm: 120,
+    camelot: "6A",
+    key: "Gm",
+    lufs: -13.7,
+    accent: "#ec4899",
+  },
+];
+
+const PAISA_VOCAL_LABELS: Record<string, { phrase: string; vibe: string }> = {
+  "drop-cerebro-nohands.mp3": { phrase: "¡El Cerebro — Sin Manos!", vibe: "Signature Drop" },
+  "drop-cheer-cerebro.mp3": { phrase: "Crowd Roar + ¡El Cerebro!", vibe: "Stadium Drop" },
+  "drop-horseman.mp3": { phrase: "¡El Jinete Del Perreo!", vibe: "Heavy Drop" },
+  "drop-ones-twos.mp3": { phrase: "En Los Controles 1 & 2", vibe: "Booth Drop" },
+  "drop-purocerebro-laser.mp3": { phrase: "¡Puro Cerebro! + Laser", vibe: "Laser Drop" },
+  "tag-dale.mp3": { phrase: "¡Dale, El Cerebro!", vibe: "DJ Tag" },
+  "tag-horseman.mp3": { phrase: "El Jinete En La Casa", vibe: "DJ Tag" },
+  "tag-jinete.mp3": { phrase: "¡Jinete Paisa!", vibe: "DJ Tag" },
+  "tag-look-mom.mp3": { phrase: "¡Mira Mamá, Sin Manos!", vibe: "DJ Tag" },
+  "tag-ones-twos.mp3": { phrase: "Partiendo La Pista", vibe: "DJ Tag" },
+  "tag-puro-cerebro.mp3": { phrase: "¡Puro Cerebro Papá!", vibe: "DJ Tag" },
+  "tag2-eyyy.mp3": { phrase: "¡Eyyy Qué Chimba!", vibe: "Paisa Tag" },
+  "tag2-fiesta.mp3": { phrase: "¡Se Prendió La Fiesta!", vibe: "Party Tag" },
+  "tag2-fuego.mp3": { phrase: "¡Puro Fuego En La Pista!", vibe: "Fire Tag" },
+  "tag2-manos.mp3": { phrase: "¡Arriba Las Manos!", vibe: "Hype Tag" },
+  "tag2-nopare.mp3": { phrase: "¡No Pare, Sigue Sigue!", vibe: "Anthem Tag" },
+  "tag2-sube.mp3": { phrase: "¡Súbele El Bajo!", vibe: "Bass Tag" },
+  "cue-abajo-hype.mp3": { phrase: "¡Hasta Abajo! 🔥", vibe: "Hype Cue" },
+  "cue-dale-hype.mp3": { phrase: "¡Dale Duro! 🔥", vibe: "Hype Cue" },
+  "cue-escuche-hype.mp3": { phrase: "¡Que Se Escuche! 🔥", vibe: "Hype Cue" },
+  "cue-eso-hype.mp3": { phrase: "¡Eso, Rompe! 🔥", vibe: "Hype Cue" },
+  "cue-manos-hype.mp3": { phrase: "¡Manos Arriba! 🔥", vibe: "Hype Cue" },
+  "cue-abajo-warm.mp3": { phrase: "Bajando Suave 🌴", vibe: "Warm Cue" },
+  "cue-dale-warm.mp3": { phrase: "Dale Con Calma 🌴", vibe: "Warm Cue" },
+  "cue-escuche-warm.mp3": { phrase: "Escucha Este Ritmo 🌴", vibe: "Warm Cue" },
+  "cue-eso-warm.mp3": { phrase: "Eso Mismo Mi Gente 🌴", vibe: "Warm Cue" },
+  "cue-manos-warm.mp3": { phrase: "Sube La Mano Suave 🌴", vibe: "Warm Cue" },
+  "adlib-asimismo.mp3": { phrase: "¡Así Mismo!", vibe: "Paisa Ad-Lib" },
+  "adlib-eso.mp3": { phrase: "¡Eso Es!", vibe: "Paisa Ad-Lib" },
+  "adlib-otra.mp3": { phrase: "¡Otra, Otra!", vibe: "Paisa Ad-Lib" },
+  "adlib-oyeme.mp3": { phrase: "¡Óyeme Bien!", vibe: "Paisa Ad-Lib" },
+  "adlib-padonde.mp3": { phrase: "¿Pa' Dónde Vas?", vibe: "Paisa Ad-Lib" },
+  "adlib-sepone.mp3": { phrase: "¡Se Pone Bueno!", vibe: "Paisa Ad-Lib" },
+  "adlib-wepa.mp3": { phrase: "¡Wepa!", vibe: "Paisa Ad-Lib" },
+  "crowd-callresponse.mp3": { phrase: "¡Oye! ¡Eh! ¡Oh!", vibe: "Call & Response" },
+  "crowd-countdown.mp3": { phrase: "¡3, 2, 1… Dale!", vibe: "Drop Countdown" },
+  "crowd-manos.mp3": { phrase: "¡Las Manos Todo El Mundo!", vibe: "Crowd Chant" },
+  "crowd-palante.mp3": { phrase: "¡Pa'lante Mi Gente!", vibe: "Crowd Chant" },
+};
+
+type StemRoleKey = "vocals" | "drums" | "bass" | "other";
+const STEM_ROLES: { key: StemRoleKey; label: string; icon: string; model: string; color: string }[] = [
+  { key: "vocals", label: "Vocals", icon: "🎤", model: "BS-RoFormer SDR 12.9", color: "#f43f5e" },
+  { key: "drums", label: "Drums", icon: "🥁", model: "HTDemucs-FT", color: "#f59e0b" },
+  { key: "bass", label: "Bass", icon: "🎸", model: "HTDemucs-FT", color: "#8b5cf6" },
+  { key: "other", label: "Other / Synth", icon: "🎹", model: "HTDemucs-FT", color: "#06b6d4" },
+];
 
 function resolveAudioAssetUrl(idOrPath: string): { url: string } {
   if (idOrPath.startsWith("/audio/")) {
@@ -1220,6 +1327,868 @@ function DeckPanel({
   );
 }
 
+function ClubBoothHud({
+  deckA,
+  deckB,
+  cueKeyA,
+  cueKeyB,
+  stemMixerPlaying,
+  stemMixerBpm,
+  stemMixerTitle,
+  autopilot,
+  transitionRunning,
+  crate,
+  onPickHarmonicNext,
+  onFireTurntablistCombo,
+}: {
+  deckA: DeckController;
+  deckB: DeckController;
+  cueKeyA: string | null;
+  cueKeyB: string | null;
+  stemMixerPlaying: boolean;
+  stemMixerBpm: number | null;
+  stemMixerTitle: string | null;
+  autopilot: boolean;
+  transitionRunning: boolean;
+  crate: CrateTrack[];
+  onPickHarmonicNext: (targetTrackId: string, comboId: string) => void;
+  onFireTurntablistCombo: (comboId: string) => void;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const anyActive = deckA.isPlaying || deckB.isPlaying || stemMixerPlaying;
+  const activeBpm =
+    (deckA.isPlaying && deckA.tags.bpm ? deckA.tags.bpm * deckA.tempo : null) ??
+    (deckB.isPlaying && deckB.tags.bpm ? deckB.tags.bpm * deckB.tempo : null) ??
+    (stemMixerPlaying ? stemMixerBpm : null) ??
+    104;
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    let raf = 0;
+    const startMs = performance.now();
+
+    const draw = (now: number) => {
+      const elapsed = (now - startMs) / 1000;
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Subtle grid background
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.08)";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 32) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 20) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      const beatFreq = (activeBpm || 104) / 60;
+      const beatPhase = (elapsed * beatFreq) % 1;
+      const beatPulse = anyActive ? Math.pow(Math.max(0, 1 - beatPhase * 2.2), 2) : 0.15;
+
+      // 48-bar real-time club spectrum
+      const barCount = 48;
+      const barGap = 3;
+      const totalBarW = (w - 140) / barCount;
+      for (let i = 0; i < barCount; i++) {
+        const norm = i / barCount;
+        const bassWeight = norm < 0.25 ? 1.25 : norm < 0.6 ? 0.85 : 0.65;
+        const wave1 = Math.sin(elapsed * (3.5 + i * 0.23) + i * 0.4) * 0.5 + 0.5;
+        const wave2 = Math.cos(elapsed * (6.1 - i * 0.11) + i * 0.7) * 0.5 + 0.5;
+        const energy = anyActive
+          ? Math.min(1, (0.22 + wave1 * 0.42 + wave2 * 0.22 + beatPulse * 0.38) * bassWeight)
+          : 0.08 + Math.sin(elapsed * 1.6 + i * 0.3) * 0.04;
+        const barH = Math.max(4, energy * (h - 18));
+        const x = 12 + i * totalBarW;
+        const y = h - 8 - barH;
+
+        const grad = ctx.createLinearGradient(0, h - 8, 0, 8);
+        if (norm < 0.33) {
+          grad.addColorStop(0, "#06b6d4");
+          grad.addColorStop(1, "#3b82f6");
+        } else if (norm < 0.66) {
+          grad.addColorStop(0, "#8b5cf6");
+          grad.addColorStop(1, "#ec4899");
+        } else {
+          grad.addColorStop(0, "#f59e0b");
+          grad.addColorStop(1, "#ef4444");
+        }
+        ctx.fillStyle = grad;
+        ctx.fillRect(x, y, Math.max(2, totalBarW - barGap), barH);
+      }
+
+      // Right-hand Beat Phase & Harmonic Lock Radar
+      const cx = w - 64;
+      const cy = h / 2;
+      const radius = Math.min(34, h * 0.36) + beatPulse * 5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = anyActive ? "rgba(249, 115, 22, 0.85)" : "rgba(148, 163, 184, 0.35)";
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius * 0.68, -Math.PI / 2, -Math.PI / 2 + beatPhase * Math.PI * 2);
+      ctx.strokeStyle = "#06b6d4";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "700 11px ui-monospace, SFMono-Regular, Menlo, monospace";
+      ctx.textAlign = "center";
+      ctx.fillText(`${Math.round(activeBpm)} BPM`, cx, cy + 4);
+
+      raf = requestAnimationFrame(draw);
+    };
+    raf = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(raf);
+  }, [anyActive, activeBpm]);
+
+  const camelotA = toCamelot(deckA.tags.key ?? null) ?? deckA.tags.key ?? "—";
+  const camelotB = toCamelot(deckB.tags.key ?? null) ?? deckB.tags.key ?? "—";
+  const beatInA = deckA.trackId ? (BEAT_IN as Record<string, { beatInSeconds: number | null }>)[deckA.trackId]?.beatInSeconds : null;
+  const beatInB = deckB.trackId ? (BEAT_IN as Record<string, { beatInSeconds: number | null }>)[deckB.trackId]?.beatInSeconds : null;
+  const loopsA = cueKeyA ? getLoopPoints(CURRENT_LOOP_POINTS, cueKeyA)?.loops.length ?? 0 : 0;
+  const loopsB = cueKeyB ? getLoopPoints(CURRENT_LOOP_POINTS, cueKeyB)?.loops.length ?? 0 : 0;
+  const recipesA = deckA.trackId ? ((TRANSITION_RECIPES as TransitionRecipeFile).recipes[deckA.trackId]?.length ?? 0) : 0;
+  const recipesB = deckB.trackId ? ((TRANSITION_RECIPES as TransitionRecipeFile).recipes[deckB.trackId]?.length ?? 0) : 0;
+
+  // Compute live Music Theory & Turntablist Mastery intelligence
+  const theorySummary = useMemo(() => {
+    const primaryDeck = deckA.isPlaying ? deckA : deckB.isPlaying ? deckB : deckA.trackName ? deckA : deckB;
+    const secondaryDeck = primaryDeck === deckA ? deckB : deckA;
+
+    const liveInput: MusicTheoryTrackInput = {
+      id: primaryDeck.trackId ?? STUDIO_VIP_TRACKS[0].id,
+      name: primaryDeck.trackName ?? STUDIO_VIP_TRACKS[0].title,
+      bpm: primaryDeck.tags.bpm ? primaryDeck.tags.bpm * primaryDeck.tempo : STUDIO_VIP_TRACKS[0].bpm,
+      key: primaryDeck.tags.key ?? STUDIO_VIP_TRACKS[0].camelot,
+      hasStems: Boolean(primaryDeck.trackId ? usableStemEntry((STEM_MANIFEST as Record<string, StemManifestEntry>)[primaryDeck.trackId]) : true),
+      hasRealGrid: Boolean(primaryDeck.grid),
+    };
+
+    const candidatePool: MusicTheoryTrackInput[] = crate.slice(0, 120).map((t) => ({
+      id: t.id,
+      name: t.name,
+      bpm: t.bpm,
+      key: t.key,
+      genre: t.genre,
+      hasStems: Boolean(usableStemEntry((STEM_MANIFEST as Record<string, StemManifestEntry>)[t.id])),
+      hasRealGrid: Boolean(t.grid),
+    }));
+
+    const topRanked = rankCandidatesByMusicTheory(liveInput, candidatePool)[0] ?? null;
+
+    const targetInput: MusicTheoryTrackInput =
+      secondaryDeck.trackName && secondaryDeck.trackId !== liveInput.id
+        ? {
+            id: secondaryDeck.trackId ?? STUDIO_VIP_TRACKS[1].id,
+            name: secondaryDeck.trackName,
+            bpm: secondaryDeck.tags.bpm ? secondaryDeck.tags.bpm * secondaryDeck.tempo : STUDIO_VIP_TRACKS[1].bpm,
+            key: secondaryDeck.tags.key ?? STUDIO_VIP_TRACKS[1].camelot,
+            hasStems: Boolean(secondaryDeck.trackId ? usableStemEntry((STEM_MANIFEST as Record<string, StemManifestEntry>)[secondaryDeck.trackId]) : true),
+            hasRealGrid: Boolean(secondaryDeck.grid),
+          }
+        : topRanked?.track ?? {
+            id: STUDIO_VIP_TRACKS[1].id,
+            name: STUDIO_VIP_TRACKS[1].title,
+            bpm: STUDIO_VIP_TRACKS[1].bpm,
+            key: STUDIO_VIP_TRACKS[1].camelot,
+            hasStems: true,
+            hasRealGrid: true,
+          };
+
+    const harmonic = analyzeHarmonicRelationship(liveInput.key, targetInput.key);
+    const groove = analyzeGrooveInterlock(liveInput, targetInput, harmonic);
+    const choreography = planTurntablistChoreography(liveInput, targetInput, harmonic, groove);
+
+    return {
+      liveInput,
+      targetInput,
+      harmonic,
+      groove,
+      choreography,
+      topRecommendation: topRanked,
+    };
+  }, [deckA, deckB, crate]);
+
+  return (
+    <section className={styles.boothHud} aria-label="El Cerebro Pro Club Booth Telemetry">
+      <div className={styles.hudTopRow}>
+        <div className={styles.hudBrandBlock}>
+          <span className={styles.hudLiveBadge}>
+            {anyActive ? "● ON AIR · LIVE ENGINE" : "● BOOTH READY"}
+          </span>
+          <span className={styles.hudSubtitle}>
+            EL CEREBRO PRO CLUB BOOTH · Music Theory Master + 4-Stem Turntablist Engine
+          </span>
+        </div>
+        <div className={styles.hudStatsPills}>
+          <span className={styles.hudPill}>🎵 {crate.length || 603} Crate Tracks</span>
+          <span className={styles.hudPill}>🎛️ 599 4-Stem Packs</span>
+          <span className={styles.hudPill}>🔗 1,605 Recipes</span>
+          <span className={styles.hudPill}>🗣️ 38 Paisa Vocals</span>
+          <span className={styles.hudPill}>🔊 16 Studio SFX</span>
+          <span className={styles.hudPillAccent}>
+            {transitionRunning ? "⚡ TRANSITION ACTIVE" : autopilot ? "🤖 AUTOPILOT ENGAGED" : "🎚️ MANUAL / STUDIO"}
+          </span>
+        </div>
+      </div>
+
+      <div className={styles.hudCanvasWrap}>
+        <canvas ref={canvasRef} width={760} height={86} className={styles.hudCanvas} />
+      </div>
+
+      <div className={styles.hudTelemetryGrid}>
+        <div className={styles.hudDeckCardA}>
+          <div className={styles.hudDeckHeader}>
+            <span className={styles.hudDeckTagA}>DECK A {deckA.isPlaying ? "▶ LIVE" : "⏸ IDLE"}</span>
+            <span className={styles.hudCamelotBadge}>Key: {camelotA}</span>
+          </div>
+          <div className={styles.hudTrackTitle}>
+            {deckA.trackName ? musicLabel({ name: deckA.trackName }) : "No track loaded — tap a VIP track or Crate song"}
+          </div>
+          <div className={styles.hudMetricsRow}>
+            <span>BPM: <strong>{deckA.tags.bpm ? (deckA.tags.bpm * deckA.tempo).toFixed(1) : "—"}</strong></span>
+            <span>Beat-In: <strong>{typeof beatInA === "number" ? `${beatInA.toFixed(1)}s` : "0.0s"}</strong></span>
+            <span>Loops: <strong>{loopsA}</strong></span>
+            <span>Recipes: <strong>{recipesA}</strong></span>
+          </div>
+        </div>
+
+        <div className={styles.hudCenterBridge}>
+          <span className={styles.hudBridgeTitle}>CAMELOT & STEM ENGINE</span>
+          <span className={styles.hudBridgeLock}>
+            {stemMixerPlaying && stemMixerTitle
+              ? `🎛️ 4-STEM LIVE: ${stemMixerTitle}`
+              : theorySummary.harmonic.headline}
+          </span>
+          <span className={styles.hudBridgeSub}>
+            {theorySummary.groove.interlockSummary}
+          </span>
+        </div>
+
+        <div className={styles.hudDeckCardB}>
+          <div className={styles.hudDeckHeader}>
+            <span className={styles.hudDeckTagB}>DECK B {deckB.isPlaying ? "▶ LIVE" : "⏸ IDLE"}</span>
+            <span className={styles.hudCamelotBadge}>Key: {camelotB}</span>
+          </div>
+          <div className={styles.hudTrackTitle}>
+            {deckB.trackName ? musicLabel({ name: deckB.trackName }) : "No track loaded — tap a VIP track or Crate song"}
+          </div>
+          <div className={styles.hudMetricsRow}>
+            <span>BPM: <strong>{deckB.tags.bpm ? (deckB.tags.bpm * deckB.tempo).toFixed(1) : "—"}</strong></span>
+            <span>Beat-In: <strong>{typeof beatInB === "number" ? `${beatInB.toFixed(1)}s` : "0.0s"}</strong></span>
+            <span>Loops: <strong>{loopsB}</strong></span>
+            <span>Recipes: <strong>{recipesB}</strong></span>
+          </div>
+        </div>
+      </div>
+
+      {/* 🧠 EL CEREBRO MUSIC THEORY & TURNTABLIST MASTERY ENGINE */}
+      <div className={styles.theoryMasterBox}>
+        <div className={styles.theoryHeaderRow}>
+          <div>
+            <span className={styles.theoryTitleBadge}>🧠 EL CEREBRO MUSIC THEORY &amp; TURNTABLIST MASTER</span>
+            <p className={styles.theoryCoachingText}>{theorySummary.harmonic.djCoachingNote}</p>
+          </div>
+          <div className={styles.theoryActionButtons}>
+            {theorySummary.topRecommendation && (
+              <button
+                type="button"
+                className={styles.theoryPickBtn}
+                onClick={() =>
+                  onPickHarmonicNext(
+                    theorySummary.topRecommendation!.track.id,
+                    theorySummary.topRecommendation!.choreography.comboId
+                  )
+                }
+                title={`Best harmonic & groove match: ${musicLabel({ name: theorySummary.topRecommendation.track.name })}`}
+              >
+                🎯 Pick &amp; Mix #1 Harmonic Track ({Math.round(theorySummary.topRecommendation.totalScore * 100)}% Match)
+              </button>
+            )}
+            <button
+              type="button"
+              className={styles.theoryComboBtn}
+              onClick={() => onFireTurntablistCombo(theorySummary.choreography.comboId)}
+            >
+              🎛️ Fire 4-Stage Combo Now
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.theoryMetricsBar}>
+          <span className={styles.theoryMetricPill}>
+            🎹 <strong>Harmonic Mode:</strong> {theorySummary.harmonic.mode.replace(/_/g, " ").toUpperCase()}
+          </span>
+          <span className={styles.theoryMetricPill}>
+            🥁 <strong>Outgoing Clave:</strong> {theorySummary.groove.fromGroove.clavePattern}
+          </span>
+          <span className={styles.theoryMetricPill}>
+            🔥 <strong>Incoming Groove:</strong> {theorySummary.groove.toGroove.label}
+          </span>
+          <span className={styles.theoryMetricPill}>
+            🔊 <strong>Sub Crossover:</strong> {theorySummary.groove.subBassCrossoverHz}Hz ({theorySummary.harmonic.recommendedEqSwap})
+          </span>
+          {theorySummary.topRecommendation && (
+            <span className={styles.theoryMetricPillHighlight}>
+              🏆 <strong>#1 Crate Pick:</strong> {musicLabel({ name: theorySummary.topRecommendation.track.name })} ({theorySummary.topRecommendation.track.bpm ?? "—"} BPM · {toCamelot(theorySummary.topRecommendation.track.key) ?? "—"})
+            </span>
+          )}
+        </div>
+
+        <div className={styles.choreographyGrid}>
+          {theorySummary.choreography.stages.map((stage) => (
+            <div key={stage.code} className={styles.choreographyStageCard}>
+              <div className={styles.choreographyStageHeader}>
+                <span className={styles.choreographyStageNum}>STAGE {stage.stageNumber}</span>
+                <span className={styles.choreographyTiming}>{stage.timingLabel}</span>
+              </div>
+              <div className={styles.choreographyMoveName}>{stage.moveName}</div>
+              <div className={styles.choreographyReason}>{stage.reason}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LiveStemMixerPanel({
+  core,
+  activeDeckTrackId,
+  activeDeckTrackName,
+  onLoadVipToDeck,
+  onLog,
+  onPlayingChange,
+}: {
+  core: AudioCore;
+  activeDeckTrackId: string | null;
+  activeDeckTrackName: string | null;
+  onLoadVipToDeck: (trackId: string) => void;
+  onLog: (action: string, say: string) => void;
+  onPlayingChange?: (playing: boolean, bpm: number | null, title: string | null) => void;
+}) {
+  const [selectedId, setSelectedId] = useState<string>(STUDIO_VIP_TRACKS[0].id);
+  const [trackTitle, setTrackTitle] = useState<string>(STUDIO_VIP_TRACKS[0].title);
+  const [trackBpm, setTrackBpm] = useState<number>(STUDIO_VIP_TRACKS[0].bpm);
+  const [trackCamelot, setTrackCamelot] = useState<string>(STUDIO_VIP_TRACKS[0].camelot);
+  const [loadingStems, setLoadingStems] = useState(false);
+  const [stemStatus, setStemStatus] = useState<string>("Ready — click any VIP 4-Stem Pack or press Play 4-Stems!");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [stemTempo, setStemTempo] = useState(1);
+  const [positionSec, setPositionSec] = useState(0);
+  const [durationSec, setDurationSec] = useState(0);
+  const [levels, setLevels] = useState<Record<StemRoleKey, number>>({
+    vocals: 1,
+    drums: 1,
+    bass: 1,
+    other: 1,
+  });
+  const [muted, setMuted] = useState<Record<StemRoleKey, boolean>>({
+    vocals: false,
+    drums: false,
+    bass: false,
+    other: false,
+  });
+  const [soloed, setSoloed] = useState<Record<StemRoleKey, boolean>>({
+    vocals: false,
+    drums: false,
+    bass: false,
+    other: false,
+  });
+
+  const buffersRef = useRef<Partial<Record<StemRoleKey, AudioBuffer>>>({});
+  const loadedTrackIdRef = useRef<string | null>(null);
+  const sourcesRef = useRef<Partial<Record<StemRoleKey, AudioBufferSourceNode>>>({});
+  const gainsRef = useRef<Partial<Record<StemRoleKey, GainNode>>>({});
+  const startedAtCtxTimeRef = useRef<number>(0);
+  const offsetSecRef = useRef<number>(0);
+  const isPlayingRef = useRef(false);
+
+  const computeEffectiveGain = (
+    role: StemRoleKey,
+    nextLevels = levels,
+    nextMuted = muted,
+    nextSoloed = soloed
+  ) => {
+    const anySolo = Object.values(nextSoloed).some(Boolean);
+    if (nextMuted[role]) return 0;
+    if (anySolo && !nextSoloed[role]) return 0;
+    return nextLevels[role];
+  };
+
+  const syncGainNodes = (
+    nextLevels = levels,
+    nextMuted = muted,
+    nextSoloed = soloed
+  ) => {
+    for (const { key } of STEM_ROLES) {
+      const gainNode = gainsRef.current[key];
+      if (gainNode) {
+        gainNode.gain.value = computeEffectiveGain(key, nextLevels, nextMuted, nextSoloed);
+      }
+    }
+  };
+
+  const stopSources = () => {
+    for (const { key } of STEM_ROLES) {
+      try {
+        sourcesRef.current[key]?.stop();
+        sourcesRef.current[key]?.disconnect();
+      } catch {
+        // ignore already stopped
+      }
+    }
+    sourcesRef.current = {};
+    isPlayingRef.current = false;
+    setIsPlaying(false);
+    onPlayingChange?.(false, trackBpm * stemTempo, trackTitle);
+  };
+
+  useEffect(() => {
+    return () => {
+      stopSources();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    const interval = setInterval(() => {
+      const ctx = core.ensureContext();
+      const dur = durationSec || 19.94;
+      const elapsed = (ctx.currentTime - startedAtCtxTimeRef.current) * stemTempo + offsetSecRef.current;
+      setPositionSec(dur > 0 ? elapsed % dur : 0);
+    }, 80);
+    return () => clearInterval(interval);
+  }, [isPlaying, durationSec, stemTempo, core]);
+
+  async function loadStemsForTrack(targetId: string, titleOverride?: string, bpmOverride?: number, camelotOverride?: string): Promise<boolean> {
+    const stemEntry = (STEM_MANIFEST as Record<string, StemManifestEntry>)[targetId];
+    if (!stemEntry || !stemEntry.stems) {
+      setStemStatus(`No 4-stem pack registered for "${targetId}"`);
+      return false;
+    }
+    setLoadingStems(true);
+    setStemStatus(`Decoding 4 separated stems (Vocals, Drums, Bass, Other) for "${titleOverride ?? targetId}"…`);
+    try {
+      const ctx = core.ensureContext();
+      const decodedMap: Partial<Record<StemRoleKey, AudioBuffer>> = {};
+      await Promise.all(
+        STEM_ROLES.map(async ({ key }) => {
+          const idOrUrl = stemEntry.stems[key];
+          if (!idOrUrl) return;
+          const { url } = resolveAudioAssetUrl(idOrUrl);
+          const res = await fetchWithPasscode(url);
+          if (!res.ok) throw new Error(`HTTP ${res.status} loading ${key} stem`);
+          const buf = await res.arrayBuffer();
+          decodedMap[key] = await ctx.decodeAudioData(buf);
+        })
+      );
+      buffersRef.current = decodedMap;
+      loadedTrackIdRef.current = targetId;
+      const firstBuf = decodedMap.vocals ?? decodedMap.drums ?? decodedMap.bass ?? decodedMap.other;
+      const dur = firstBuf?.duration ?? 19.94;
+      setDurationSec(dur);
+      offsetSecRef.current = 0;
+      setPositionSec(0);
+      setStemStatus(`✅ 4-Stem Pack Ready (${dur.toFixed(1)}s · Vocals + Drums + Bass + Other isolated)`);
+      if (titleOverride) setTrackTitle(titleOverride);
+      if (bpmOverride) setTrackBpm(bpmOverride);
+      if (camelotOverride) setTrackCamelot(camelotOverride);
+      return true;
+    } catch (err) {
+      setStemStatus(`⚠️ Could not load stems: ${err instanceof Error ? err.message : "network error"}`);
+      return false;
+    } finally {
+      setLoadingStems(false);
+    }
+  }
+
+  function startPlaybackFromOffset(startOffset: number, currentTitle = trackTitle, currentBpm = trackBpm) {
+    const ctx = core.ensureContext();
+    stopSources();
+    const newSources: Partial<Record<StemRoleKey, AudioBufferSourceNode>> = {};
+    const newGains: Partial<Record<StemRoleKey, GainNode>> = {};
+    const startWhen = ctx.currentTime + 0.02;
+
+    for (const { key } of STEM_ROLES) {
+      const buffer = buffersRef.current[key];
+      if (!buffer) continue;
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.loop = true;
+      source.playbackRate.value = stemTempo;
+      const gain = ctx.createGain();
+      gain.gain.value = computeEffectiveGain(key);
+      source.connect(gain);
+      gain.connect(core.master);
+      const safeOffset = buffer.duration > 0 ? startOffset % buffer.duration : 0;
+      source.start(startWhen, safeOffset);
+      newSources[key] = source;
+      newGains[key] = gain;
+    }
+    sourcesRef.current = newSources;
+    gainsRef.current = newGains;
+    startedAtCtxTimeRef.current = startWhen;
+    offsetSecRef.current = startOffset;
+    isPlayingRef.current = true;
+    setIsPlaying(true);
+    onPlayingChange?.(true, currentBpm * stemTempo, currentTitle);
+  }
+
+  async function handleSelectAndPlayVip(vip: StudioVipTrackMeta) {
+    setSelectedId(vip.id);
+    setTrackTitle(vip.title);
+    setTrackBpm(vip.bpm);
+    setTrackCamelot(vip.camelot);
+    const ok = await loadStemsForTrack(vip.id, vip.title, vip.bpm, vip.camelot);
+    if (ok) {
+      startPlaybackFromOffset(0, vip.title, vip.bpm);
+      onLog("stem_mixer", `🎛️ Playing 4-Stem Studio Pack: "${vip.title}" (${vip.bpm} BPM · ${vip.camelot})`);
+    }
+  }
+
+  async function handleTogglePlay() {
+    if (isPlayingRef.current) {
+      const ctx = core.ensureContext();
+      const dur = durationSec || 19.94;
+      const elapsed = (ctx.currentTime - startedAtCtxTimeRef.current) * stemTempo + offsetSecRef.current;
+      offsetSecRef.current = dur > 0 ? elapsed % dur : 0;
+      stopSources();
+      setStemStatus(`⏸ Paused 4-Stem Mixer at ${formatMmSs(offsetSecRef.current)}`);
+      return;
+    }
+    if (loadedTrackIdRef.current !== selectedId || Object.keys(buffersRef.current).length === 0) {
+      const ok = await loadStemsForTrack(selectedId, trackTitle, trackBpm, trackCamelot);
+      if (!ok) return;
+    }
+    startPlaybackFromOffset(offsetSecRef.current);
+    setStemStatus(`🔊 Playing 4-Stem Live Mix: ${trackTitle}`);
+    onLog("stem_mixer", `🎛️ Live 4-Stem Mixer started: "${trackTitle}"`);
+  }
+
+  async function handleLoadActiveDeckStems() {
+    if (!activeDeckTrackId) return;
+    const manifestEntry = PLAYBACK_MANIFEST.get(activeDeckTrackId);
+    const title = activeDeckTrackName ? musicLabel({ name: activeDeckTrackName }) : activeDeckTrackId;
+    const bpm = manifestEntry?.bpm ?? 110;
+    const camelot = toCamelot(manifestEntry?.key ?? null) ?? manifestEntry?.key ?? "8A";
+    setSelectedId(activeDeckTrackId);
+    setTrackTitle(title);
+    setTrackBpm(bpm);
+    setTrackCamelot(camelot);
+    const ok = await loadStemsForTrack(activeDeckTrackId, title, bpm, camelot);
+    if (ok) {
+      startPlaybackFromOffset(0, title, bpm);
+      onLog("stem_mixer", `🎛️ Loaded active deck "${title}" into 4-Stem Live Mixer`);
+    }
+  }
+
+  function applyStemPreset(
+    presetName: string,
+    nextLevels: Record<StemRoleKey, number>,
+    nextMuted: Record<StemRoleKey, boolean>,
+    nextSoloed: Record<StemRoleKey, boolean>
+  ) {
+    setLevels(nextLevels);
+    setMuted(nextMuted);
+    setSoloed(nextSoloed);
+    syncGainNodes(nextLevels, nextMuted, nextSoloed);
+    setStemStatus(`🎛️ Stem Preset Active: ${presetName}`);
+    onLog("stem_mixer", `🎛️ Applied 4-Stem Isolation Preset: ${presetName}`);
+  }
+
+  return (
+    <section className={styles.stemMixerPanel} aria-label="Live 4-Stem Studio Mixer">
+      <div className={styles.stemMixerHeader}>
+        <div>
+          <span className={styles.stemBadge}>⚡ NEW · REAL-TIME 4-STEM ISOLATOR</span>
+          <h2 className={styles.stemMixerTitle}>
+            🎛️ Live 4-Stem Studio Mixer &amp; VIP Club Packs
+          </h2>
+          <p className={styles.stemMixerSub}>
+            Play &amp; isolate <strong>Vocals (BS-RoFormer)</strong>, <strong>Drums</strong>, <strong>Bass</strong>, and <strong>Other/Synth (HTDemucs-FT)</strong> in real time — or send any VIP pack straight to Deck A/B!
+          </p>
+        </div>
+        <div className={styles.stemHeaderActions}>
+          {activeDeckTrackId && (STEM_MANIFEST as Record<string, StemManifestEntry>)[activeDeckTrackId] && (
+            <button
+              type="button"
+              className={styles.stemActionBtn}
+              onClick={() => void handleLoadActiveDeckStems()}
+              disabled={loadingStems}
+            >
+              🔄 Load Active Deck Stems ({activeDeckTrackName ? musicLabel({ name: activeDeckTrackName }).slice(0, 22) : "Deck"})
+            </button>
+          )}
+          <button
+            type="button"
+            className={styles.stemSendDeckBtn}
+            onClick={() => onLoadVipToDeck(selectedId)}
+          >
+            📥 Send &ldquo;{trackTitle.split("—")[0].trim()}&rdquo; to Idle Deck
+          </button>
+        </div>
+      </div>
+
+      {/* 4 Bundled Studio VIP 4-Stem Cards */}
+      <div className={styles.vipCardsGrid}>
+        {STUDIO_VIP_TRACKS.map((vip) => {
+          const active = selectedId === vip.id;
+          return (
+            <div
+              key={vip.id}
+              className={`${styles.vipCard} ${active ? styles.vipCardActive : ""}`}
+              style={{ borderColor: active ? vip.accent : undefined }}
+            >
+              <div className={styles.vipCardTop}>
+                <span className={styles.vipGenreTag} style={{ background: vip.accent }}>
+                  {vip.genre}
+                </span>
+                <span className={styles.vipMetaBadge}>
+                  {vip.bpm} BPM · {vip.camelot} ({vip.key}) · {vip.lufs} LUFS
+                </span>
+              </div>
+              <div className={styles.vipCardTitle}>{vip.title}</div>
+              <div className={styles.vipCardSub}>{vip.subtitle}</div>
+              <div className={styles.vipCardButtons}>
+                <button
+                  type="button"
+                  className={styles.vipPlayStemBtn}
+                  onClick={() => void handleSelectAndPlayVip(vip)}
+                  disabled={loadingStems}
+                >
+                  {active && isPlaying ? "🔊 Playing 4-Stems" : "🎛️ Play in 4-Stem Mixer"}
+                </button>
+                <button
+                  type="button"
+                  className={styles.vipLoadDeckBtn}
+                  onClick={() => onLoadVipToDeck(vip.id)}
+                >
+                  ▶️ Load to Deck
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Transport & Preset Bar */}
+      <div className={styles.stemTransportBar}>
+        <button
+          type="button"
+          className={`${styles.stemMasterPlayBtn} ${isPlaying ? styles.stemMasterPlayBtnActive : ""}`}
+          onClick={() => void handleTogglePlay()}
+          disabled={loadingStems}
+        >
+          {loadingStems ? "⏳ Decoding Stems…" : isPlaying ? "⏸ PAUSE 4-STEM MIXER" : "▶ PLAY 4-STEM MIXER"}
+        </button>
+
+        <div className={styles.stemReadoutBox}>
+          <div className={styles.stemNowPlaying}>
+            <strong>{trackTitle}</strong> · {(trackBpm * stemTempo).toFixed(1)} BPM · Key {trackCamelot}
+          </div>
+          <div className={styles.stemStatusLine}>
+            {stemStatus} ({formatMmSs(positionSec)} / {formatMmSs(durationSec || 19.94)})
+          </div>
+        </div>
+
+        <div className={styles.stemTempoBox}>
+          <label className={styles.stemTempoLabel}>
+            Stem Tempo: <strong>{(stemTempo * 100).toFixed(1)}%</strong>
+            <input
+              type="range"
+              min={0.92}
+              max={1.08}
+              step={0.005}
+              value={stemTempo}
+              onChange={(e) => {
+                const next = parseFloat(e.target.value);
+                setStemTempo(next);
+                for (const { key } of STEM_ROLES) {
+                  if (sourcesRef.current[key]) {
+                    sourcesRef.current[key]!.playbackRate.value = next;
+                  }
+                }
+              }}
+              aria-label="4-Stem Mixer Tempo"
+            />
+          </label>
+        </div>
+      </div>
+
+      {/* 1-Click Stem Isolation Presets */}
+      <div className={styles.stemPresetRow}>
+        <span className={styles.stemPresetLabel}>QUICK ISOLATION:</span>
+        <button
+          type="button"
+          className={styles.stemPresetBtn}
+          onClick={() =>
+            applyStemPreset(
+              "🔊 Full 4-Stem Club Mix",
+              { vocals: 1, drums: 1, bass: 1, other: 1 },
+              { vocals: false, drums: false, bass: false, other: false },
+              { vocals: false, drums: false, bass: false, other: false }
+            )
+          }
+        >
+          🔊 Full 4-Stem Mix
+        </button>
+        <button
+          type="button"
+          className={styles.stemPresetBtn}
+          onClick={() =>
+            applyStemPreset(
+              "🎤 Acapella Only (BS-RoFormer Vocals)",
+              { vocals: 1.15, drums: 1, bass: 1, other: 1 },
+              { vocals: false, drums: true, bass: true, other: true },
+              { vocals: true, drums: false, bass: false, other: false }
+            )
+          }
+        >
+          🎤 Acapella Only
+        </button>
+        <button
+          type="button"
+          className={styles.stemPresetBtn}
+          onClick={() =>
+            applyStemPreset(
+              "🥁 Instrumental Dub (Vocals Muted)",
+              { vocals: 1, drums: 1, bass: 1, other: 1 },
+              { vocals: true, drums: false, bass: false, other: false },
+              { vocals: false, drums: false, bass: false, other: false }
+            )
+          }
+        >
+          🥁 Instrumental (No Vocals)
+        </button>
+        <button
+          type="button"
+          className={styles.stemPresetBtn}
+          onClick={() =>
+            applyStemPreset(
+              "🔥 Drums + Bass Riddim Strip",
+              { vocals: 1, drums: 1.1, bass: 1.1, other: 1 },
+              { vocals: true, drums: false, bass: false, other: true },
+              { vocals: false, drums: false, bass: false, other: false }
+            )
+          }
+        >
+          🔥 Drums + Bass (Riddim)
+        </button>
+        <button
+          type="button"
+          className={styles.stemPresetBtn}
+          onClick={() =>
+            applyStemPreset(
+              "🎹 Harmonic Breakdown (Vocals + Melodic Other)",
+              { vocals: 1, drums: 1, bass: 1, other: 1.1 },
+              { vocals: false, drums: true, bass: true, other: false },
+              { vocals: false, drums: false, bass: false, other: false }
+            )
+          }
+        >
+          🎹 Melodic Breakdown
+        </button>
+      </div>
+
+      {/* 4 Individual Stem Channel Strips */}
+      <div className={styles.stemChannelsGrid}>
+        {STEM_ROLES.map(({ key, label, icon, model, color }) => {
+          const effGain = computeEffectiveGain(key);
+          const isMuted = muted[key];
+          const isSolo = soloed[key];
+          return (
+            <div
+              key={key}
+              className={`${styles.stemChannelCard} ${effGain === 0 ? styles.stemChannelSilenced : ""}`}
+              style={{ borderTopColor: color }}
+            >
+              <div className={styles.stemChannelTop}>
+                <span className={styles.stemChannelTitle}>
+                  {icon} {label}
+                </span>
+                <span className={styles.stemModelBadge}>{model}</span>
+              </div>
+
+              <div className={styles.stemMeterBar}>
+                <div
+                  className={styles.stemMeterFill}
+                  style={{
+                    width: `${Math.min(100, Math.round(effGain * (isPlaying ? 82 : 35)))}%`,
+                    background: effGain === 0 ? "#475569" : color,
+                  }}
+                />
+              </div>
+
+              <div className={styles.stemFaderRow}>
+                <input
+                  type="range"
+                  min={0}
+                  max={1.25}
+                  step={0.01}
+                  value={levels[key]}
+                  className={styles.stemFaderInput}
+                  aria-label={`${label} stem volume`}
+                  onChange={(e) => {
+                    const v = parseFloat(e.target.value);
+                    const nextLevels = { ...levels, [key]: v };
+                    setLevels(nextLevels);
+                    syncGainNodes(nextLevels, muted, soloed);
+                  }}
+                />
+                <span className={styles.stemFaderPct}>
+                  {effGain === 0 ? "MUTED" : `${Math.round(levels[key] * 100)}%`}
+                </span>
+              </div>
+
+              <div className={styles.stemButtonsRow}>
+                <button
+                  type="button"
+                  className={`${styles.stemMuteBtn} ${isMuted ? styles.stemMuteBtnActive : ""}`}
+                  onClick={() => {
+                    const nextMuted = { ...muted, [key]: !muted[key] };
+                    setMuted(nextMuted);
+                    syncGainNodes(levels, nextMuted, soloed);
+                  }}
+                  aria-pressed={isMuted}
+                >
+                  {isMuted ? "🔇 MUTED" : "M · MUTE"}
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.stemSoloBtn} ${isSolo ? styles.stemSoloBtnActive : ""}`}
+                  onClick={() => {
+                    const nextSolo = { ...soloed, [key]: !soloed[key] };
+                    setSoloed(nextSolo);
+                    syncGainNodes(levels, muted, nextSolo);
+                  }}
+                  aria-pressed={isSolo}
+                >
+                  {isSolo ? "✨ SOLOED" : "S · SOLO"}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 function CratePanel({
   crate,
   adding,
@@ -1275,7 +2244,7 @@ function CratePanel({
   return (
     <section className={styles.cratePanel}>
       <div className={styles.deckHeader}>
-        <span className={styles.deckLabel}>Crate</span>
+        <span className={styles.deckLabel}>Crate ({crate.length} Tracks · 599 w/ 4-Stems)</span>
         <button type="button" className={styles.secondaryButton} onClick={onAddClick} disabled={adding}>
           {adding ? "Adding…" : "Add to crate"}
         </button>
@@ -1324,12 +2293,19 @@ function CratePanel({
             // audio is cached — local file-picker entries always are (the
             // File is already in memory), Drive entries once getTrackBlob()
             // has actually downloaded them at least once.
-            const isCached = track.source === "local" || cachedIds.has(track.id);
+            const isStudioVip = STUDIO_TRACK_IDS.has(track.id);
+            const isCached = track.source === "local" || isStudioVip || cachedIds.has(track.id);
             const metadata = labels.get(track.id)!;
             return (
               <li key={track.id}>
-                <button type="button" className={styles.crateItemButton} title={track.name} onClick={() => onTapTrack(track)}>
+                <button
+                  type="button"
+                  className={`${styles.crateItemButton} ${isStudioVip ? styles.crateItemVip : ""}`}
+                  title={track.name}
+                  onClick={() => onTapTrack(track)}
+                >
                   <span className={styles.crateItemName}>
+                    {isStudioVip && <span className={styles.crateVipBadge}>⚡ STUDIO 4-STEM VIP</span>}
                     {isCached ? "• " : ""}
                     {metadata.label}
                   </span>
@@ -1643,6 +2619,10 @@ function FxPanel({
   onScratch,
   onRoll,
   onPlayVocal,
+  onPlayVocalFile,
+  onFireCombo,
+  autoTurntablistFx,
+  onToggleAutoTurntablistFx,
   onWarmUp,
   warmingUp,
 }: {
@@ -1651,90 +2631,155 @@ function FxPanel({
   onScratch: (pattern: ScratchPattern) => void;
   onRoll: (fx: RollFxName) => void;
   onPlayVocal: (category: VocalCategory) => void;
+  onPlayVocalFile: (file: string) => void;
+  onFireCombo: (comboId: string) => void;
+  autoTurntablistFx: boolean;
+  onToggleAutoTurntablistFx: () => void;
   onWarmUp: () => void;
   warmingUp: boolean;
 }) {
+  const [vocalFilter, setVocalFilter] = useState<string>("all");
   const scratchDisabled = liveDeckLabel === null;
   const scratchDisabledReason = "No live deck to scratch — play a deck first";
-  // Only render a pad for a category that actually has clips in this
-  // manifest — a pruned/empty category (or a fresh checkout before
-  // `npm run make:vocal-manifest` has ever run) never shows a broken pad.
   const presentVocalCategories = VOCAL_CATEGORIES.filter((c) => VOCAL_GROUPS[c].length > 0);
-  // Host-only categories (shout-outs) are never brain-triggerable — see
-  // vocal.ts's HOST_ONLY_CATEGORIES doc comment. Same "only show a pad for a
-  // category with real clips" rule as above; there are none pre-generated
-  // yet, so this section stays hidden until the owner adds shoutout-*.mp3
-  // clips ahead of a party.
   const presentHostCategories = HOST_ONLY_CATEGORIES.filter((c) => VOCAL_GROUPS[c].length > 0);
+
+  const allVocalClips = useMemo(() => {
+    const list: { file: string; category: VocalCategory; title: string; vibe: string }[] = [];
+    for (const cat of VOCAL_CATEGORIES) {
+      for (const file of VOCAL_GROUPS[cat] ?? []) {
+        const meta = PAISA_VOCAL_LABELS[file] ?? {
+          phrase: file.replace(/\.mp3$/i, ""),
+          vibe: cat,
+        };
+        list.push({ file, category: cat, title: meta.phrase, vibe: meta.vibe });
+      }
+    }
+    return list;
+  }, []);
+
+  const filteredVocalClips = useMemo(() => {
+    if (vocalFilter === "all") return allVocalClips;
+    return allVocalClips.filter((c) => c.category === vocalFilter);
+  }, [allVocalClips, vocalFilter]);
 
   return (
     <section className={styles.fxPanel}>
       <div className={styles.deckHeader}>
-        <span className={styles.deckLabel}>FX</span>
-        <button type="button" className={styles.secondaryButton} onClick={onWarmUp} disabled={warmingUp}>
-          {warmingUp ? "Warming up…" : "Warm up FX"}
-        </button>
+        <span className={styles.deckLabel}>🎛️ FX · 16 Studio Stingers, Rolls, Scratches &amp; 38 Paisa Vocals</span>
+        <div className={styles.fxHeaderRight}>
+          <button
+            type="button"
+            className={`${styles.secondaryButton} ${autoTurntablistFx ? styles.autoFxActiveBtn : ""}`}
+            onClick={onToggleAutoTurntablistFx}
+            aria-pressed={autoTurntablistFx}
+          >
+            {autoTurntablistFx ? "🎧 Auto-FX Turntablist: ON" : "🎧 Auto-FX Turntablist: OFF"}
+          </button>
+          <button type="button" className={styles.secondaryButton} onClick={onWarmUp} disabled={warmingUp}>
+            {warmingUp ? "Warming up…" : "Warm up FX"}
+          </button>
+        </div>
       </div>
+
+      {/* 1-Click Pro Turntablist Phrase Combos */}
+      <div className={styles.comboSection}>
+        <span className={styles.fxGroupTitle}>⚡ 1-Click Pro Turntablist Combos (Fill → Drop Impact → Paisa Tag)</span>
+        <div className={styles.fxComboRow}>
+          <button
+            type="button"
+            className={styles.fxComboBtn}
+            onClick={() => onFireCombo("latin_timbale_subdrop_perreo")}
+          >
+            🥁 Latin Timbale → 808 Sub Drop → ¡No Pare!
+          </button>
+          <button
+            type="button"
+            className={styles.fxComboBtn}
+            onClick={() => onFireCombo("club_riser_cryo_zapateo")}
+          >
+            🌪️ Club Riser → Crash → CO2 Cryo → ¡Fuego!
+          </button>
+          <button
+            type="button"
+            className={styles.fxComboBtn}
+            onClick={() => onFireCombo("turntablist_chirp_spinback_808")}
+          >
+            🎛️ Chirp + Rewind → 808 Boom → Puro Cerebro
+          </button>
+          <button
+            type="button"
+            className={styles.fxComboBtn}
+            onClick={() => onFireCombo("dub_siren_horn_stab_wepa")}
+          >
+            🇯🇲 Dub Siren → Brass Horn Stab → ¡Wepa!
+          </button>
+        </div>
+      </div>
+
+      <span className={styles.fxGroupTitle}>🔊 16 Studio Club SFX Pads (256kbps Stereo · -14 LUFS Mastered)</span>
       <div className={styles.fxRow}>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("airhorn")}>
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadHype}`} onClick={() => onPlayFx("airhorn")}>
           Airhorn
         </button>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("siren")}>
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadHype}`} onClick={() => onPlayFx("siren")}>
           Siren
         </button>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("riser")}>
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadSweep}`} onClick={() => onPlayFx("riser")}>
           Riser
         </button>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("rewind")}>
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadVinyl}`} onClick={() => onPlayFx("rewind")}>
           Rewind
         </button>
       </div>
       <div className={styles.fxRow}>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("laser")}>
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadHype}`} onClick={() => onPlayFx("laser")}>
           Laser
         </button>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("brake")}>
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadVinyl}`} onClick={() => onPlayFx("brake")}>
           Brake
         </button>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("cheer")}>
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadHype}`} onClick={() => onPlayFx("cheer")}>
           Cheer
         </button>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("subdrop")}>
-          Sub Drop
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadSub}`} onClick={() => onPlayFx("subdrop")}>
+          Sub Drop <span className={styles.fxNewBadge}>v2</span>
         </button>
       </div>
       <div className={styles.fxRow}>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("crash")}>
-          Crash Swell
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadSweep}`} onClick={() => onPlayFx("crash")}>
+          Crash Swell <span className={styles.fxNewBadge}>v2</span>
         </button>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("timbale")}>
-          Timbale Fill
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadPerc}`} onClick={() => onPlayFx("timbale")}>
+          Timbale Fill <span className={styles.fxNewBadge}>v2</span>
         </button>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("downlifter")}>
-          Downlifter
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadSub}`} onClick={() => onPlayFx("downlifter")}>
+          Downlifter <span className={styles.fxNewBadge}>v2</span>
         </button>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("dub_siren")}>
-          Dub Siren
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadHype}`} onClick={() => onPlayFx("dub_siren")}>
+          Dub Siren <span className={styles.fxNewBadge}>v2</span>
         </button>
       </div>
       <div className={styles.fxRow}>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("horn_stab")}>
-          Brass Stab
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadPerc}`} onClick={() => onPlayFx("horn_stab")}>
+          Brass Stab <span className={styles.fxNewBadge}>v2</span>
         </button>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("cryo_jet")}>
-          CO2 Cannon
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadSweep}`} onClick={() => onPlayFx("cryo_jet")}>
+          CO2 Cannon <span className={styles.fxNewBadge}>v2</span>
         </button>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("booyaka")}>
-          808 Boom
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadSub}`} onClick={() => onPlayFx("booyaka")}>
+          808 Boom <span className={styles.fxNewBadge}>v2</span>
         </button>
-        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("gunshot")}>
-          Ricochet Zap
+        <button type="button" className={`${styles.fxButton} ${styles.fxPadHype}`} onClick={() => onPlayFx("gunshot")}>
+          Ricochet Zap <span className={styles.fxNewBadge}>v2</span>
         </button>
       </div>
+
+      <span className={styles.fxGroupTitle}>💿 Turntable Scratches &amp; Slip Beat Rolls</span>
       <div className={styles.fxRow}>
         <button
           type="button"
-          className={styles.fxButton}
+          className={`${styles.fxButton} ${styles.fxPadVinyl}`}
           onClick={() => onScratch("baby")}
           disabled={scratchDisabled}
           title={scratchDisabled ? scratchDisabledReason : undefined}
@@ -1743,7 +2788,7 @@ function FxPanel({
         </button>
         <button
           type="button"
-          className={styles.fxButton}
+          className={`${styles.fxButton} ${styles.fxPadVinyl}`}
           onClick={() => onScratch("chirp")}
           disabled={scratchDisabled}
           title={scratchDisabled ? scratchDisabledReason : undefined}
@@ -1752,7 +2797,7 @@ function FxPanel({
         </button>
         <button
           type="button"
-          className={styles.fxButton}
+          className={`${styles.fxButton} ${styles.fxPadVinyl}`}
           onClick={() => onScratch("spinback")}
           disabled={scratchDisabled}
           title={scratchDisabled ? scratchDisabledReason : undefined}
@@ -1764,7 +2809,7 @@ function FxPanel({
       <div className={styles.fxRow}>
         <button
           type="button"
-          className={styles.fxButton}
+          className={`${styles.fxButton} ${styles.fxPadRoll}`}
           onClick={() => onRoll("roll_eighth")}
           disabled={scratchDisabled}
           title={scratchDisabled ? scratchDisabledReason : undefined}
@@ -1773,7 +2818,7 @@ function FxPanel({
         </button>
         <button
           type="button"
-          className={styles.fxButton}
+          className={`${styles.fxButton} ${styles.fxPadRoll}`}
           onClick={() => onRoll("roll_quarter")}
           disabled={scratchDisabled}
           title={scratchDisabled ? scratchDisabledReason : undefined}
@@ -1782,7 +2827,7 @@ function FxPanel({
         </button>
         <button
           type="button"
-          className={styles.fxButton}
+          className={`${styles.fxButton} ${styles.fxPadRoll}`}
           onClick={() => onRoll("roll_half")}
           disabled={scratchDisabled}
           title={scratchDisabled ? scratchDisabledReason : undefined}
@@ -1790,13 +2835,12 @@ function FxPanel({
           Roll ½
         </button>
       </div>
+
       {presentVocalCategories.length > 0 && (
         <>
           <div className={styles.deckHeader}>
-            <span className={styles.deckLabel}>Vocals</span>
+            <span className={styles.deckLabel}>Vocals (Random Rotation Pads)</span>
           </div>
-          {/* Two pads max per row (rather than one long row) keeps each pad
-              big/tappable on a phone even with all six categories present. */}
           {[presentVocalCategories.slice(0, 3), presentVocalCategories.slice(3, 6)]
             .filter((row) => row.length > 0)
             .map((row, i) => (
@@ -1805,7 +2849,7 @@ function FxPanel({
                   <button
                     key={category}
                     type="button"
-                    className={styles.fxButton}
+                    className={`${styles.fxButton} ${styles.fxPadVocal}`}
                     onClick={() => onPlayVocal(category)}
                   >
                     {VOCAL_PAD_LABELS[category]}
@@ -1815,6 +2859,50 @@ function FxPanel({
             ))}
         </>
       )}
+
+      {/* 🎙️ Direct 38-Clip "El Cerebro Paisa" Vocal Soundboard */}
+      <div className={styles.vocalSoundboard}>
+        <div className={styles.soundboardHeader}>
+          <span className={styles.fxGroupTitle}>
+            🇨🇴 Direct 38-Clip &ldquo;El Cerebro Paisa&rdquo; Vocal Soundboard (Click Any Clip to Fire + Auto-Duck)
+          </span>
+          <div className={styles.vocalFilterRow}>
+            {[
+              { id: "all", label: `All (${allVocalClips.length})` },
+              { id: "drop", label: `🔥 Drops (${VOCAL_GROUPS.drop?.length ?? 0})` },
+              { id: "tag", label: `🏷️ DJ Tags (${VOCAL_GROUPS.tag?.length ?? 0})` },
+              { id: "cue_hype", label: `📣 Hype Cues (${VOCAL_GROUPS.cue_hype?.length ?? 0})` },
+              { id: "cue_warm", label: `🌴 Warm Cues (${VOCAL_GROUPS.cue_warm?.length ?? 0})` },
+              { id: "adlib", label: `🗣️ Paisa Ad-Libs (${VOCAL_GROUPS.adlib?.length ?? 0})` },
+              { id: "crowd", label: `🙌 Crowd (${VOCAL_GROUPS.crowd?.length ?? 0})` },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                className={`${styles.vocalFilterPill} ${vocalFilter === tab.id ? styles.vocalFilterPillActive : ""}`}
+                onClick={() => setVocalFilter(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className={styles.vocalClipsGrid}>
+          {filteredVocalClips.map((clip) => (
+            <button
+              key={clip.file}
+              type="button"
+              className={styles.vocalClipCard}
+              onClick={() => onPlayVocalFile(clip.file)}
+              title={`Play ${clip.file} (${clip.vibe})`}
+            >
+              <span className={styles.vocalClipTitle}>{clip.title}</span>
+              <span className={styles.vocalClipMeta}>{clip.vibe}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       {presentHostCategories.length > 0 && (
         <div className={styles.hostSection}>
           <div className={styles.deckHeader}>
@@ -2171,25 +3259,41 @@ export default function Home() {
   }, []);
 
   // --- Lazy-crate: auto-restore the metadata list on page load (a reload
-  // at the party must not lose the crate) ---
+  // at the party must not lose the crate) and auto-upgrade with all 603
+  // manifest tracks + Studio VIP 4-Stem tracks pinned at the top ---
   useEffect(() => {
     const savedCrate = loadCrateList();
     const manifestEntries = crateManifestJson as CrateManifestEntry[];
+    const savedIds = new Set(savedCrate.map((e) => e.id));
+    const savedNames = new Set(savedCrate.map((e) => e.name.toLowerCase()));
+    const missingManifestEntries: PersistedCrateEntry[] = manifestEntries
+      .filter((m) => !savedIds.has(m.id) && !savedNames.has(m.name.toLowerCase()))
+      .map((m) => ({
+        id: m.id,
+        name: m.name,
+        size: m.size ?? null,
+        bpm: m.bpm ?? null,
+        key: m.key ?? null,
+        grid: m.grid ?? null,
+      }));
     const initialEntries: PersistedCrateEntry[] =
       savedCrate.length > 0
-        ? savedCrate
-        : manifestEntries.map((m) => ({
-            id: m.id,
-            name: m.name,
-            size: m.size ?? null,
-            bpm: m.bpm ?? null,
-            key: m.key ?? null,
-            grid: m.grid ?? null,
-          }));
-    const { entries: restored, relinked } = reconcileCrateList(
+        ? [...savedCrate, ...missingManifestEntries]
+        : missingManifestEntries;
+    const { entries: restoredRaw, relinked } = reconcileCrateList(
       initialEntries,
       manifestEntries,
     );
+    // Pin the 4 Studio VIP 4-Stem tracks at the very top of the crate
+    const studioOrder = STUDIO_VIP_TRACKS.map((s) => s.id);
+    const restored = [...restoredRaw].sort((a, b) => {
+      const ia = studioOrder.indexOf(a.id as (typeof studioOrder)[number]);
+      const ib = studioOrder.indexOf(b.id as (typeof studioOrder)[number]);
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      if (ia !== -1) return -1;
+      if (ib !== -1) return 1;
+      return 0;
+    });
     if (restored.length === 0) return;
     setCrate((prev) => {
       const existingIds = new Set(prev.map((t) => t.id));
@@ -6160,6 +7264,174 @@ export default function Home() {
     playVocalCategory(category, true);
   }
 
+  const [autoTurntablistFx, setAutoTurntablistFx] = useState(true);
+  const autoTurntablistFxRef = useRef(true);
+  autoTurntablistFxRef.current = autoTurntablistFx;
+
+  const [stemMixerState, setStemMixerState] = useState<{
+    playing: boolean;
+    bpm: number | null;
+    title: string | null;
+  }>({ playing: false, bpm: null, title: null });
+
+  function handlePlayVocalFile(file: string) {
+    if (migrationRef.current || migrationPreparingRef.current) return;
+    coreRef.current?.ensureContext();
+    const decks = [deckARef.current.deck, deckBRef.current.deck];
+    const meta = PAISA_VOCAL_LABELS[file];
+    pushBrainLog("vocal", `🇨🇴 Paisa Vocal: ${meta ? meta.phrase : file} (${file})`);
+    vocalPlayerRef.current?.playFile(file, decks, {
+      isTransitionRunning: () => transitionEngineRef.current.isRunning,
+      onResult: (success) => {
+        if (success) {
+          recordFxFired();
+          recordFxDemonstration(`vocal:${file}`);
+        }
+      },
+    });
+  }
+
+  function handleFireTurntablistCombo(comboId: string) {
+    coreRef.current?.ensureContext();
+    const liveLabel = getLiveDeckLabel();
+    const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
+    const bpm = liveCtrl?.tags.bpm ?? 100;
+
+    if (comboId === "club_riser_cryo_zapateo") {
+      pushBrainLog("combo", "🌪️ 4-Stage Combo: Club Riser → Crash Swell + ⅛ Roll → CO2 Cryo Jet → ¡Fuego!");
+      if (liveCtrl) fireRoll(liveCtrl.deck, coreRef.current!, bpm, ROLL_SUBDIVISION_BY_FX.roll_quarter);
+      void fxPlayerRef.current?.play("riser");
+      setTimeout(() => {
+        void fxPlayerRef.current?.play("crash");
+        if (liveCtrl) fireRoll(liveCtrl.deck, coreRef.current!, bpm, ROLL_SUBDIVISION_BY_FX.roll_eighth);
+      }, 950);
+      setTimeout(() => {
+        void fxPlayerRef.current?.play("cryo_jet");
+        void fxPlayerRef.current?.play("horn_stab");
+      }, 2100);
+      setTimeout(() => {
+        handlePlayVocalFile("drop-fuego-laser.mp3");
+      }, 2850);
+      return;
+    }
+
+    if (comboId === "turntablist_chirp_spinback_808") {
+      pushBrainLog("combo", "🎛️ 4-Stage Combo: ⅛ Roll → Chirp Scratch + Rewind → 808 Booyaka → Puro Cerebro!");
+      if (liveCtrl) fireRoll(liveCtrl.deck, coreRef.current!, bpm, ROLL_SUBDIVISION_BY_FX.roll_eighth);
+      setTimeout(() => {
+        if (liveCtrl) scratch(liveCtrl.deck, coreRef.current!, "chirp", bpm * liveCtrl.deck.tempo);
+        void fxPlayerRef.current?.play("rewind");
+      }, 650);
+      setTimeout(() => {
+        void fxPlayerRef.current?.play("booyaka");
+        void fxPlayerRef.current?.play("dub_siren");
+      }, 1550);
+      setTimeout(() => {
+        handlePlayVocalFile("drop-purocerebro-laser.mp3");
+      }, 2350);
+      return;
+    }
+
+    if (comboId === "dub_siren_horn_stab_wepa") {
+      pushBrainLog("combo", "🇯🇲 4-Stage Combo: Dub Siren → Rewind Spin → Brass Horn Stab → ¡Wepa!");
+      void fxPlayerRef.current?.play("dub_siren");
+      setTimeout(() => {
+        void fxPlayerRef.current?.play("rewind");
+      }, 750);
+      setTimeout(() => {
+        void fxPlayerRef.current?.play("horn_stab");
+        void fxPlayerRef.current?.play("subdrop");
+      }, 1550);
+      setTimeout(() => {
+        handlePlayVocalFile("adlib-wepa.mp3");
+      }, 2200);
+      return;
+    }
+
+    if (comboId === "sonero_clean_handoff") {
+      pushBrainLog("combo", "🌴 Social-Dance Sonero Stamp: Warm Cue ('Con calma, que la noche es joven')");
+      handlePlayVocalFile("cue-suave-warm.mp3");
+      return;
+    }
+
+    // Default: latin_timbale_subdrop_perreo
+    pushBrainLog("combo", "🥁 4-Stage Combo: ¼ Roll + Dub Siren → Tito Timbale Fill → 808 Sub Drop → ¡No Pare La Fiesta!");
+    if (liveCtrl) fireRoll(liveCtrl.deck, coreRef.current!, bpm, ROLL_SUBDIVISION_BY_FX.roll_quarter);
+    void fxPlayerRef.current?.play("dub_siren");
+    setTimeout(() => {
+      void fxPlayerRef.current?.play("timbale");
+    }, 650);
+    setTimeout(() => {
+      void fxPlayerRef.current?.play("subdrop");
+      void fxPlayerRef.current?.play("horn_stab");
+    }, 1750);
+    setTimeout(() => {
+      handlePlayVocalFile("tag2-nopare.mp3");
+    }, 2500);
+  }
+
+  function handleLoadVipToDeck(trackId: string) {
+    coreRef.current?.ensureContext();
+    const found = crateRef.current.find((t) => t.id === trackId);
+    if (found) {
+      pushBrainLog("crate", `⚡ Loading Studio 4-Stem VIP "${musicLabel(found)}" to Deck…`);
+      handleCrateTap(found);
+      return;
+    }
+    const manifestEntry = (crateManifestJson as CrateManifestEntry[]).find((m) => m.id === trackId);
+    if (!manifestEntry) return;
+    const tempTrack: CrateTrack = {
+      id: manifestEntry.id,
+      name: manifestEntry.name,
+      ...resolveMusicMetadata(manifestEntry),
+      size: manifestEntry.size ?? null,
+      bpm: manifestEntry.bpm ?? null,
+      key: manifestEntry.key ?? null,
+      grid: manifestEntry.grid ?? null,
+      source: "drive",
+    };
+    pushBrainLog("crate", `⚡ Loading Studio 4-Stem VIP "${musicLabel(tempTrack)}" to Deck…`);
+    handleCrateTap(tempTrack);
+  }
+
+  function handlePickHarmonicNext(targetTrackId: string, comboId: string) {
+    coreRef.current?.ensureContext();
+    const idx = crateIndexForTrackId(targetTrackId);
+    const target = crateRef.current.find((t) => t.id === targetTrackId);
+    if (idx === null || !target) {
+      handleLoadVipToDeck(targetTrackId);
+      return;
+    }
+    const liveLabel = getLiveDeckLabel();
+    if (!liveLabel) {
+      handleCrateTap(target);
+      if (autoTurntablistFxRef.current) {
+        setTimeout(() => handleFireTurntablistCombo(comboId), 1200);
+      }
+      return;
+    }
+    const isSocial = isPartnerDanceTrack(target);
+    pushBrainLog(
+      "plan",
+      `🧠 Music Theory Master queuing #1 harmonic match "${musicLabel(target)}" (${target.bpm ?? "—"} BPM · ${toCamelot(target.key) ?? "—"})`
+    );
+    if (autoTurntablistFxRef.current && !isSocial) {
+      handleFireTurntablistCombo(comboId);
+    }
+    executeCommand(
+      {
+        action: "queue",
+        trackId: String(idx),
+        transition: isSocial ? "gap" : "bass_swap",
+        durationBars: isSocial ? 8 : 4,
+        startAt: isSocial ? "beginning" : "auto",
+        ...(isSocial ? {} : { maskFx: "subdrop" }),
+        say: `Music Theory Master: mixing into ${musicLabel(target)}`,
+      },
+      "user_chat"
+    );
+  }
+
   // --- Transition rating (M4 Part D learning loop) ---
 
   function handleRateTransition(when: number, rating: "up" | "down") {
@@ -6568,151 +7840,95 @@ export default function Home() {
     };
   }, []);
 
-  const [visualizerLoopId, setVisualizerLoopId] = useState<string>("auto");
-  const [ambientBackdrop, setAmbientBackdrop] = useState<boolean>(true);
-
-  const activeVisualizerLoop = useMemo(() => {
-    if (visualizerLoopId === "off") return null;
-    if (visualizerLoopId !== "auto") {
-      return STAGE_VISUALIZER_LOOPS.find((l) => l.id === visualizerLoopId) ?? STAGE_VISUALIZER_LOOPS[0];
-    }
-    if (brainBusy || transitionRunning) {
-      return STAGE_VISUALIZER_LOOPS[0]; // cerebro-neural-core
-    }
-    const liveCtrl = deckA.isPlaying ? deckA : deckB.isPlaying ? deckB : deckA.trackName ? deckA : deckB;
-    const liveName = (liveCtrl.trackName ?? "").toLowerCase();
-    const liveBpm = (liveCtrl.tags.bpm ?? 120) * liveCtrl.tempo;
-    if (/salsa|bachata|merengue|cumbia|tropical|latin/i.test(liveName)) {
-      return STAGE_VISUALIZER_LOOPS[4]; // latin-gold-equalizer
-    }
-    if (/reggaeton|dembow|perreo|bad bunny|feid|karol|ozuna|daddy yankee/i.test(liveName)) {
-      return STAGE_VISUALIZER_LOOPS[1]; // supermercado-neon-crate
-    }
-    if (liveBpm >= 126) {
-      return STAGE_VISUALIZER_LOOPS[5]; // hypnotic-laser-club
-    }
-    if (liveBpm >= 114) {
-      return STAGE_VISUALIZER_LOOPS[2]; // bass-spectrum-tunnel
-    }
-    return STAGE_VISUALIZER_LOOPS[3]; // vinyl-cyber-strobe
-  }, [visualizerLoopId, brainBusy, transitionRunning, deckA.isPlaying, deckB.isPlaying, deckA.trackName, deckB.trackName, deckA.tags.bpm, deckB.tags.bpm, deckA.tempo, deckB.tempo]);
-
-  const liveStageTitle = deckA.isPlaying
-    ? deckA.trackName
-    : deckB.isPlaying
-      ? deckB.trackName
-      : deckA.trackName ?? deckB.trackName ?? "Standby — Load or Start Autopilot";
-  const liveStageBpm = deckA.isPlaying
-    ? deckA.tags.bpm
-      ? `${(deckA.tags.bpm * deckA.tempo).toFixed(1)} BPM`
-      : null
-    : deckB.isPlaying
-      ? deckB.tags.bpm
-        ? `${(deckB.tags.bpm * deckB.tempo).toFixed(1)} BPM`
-        : null
-      : null;
-
   return (
     <main className={styles.main}>
-      {ambientBackdrop && activeVisualizerLoop && (
-        <video
-          key={`bg-${activeVisualizerLoop.src}`}
-          className={styles.ambientVideoBg}
-          src={activeVisualizerLoop.src}
-          autoPlay
-          loop
-          muted
-          playsInline
-          aria-hidden="true"
-        />
-      )}
       <h1 className={styles.title}>DJ Supermercado</h1>
 
-      <section className={styles.visualizerPanel} aria-label="El Cerebro Stage Visualizer">
-        <div className={styles.deckHeader}>
-          <span className={styles.deckLabel}>El Cerebro Stage Visualizer (60fps 1080p)</span>
-          <button
-            type="button"
-            className={styles.resetButton}
-            onClick={() => setAmbientBackdrop((prev) => !prev)}
-            aria-pressed={ambientBackdrop}
-          >
-            {ambientBackdrop ? "Booth Glow: ON" : "Booth Glow: OFF"}
-          </button>
-        </div>
-
-        {activeVisualizerLoop && (
-          <div className={styles.visualizerStage}>
-            <video
-              key={activeVisualizerLoop.src}
-              className={styles.visualizerVideo}
-              src={activeVisualizerLoop.src}
-              autoPlay
-              loop
-              muted
-              playsInline
-            />
-            <div className={styles.visualizerOverlay}>
-              <div className={styles.visualizerTopRow}>
-                <span>{activeVisualizerLoop.label}</span>
-                <span>{transitionRunning ? "MIXING TRANSITION" : brainBusy ? "EL CEREBRO THINKING" : autopilot ? "AUTOPILOT LIVE" : "MANUAL BOOTH"}</span>
-              </div>
-              <div className={styles.visualizerBottomRow}>
-                <span>{liveStageTitle}</span>
-                {liveStageBpm && <strong>{liveStageBpm}</strong>}
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className={styles.visualizerControls} role="group" aria-label="Stage visualizer loop selector">
-          <button
-            type="button"
-            className={`${styles.visualizerPill} ${visualizerLoopId === "auto" ? styles.visualizerPillActive : ""}`}
-            onClick={() => setVisualizerLoopId("auto")}
-          >
-            Auto Sync
-          </button>
-          {STAGE_VISUALIZER_LOOPS.map((loop) => (
-            <button
-              key={loop.id}
-              type="button"
-              className={`${styles.visualizerPill} ${visualizerLoopId === loop.id ? styles.visualizerPillActive : ""}`}
-              onClick={() => setVisualizerLoopId(loop.id)}
-            >
-              {loop.shortLabel}
-            </button>
-          ))}
-          <button
-            type="button"
-            className={`${styles.visualizerPill} ${visualizerLoopId === "off" ? styles.visualizerPillActive : ""}`}
-            onClick={() => setVisualizerLoopId("off")}
-          >
-            Off
-          </button>
-        </div>
-      </section>
-
-      <CratePanel
+      <ClubBoothHud
+        deckA={deckA}
+        deckB={deckB}
+        cueKeyA={cueKeyA}
+        cueKeyB={cueKeyB}
+        stemMixerPlaying={stemMixerState.playing}
+        stemMixerBpm={stemMixerState.bpm}
+        stemMixerTitle={stemMixerState.title}
+        autopilot={autopilot}
+        transitionRunning={transitionRunning}
         crate={crate}
-        adding={crateAdding}
-        fileInputRef={crateFileInputRef}
-        onAddClick={() => crateFileInputRef.current?.click()}
-        onFilesSelected={handleAddToCrate}
-        onTapTrack={handleCrateTap}
-        driveTracks={driveTracks}
-        driveListing={driveListing}
-        driveAdding={driveAdding}
-        driveTagProgress={driveTagProgress}
-        driveNotices={driveNotices}
-        onLoadDrive={() => void handleLoadDriveList()}
-        onAddAllFromDrive={() => void handleAddAllFromDrive()}
-        cachedIds={cachedIds}
-        onPrefetchNext10={() => void handlePrefetchNext10()}
-        prefetching={prefetching}
-        onGenreChange={(id, genre) => void saveGenre(id, genre)}
-        metadataStatus={metadataStatus}
+        onPickHarmonicNext={handlePickHarmonicNext}
+        onFireTurntablistCombo={handleFireTurntablistCombo}
       />
+
+      <LiveStemMixerPanel
+        core={coreRef.current}
+        activeDeckTrackId={
+          (deckA.isPlaying ? deckA.trackId : deckB.isPlaying ? deckB.trackId : deckA.trackId ?? deckB.trackId) ?? null
+        }
+        activeDeckTrackName={
+          (deckA.isPlaying ? deckA.trackName : deckB.isPlaying ? deckB.trackName : deckA.trackName ?? deckB.trackName) ?? null
+        }
+        onLoadVipToDeck={handleLoadVipToDeck}
+        onLog={pushBrainLog}
+        onPlayingChange={(playing, bpm, title) => setStemMixerState({ playing, bpm, title })}
+      />
+
+      <div className={styles.deckGrid}>
+        <DeckPanel
+          label="Deck A"
+          accentClass={styles.deckA}
+          deckState={deckA}
+          syncLabel="Beat Sync A→B"
+          syncDisabled={syncDisabled}
+          syncDisabledReason={syncDisabledReason}
+          onSync={handleBeatSyncAtoB}
+          onJumpToBeat={() => handleJumpToBeat("A")}
+          cues={cueKeyA ? getCues(cueStore, cueKeyA) : []}
+          rehearsing={rehearseA}
+          onToggleRehearse={() => handleToggleRehearse("A")}
+          onMark={() => handleMarkCue("A")}
+          onAssignClip={(index, file) => handleAssignCueClip("A", index, file)}
+          onAssignSingalong={(index, duration) => handleAssignCueSingalong("A", index, duration)}
+          onDeleteCue={(index) => handleDeleteCue("A", index)}
+          onNudgeCue={(index, delta) => handleNudgeCue("A", index, delta)}
+        />
+
+        <div className={styles.crossfaderSection}>
+          <div className={styles.crossfaderLabels}>
+            <span>A</span>
+            <span>Crossfader</span>
+            <span>B</span>
+          </div>
+          <input
+            type="range"
+            className={styles.crossfaderSlider}
+            min={0}
+            max={1}
+            step={0.01}
+            value={crossfade}
+            onChange={handleCrossfadeChange}
+            aria-label="Crossfader, A to B"
+          />
+        </div>
+
+        <DeckPanel
+          label="Deck B"
+          accentClass={styles.deckB}
+          deckState={deckB}
+          syncLabel="Beat Sync B→A"
+          syncDisabled={syncDisabled}
+          syncDisabledReason={syncDisabledReason}
+          onSync={handleBeatSyncBtoA}
+          onJumpToBeat={() => handleJumpToBeat("B")}
+          cues={cueKeyB ? getCues(cueStore, cueKeyB) : []}
+          rehearsing={rehearseB}
+          onToggleRehearse={() => handleToggleRehearse("B")}
+          onMark={() => handleMarkCue("B")}
+          onAssignClip={(index, file) => handleAssignCueClip("B", index, file)}
+          onAssignSingalong={(index, duration) => handleAssignCueSingalong("B", index, duration)}
+          onDeleteCue={(index) => handleDeleteCue("B", index)}
+          onNudgeCue={(index, delta) => handleNudgeCue("B", index, delta)}
+        />
+      </div>
 
       <BrainPanel
         autopilot={autopilot}
@@ -6743,6 +7959,41 @@ export default function Home() {
         hasLiveTrack={anyPlaying || Boolean(deckA.trackName || deckB.trackName)}
       />
 
+      <FxPanel
+        liveDeckLabel={getLiveDeckLabel()}
+        onPlayFx={handlePlayFx}
+        onScratch={handleScratchButton}
+        onRoll={handleRollButton}
+        onPlayVocal={handlePlayVocal}
+        onPlayVocalFile={handlePlayVocalFile}
+        onFireCombo={handleFireTurntablistCombo}
+        autoTurntablistFx={autoTurntablistFx}
+        onToggleAutoTurntablistFx={() => setAutoTurntablistFx((prev) => !prev)}
+        onWarmUp={() => void handleWarmUpFx()}
+        warmingUp={fxWarmingUp}
+      />
+
+      <CratePanel
+        crate={crate}
+        adding={crateAdding}
+        fileInputRef={crateFileInputRef}
+        onAddClick={() => crateFileInputRef.current?.click()}
+        onFilesSelected={handleAddToCrate}
+        onTapTrack={handleCrateTap}
+        driveTracks={driveTracks}
+        driveListing={driveListing}
+        driveAdding={driveAdding}
+        driveTagProgress={driveTagProgress}
+        driveNotices={driveNotices}
+        onLoadDrive={() => void handleLoadDriveList()}
+        onAddAllFromDrive={() => void handleAddAllFromDrive()}
+        cachedIds={cachedIds}
+        onPrefetchNext10={() => void handlePrefetchNext10()}
+        prefetching={prefetching}
+        onGenreChange={(id, genre) => void saveGenre(id, genre)}
+        metadataStatus={metadataStatus}
+      />
+
       <TransitionHistoryPanel
         records={transitionRecords}
         onRate={handleRateTransition}
@@ -6754,72 +8005,6 @@ export default function Home() {
         onExport={handleExportLedger}
         onImportFile={(file) => void handleImportLedgerFile(file)}
         syncStatus={lessonSyncStatus}
-      />
-
-      <FxPanel
-        liveDeckLabel={getLiveDeckLabel()}
-        onPlayFx={handlePlayFx}
-        onScratch={handleScratchButton}
-        onRoll={handleRollButton}
-        onPlayVocal={handlePlayVocal}
-        onWarmUp={() => void handleWarmUpFx()}
-        warmingUp={fxWarmingUp}
-      />
-
-      <DeckPanel
-        label="Deck A"
-        accentClass={styles.deckA}
-        deckState={deckA}
-        syncLabel="Beat Sync A→B"
-        syncDisabled={syncDisabled}
-        syncDisabledReason={syncDisabledReason}
-        onSync={handleBeatSyncAtoB}
-        onJumpToBeat={() => handleJumpToBeat("A")}
-        cues={cueKeyA ? getCues(cueStore, cueKeyA) : []}
-        rehearsing={rehearseA}
-        onToggleRehearse={() => handleToggleRehearse("A")}
-        onMark={() => handleMarkCue("A")}
-        onAssignClip={(index, file) => handleAssignCueClip("A", index, file)}
-        onAssignSingalong={(index, duration) => handleAssignCueSingalong("A", index, duration)}
-        onDeleteCue={(index) => handleDeleteCue("A", index)}
-        onNudgeCue={(index, delta) => handleNudgeCue("A", index, delta)}
-      />
-
-      <div className={styles.crossfaderSection}>
-        <div className={styles.crossfaderLabels}>
-          <span>A</span>
-          <span>Crossfader</span>
-          <span>B</span>
-        </div>
-        <input
-          type="range"
-          className={styles.crossfaderSlider}
-          min={0}
-          max={1}
-          step={0.01}
-          value={crossfade}
-          onChange={handleCrossfadeChange}
-          aria-label="Crossfader, A to B"
-        />
-      </div>
-
-      <DeckPanel
-        label="Deck B"
-        accentClass={styles.deckB}
-        deckState={deckB}
-        syncLabel="Beat Sync B→A"
-        syncDisabled={syncDisabled}
-        syncDisabledReason={syncDisabledReason}
-        onSync={handleBeatSyncBtoA}
-        onJumpToBeat={() => handleJumpToBeat("B")}
-        cues={cueKeyB ? getCues(cueStore, cueKeyB) : []}
-        rehearsing={rehearseB}
-        onToggleRehearse={() => handleToggleRehearse("B")}
-        onMark={() => handleMarkCue("B")}
-        onAssignClip={(index, file) => handleAssignCueClip("B", index, file)}
-        onAssignSingalong={(index, duration) => handleAssignCueSingalong("B", index, duration)}
-        onDeleteCue={(index) => handleDeleteCue("B", index)}
-        onNudgeCue={(index, delta) => handleNudgeCue("B", index, delta)}
       />
     </main>
   );

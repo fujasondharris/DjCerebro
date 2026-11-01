@@ -3,6 +3,25 @@ import { cueTrackKey } from "./cue-store.ts";
 import { toCamelot } from "./camelot.ts";
 import type { LoopPointsFile } from "./loop-points.ts";
 import type { SeratoBeatgrid } from "./serato.ts";
+import {
+  analyzeHarmonicRelationship,
+  analyzeGrooveInterlock,
+  classifyRhythmicGroove,
+  planTurntablistChoreography,
+  rankCandidatesByMusicTheory,
+  type HarmonicModulationMode,
+  type GrooveFamilyId,
+} from "./music-theory-master.ts";
+
+export {
+  analyzeHarmonicRelationship,
+  analyzeGrooveInterlock,
+  classifyRhythmicGroove,
+  planTurntablistChoreography,
+  rankCandidatesByMusicTheory,
+  type HarmonicModulationMode,
+  type GrooveFamilyId,
+};
 
 export type RecipeSource = "drive" | "local";
 export type RecipeIsolation = "beat" | "melody";

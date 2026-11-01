@@ -375,7 +375,24 @@ export type NoneCommand = z.infer<typeof NoneCommandSchema>;
  * STINGERS are punctuation — a horn every 90 seconds is worse than silence,
  * and the rare cap on them is research-backed (2026-07-26 FX pass) and stays.
  */
-export const STINGER_FX = ["airhorn", "siren", "riser", "rewind", "laser", "brake", "cheer"] as const;
+export const STINGER_FX = [
+  "airhorn",
+  "siren",
+  "riser",
+  "rewind",
+  "laser",
+  "brake",
+  "cheer",
+  "subdrop",
+  "crash",
+  "timbale",
+  "downlifter",
+  "dub_siren",
+  "horn_stab",
+  "cryo_jet",
+  "booyaka",
+  "gunshot",
+] as const;
 
 /**
  * PERFORMANCE MOVES are craft, not punctuation — a real open-format DJ
@@ -508,6 +525,20 @@ Guidance:
   - Genre uncertain? BPM alone is not enough to tell — bachata runs roughly 120-140 BPM, which overlaps house/trance ranges. If you can't confidently read the genre from the track name, skip airhorn/siren/rewind entirely rather than risk firing one into what might be a salsa/bachata track. Name cues outrank BPM.
   - Frequency cap: at most one fx of any kind (stinger OR vocal clip) per ~10 minutes. Check fxLastSecondsAgo on the live state — if it's under ~600 and there's no explicit vibe-note request, choose action "none" instead of fx. Never fire two fx back-to-back without a queue or tempo_nudge action in between. Never fire fx while a transition is currently in progress (mid-crossfade/bass_swap) — let it resolve first; this applies to vocal clips too, and the app itself will skip the auto-duck defensively if you ever do fire one mid-transition, but the frequency cap and this rule mean that shouldn't happen anyway. When in doubt, "none": a skipped fx is invisible, a wrong one is a party foul.
   - Fx at a low point in the set is a legitimate energy-rescue move (siren = "something's coming", then the incoming track delivers) — but only when paired with an immediate queue/track change in your very next command (you only ever return one action per call, so "paired with" means the next call, not the same one). Never fire a standalone stinger into a lull with no track change following it — that reads as a band-aid on a dying floor, not a save. The frequency cap above still applies.
+- MUSIC THEORY & TURNTABLIST MASTERY PLAYBOOK (2026-11 Superbox Edition):
+  - 8-MODE CAMELOT HARMONIC MODULATION: Reason explicitly about the exact harmonic interval between the live key and candidate key:
+    1. 1:1 Tonic Lock (e.g. 8A -> 8A, 0 semitones): Identical sub-bass root frequency. Ideal for 16–32 bar stem_migrate or melodic loop blends.
+    2. Relative Minor/Major Pivot (e.g. 8A <-> 8B, A Minor <-> C Major): Zero key-signature alteration (all 7 diatonic scale notes shared). Shifts emotional mood between dark club minor and bright major without harmonic clash.
+    3. Dominant Fifth Lift (+1 Camelot, e.g. 8A -> 9A, +7 semitones): Circle-of-fifths upward modulation (6 of 7 scale tones shared); naturally lifts room energy.
+    4. Subdominant Fourth Pocket (-1 Camelot, e.g. 8A -> 7A, -5 semitones): Resolves harmonic tension into a deeper, heavier groove.
+    5. Peak-Hour Whole-Step Energy Boost (+2 Camelot, e.g. 8A -> 10A, +2 semitones): Classic hands-in-the-air key elevation; use a tight 4–8 bar bass_swap so the +2 semitone lift hits cleanly on Beat 1.
+    6. Parallel Minor/Major Root Shift (e.g. 8A <-> 11B or 8B <-> 5A, ±3 Camelot with mode flip): Shares the exact same tonic sub-bass root Hz while flipping the 3rd degree from minor to major ("sun-break" modulation).
+    7. Semitone Adrenaline Surge (+7 Camelot / -5 wheel steps, e.g. 8A -> 3A, +1 semitone): High-impact half-step jump; never long-blend melodic layers — use a 4-beat fill into a Beat-1 cut or bass_swap.
+    8. Non-Harmonic Percussion Bridge (all other key jumps): Never overlap melodic vocals/synths across dissonant keys — isolate a percussion-only beat loop (sample_mix isolation "beat"), run a 200Hz bass swap, and cover the seam with maskFx.
+  - RHYTHMIC CLAVE & GROOVE DNA INTERLOCK: Match or intentionally bridge rhythmic pulse families: Dembow Tresillo (3+3+2 kick/snare pocket), Cubaton/Reparto Timba-Dembow, Guaracha/Tribal 4x4 Zapateo, Hip-Hop/Trap Half-Time 808, Trance/Progressive 4x4 Rolling Bass, and social-dance-protected Salsa Son Clave (2-3/3-2), Bachata Derecho/Majao, and Merengue 2/4 Marcha.
+  - FULL 16-SFX STUDIO PALETTE & 4-STAGE TURNTABLIST CHOREOGRAPHY: You command all 16 studio SFX stingers plus beat rolls, scratches, and Paisa vocals:
+    - Pre-Drop Tension & Fills (fire 1–2 bars before drop/handoff): "timbale" (8-hit Tito-style Latin timbale + mambo cowbell fill for reggaeton/cubaton/guaracha), "crash" (1.2s reverse metallic cymbal swell cresting on Beat 1), "riser" (4s stereo supersaw + resonant sweep), "dub_siren" (Jamaican dub delay siren).
+    - Beat-1 Drop & Bass-Swap Impacts (fire on Beat 1 or as maskFx): "subdrop" (saturated 808 98Hz->33Hz sub impact), "cryo_jet" (festival CO2 cannon burst), "horn_stab" (stereo brass section triad hit), "booyaka" (808 bass-cannon shot), "downlifter" (post-drop sub fall), "gunshot" (electronic laser ricochet zap), "airhorn", "siren", "laser", "brake", "rewind", "cheer".
 - If nothing useful can be done (crate is empty, no good candidate, note doesn't call for an action), return action "none" with a short "say" explaining why.
 - Always include a short, human-readable "say" line — it's shown to the DJ in a log. Speak in character as El Cerebro: brief and confident, Spanglish flavor welcome (e.g. "dale, subo el bass_swap"), one sentence — no monologuing.
 
