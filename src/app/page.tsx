@@ -1533,21 +1533,11 @@ function ClubBoothHud({
     <section className={styles.boothHud} aria-label="El Cerebro Pro Club Booth Telemetry">
       <div className={styles.hudTopRow}>
         <div className={styles.hudBrandBlock}>
-          <span className={styles.hudLiveBadge}>
-            {anyActive ? "● ON AIR · LIVE ENGINE" : "● BOOTH READY"}
+          <span className={anyActive ? styles.liveStatusText : styles.idleStatusText}>
+            {anyActive ? "● ON AIR · LIVE TELEMETRY" : "○ TELEMETRY STANDBY"}
           </span>
           <span className={styles.hudSubtitle}>
-            EL CEREBRO PRO CLUB BOOTH · Music Theory Master + 4-Stem Turntablist Engine
-          </span>
-        </div>
-        <div className={styles.hudStatsPills}>
-          <span className={styles.hudPill}>🎵 {crate.length || 603} Crate Tracks</span>
-          <span className={styles.hudPill}>🎛️ 599 4-Stem Packs</span>
-          <span className={styles.hudPill}>🔗 1,605 Recipes</span>
-          <span className={styles.hudPill}>🗣️ 38 Paisa Vocals</span>
-          <span className={styles.hudPill}>🔊 16 Studio SFX</span>
-          <span className={styles.hudPillAccent}>
-            {transitionRunning ? "⚡ TRANSITION ACTIVE" : autopilot ? "🤖 AUTOPILOT ENGAGED" : "🎚️ MANUAL / STUDIO"}
+            Music Theory Master · 1,605 Pre-Computed Recipes · 599 4-Stem Packs
           </span>
         </div>
       </div>
@@ -1560,10 +1550,10 @@ function ClubBoothHud({
         <div className={styles.hudDeckCardA}>
           <div className={styles.hudDeckHeader}>
             <span className={styles.hudDeckTagA}>DECK A {deckA.isPlaying ? "▶ LIVE" : "⏸ IDLE"}</span>
-            <span className={styles.hudCamelotBadge}>Key: {camelotA}</span>
+            <span className={styles.hudSubtitle}>Key: <strong>{camelotA}</strong></span>
           </div>
           <div className={styles.hudTrackTitle}>
-            {deckA.trackName ? musicLabel({ name: deckA.trackName }) : "No track loaded — tap a VIP track or Crate song"}
+            {deckA.trackName ? musicLabel({ name: deckA.trackName }) : "No track loaded — tap a Crate song"}
           </div>
           <div className={styles.hudMetricsRow}>
             <span>BPM: <strong>{deckA.tags.bpm ? (deckA.tags.bpm * deckA.tempo).toFixed(1) : "—"}</strong></span>
@@ -1574,7 +1564,7 @@ function ClubBoothHud({
         </div>
 
         <div className={styles.hudCenterBridge}>
-          <span className={styles.hudBridgeTitle}>CAMELOT & STEM ENGINE</span>
+          <span className={styles.hudBridgeTitle}>CAMELOT &amp; GROOVE INTERLOCK</span>
           <span className={styles.hudBridgeLock}>
             {stemMixerPlaying && stemMixerTitle
               ? `🎛️ 4-STEM LIVE: ${stemMixerTitle}`
@@ -1588,10 +1578,10 @@ function ClubBoothHud({
         <div className={styles.hudDeckCardB}>
           <div className={styles.hudDeckHeader}>
             <span className={styles.hudDeckTagB}>DECK B {deckB.isPlaying ? "▶ LIVE" : "⏸ IDLE"}</span>
-            <span className={styles.hudCamelotBadge}>Key: {camelotB}</span>
+            <span className={styles.hudSubtitle}>Key: <strong>{camelotB}</strong></span>
           </div>
           <div className={styles.hudTrackTitle}>
-            {deckB.trackName ? musicLabel({ name: deckB.trackName }) : "No track loaded — tap a VIP track or Crate song"}
+            {deckB.trackName ? musicLabel({ name: deckB.trackName }) : "No track loaded — tap a Crate song"}
           </div>
           <div className={styles.hudMetricsRow}>
             <span>BPM: <strong>{deckB.tags.bpm ? (deckB.tags.bpm * deckB.tempo).toFixed(1) : "—"}</strong></span>
@@ -1661,23 +1651,31 @@ function ClubBoothHud({
           </div>
         </div>
 
-        <div className={styles.theoryMetricsBar}>
-          <span className={styles.theoryMetricPill}>
-            🎹 <strong>Harmonic Mode:</strong> {theorySummary.harmonic.mode.replace(/_/g, " ").toUpperCase()}
-          </span>
-          <span className={styles.theoryMetricPill}>
-            🥁 <strong>Outgoing Clave:</strong> {theorySummary.groove.fromGroove.clavePattern}
-          </span>
-          <span className={styles.theoryMetricPill}>
-            🔥 <strong>Incoming Groove:</strong> {theorySummary.groove.toGroove.label}
-          </span>
-          <span className={styles.theoryMetricPill}>
-            🔊 <strong>Sub Crossover:</strong> {theorySummary.groove.subBassCrossoverHz}Hz ({theorySummary.harmonic.recommendedEqSwap})
-          </span>
+        {/* Read-only plain telemetry grid — styled as clean text columns so they NEVER look like fake buttons */}
+        <div className={styles.plainTelemetryList}>
+          <div className={styles.plainTelemetryItem}>
+            <span className={styles.plainTelemetryLabel}>Harmonic Mode</span>
+            <span className={styles.plainTelemetryValue}>{theorySummary.harmonic.mode.replace(/_/g, " ").toUpperCase()}</span>
+          </div>
+          <div className={styles.plainTelemetryItem}>
+            <span className={styles.plainTelemetryLabel}>Outgoing Clave</span>
+            <span className={styles.plainTelemetryValue}>{theorySummary.groove.fromGroove.clavePattern}</span>
+          </div>
+          <div className={styles.plainTelemetryItem}>
+            <span className={styles.plainTelemetryLabel}>Incoming Groove</span>
+            <span className={styles.plainTelemetryValue}>{theorySummary.groove.toGroove.label}</span>
+          </div>
+          <div className={styles.plainTelemetryItem}>
+            <span className={styles.plainTelemetryLabel}>Sub Crossover</span>
+            <span className={styles.plainTelemetryValue}>{theorySummary.groove.subBassCrossoverHz}Hz ({theorySummary.harmonic.recommendedEqSwap})</span>
+          </div>
           {theorySummary.topRecommendation && (
-            <span className={styles.theoryMetricPillHighlight}>
-              🏆 <strong>#1 Crate Pick:</strong> {musicLabel({ name: theorySummary.topRecommendation.track.name })} ({theorySummary.topRecommendation.track.bpm ?? "—"} BPM · {toCamelot(theorySummary.topRecommendation.track.key) ?? "—"})
-            </span>
+            <div className={styles.plainTelemetryItem}>
+              <span className={styles.plainTelemetryLabel}>#1 Recommended Next Track</span>
+              <span className={styles.plainTelemetryValue} style={{ color: "#34d399" }}>
+                {musicLabel({ name: theorySummary.topRecommendation.track.name })} ({theorySummary.topRecommendation.track.bpm ?? "—"} BPM · {toCamelot(theorySummary.topRecommendation.track.key) ?? "—"})
+              </span>
+            </div>
           )}
         </div>
 
@@ -1685,7 +1683,7 @@ function ClubBoothHud({
           {theorySummary.choreography.stages.map((stage) => (
             <div key={stage.code} className={styles.choreographyStageCard}>
               <div className={styles.choreographyStageHeader}>
-                <span className={styles.choreographyStageNum}>STAGE {stage.stageNumber}</span>
+                <span className={styles.choreographyStageNum}>STAGE {stage.stageNumber} (READ-ONLY PLAN)</span>
                 <span className={styles.choreographyTiming}>{stage.timingLabel}</span>
               </div>
               <div className={styles.choreographyMoveName}>{stage.moveName}</div>
@@ -8193,6 +8191,8 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deckA.isPlaying, deckB.isPlaying, transitionRunning]);
 
+  const [activeTab, setActiveTab] = useState<"booth" | "fx" | "crate" | "stems" | "theory" | "all">("booth");
+
   // Clear any pending autopilot retry timer (and any pending deferred
   // re-consult) on unmount.
   useEffect(() => {
@@ -8203,179 +8203,334 @@ export default function Home() {
     };
   }, []);
 
+  const liveDeckNow = deckA.isPlaying ? deckA : deckB.isPlaying ? deckB : deckA.trackName ? deckA : deckB.trackName ? deckB : null;
+  const liveDeckBpm = liveDeckNow?.tags.bpm ? (liveDeckNow.tags.bpm * liveDeckNow.tempo).toFixed(1) : null;
+  const liveDeckKey = toCamelot(liveDeckNow?.tags.key ?? null) ?? liveDeckNow?.tags.key ?? null;
+
   return (
     <main className={styles.main}>
-      <h1 className={styles.title}>DJ Supermercado</h1>
-
-      <ClubBoothHud
-        deckA={deckA}
-        deckB={deckB}
-        cueKeyA={cueKeyA}
-        cueKeyB={cueKeyB}
-        stemMixerPlaying={stemMixerState.playing}
-        stemMixerBpm={stemMixerState.bpm}
-        stemMixerTitle={stemMixerState.title}
-        autopilot={autopilot}
-        transitionRunning={transitionRunning}
-        crate={crate}
-        onPickHarmonicNext={handlePickHarmonicNext}
-        onFireTurntablistCombo={handleFireTurntablistCombo}
-        onSoloActiveDeck={handleKillBackgroundAndSoloActiveDeck}
-        onStopAllAudio={handleStopAllAudio}
-      />
-
-      <LiveStemMixerPanel
-        core={coreRef.current}
-        activeDeckTrackId={
-          (deckA.isPlaying ? deckA.trackId : deckB.isPlaying ? deckB.trackId : deckA.trackId ?? deckB.trackId) ?? null
-        }
-        activeDeckTrackName={
-          (deckA.isPlaying ? deckA.trackName : deckB.isPlaying ? deckB.trackName : deckA.trackName ?? deckB.trackName) ?? null
-        }
-        onLoadVipToDeck={handleLoadVipToDeck}
-        onLog={pushBrainLog}
-        onPlayingChange={(playing, bpm, title) => setStemMixerState({ playing, bpm, title })}
-        stopRef={stopStemMixerRef}
-        onBeforePlay={handleStopDecksForStemMixer}
-        onPurgeMasterBus={purgeMasterBus}
-      />
-
-      <div className={styles.deckGrid}>
-        <DeckPanel
-          label="Deck A"
-          accentClass={styles.deckA}
-          deckState={deckA}
-          syncLabel="Beat Sync A→B"
-          syncDisabled={syncDisabled}
-          syncDisabledReason={syncDisabledReason}
-          onSync={handleBeatSyncAtoB}
-          onJumpToBeat={() => handleJumpToBeat("A")}
-          cues={cueKeyA ? getCues(cueStore, cueKeyA) : []}
-          rehearsing={rehearseA}
-          onToggleRehearse={() => handleToggleRehearse("A")}
-          onMark={() => handleMarkCue("A")}
-          onAssignClip={(index, file) => handleAssignCueClip("A", index, file)}
-          onAssignSingalong={(index, duration) => handleAssignCueSingalong("A", index, duration)}
-          onDeleteCue={(index) => handleDeleteCue("A", index)}
-          onNudgeCue={(index, delta) => handleNudgeCue("A", index, delta)}
-        />
-
-        <div className={styles.crossfaderSection}>
-          <div className={styles.crossfaderLabels}>
-            <span>A</span>
-            <span>Crossfader</span>
-            <span>B</span>
+      {/* 📱 MOBILE-FIRST STICKY TOP TRANSPORT + REAL NAVIGATION TABS */}
+      <header className={styles.mobileTopHeader}>
+        <div className={styles.mobileBrandRow}>
+          <div className={styles.mobileBrandLeft}>
+            <h1 className={styles.mobileAppTitle}>DJ Supermercado</h1>
+            <span className={anyPlaying || stemMixerState.playing ? styles.liveStatusText : styles.idleStatusText}>
+              {transitionRunning
+                ? "⚡ MIXING"
+                : autopilot
+                  ? "● AUTOPILOT ON"
+                  : stemMixerState.playing
+                    ? "🎛️ 4-STEMS ON"
+                    : anyPlaying
+                      ? "● LIVE"
+                      : "○ READY"}
+            </span>
           </div>
-          <input
-            type="range"
-            className={styles.crossfaderSlider}
-            min={0}
-            max={1}
-            step={0.01}
-            value={crossfade}
-            onChange={handleCrossfadeChange}
-            aria-label="Crossfader, A to B"
-          />
+          <span className={styles.idleStatusText}>
+            {deckA.isPlaying ? "Deck A Live" : deckB.isPlaying ? "Deck B Live" : "Manual / Studio"}
+          </span>
         </div>
 
-        <DeckPanel
-          label="Deck B"
-          accentClass={styles.deckB}
-          deckState={deckB}
-          syncLabel="Beat Sync B→A"
-          syncDisabled={syncDisabled}
-          syncDisabledReason={syncDisabledReason}
-          onSync={handleBeatSyncBtoA}
-          onJumpToBeat={() => handleJumpToBeat("B")}
-          cues={cueKeyB ? getCues(cueStore, cueKeyB) : []}
-          rehearsing={rehearseB}
-          onToggleRehearse={() => handleToggleRehearse("B")}
-          onMark={() => handleMarkCue("B")}
-          onAssignClip={(index, file) => handleAssignCueClip("B", index, file)}
-          onAssignSingalong={(index, duration) => handleAssignCueSingalong("B", index, duration)}
-          onDeleteCue={(index) => handleDeleteCue("B", index)}
-          onNudgeCue={(index, delta) => handleNudgeCue("B", index, delta)}
+        {/* Plain-text Now Playing readout (never looks like a button) */}
+        <div className={styles.nowPlayingBanner}>
+          <span className={styles.nowPlayingSong}>
+            {stemMixerState.playing && stemMixerState.title
+              ? `🎛️ 4-Stem Pack: ${stemMixerState.title}`
+              : liveDeckNow?.trackName
+                ? `🎵 ${musicLabel({ name: liveDeckNow.trackName })}`
+                : "No song playing — tap ▶ Start Autopilot or pick a song in Crate"}
+          </span>
+          <span className={styles.nowPlayingMeta}>
+            {stemMixerState.playing && stemMixerState.bpm
+              ? `${Math.round(stemMixerState.bpm)} BPM`
+              : `${liveDeckBpm ? `${liveDeckBpm} BPM` : "—"}${liveDeckKey ? ` · ${liveDeckKey}` : ""}`}
+          </span>
+        </div>
+
+        {/* 4 Unmistakable Primary Action Buttons (Always visible on phone) */}
+        <div className={styles.quickActionRow}>
+          <button
+            type="button"
+            className={autopilot ? styles.quickBtnAutopilotOn : styles.quickBtnAutopilotOff}
+            onClick={handleToggleAutopilot}
+          >
+            {autopilot ? "⏸ Autopilot: ON" : "▶ Start Autopilot"}
+          </button>
+          <button
+            type="button"
+            className={styles.quickBtnNext}
+            onClick={() => handleSkipToNextSong(false)}
+            title="Mix into the next song right now"
+          >
+            ⏭️ Next Song
+          </button>
+          <button
+            type="button"
+            className={styles.quickBtnSolo}
+            onClick={handleKillBackgroundAndSoloActiveDeck}
+            title="Kill any background track or stem loop and solo the active song"
+          >
+            🎯 Solo Song
+          </button>
+          <button
+            type="button"
+            className={styles.quickBtnStop}
+            onClick={handleStopAllAudio}
+            title="Immediately stop all decks, stems, and loops"
+          >
+            🛑 STOP ALL
+          </button>
+        </div>
+
+        {/* Real Interactive Tab Switcher (replaces the old non-clickable top pills!) */}
+        <nav className={styles.navTabsBar} aria-label="DJ Workspace Sections">
+          <button
+            type="button"
+            className={`${styles.navTabBtn} ${activeTab === "booth" ? styles.navTabBtnActive : ""}`}
+            onClick={() => setActiveTab("booth")}
+          >
+            <span>🎧 Booth &amp; Decks</span>
+            <span className={styles.navTabCount}>Brain + A/B</span>
+          </button>
+          <button
+            type="button"
+            className={`${styles.navTabBtn} ${activeTab === "fx" ? styles.navTabBtnActive : ""}`}
+            onClick={() => setActiveTab("fx")}
+          >
+            <span>🔊 FX &amp; Vocals</span>
+            <span className={styles.navTabCount}>16 SFX · 38 Paisa</span>
+          </button>
+          <button
+            type="button"
+            className={`${styles.navTabBtn} ${activeTab === "crate" ? styles.navTabBtnActive : ""}`}
+            onClick={() => setActiveTab("crate")}
+          >
+            <span>🎵 Crate</span>
+            <span className={styles.navTabCount}>{crate.length || 603} Tracks</span>
+          </button>
+          <button
+            type="button"
+            className={`${styles.navTabBtn} ${activeTab === "stems" ? styles.navTabBtnActive : ""}`}
+            onClick={() => setActiveTab("stems")}
+          >
+            <span>🎛️ 4-Stem Mixer</span>
+            <span className={styles.navTabCount}>{stemMixerState.playing ? "▶ PLAYING" : "599 Packs"}</span>
+          </button>
+          <button
+            type="button"
+            className={`${styles.navTabBtn} ${activeTab === "theory" ? styles.navTabBtnActive : ""}`}
+            onClick={() => setActiveTab("theory")}
+          >
+            <span>🧠 Theory &amp; Log</span>
+            <span className={styles.navTabCount}>1,605 Recipes</span>
+          </button>
+          <button
+            type="button"
+            className={`${styles.navTabBtn} ${activeTab === "all" ? styles.navTabBtnActive : ""}`}
+            onClick={() => setActiveTab("all")}
+          >
+            <span>📱 Full Studio</span>
+            <span className={styles.navTabCount}>Show All</span>
+          </button>
+        </nav>
+      </header>
+
+      {/* TAB 1: BOOTH & DECKS (Default Mobile View: Brain + Deck A / Crossfader / Deck B right at the top!) */}
+      {(activeTab === "booth" || activeTab === "all") && (
+        <>
+          <BrainPanel
+            autopilot={autopilot}
+            onToggleAutopilot={handleToggleAutopilot}
+            partyPlannedSeconds={partyPlannedSeconds}
+            onPartyPlannedSecondsChange={setPartyPlannedSeconds}
+            chatInput={chatInput}
+            onChatInputChange={setChatInput}
+            onChatSubmit={handleChatSubmit}
+            brainBusy={brainBusy}
+            brainLog={brainLog}
+            costTotal={costTotal}
+            lastCost={lastCost}
+            lastModel={lastModel}
+            onResetCost={handleResetCost}
+            modelOptions={modelOptions}
+            selectedModel={selectedModel}
+            onModelChange={handleModelChange}
+            modelOnly={modelOnly}
+            onModelOnlyChange={value => { modelOnlyRef.current = value; setModelOnly(value); }}
+            unpricedCalls={unpricedCalls}
+            lastLatency={lastLatency}
+            onStartReggaetonShowcase={handleStartReggaetonShowcase}
+            showcaseRemaining={showcaseRemaining}
+            onSkipNext={handleSkipToNextSong}
+            onSeekLive={handleSeekLive}
+            onJumpToBeatLive={() => handleJumpToBeat()}
+            hasLiveTrack={anyPlaying || Boolean(deckA.trackName || deckB.trackName)}
+            onSoloActiveDeck={handleKillBackgroundAndSoloActiveDeck}
+            onStopAllAudio={handleStopAllAudio}
+          />
+
+          <div className={styles.deckGrid}>
+            <DeckPanel
+              label="Deck A"
+              accentClass={styles.deckA}
+              deckState={deckA}
+              syncLabel="Beat Sync A→B"
+              syncDisabled={syncDisabled}
+              syncDisabledReason={syncDisabledReason}
+              onSync={handleBeatSyncAtoB}
+              onJumpToBeat={() => handleJumpToBeat("A")}
+              cues={cueKeyA ? getCues(cueStore, cueKeyA) : []}
+              rehearsing={rehearseA}
+              onToggleRehearse={() => handleToggleRehearse("A")}
+              onMark={() => handleMarkCue("A")}
+              onAssignClip={(index, file) => handleAssignCueClip("A", index, file)}
+              onAssignSingalong={(index, duration) => handleAssignCueSingalong("A", index, duration)}
+              onDeleteCue={(index) => handleDeleteCue("A", index)}
+              onNudgeCue={(index, delta) => handleNudgeCue("A", index, delta)}
+            />
+
+            <div className={styles.crossfaderSection}>
+              <div className={styles.crossfaderLabels}>
+                <span>A</span>
+                <span>Crossfader</span>
+                <span>B</span>
+              </div>
+              <input
+                type="range"
+                className={styles.crossfaderSlider}
+                min={0}
+                max={1}
+                step={0.01}
+                value={crossfade}
+                onChange={handleCrossfadeChange}
+                aria-label="Crossfader, A to B"
+              />
+            </div>
+
+            <DeckPanel
+              label="Deck B"
+              accentClass={styles.deckB}
+              deckState={deckB}
+              syncLabel="Beat Sync B→A"
+              syncDisabled={syncDisabled}
+              syncDisabledReason={syncDisabledReason}
+              onSync={handleBeatSyncBtoA}
+              onJumpToBeat={() => handleJumpToBeat("B")}
+              cues={cueKeyB ? getCues(cueStore, cueKeyB) : []}
+              rehearsing={rehearseB}
+              onToggleRehearse={() => handleToggleRehearse("B")}
+              onMark={() => handleMarkCue("B")}
+              onAssignClip={(index, file) => handleAssignCueClip("B", index, file)}
+              onAssignSingalong={(index, duration) => handleAssignCueSingalong("B", index, duration)}
+              onDeleteCue={(index) => handleDeleteCue("B", index)}
+              onNudgeCue={(index, delta) => handleNudgeCue("B", index, delta)}
+            />
+          </div>
+        </>
+      )}
+
+      {/* TAB 2: FX & 38 PAISA VOCALS */}
+      {(activeTab === "fx" || activeTab === "all") && (
+        <FxPanel
+          liveDeckLabel={getLiveDeckLabel()}
+          onPlayFx={handlePlayFx}
+          onScratch={handleScratchButton}
+          onRoll={handleRollButton}
+          onPlayVocal={handlePlayVocal}
+          onPlayVocalFile={handlePlayVocalFile}
+          onFireCombo={handleFireTurntablistCombo}
+          autoTurntablistFx={autoTurntablistFx}
+          onToggleAutoTurntablistFx={() => setAutoTurntablistFx((prev) => !prev)}
+          onWarmUp={() => void handleWarmUpFx()}
+          warmingUp={fxWarmingUp}
         />
-      </div>
+      )}
 
-      <BrainPanel
-        autopilot={autopilot}
-        onToggleAutopilot={handleToggleAutopilot}
-        partyPlannedSeconds={partyPlannedSeconds}
-        onPartyPlannedSecondsChange={setPartyPlannedSeconds}
-        chatInput={chatInput}
-        onChatInputChange={setChatInput}
-        onChatSubmit={handleChatSubmit}
-        brainBusy={brainBusy}
-        brainLog={brainLog}
-        costTotal={costTotal}
-        lastCost={lastCost}
-        lastModel={lastModel}
-        onResetCost={handleResetCost}
-        modelOptions={modelOptions}
-        selectedModel={selectedModel}
-        onModelChange={handleModelChange}
-        modelOnly={modelOnly}
-        onModelOnlyChange={value => { modelOnlyRef.current = value; setModelOnly(value); }}
-        unpricedCalls={unpricedCalls}
-        lastLatency={lastLatency}
-        onStartReggaetonShowcase={handleStartReggaetonShowcase}
-        showcaseRemaining={showcaseRemaining}
-        onSkipNext={handleSkipToNextSong}
-        onSeekLive={handleSeekLive}
-        onJumpToBeatLive={() => handleJumpToBeat()}
-        hasLiveTrack={anyPlaying || Boolean(deckA.trackName || deckB.trackName)}
-        onSoloActiveDeck={handleKillBackgroundAndSoloActiveDeck}
-        onStopAllAudio={handleStopAllAudio}
-      />
+      {/* TAB 3: CRATE (603 GOOGLE DRIVE TRACKS) */}
+      {(activeTab === "crate" || activeTab === "all") && (
+        <CratePanel
+          crate={crate}
+          adding={crateAdding}
+          fileInputRef={crateFileInputRef}
+          onAddClick={() => crateFileInputRef.current?.click()}
+          onFilesSelected={handleAddToCrate}
+          onTapTrack={(track) => {
+            handleCrateTap(track);
+          }}
+          driveTracks={driveTracks}
+          driveListing={driveListing}
+          driveAdding={driveAdding}
+          driveTagProgress={driveTagProgress}
+          driveNotices={driveNotices}
+          onLoadDrive={() => void handleLoadDriveList()}
+          onAddAllFromDrive={() => void handleAddAllFromDrive()}
+          cachedIds={cachedIds}
+          onPrefetchNext10={() => void handlePrefetchNext10()}
+          prefetching={prefetching}
+          onGenreChange={(id, genre) => void saveGenre(id, genre)}
+          metadataStatus={metadataStatus}
+        />
+      )}
 
-      <FxPanel
-        liveDeckLabel={getLiveDeckLabel()}
-        onPlayFx={handlePlayFx}
-        onScratch={handleScratchButton}
-        onRoll={handleRollButton}
-        onPlayVocal={handlePlayVocal}
-        onPlayVocalFile={handlePlayVocalFile}
-        onFireCombo={handleFireTurntablistCombo}
-        autoTurntablistFx={autoTurntablistFx}
-        onToggleAutoTurntablistFx={() => setAutoTurntablistFx((prev) => !prev)}
-        onWarmUp={() => void handleWarmUpFx()}
-        warmingUp={fxWarmingUp}
-      />
+      {/* TAB 4: LIVE 4-STEM MIXER & VIP PACKS */}
+      {(activeTab === "stems" || activeTab === "all") && (
+        <LiveStemMixerPanel
+          core={coreRef.current}
+          activeDeckTrackId={
+            (deckA.isPlaying ? deckA.trackId : deckB.isPlaying ? deckB.trackId : deckA.trackId ?? deckB.trackId) ?? null
+          }
+          activeDeckTrackName={
+            (deckA.isPlaying ? deckA.trackName : deckB.isPlaying ? deckB.trackName : deckA.trackName ?? deckB.trackName) ?? null
+          }
+          onLoadVipToDeck={(id) => {
+            handleLoadVipToDeck(id);
+            setActiveTab("booth");
+          }}
+          onLog={pushBrainLog}
+          onPlayingChange={(playing, bpm, title) => setStemMixerState({ playing, bpm, title })}
+          stopRef={stopStemMixerRef}
+          onBeforePlay={handleStopDecksForStemMixer}
+          onPurgeMasterBus={purgeMasterBus}
+        />
+      )}
 
-      <CratePanel
-        crate={crate}
-        adding={crateAdding}
-        fileInputRef={crateFileInputRef}
-        onAddClick={() => crateFileInputRef.current?.click()}
-        onFilesSelected={handleAddToCrate}
-        onTapTrack={handleCrateTap}
-        driveTracks={driveTracks}
-        driveListing={driveListing}
-        driveAdding={driveAdding}
-        driveTagProgress={driveTagProgress}
-        driveNotices={driveNotices}
-        onLoadDrive={() => void handleLoadDriveList()}
-        onAddAllFromDrive={() => void handleAddAllFromDrive()}
-        cachedIds={cachedIds}
-        onPrefetchNext10={() => void handlePrefetchNext10()}
-        prefetching={prefetching}
-        onGenreChange={(id, genre) => void saveGenre(id, genre)}
-        metadataStatus={metadataStatus}
-      />
+      {/* TAB 5: MUSIC THEORY MASTER, SPECTRUM & TRANSITION HISTORY */}
+      {(activeTab === "theory" || activeTab === "all") && (
+        <>
+          <ClubBoothHud
+            deckA={deckA}
+            deckB={deckB}
+            cueKeyA={cueKeyA}
+            cueKeyB={cueKeyB}
+            stemMixerPlaying={stemMixerState.playing}
+            stemMixerBpm={stemMixerState.bpm}
+            stemMixerTitle={stemMixerState.title}
+            autopilot={autopilot}
+            transitionRunning={transitionRunning}
+            crate={crate}
+            onPickHarmonicNext={(trackId, comboId) => {
+              handlePickHarmonicNext(trackId, comboId);
+              setActiveTab("booth");
+            }}
+            onFireTurntablistCombo={handleFireTurntablistCombo}
+            onSoloActiveDeck={handleKillBackgroundAndSoloActiveDeck}
+            onStopAllAudio={handleStopAllAudio}
+          />
 
-      <TransitionHistoryPanel
-        records={transitionRecords}
-        onRate={handleRateTransition}
-        onNoteChange={handleTransitionNoteChange}
-      />
+          <TransitionHistoryPanel
+            records={transitionRecords}
+            onRate={handleRateTransition}
+            onNoteChange={handleTransitionNoteChange}
+          />
 
-      <LessonsPanel
-        events={ledgerEvents}
-        onExport={handleExportLedger}
-        onImportFile={(file) => void handleImportLedgerFile(file)}
-        syncStatus={lessonSyncStatus}
-      />
+          <LessonsPanel
+            events={ledgerEvents}
+            onExport={handleExportLedger}
+            onImportFile={(file) => void handleImportLedgerFile(file)}
+            syncStatus={lessonSyncStatus}
+          />
+        </>
+      )}
     </main>
   );
 }
