@@ -58,6 +58,24 @@ export interface FxBrainEvent {
   duringTransition: boolean;
 }
 
+/**
+ * M8.2e: a performance move the brain REQUESTED but the engine REFUSED, with the
+ * reason. Before this, refusals went only to the on-screen brain log and never
+ * synced — so from the ledger alone it was impossible to tell "he never asked for
+ * stems" from "he asked and was blocked every time". Owner test 2026-08-16 showed
+ * zero stem/fx activity and this event is what makes that diagnosable.
+ */
+export interface BrainSkipEvent {
+  type: "brain_skip";
+  when: string;
+  /** The action that was refused: "stem_migrate", "loop", "routine", "fx", ... */
+  action: string;
+  reason: string;
+  trackId?: string;
+  trackName?: string;
+  positionSeconds?: number;
+}
+
 export interface VibeNoteEvent {
   type: "vibe_note";
   when: string;
@@ -67,7 +85,7 @@ export interface VibeNoteEvent {
   positionSeconds?: number;
 }
 
-export type LessonEvent = TransitionRatingEvent | FxManualEvent | FxBrainEvent | VibeNoteEvent;
+export type LessonEvent = TransitionRatingEvent | FxManualEvent | FxBrainEvent | VibeNoteEvent | BrainSkipEvent;
 
 // ---------------------------------------------------------------------------
 // Persistence (append-only, capped) — guard-and-no-op pattern, same as every
@@ -265,5 +283,9 @@ export function describeLedgerEvent(event: LessonEvent): string {
       }`;
     case "vibe_note":
       return describeVibeNoteLine(event);
+    case "brain_skip":
+      return `El Cerebro asked for ${event.action} but the engine refused: ${event.reason}${
+        event.trackName ? ` (on "${event.trackName}")` : ""
+      }`;
   }
 }

@@ -1,5 +1,5 @@
-// Minimal client-side ID3v2 tag reader — pulls just the TBPM (BPM) and TKEY
-// (musical key) text frames out of an mp3 File. Hand-written with zero deps
+// Minimal client-side ID3v2 tag reader — BPM/key plus title/artist/genre
+// text frames out of an mp3 File. Hand-written with zero deps
 // instead of bundling `music-metadata`: that package pulls in Node builtins
 // (stream/buffer) that fight the Next.js client webpack config, and this is a
 // much smaller surface that is fully sufficient for the two fields we need.
@@ -11,6 +11,9 @@
 export interface Id3Tags {
   bpm?: number;
   key?: string;
+  title?: string;
+  artist?: string;
+  genre?: string;
 }
 
 const EMPTY_TAGS: Id3Tags = {};
@@ -83,7 +86,7 @@ function removeUnsynchronisation(bytes: Bytes): Bytes {
 }
 
 /**
- * Parse the ID3v2 header + frames from an mp3 File and pull out TBPM/TKEY.
+ * Parse ID3v2 BPM/key and searchable title/artist/genre from an mp3 File.
  * Best-effort only: any parse failure (missing tag, corrupt frame, unknown
  * version) returns {} rather than throwing, so playback and the tempo
  * slider keep working with the effective-BPM readout simply hidden.
@@ -121,13 +124,18 @@ export async function parseId3Tags(file: File): Promise<Id3Tags> {
       const frameEnd = frameStart + frameSize;
       if (frameSize <= 0 || frameEnd > body.length) break; // malformed/truncated — stop, keep what we have
 
-      if (frameId === "TBPM" || frameId === "TKEY") {
+      if (["TBPM", "TKEY", "TIT2", "TPE1", "TCON"].includes(frameId)) {
         const text = decodeFrameText(body.subarray(frameStart, frameEnd)).trim();
         if (frameId === "TBPM") {
           const parsed = parseFloat(text);
           if (!Number.isNaN(parsed) && parsed > 0) tags.bpm = parsed;
-        } else if (text) {
+        } else if (frameId === "TKEY" && text) {
           tags.key = text;
+        } else if (text) {
+          const field = { TIT2: "title", TPE1: "artist", TCON: "genre" }[frameId] as "title" | "artist" | "genre";
+          // Numeric ID3 genres need a lookup, not a guessed musical category.
+          const cleaned = text.replace(/\0/g, " / ").trim();
+          if (field !== "genre" || !/^\(?\d+\)?$/.test(cleaned)) tags[field] = cleaned;
         }
       }
 

@@ -18,7 +18,7 @@ export interface TransitionRecord {
   bpmTo: number | null;
   clamped: boolean;
   degraded: boolean;
-  transitionType: TransitionKind;
+  transitionType: TransitionKind | "stem_migrate" | "trance_breakdown";
   durationBars: number;
   rating: "up" | "down" | null;
   note: string | null;

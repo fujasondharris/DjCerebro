@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cerebro · listening study</title>
+<style>
+:root{color-scheme:dark;--bg:#101419;--card:#192027;--line:#35414e;--muted:#a8b5c3;--ink:#f1f5f9;--accent:#8cddcb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,sans-serif}main{max-width:1120px;margin:auto;padding:32px 22px 80px}
+h1{font-size:clamp(27px,5vw,40px);letter-spacing:-.04em;margin:8px 0}h2{font-size:19px;margin:0 0 14px}p{margin:8px 0 18px}.eyebrow{color:var(--accent);font-size:12px;letter-spacing:.12em;text-transform:uppercase}.muted,small{color:var(--muted)}.panel{padding:22px;border:1px solid var(--line);border-radius:18px;background:var(--card);margin:18px 0}.layout{display:grid;grid-template-columns:290px 1fr;gap:20px}.layout .panel{margin-top:0}.stack{display:grid;gap:10px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.full{grid-column:1/-1}label{display:block;color:var(--muted);font-size:13px}input,select,textarea,button{font:inherit}input,select,textarea{display:block;width:100%;margin-top:6px;background:#10161c;color:var(--ink);border:1px solid #52606f;border-radius:8px;padding:10px;min-height:44px}button{background:#24332f;color:var(--accent);border:1px solid #41645b;border-radius:9px;padding:10px 14px;min-height:44px;cursor:pointer;text-align:left}button:hover{background:#304a40}button[aria-pressed=true]{border-color:var(--accent);background:#304a40}button:disabled{opacity:.45;cursor:default}button.primary{background:var(--accent);color:#092c26;font-weight:650}.actions{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}audio{width:100%;margin:12px 0}.check{display:flex;align-items:center;gap:10px}.check input{width:20px;min-height:20px;margin:0}details{margin-top:18px}summary{cursor:pointer;color:var(--accent)}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.6 ui-monospace,monospace}#commands{min-height:120px;font:12px/1.5 ui-monospace,monospace;overflow-wrap:anywhere}#message{color:var(--accent);min-height:24px}.error{color:#ffbca8!important}.candidate small{display:block}.candidate{width:100%;margin:4px 0}.hint{border-left:2px solid #536b86;padding-left:14px}.time{font-variant-numeric:tabular-nums}#candidates{max-height:560px;overflow:auto}ul{padding-left:20px}a{color:var(--accent)}:focus-visible{outline:3px solid #e9ca89;outline-offset:3px}@media(max-width:760px){main{padding:20px 14px 60px}.layout{grid-template-columns:1fr}.fields{grid-template-columns:1fr}.panel{padding:16px}#candidates{max-height:200px}}
+</style>
+<main>
+  <div class="eyebrow">Private research · El Cerebro</div>
+  <h1>Listen to the move.</h1>
+  <p class="muted">Mark what the DJ actually does. Leave anything you cannot hear blank.</p>
+  <p id="progress" class="hint"></p>
+  <section class="panel">
+    <label for="set">Recording</label><select id="set"></select>
+    <p id="set-note" class="muted"></p>
+    <audio id="player" controls preload="metadata"></audio>
+    <label class="full">If local audio does not load, choose this recording on disk<input id="audio-file" type="file" accept="audio/*"></label>
+    <div class="actions"><button id="mark-now">Mark this moment</button><button id="new">New candidate</button><button id="replay">Replay around marker</button></div>
+    <label>Seconds of context on each side<select id="context"><option>20</option><option>40</option><option>80</option><option>120</option></select></label>
+    <p id="playback-note" class="muted">Use the full recording to find changes. Replay is a listening aid, not a measured overlap.</p>
+  </section>
+  <div class="layout">
+    <aside class="panel"><h2>Candidates</h2><div id="candidates"></div>
+      <details><summary>Other machine detections</summary><p class="muted">Breakdown clusters only. These are not established song changes or extra transitions in the table.</p><div id="extras"></div></details>
+    </aside>
+    <section class="panel">
+      <h2 id="row-title">New candidate</h2><p id="row-note" class="muted"></p>
+      <form id="mark-form">
+        <div class="fields">
+          <label>Marker in recording (seconds)<input name="position_in_set_seconds" type="number" min="0" step="any" required></label>
+          <label>Did the song change?<select name="song_change" required><option value="">Choose after listening</option><option value="yes">Yes</option><option value="no">No · reject this candidate</option><option value="uncertain">Uncertain · needs another listen</option></select></label>
+          <label>Lane for this transition<select name="lane" id="lane"><option value="">Unclassified</option></select></label>
+          <label>Listener name<input name="reviewer" maxlength="120" required autocomplete="name"></label>
+          <label>Outgoing song<input name="outgoing_song" maxlength="4000"></label>
+          <label>Incoming song<input name="incoming_song" maxlength="4000"></label>
+          <label>Outgoing played to natural end?<select name="outgoing_played_to_end" data-tristate></select></label>
+          <label>Outgoing song heard (seconds)<input name="seconds_of_outgoing_heard" type="number" min="0" step="any"></label>
+          <label>Audible A + B overlap (seconds)<input name="overlap_seconds" type="number" min="0" step="any"><small>Use 0 for a gap or a direct cut.</small></label>
+          <label>Actual silence (seconds)<input name="seconds_of_silence" type="number" min="0" step="any"><small>A bassless melody is still music.</small></label>
+          <label>Blend length (8-counts)<input name="blend_length_in_8counts" type="number" min="0" step="any"></label>
+          <label>Landed on the 1?<select name="landed_on_the_1" data-tristate></select></label>
+          <label>Two vocals overlapping?<select name="two_vocals_overlapping" data-tristate></select></label>
+          <label>Effect on the seam?<select name="effect_on_seam" data-tristate></select></label>
+          <label>Room / setting correction<input name="room" maxlength="4000"></label>
+          <label>DJ attribution correction<input name="dj" maxlength="4000"></label>
+          <label class="full">Describe the move / recipe<input name="recipe" maxlength="4000"></label>
+          <label class="full">Listening notes<textarea name="notes" rows="3" maxlength="4000"></textarea></label>
+        </div>
+        <p class="muted">Only fields you fill become ear marks. Machine hints stay separate. A confirmed transition does not mean the entire set is marked.</p>
+        <label class="check"><input id="listened" type="checkbox" required>I listened to this passage and reviewed these answers.</label>
+        <div class="actions"><button class="primary" type="submit">Prepare save command</button></div>
+      </form>
+      <details id="machine"><summary>Source hints and field provenance</summary><pre id="machine-data"></pre></details>
+    </section>
+  </div>
+  <section class="panel">
+    <h2>Save the listening notes</h2>
+    <p class="muted">Paste this command into your terminal to record the notes and rebuild the table. Until it runs, these are browser drafts. Reload the page afterward to see saved marks.</p>
+    <textarea id="commands" readonly aria-label="Commands to save the annotations"></textarea>
+    <div class="actions"><button id="copy">Copy commands</button><button id="clear">Clear command drafts</button></div>
+    <p id="message" role="status" aria-live="polite"></p>
+  </section>
+  <details><summary>Study limits</summary><ul id="caveats"></ul></details>
+</main>
+<script>
+'use strict';
+const STUDY = /*__STUDY_DATA__*/;
+const $ = id => document.getElementById(id);
+const player = $('player'), form = $('mark-form');
+const numberFields = new Set(['position_in_set_seconds','seconds_of_outgoing_heard','overlap_seconds','seconds_of_silence','blend_length_in_8counts']);
+const DRAFT_KEY = 'cerebro-mix-study-listener-drafts-v1';
+let outbox = [], activeId = null, clipEnd = null, blobUrl = null;
+const time = t => t == null ? '—' : Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2,'0');
+const el = (tag, text) => {const e = document.createElement(tag);e.textContent = text;return e;};
+const message = (text, error = false) => {$('message').textContent = text;$('message').classList.toggle('error',error);};
+const currentSet = () => STUDY.sets.find(s => s.id === $('set').value);
+const control = name => form.elements.namedItem(name);
+const statusLabel = s => ({needs_ear:'Machine candidate · needs ear',ear_confirmed:'Song change confirmed by ear',ear_rejected:'Rejected · no song change',ear_uncertain:'Heard · still uncertain'}[s] || s);
+const hasFields = (a,b) => JSON.stringify(Object.entries(a).sort()) === JSON.stringify(Object.entries(b).sort());
+try {
+  const saved = JSON.parse(localStorage.getItem(DRAFT_KEY) || '[]');
+  if (Array.isArray(saved)) outbox = saved.filter(m => m && STUDY.sets.some(s => s.id === m.set_id) && m.fields && !STUDY.ear_marks.some(e => e.row_id === m.row_id && e.reviewer === m.reviewer && hasFields(e.fields,m.fields)));
+} catch {message('Browser draft storage is unavailable. Keep a copy of each command.');}
+function persist() {try {localStorage.setItem(DRAFT_KEY,JSON.stringify(outbox));} catch {message('Draft storage failed. Copy the commands before leaving.',true);}}
+const shellQuote = s => "'" + s.replaceAll("'", "'\\''") + "'";
+function encode(mark) {
+  const bytes = new TextEncoder().encode(JSON.stringify(mark));
+  return btoa(Array.from(bytes,b => String.fromCharCode(b)).join('')).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'');
+}
+function renderCommands() {
+  $('commands').value = outbox.map(m => 'node ' + shellQuote(STUDY.repo_root + '/scripts/mark-mix-study.mjs') + ' --base64 ' + shellQuote(encode(m))).join('\n');
+  $('copy').disabled = !outbox.length;
+}
+function updateProgress() {
+  const candidates = STUDY.rows.filter(r => r.row_kind === 'candidate');
+  const confirmed = candidates.filter(r => r.review_status === 'ear_confirmed').length;
+  $('progress').textContent = `${confirmed} transitions confirmed by ear · ${STUDY.ear_marks.length} saved listening annotations · ${outbox.length} command drafts. All lanes remain pilot research.`;
+}
+function renderCandidates() {
+  const set = currentSet(), host = $('candidates');host.replaceChildren();
+  const rows = STUDY.rows.filter(r => r.set_id === set.id && r.row_kind === 'candidate');
+  const pending = outbox.filter(m => m.set_id === set.id && !rows.some(r => r.row_id === m.row_id)).map(m => ({row_id:m.row_id,position_in_set_seconds:m.fields.position_in_set_seconds,review_status:'Browser draft'}));
+  for (const row of [...rows,...pending].sort((a,b) => a.position_in_set_seconds - b.position_in_set_seconds)) {
+    const button = el('button',time(row.position_in_set_seconds) + ' · ' + row.row_id);
+    button.className = 'candidate';button.setAttribute('aria-pressed',String(row.row_id === activeId));
+    button.append(el('small',outbox.some(m => m.row_id === row.row_id) ? 'Browser draft · not saved to table' : statusLabel(row.review_status)));
+    button.onclick = () => selectRow(row.row_id);
+    host.append(button);
+  }
+  if (!rows.length && !pending.length) host.append(el('p','No reliable markers yet. Play the set and use “Mark this moment” when you hear a change.'));
+  const extras = $('extras');extras.replaceChildren();
+  for (const x of STUDY.extra_candidates.filter(x => x.set === set.id)) {
+    const button = el('button',time(x.t_start) + '–' + time(x.t_end) + ' · inspect cluster');
+    button.className = 'candidate';button.onclick = () => {selectRow(null,x.t_start);replay();};extras.append(button);
+  }
+  if (!extras.children.length) extras.append(el('p','None detected reliably for this recording.'));
+  updateProgress();
+}
+function selectRow(id, at = null) {
+  const oldReviewer = control('reviewer').value;
+  activeId = id || currentSet().id + ':ear:' + Date.now();
+  form.reset();control('reviewer').value = oldReviewer || STUDY.ear_marks.at(-1)?.reviewer || '';
+  const row = STUDY.rows.find(r => r.row_id === activeId);
+  const mark = outbox.find(m => m.row_id === activeId) || STUDY.ear_marks.find(m => m.row_id === activeId);
+  control('position_in_set_seconds').max = currentSet().duration;
+  control('position_in_set_seconds').value = at ?? row?.position_in_set_seconds ?? '';
+  control('lane').value = currentSet().lane;
+  if (mark) {
+    control('reviewer').value = mark.reviewer;
+    for (const [k,v] of Object.entries(mark.fields)) if (control(k)) control(k).value = v;
+  }
+  $('row-title').textContent = row ? time(row.position_in_set_seconds) + ' · review candidate' : 'New candidate';
+  $('row-note').textContent = row ? statusLabel(row.review_status) : 'Choose the timestamp where you hear the handover. You can correct it before saving.';
+  $('machine').hidden = !row;
+  $('machine-data').textContent = row ? JSON.stringify(row,null,2) : '';
+  renderCandidates();
+}
+function changeSet() {
+  player.pause();clipEnd = null;
+  if (blobUrl) {URL.revokeObjectURL(blobUrl);blobUrl = null;}
+  const set = currentSet();
+  if (set.audio_url) player.src = set.audio_url;else player.removeAttribute('src');
+  player.load();$('audio-file').value = '';
+  $('set-note').textContent = `${time(set.duration)} · ${set.room}. ${set.attribution}`;
+  const first = STUDY.rows.find(r => r.set_id === set.id && r.row_kind === 'candidate');
+  selectRow(first?.row_id || null);
+}
+async function replay() {
+  const raw = control('position_in_set_seconds').value, marker = Number(raw);
+  if (!raw || !Number.isFinite(marker) || marker < 0 || marker > currentSet().duration) {message('Mark a valid timestamp first.',true);return;}
+  const context = Number($('context').value);
+  clipEnd = Math.min(currentSet().duration,marker + context);
+  try {player.currentTime = Math.max(0,marker - context);await player.play();$('playback-note').textContent = `Replay ${time(player.currentTime)}–${time(clipEnd)}. Use the audio controls to continue through the full set.`;}
+  catch {clipEnd = null;message('Audio could not play. Choose the recording file above, then replay.',true);}
+}
+for (const set of STUDY.sets) {const o = el('option',set.title);o.value = set.id;$('set').append(o);}
+for (const lane of STUDY.lanes) {const o = el('option',lane.replaceAll('-',' '));o.value = lane;$('lane').append(o);}
+for (const select of document.querySelectorAll('[data-tristate]')) {
+  for (const [value,label] of [['','Unmarked'],['yes','Yes'],['no','No'],['uncertain','Uncertain']]) {const o = el('option',label);o.value = value;select.append(o);}
+}
+for (const note of STUDY.caveats) $('caveats').append(el('li',note));
+$('set').onchange = changeSet;
+$('mark-now').onclick = () => {selectRow(null,Number(player.currentTime.toFixed(2)));control('song_change').focus();};
+$('new').onclick = () => selectRow(null);
+$('replay').onclick = replay;
+player.addEventListener('timeupdate',() => {if (clipEnd !== null && player.currentTime >= clipEnd) {clipEnd = null;player.pause();}});
+player.addEventListener('error',() => {$('playback-note').textContent = 'Choose the recording file above if your browser blocks local audio.';});
+$('audio-file').onchange = () => {
+  const file = $('audio-file').files[0];if (!file) return;
+  // Avoid silently attaching another set to these timestamps.
+  const set = currentSet();
+  if (set.family === 'latin' && !file.name.includes('[' + set.id + ']')) {message('Choose the recording whose filename contains [' + set.id + '].',true);$('audio-file').value = '';return;}
+  if (set.family === 'trance' && file.name !== 'set_' + set.id + '.mp3') {message('Choose set_' + set.id + '.mp3 from the analysis folder.',true);$('audio-file').value = '';return;}
+  if (blobUrl) URL.revokeObjectURL(blobUrl);blobUrl = URL.createObjectURL(file);player.src = blobUrl;clipEnd = null;player.load();
+};
+form.onsubmit = event => {
+  event.preventDefault();if (!form.reportValidity()) return;
+  const fields = {};
+  for (const [key,value] of new FormData(form)) {
+    if (key !== 'reviewer' && String(value).trim()) fields[key] = numberFields.has(key) ? Number(value) : String(value).trim();
+  }
+  if (fields.song_change === 'yes' && !fields.lane) {message('Choose the musical lane for this transition.',true);return;}
+  const mark = {row_id:activeId,set_id:currentSet().id,reviewer:control('reviewer').value.trim(),fields};
+  outbox = [...outbox.filter(m => m.row_id !== activeId),mark];persist();renderCommands();renderCandidates();
+  message('Command prepared. Paste it into the terminal to save this annotation.');
+};
+$('copy').onclick = async () => {try {await navigator.clipboard.writeText($('commands').value);message('Copied. Run the commands, then reload this page.');} catch {$('commands').focus();$('commands').select();message('Commands selected. Copy them with your keyboard.');}};
+$('clear').onclick = () => {if (outbox.length && !confirm('Clear these browser drafts? This does not delete annotations already saved by the terminal command.')) return;outbox = [];persist();renderCommands();renderCandidates();message('Browser command drafts cleared.');};
+renderCommands();changeSet();
+</script>
+</html>

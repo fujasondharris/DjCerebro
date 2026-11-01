@@ -12,7 +12,7 @@
 // bass_swap's EQ-swap timing, echo_out's delay/feedback/wet-ramp/cut
 // sequence, mid-transition drift correction (firing + NOT firing when
 // clamped/estimated/missing grids), and auto-degrade-on-clamp.
-import { createTransitionEngine } from "../src/lib/transition.ts";
+import { createTransitionEngine, bassSwapLowGains } from "../src/lib/transition.ts";
 import { beatPhase } from "../src/lib/beatclock.ts";
 
 let failures = 0;
@@ -253,6 +253,8 @@ const gridB = { anchor: 0, bpm: 120, estimated: false };
   assertOk("crossfade: resnap timeout scheduled", env.hasTimeout === true);
   assertOk("crossfade: fromDeck not yet paused", fromDeck.paused === false);
   assertOk("crossfade: real grids + no clamp -> drift-correction interval also scheduled", env.intervalCount === 2);
+  assertOk("crossfade: incoming low is killed before the overlap starts", toDeck.eq.low === -40);
+  assertOk("crossfade: outgoing low starts flat", fromDeck.eq.low === 0);
 
   // Fire the ~1s corrective resnap.
   env.fireTimeout();
@@ -268,7 +270,8 @@ const gridB = { anchor: 0, bpm: 120, estimated: false };
     approxEqual(fromDeck.gain, Math.cos(Math.PI / 4), 1e-3) && approxEqual(toDeck.gain, Math.sin(Math.PI / 4), 1e-3)
   );
   assertOk("crossfade: not done yet at halfway", done === null);
-  assertOk("crossfade: no EQ swap for plain crossfade", fromDeck.eqCalls.length === 0 && toDeck.eqCalls.length === 0);
+  assertOk("crossfade: midpoint low bands are symmetric", approxEqual(fromDeck.eq.low, toDeck.eq.low, 1e-6));
+  assertOk("crossfade: midpoint low bands are both in motion", fromDeck.eq.low < 0 && fromDeck.eq.low > -40);
 
   // Full duration.
   env.setTime(8000);
@@ -282,6 +285,7 @@ const gridB = { anchor: 0, bpm: 120, estimated: false };
   assertOk("crossfade: onDone reports the requested transition kind", done.transition === "beatmatch_crossfade");
   assertOk("crossfade: onDone reports not degraded", done.degraded === false && done.degradeReason === undefined);
   assertOk("crossfade: drift interval torn down on completion", env.hasInterval === false);
+  assertOk("crossfade: both low bands reset after completion", fromDeck.eq.low === 0 && toDeck.eq.low === 0);
 }
 
 // --- tempo clamp reporting + auto-degrade ---
@@ -427,22 +431,51 @@ const gridB = { anchor: 0, bpm: 120, estimated: false };
   assertOk("bass_swap (P3): toDeck's low killed immediately at transition start", toDeck.eq.low === -40);
   assertOk("bass_swap (P3): fromDeck's low untouched at start (only toDeck kills up front)", fromDeck.eqCalls.length === 0);
 
-  // Just before halfway: fromDeck still untouched, toDeck still at the start kill (no swap yet).
-  env.setTime(3000);
+  // Before the handover window opens (window is progress 0.25..0.75 on this
+  // 4-bar/8s ramp — see below), t=1000 is progress 0.125.
+  env.setTime(1000);
   env.tickInterval();
-  assertOk("bass_swap: no EQ swap before halfway", fromDeck.eqCalls.length === 0 && toDeck.eq.low === -40);
+  // M7 Phase 4 — the low end now CROSSFADES across a 2-bar window centred on
+  // the midpoint instead of stepping at progress 0.5. On this 4-bar/8s ramp
+  // the window is 2/4 of the ramp, i.e. progress 0.25..0.75 = 2s..6s.
+  //
+  // Before the window opens the behaviour is unchanged: outgoing low flat,
+  // incoming low killed, so two basslines still never fight.
+  assertOk("bass_swap: before the window, outgoing low is flat and incoming low is killed", fromDeck.eq.low === 0 && toDeck.eq.low === -40);
 
-  // At/after halfway: EQ swap fires exactly once.
+  // Midpoint: BOTH decks sit partway — this is the actual fix. The old code
+  // had one deck at 0 and the other at -40 here, with the whole handover
+  // having completed in ~36ms (deck.ts ramps EQ at a 0.012s time constant),
+  // which is what Jason heard as "no transition , hard cut" on an
+  // UNCLAMPED 8-bar swap.
   env.setTime(4000);
   env.tickInterval();
-  assertOk("bass_swap: fromDeck low killed at halfway", fromDeck.eq.low === -40);
-  assertOk("bass_swap: toDeck low opened at halfway", toDeck.eq.low === 0);
-  assertOk("bass_swap: fromDeck EQ call happened exactly once", fromDeck.eqCalls.filter((c) => c.low !== undefined).length === 1);
+  assertOk("bass_swap: at the midpoint the outgoing low is partway down, not slammed to -40", fromDeck.eq.low < 0 && fromDeck.eq.low > -40);
+  assertOk("bass_swap: at the midpoint the incoming low is partway up, not slammed to 0", toDeck.eq.low < 0 && toDeck.eq.low > -40);
+  assertOk("bass_swap: at the exact midpoint the two decks' lows are symmetric", Math.abs(fromDeck.eq.low - toDeck.eq.low) < 1e-6);
 
-  // Later ticks before completion: swap does not fire again.
-  env.setTime(6000);
+  // The handover is progressive across the window, not a single event.
+  const lowAtMidpoint = fromDeck.eq.low;
+  env.setTime(5000);
   env.tickInterval();
-  assertOk("bass_swap: EQ swap only fires once", fromDeck.eqCalls.filter((c) => c.low !== undefined).length === 1);
+  assertOk("bass_swap: the outgoing low keeps falling through the window (a ramp, not a step)", fromDeck.eq.low < lowAtMidpoint);
+  assertOk("bass_swap: the incoming low keeps rising through the window", toDeck.eq.low > -40 && toDeck.eq.low > fromDeck.eq.low);
+  // The regression that matters: under the old step, the outgoing low only
+  // ever took the values 0 or -40. Landing on genuinely intermediate values
+  // is what proves the handover is spread over musical time.
+  const intermediateLows = new Set(
+    fromDeck.eqCalls.filter((c) => c.low !== undefined && c.low < 0 && c.low > -40).map((c) => c.low)
+  );
+  assertOk(
+    "bass_swap: the outgoing low passes through several intermediate dB values (the defect had only 0 and -40)",
+    intermediateLows.size >= 2
+  );
+
+  // After the window closes, the swap is complete and stays complete.
+  env.setTime(6500);
+  env.tickInterval();
+  assertOk("bass_swap: after the window the outgoing low is fully killed", fromDeck.eq.low === -40);
+  assertOk("bass_swap: after the window the incoming low is fully open", toDeck.eq.low === 0);
 
   // Completion: both decks' low reset to flat.
   env.setTime(8000);
@@ -1099,6 +1132,47 @@ const gridB = { anchor: 0, bpm: 120, estimated: false };
     durationBars: 4,
     transition: "cut",
   }).started === true);
+}
+
+// --- bassSwapLowGains: the pure low-handover curve (M7 Phase 4 root-cause fix) ---
+{
+  const mid = bassSwapLowGains(0.5, 0.5);
+  assertOk('bassSwapLowGains: at the midpoint both decks are exactly halfway', Math.abs(mid.fromLowDb - -20) < 1e-9 && Math.abs(mid.toLowDb - -20) < 1e-9);
+
+  const before = bassSwapLowGains(0.1, 0.5);
+  assertOk('bassSwapLowGains: before the window, outgoing flat / incoming killed', before.fromLowDb === 0 && before.toLowDb === -40);
+
+  const after = bassSwapLowGains(0.9, 0.5);
+  assertOk('bassSwapLowGains: after the window, outgoing killed / incoming flat', after.fromLowDb === -40 && after.toLowDb === 0);
+
+  assertOk('bassSwapLowGains: clamps below 0 progress', bassSwapLowGains(-5, 0.5).fromLowDb === 0);
+  assertOk('bassSwapLowGains: clamps above 1 progress', bassSwapLowGains(5, 0.5).fromLowDb === -40);
+
+  // The two decks' lows always sum to the kill depth — exactly one bassline's
+  // worth of low end is present at every instant, which is what keeps the
+  // P3 'two basslines fighting' fix intact through the new ramp.
+  for (const p of [0, 0.2, 0.35, 0.5, 0.65, 0.8, 1]) {
+    const g = bassSwapLowGains(p, 0.5);
+    assertOk(`bassSwapLowGains: lows stay complementary at progress ${p}`, Math.abs((g.fromLowDb + g.toLowDb) - -40) < 1e-9);
+  }
+
+  // Monotonic, so the handover never reverses direction mid-blend.
+  let prev = 1;
+  let monotonic = true;
+  for (let p = 0; p <= 1.0001; p += 0.05) {
+    const v = bassSwapLowGains(p, 0.5).fromLowDb;
+    if (v > prev + 1e-9) monotonic = false;
+    prev = v;
+  }
+  assertOk('bassSwapLowGains: the outgoing low falls monotonically', monotonic);
+
+  // A degenerate window falls back to the original step rather than leaving
+  // a deck stuck at a partial low.
+  const stepped = bassSwapLowGains(0.6, 0);
+  assertOk('bassSwapLowGains: a zero window falls back to the old step, never a stuck half-open low', stepped.fromLowDb === -40 && stepped.toLowDb === 0);
+
+  // A window wider than the ramp is clamped to the whole ramp.
+  assertOk('bassSwapLowGains: an over-wide window is clamped to the full ramp', bassSwapLowGains(0, 5).fromLowDb === 0 && bassSwapLowGains(1, 5).fromLowDb === -40);
 }
 
 if (failures > 0) {

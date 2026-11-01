@@ -39,6 +39,19 @@ export async function GET(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ error: "Missing file id." }, { status: 400 });
   }
 
+  const STUDIO_TRACK_IDS = new Set([
+    "el_cerebro_dembow_fuego",
+    "supermercado_salsa_brava",
+    "medianoche_tech_guaracha",
+    "costa_dorada_bachata_vip",
+  ]);
+  if (STUDIO_TRACK_IDS.has(id)) {
+    return NextResponse.redirect(new URL(`/audio/tracks/${id}.mp3`, request.url), 307);
+  }
+  if (id.startsWith("/audio/")) {
+    return NextResponse.redirect(new URL(id, request.url), 307);
+  }
+
   const apiKey = process.env.GOOGLE_API_KEY;
   // Keyless fallback (M5 scope addendum, hardened M6.2): an empty/whitespace
   // GOOGLE_API_KEY (isUsableGoogleApiKey) is treated as absent, same as the

@@ -14,7 +14,13 @@ import type { AudioCore } from "./audio-core";
 import type { Deck } from "./deck";
 import type { BeatGridLike } from "./beatclock";
 
-const LOOP_CAPTURE_BEATS = 16; // 4 bars — the FIXED captured-slice length, independent of `bars` below
+/**
+ * Default captured-slice length, 16 beats / 4 bars — independent of `bars`
+ * below. No longer FIXED (M7 Phase 2): planLoopBlend takes a `captureBeats`
+ * argument so a caller can request a 2-, 4- or 8-bar capture. Left as the
+ * default so every existing call site behaves exactly as before.
+ */
+export const DEFAULT_LOOP_CAPTURE_BEATS = 16;
 const BEATS_PER_BAR = 4;
 export const DEFAULT_LOOP_BLEND_BARS = 16; // reuses the same "durationBars" convention every other transition kind already uses
 const EPSILON_SECONDS = 1e-6; // same forward-epsilon convention as phrase.ts, so a position exactly on a boundary counts it as "just passed"
@@ -57,14 +63,17 @@ export function planLoopBlend(
   positionSeconds: number,
   bpm: number,
   tempo: number,
-  bars: number = DEFAULT_LOOP_BLEND_BARS
+  bars: number = DEFAULT_LOOP_BLEND_BARS,
+  captureBeats: number = DEFAULT_LOOP_CAPTURE_BEATS
 ): LoopBlendPlan | null {
   if (!grid || !Number.isFinite(grid.bpm) || grid.bpm <= 0) return null;
 
   const safeTempo = Number.isFinite(tempo) && tempo > 0 ? tempo : 1;
   const safePosition = Number.isFinite(positionSeconds) ? Math.max(0, positionSeconds) : 0;
+  const safeCaptureBeats =
+    Number.isFinite(captureBeats) && captureBeats > 0 ? Math.round(captureBeats) : DEFAULT_LOOP_CAPTURE_BEATS;
 
-  const phraseIntervalSeconds = (60 / grid.bpm) * LOOP_CAPTURE_BEATS;
+  const phraseIntervalSeconds = (60 / grid.bpm) * safeCaptureBeats;
   const phrasesSinceAnchor = (safePosition - grid.anchor) / phraseIntervalSeconds;
   const prevIndex = Math.floor(phrasesSinceAnchor + EPSILON_SECONDS);
   const rawLoopStart = grid.anchor + prevIndex * phraseIntervalSeconds;
@@ -96,7 +105,7 @@ export function planLoopBlend(
   // move is supposed to. Round `bars` to the nearest whole multiple of the
   // capture length (never below one full capture) BEFORE computing the
   // duration, so the loop always completes a whole number of cycles.
-  const captureBars = LOOP_CAPTURE_BEATS / BEATS_PER_BAR;
+  const captureBars = safeCaptureBeats / BEATS_PER_BAR;
   const roundedBars = Math.max(captureBars, Math.round(safeBars / captureBars) * captureBars);
   const totalDurationSeconds = (roundedBars * BEATS_PER_BAR * 60) / effectiveBpm;
 

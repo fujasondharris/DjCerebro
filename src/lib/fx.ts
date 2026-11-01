@@ -15,7 +15,23 @@
 import type { AudioCore } from "./audio-core";
 import { runWithConcurrency } from "./concurrency.ts";
 
-export type SfxName = "airhorn" | "siren" | "riser" | "rewind" | "laser" | "brake" | "cheer";
+export type SfxName =
+  | "airhorn"
+  | "siren"
+  | "riser"
+  | "rewind"
+  | "laser"
+  | "brake"
+  | "cheer"
+  | "subdrop"
+  | "crash"
+  | "timbale"
+  | "downlifter"
+  | "dub_siren"
+  | "horn_stab"
+  | "cryo_jet"
+  | "booyaka"
+  | "gunshot";
 
 const SFX_FILES: Record<SfxName, string> = {
   airhorn: "/sfx/airhorn.mp3",
@@ -25,6 +41,15 @@ const SFX_FILES: Record<SfxName, string> = {
   laser: "/sfx/laser.mp3",
   brake: "/sfx/brake.mp3",
   cheer: "/sfx/cheer.mp3",
+  subdrop: "/sfx/subdrop.mp3",
+  crash: "/sfx/crash.mp3",
+  timbale: "/sfx/timbale.mp3",
+  downlifter: "/sfx/downlifter.mp3",
+  dub_siren: "/sfx/dub_siren.mp3",
+  horn_stab: "/sfx/horn_stab.mp3",
+  cryo_jet: "/sfx/cryo_jet.mp3",
+  booyaka: "/sfx/booyaka.mp3",
+  gunshot: "/sfx/gunshot.mp3",
 };
 
 function dbToLinear(db: number): number {

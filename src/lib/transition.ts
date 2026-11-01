@@ -31,6 +31,60 @@ const RESNAP_DELAY_MS = 1000; // compensates the ~93ms ScriptProcessor slop (see
 // --- bass_swap (M4) ---
 const BASS_SWAP_LOW_KILL_DB = -40;
 const BASS_SWAP_LOW_FLAT_DB = 0;
+/**
+ * M7 Phase 4 — ROOT CAUSE of Jason's `"no transition , hard cut"` note
+ * (2026-07-29, Gasolina -> Te Boté, bass_swap, 8 bars, UNCLAMPED, i.e. a
+ * blend the engine believed it ran).
+ *
+ * The swap used to be a single boolean step at progress >= 0.5: one
+ * setEq() killing the outgoing low and opening the incoming low. deck.ts
+ * ramps EQ with setTargetAtTime at EQ_TIME_CONSTANT_SECONDS = 0.012, so
+ * that handover completed in roughly 36ms — perceptually instantaneous.
+ *
+ * Why that reads as a hard CUT rather than as a rough blend, specifically in
+ * this crate: for the whole first half of the ramp the incoming deck's low
+ * band is killed (the P3 fix, correct in itself — it stops two basslines
+ * fighting). In reggaeton the dembow kick and bass ARE the track's identity,
+ * so during that half the incoming track is a thin mid/high wash sitting
+ * under a still-full outgoing track. Then the entire low end of the mix
+ * teleports from one record to the other in one event. The equal-power gain
+ * ramp is smooth and correct — but it is carrying almost none of the
+ * PERCEIVED transition, because the perceptually dominant band is a step
+ * function. The ear hears one abrupt change and calls it a cut.
+ *
+ * Fix: hand the low band over across a real musical window centred on the
+ * midpoint, ramped in dB (which is how the ear scales it), instead of
+ * stepping it. The two-basslines-fighting problem stays solved because the
+ * incoming low is still fully killed everywhere outside that window.
+ */
+const BASS_SWAP_WINDOW_BARS = 2;
+
+/**
+ * Low-band dB for both decks at a given ramp progress. Pure — see
+ * scripts/check-transition.mjs.
+ *
+ * `windowFraction` is the share of the whole ramp over which the low end
+ * changes hands, centred on progress 0.5. Outside the window this returns
+ * the same values the old step produced (outgoing flat / incoming killed
+ * before, the reverse after), so the only behavioural change is that the
+ * crossing is gradual.
+ */
+export function bassSwapLowGains(
+  progress: number,
+  windowFraction: number,
+  killDb: number = BASS_SWAP_LOW_KILL_DB
+): { fromLowDb: number; toLowDb: number } {
+  const window = Math.min(1, Math.max(0, windowFraction));
+  if (window <= 0) {
+    // Degenerate window — fall back to the original step so a caller can
+    // never accidentally produce a low band stuck halfway.
+    const swapped = progress >= 0.5;
+    return { fromLowDb: swapped ? killDb : 0, toLowDb: swapped ? 0 : killDb };
+  }
+  const start = 0.5 - window / 2;
+  const t = Math.min(1, Math.max(0, (progress - start) / window));
+  return { fromLowDb: killDb * t, toLowDb: killDb * (1 - t) };
+}
 
 // --- echo_out (M4, upgraded audio engine v2 Part 1 — real multi-repeat ring via Deck.echoTail/fx-sends.planEchoOutTimeline) ---
 // BUG FIXED (choir round #2, C1): ECHO_CUT_BEATS was 4 (dry cuts after a
@@ -265,7 +319,7 @@ export function createTransitionEngine() {
       }
       fromDeck.pause();
       fromDeck.setGain(1);
-      if (transition === "bass_swap") {
+      if (transition === "bass_swap" || transition === "beatmatch_crossfade") {
         // Reset both decks' low band so a reused deck doesn't inherit a killed low.
         fromDeck.setEq({ low: BASS_SWAP_LOW_FLAT_DB });
         toDeck.setEq({ low: BASS_SWAP_LOW_FLAT_DB });
@@ -431,14 +485,10 @@ export function createTransitionEngine() {
     toDeck.play();
     snapPhase(fromDeck, fromGrid, toDeck, toGrid, sync.tempo, sync.multiplier);
 
-    // Choir round #2 (P3): bass_swap previously only touched EQ at the
-    // halfway swap point — for the whole first half of the ramp, both decks'
-    // low bands played at whatever they were already set to (often flat),
-    // so two basslines fought each other until the swap. Kill the INCOMING
-    // deck's low band up front (mirroring the swap's own kill/open pairing,
-    // just moved earlier for one side) so only fromDeck's bass is audible
-    // until the swap opens toDeck's low and kills fromDeck's.
-    if (transition === "bass_swap") {
+    // Every overlapping beatmatch starts with only the outgoing bassline.
+    // Plain crossfade trades lows for its full duration; bass_swap uses the
+    // narrower musical window below.
+    if (transition === "bass_swap" || transition === "beatmatch_crossfade") {
       toDeck.setEq({ low: BASS_SWAP_LOW_KILL_DB });
     }
 
@@ -458,11 +508,15 @@ export function createTransitionEngine() {
     }, RESNAP_DELAY_MS);
 
     // (d) ramp the crossfader through the equal-power curve, bar = 4 beats at
-    // the OUTGOING deck's effective BPM (output-time). "bass_swap" uses the
-    // exact same ramp — only the EQ swap at the halfway point differs.
+    // the OUTGOING deck's effective BPM (output-time). Both beatmatch modes
+    // own a low-EQ handoff in addition to this gain curve.
     // Auto-degraded duration (see above) shortens the ramp when the
     // tempo-sync had to clamp.
     const bars = Math.max(1, degraded ? Math.min(durationBars, DEGRADE_MAX_BARS) : durationBars);
+    // Plain crossfade trades low end across the entire ramp. bass_swap's
+    // handover is expressed in bars so it stays musical at any duration.
+    const bassSwapWindowFraction =
+      transition === "beatmatch_crossfade" ? 1 : Math.min(1, BASS_SWAP_WINDOW_BARS / bars);
     const durationSeconds = effectiveFromBpm > 0 ? (bars * 4 * 60) / effectiveFromBpm : 0;
 
     // Mid-transition drift correction — beatmatch_crossfade/bass_swap only,
@@ -516,7 +570,6 @@ export function createTransitionEngine() {
     onGain?.(0);
     const start = now();
     let intervalHandle: ReturnType<typeof setInterval> | null = null;
-    let bassSwapFired = false;
 
     function tick() {
       const elapsed = (now() - start) / 1000;
@@ -526,13 +579,12 @@ export function createTransitionEngine() {
       toDeck.setGain(toGain);
       onGain?.(Math.min(1, Math.max(0, progress)));
 
-      // bass_swap: at the halfway bar, swap the low end once — kill it on
-      // the way out, open it on the way in — rather than crossfading bass
-      // the whole ramp (which lets both basslines fight each other).
-      if (transition === "bass_swap" && !bassSwapFired && progress >= 0.5) {
-        bassSwapFired = true;
-        toDeck.setEq({ low: BASS_SWAP_LOW_FLAT_DB });
-        fromDeck.setEq({ low: BASS_SWAP_LOW_KILL_DB });
+      // Hand low end between channels without ever leaving both basslines
+      // fully open. See bassSwapLowGains for the window shape.
+      if (transition === "bass_swap" || transition === "beatmatch_crossfade") {
+        const { fromLowDb, toLowDb } = bassSwapLowGains(progress, bassSwapWindowFraction);
+        fromDeck.setEq({ low: fromLowDb });
+        toDeck.setEq({ low: toLowDb });
       }
 
       if (progress >= 1) {
@@ -552,15 +604,15 @@ export function createTransitionEngine() {
     } else {
       intervalHandle = setIntervalFn(tick, TICK_MS);
       // Choir round #2 (C2): tear down every timer this ramp owns (gain
-      // tick, resnap, drift correction) on cancel. bass_swap also needs its
-      // EQ put back — a canceled swap must never leave a deck's low
+      // tick, resnap, drift correction) on cancel. Beatmatched blends also
+      // need their EQ put back — cancel must never leave a deck's low
       // permanently killed (same restoration finish() already guarantees on
       // normal completion, incl. the P3 kill-at-start above).
       activeCancel = () => {
         if (intervalHandle !== null) clearIntervalFn(intervalHandle);
         clearTimeoutFn(resnapHandle);
         if (driftIntervalHandle !== null) clearIntervalFn(driftIntervalHandle);
-        if (transition === "bass_swap") {
+        if (transition === "bass_swap" || transition === "beatmatch_crossfade") {
           fromDeck.setEq({ low: BASS_SWAP_LOW_FLAT_DB });
           toDeck.setEq({ low: BASS_SWAP_LOW_FLAT_DB });
         }

@@ -5,12 +5,16 @@
 // wrong types). Plain asserts, no test framework, mirrors check-beatclock.mjs.
 import {
   CommandSchema,
+  BrainResponseSchema,
   parseCommandText,
+  parseBrainResponseText,
   NO_OP_COMMAND,
   noOpWithReason,
   isHumanInitiated,
   resolveCooldownReason,
+  isPerformanceMove,
 } from "../src/lib/brain.ts";
+import { isDeepStrictEqual } from "node:util";
 
 let failures = 0;
 
@@ -59,6 +63,27 @@ assertOk("tempo_nudge: boundary -0.08 valid", CommandSchema.safeParse({ action: 
 
 assertOk("none: valid with say", CommandSchema.safeParse({ action: "none", say: "nothing to do" }).success);
 assertOk("none: valid with no other fields", CommandSchema.safeParse({ action: "none" }).success);
+
+assertOk(
+  "routine: sample_mix complete recipe valid",
+  CommandSchema.safeParse({
+    action: "routine",
+    routine: "sample_mix",
+    sample: { captureBars: 4, isolation: "beat", holdSeconds: 16, halvings: 3, sweepToBpm: 124 },
+    queue: { trackId: "a", transition: "bass_swap", durationBars: 4, startAt: "auto" },
+  }).success
+);
+
+assertOk(
+  "routine: sample_mix full sampler/queue valid",
+  CommandSchema.safeParse({
+    action: "routine",
+    routine: "sample_mix",
+    sample: { captureBars: 4, isolation: "melody", holdSeconds: 16, halvings: 3, sweepToBpm: 128 },
+    queue: { trackId: "42", transition: "bass_swap", durationBars: 4, maskFx: "space_sweep", startAt: "auto" },
+    say: "sampling the groove and bringing the next one in",
+  }).success
+);
 
 assertOk(
   "durationBars: boundary 4 valid",
@@ -116,6 +141,61 @@ assertOk(
   !CommandSchema.safeParse({ trackId: "abc" }).success
 );
 
+assertOk(
+  "routine: missing queue rejected",
+  !CommandSchema.safeParse({ action: "routine", routine: "sample_mix" }).success
+);
+
+assertOk(
+  "routine: wrong routine name rejected",
+  !CommandSchema.safeParse({
+    action: "routine",
+    routine: "loop_then_queue",
+    sample: { captureBars: 4, isolation: "beat", holdSeconds: 16, halvings: 3, sweepToBpm: 124 },
+    queue: { trackId: "a", transition: "bass_swap", durationBars: 4, startAt: "auto" },
+  }).success
+);
+
+assertOk(
+  "routine: sample captureBars only allows 2/4/8",
+  !CommandSchema.safeParse({
+    action: "routine",
+    routine: "sample_mix",
+    sample: { captureBars: 3, isolation: "beat", holdSeconds: 16, halvings: 3, sweepToBpm: 124 },
+    queue: { trackId: "a", transition: "bass_swap", durationBars: 4, startAt: "auto" },
+  }).success
+);
+
+assertOk(
+  "routine: queue maskFx rejects vocal category",
+  !CommandSchema.safeParse({
+    action: "routine",
+    routine: "sample_mix",
+    sample: { captureBars: 4, isolation: "beat", holdSeconds: 16, halvings: 3, sweepToBpm: 124 },
+    queue: { trackId: "a", transition: "bass_swap", durationBars: 4, maskFx: "tag", startAt: "auto" },
+  }).success
+);
+
+assertOk(
+  "routine: queue transition is fixed to bass_swap",
+  !CommandSchema.safeParse({
+    action: "routine",
+    routine: "sample_mix",
+    sample: { captureBars: 4, isolation: "beat", holdSeconds: 16, halvings: 3, sweepToBpm: 124 },
+    queue: { trackId: "a", transition: "gap", durationBars: 4, startAt: "auto" },
+  }).success
+);
+
+assertOk(
+  "routine: queue durationBars is fixed to 4",
+  !CommandSchema.safeParse({
+    action: "routine",
+    routine: "sample_mix",
+    sample: { captureBars: 4, isolation: "beat", holdSeconds: 16, halvings: 3, sweepToBpm: 124 },
+    queue: { trackId: "a", transition: "bass_swap", durationBars: 8, startAt: "auto" },
+  }).success
+);
+
 // --- discriminated-union enforcement: the field each action actually needs
 // must be REQUIRED for that action, not merely present-if-given (this was
 // the bug: an all-optional schema let {"action":"queue"} with no trackId
@@ -153,7 +233,7 @@ assertOk("not an object rejected", !CommandSchema.safeParse("action: queue").suc
 // --- owner soundcheck fix: maskFx on the queue command (seam masking) ---
 
 assertOk("queue: maskFx omitted is valid (optional)", CommandSchema.safeParse({ action: "queue", trackId: "a" }).success);
-for (const fx of ["airhorn", "siren", "laser", "brake", "rewind", "cheer"]) {
+for (const fx of ["airhorn", "siren", "laser", "brake", "rewind", "cheer", "subdrop", "crash", "timbale", "downlifter"]) {
   assertOk(`queue: maskFx valid stinger "${fx}"`, CommandSchema.safeParse({ action: "queue", trackId: "a", maskFx: fx }).success);
 }
 assertOk(
@@ -243,6 +323,10 @@ assertOk("fx: valid rewind", CommandSchema.safeParse({ action: "fx", fx: "rewind
 assertOk("fx: valid laser (FX upgrade)", CommandSchema.safeParse({ action: "fx", fx: "laser" }).success);
 assertOk("fx: valid brake (FX upgrade)", CommandSchema.safeParse({ action: "fx", fx: "brake" }).success);
 assertOk("fx: valid cheer (vocal-library upgrade, real crowd-cheer stinger)", CommandSchema.safeParse({ action: "fx", fx: "cheer" }).success);
+assertOk("fx: valid subdrop (808 sub-bass impact drop)", CommandSchema.safeParse({ action: "fx", fx: "subdrop" }).success);
+assertOk("fx: valid crash (reverse cymbal swell + impact crash)", CommandSchema.safeParse({ action: "fx", fx: "crash" }).success);
+assertOk("fx: valid timbale (Latin timbale + dembow snare fill)", CommandSchema.safeParse({ action: "fx", fx: "timbale" }).success);
+assertOk("fx: valid downlifter (club jet exhaust sweep)", CommandSchema.safeParse({ action: "fx", fx: "downlifter" }).success);
 assertOk("fx: valid tag (vocal-library upgrade, now a vocal category)", CommandSchema.safeParse({ action: "fx", fx: "tag" }).success);
 assertOk(
   "fx: valid drop (review-panel fix — was a real vocal category never added to this enum)",
@@ -332,6 +416,15 @@ const FOLLOW_UP_CASES = [
   { name: "tempo_nudge", base: { action: "tempo_nudge", tempoDelta: 0.02 } },
   { name: "fx", base: { action: "fx", fx: "airhorn" } },
   { name: "eq", base: { action: "eq", deck: "live" } },
+  {
+    name: "routine",
+    base: {
+      action: "routine",
+      routine: "sample_mix",
+      sample: { captureBars: 4, isolation: "beat", holdSeconds: 16, halvings: 3, sweepToBpm: 124 },
+      queue: { trackId: "a", transition: "bass_swap", durationBars: 4, startAt: "auto" },
+    },
+  },
   { name: "none", base: { action: "none" } },
 ];
 
@@ -392,6 +485,97 @@ assertOk(
   resolveCooldownReason("follow_up", null) === "autopilot_poll" &&
     !isHumanInitiated(resolveCooldownReason("follow_up", null))
 );
+
+// Production rejected the ten-action union's compiled grammar even at the
+// documented optional-field limit. Check the actual provider schema recursively
+// (including nested sample/queue objects), and pin the smaller live-tested budget.
+// Counts alone cannot prove Anthropic will compile it: schema changes also need
+// a real /api/dj smoke before deployment.
+{
+  const { zodOutputFormat } = await import("@anthropic-ai/sdk/helpers/zod");
+  const js = zodOutputFormat(BrainResponseSchema).schema;
+  let optionalTotal = 0;
+  let unionTotal = 0;
+  function visit(node) {
+    if (!node || typeof node !== "object") return;
+    if (node.properties) {
+      optionalTotal += Object.keys(node.properties).filter(k => !node.required?.includes(k)).length;
+    }
+    if (node.anyOf || node.oneOf || Array.isArray(node.type)) unionTotal++;
+    Object.values(node).forEach(visit);
+  }
+  visit(js);
+  assertOk(`provider schema: at most 7 optional fields, including nested fields (got ${optionalTotal})`, optionalTotal <= 7);
+  assertOk(`provider schema: at most 3 unions (got ${unionTotal})`, unionTotal <= 3);
+  const hasDefs = /"\$(?:ref|defs)"/.test(JSON.stringify(js));
+  assertOk("schema: no $ref/$defs (Anthropic rejects them under anyOf)", !hasDefs);
+}
+
+// Every provider action must still become the same flat command the existing
+// client consumes. In particular, absent EQ bands must remain absent, queue
+// defaults must survive, and completion-owned actions must not gain follow-ups.
+{
+  const commands = [
+    { action: "queue", trackId: "0", transition: "gap", durationBars: 8, startAt: "beginning", maskFx: "space_sweep" },
+    { action: "tempo_nudge", tempoDelta: 0.02 },
+    { action: "fx", fx: "scratch_chirp" },
+    { action: "eq", deck: "live", low: -12 },
+    { action: "eq_sweep", band: "low", toDb: -12, bars: 4 },
+    { action: "trance_breakdown", trackId: "1", bars: 16, dropSeconds: 90 },
+    { action: "loop", captureBars: 4, isolation: "melody", holdSeconds: 12, halvings: 3 },
+    { action: "routine", routine: "sample_mix", sample: { captureBars: 4, isolation: "beat", holdSeconds: 16, halvings: 2, sweepToBpm: 100 }, queue: { trackId: "1", transition: "bass_swap", durationBars: 4, startAt: "auto", maskFx: "space_sweep" } },
+    { action: "stem_migrate", trackId: "1", bars: 32, anchor: "out" },
+    { action: "none" },
+  ];
+  assertOk("provider cases cover every executor action", isDeepStrictEqual(
+    commands.map(c => c.action).sort(),
+    CommandSchema.options.map(s => s.shape.action.value).sort(),
+  ));
+  for (const command of commands) {
+    const metadata = { say: "Soundcheck OK", followUpSeconds: 30 };
+    const parsed = parseBrainResponseText(JSON.stringify({ command, ...metadata }));
+    assertOk(`provider ${command.action}: preserves the validated flat command`, parsed.ok &&
+      isDeepStrictEqual(parsed.command, CommandSchema.parse({ ...command, ...metadata })));
+  }
+  const queue = parseBrainResponseText('{"command":{"action":"queue","trackId":"0"},"say":""}');
+  assertOk("provider queue: retains default transition, duration and entry", queue.ok &&
+    queue.command.transition === "beatmatch_crossfade" && queue.command.durationBars === 16 && queue.command.startAt === "auto");
+  const none = parseBrainResponseText('{"command":{"action":"none"},"say":"Soundcheck OK"}');
+  assertOk("provider: live response without follow-up stays unscheduled", none.ok &&
+    isDeepStrictEqual(none.command, { action: "none", say: "Soundcheck OK" }));
+  for (const raw of [
+    "not JSON", "null", "{}",
+    '{"command":{"action":"queue"},"say":""}',
+    '{"command":{"action":"unknown"},"say":""}',
+    '{"command":{"action":"none"}}',
+    '{"command":{"action":"none"},"say":"","followUpSeconds":4}',
+    '{"command":{"action":"eq","deck":"live","low":-99},"say":""}',
+    '{"command":{"action":"loop","captureBars":4,"isolation":"beat","holdSeconds":90,"halvings":2},"say":""}',
+    '{"command":{"action":"stem_migrate","trackId":"0","bars":32},"say":""}',
+    '{"command":{"action":"routine","routine":"sample_mix"},"say":""}',
+  ]) {
+    assertOk(`provider rejects invalid output: ${raw}`, !parseBrainResponseText(raw).ok);
+  }
+}
+
+// compact crate: the s (hasStems) flag the brain keys stem_migrate on
+{
+  const { buildCompactCrateEntry } = await import("../src/lib/brain.ts");
+  const withStems = buildCompactCrateEntry(3, "Gasolina", 96, "9A", true, 12, true);
+  const without = buildCompactCrateEntry(4, "Rompe", 88, "9A", true, null, false);
+  assertOk("compact crate: s:true present when the track has stems on Drive", withStems.s === true);
+  assertOk("compact crate: s OMITTED (not false) when it does not — same byte convention as g", !("s" in without));
+}
+
+// stem_migrate shape
+assertOk("stem_migrate: valid with required anchor and say",
+  CommandSchema.safeParse({ action: "stem_migrate", trackId: "12", bars: 32, anchor: "out", say: "riding the drums" }).success);
+assertOk("stem_migrate: rejects missing anchor",
+  !CommandSchema.safeParse({ action: "stem_migrate", trackId: "12", bars: 32, say: "x" }).success);
+assertOk("stem_migrate: rejects bars below 8",
+  !CommandSchema.safeParse({ action: "stem_migrate", trackId: "12", bars: 4, anchor: "out", say: "x" }).success);
+assertOk("stem_migrate: is a performance move for cadence",
+  isPerformanceMove("stem_migrate"));
 
 if (failures > 0) {
   console.error(`\n${failures} check(s) failed.`);

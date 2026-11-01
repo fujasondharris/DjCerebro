@@ -1,0 +1,5311 @@
+{
+  "1Z-_qrHhU1imCsE8FqIj90tiP1FonZtZM": {
+    "name": "Salsa Clasica - Un Verano En NY - Salsa Clasica.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "guitar": -81.9,
+      "other": -78.8,
+      "vocals": -90.3
+    },
+    "sourceDuration": 297.482,
+    "headSeconds": 0,
+    "tailSeconds": 294.305,
+    "newDuration": 294.305,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 294.305,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1bK2Z_t67dpGAmstZsykj7Px808PaRypA": {
+    "name": "Aventura - Aventura - Los Infieles.mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -68.2,
+      "drums": -70.2,
+      "guitar": -76.2,
+      "other": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 278.204,
+    "headSeconds": 0,
+    "tailSeconds": 268.138,
+    "newDuration": 268.138,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 268.138
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "19JpIVtdVnX6kZaOUgsZQHLRjvykjKkzf": {
+    "name": "Aventura - Aventura - Obsesión (ft. Judy Santos).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -70.4,
+      "drums": -73.6,
+      "guitar": -90.3,
+      "other": -91,
+      "vocals": -74.1
+    },
+    "sourceDuration": 255.269,
+    "headSeconds": 0,
+    "tailSeconds": 250.422,
+    "newDuration": 250.422,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 250.422,
+      "musicInSource": "silence",
+      "tonalHint": 18
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "15xSri2mlEB0pWpr7_cdNEuhFsCNIFtwp": {
+    "name": "Aventura - Aventura - Dile Al Amor.mp3",
+    "headKind": "silence",
+    "tailKind": "vocals-only",
+    "headLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -90.3,
+      "other": -91,
+      "vocals": -91
+    },
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -75.8,
+      "other": -91,
+      "vocals": -31.2
+    },
+    "sourceDuration": 244.48,
+    "headSeconds": 10.263,
+    "tailSeconds": 234.981,
+    "newDuration": 224.718,
+    "detected": {
+      "musicIn": 10.27,
+      "musicOut": 234.981
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1BqJD30P2XvT91PH4tDI_bCoRSGor6Oyd": {
+    "name": "Daddy Yankee - Rompe.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "other": -75.3,
+      "vocals": -43.4
+    },
+    "sourceDuration": 189.1,
+    "headSeconds": 0,
+    "tailSeconds": 185.77,
+    "newDuration": 185.77,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 185.77
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1Ev5-nooIMz1J3qXca53e3LyGCMEJ_zeE": {
+    "name": "Daddy Yankee, Randy - Salgo Pa' la Calle.mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -65.7,
+      "drums": -91,
+      "other": -90.3,
+      "vocals": -50.9
+    },
+    "sourceDuration": 267.833,
+    "headSeconds": 0,
+    "tailSeconds": 264.825,
+    "newDuration": 264.825,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 264.825
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "19RCqqyDSLJMwFaAVDypitekx7RqDosGy": {
+    "name": "Enrique Iglesias - Enrique Iglesias - I Like It (Official Music Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -74.4,
+      "guitar": -91,
+      "other": -76.7,
+      "vocals": -91
+    },
+    "sourceDuration": 233.221,
+    "headSeconds": 0,
+    "tailSeconds": 229.733,
+    "newDuration": 229.733,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 229.733,
+      "musicInSource": "silence",
+      "tonalHint": 6
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1U71MSgVGFzXlcxN7H-vEJcy5wkOmxRBs": {
+    "name": "Jennifer Lopez - Jennifer Lopez, Pitbull - On The Floor (Official Music Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -73.7,
+      "vocals": -91
+    },
+    "sourceDuration": 266.449,
+    "headSeconds": 0,
+    "tailSeconds": 259.842,
+    "newDuration": 259.842,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 259.842,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1XguvbVJO5uqny0xEpfzET1mTufUXy2eK": {
+    "name": "Prince Royce - I Just Called to Say I Love You.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -73.7,
+      "drums": -91,
+      "guitar": -78.8,
+      "other": -91,
+      "vocals": -70.4
+    },
+    "sourceDuration": 150.57,
+    "headSeconds": 0,
+    "tailSeconds": 146.519,
+    "newDuration": 146.519,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 146.519,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1V6qRnOoUXnOjsiUVlTVsiQwoRrK-ezx5": {
+    "name": "Romeo Santos - Aventura - Inmortal (Official Video).mp3",
+    "headKind": "owner-set",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -82.5,
+      "drums": -91,
+      "guitar": -81.3,
+      "other": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 275.278,
+    "headSeconds": 27.377,
+    "tailSeconds": 270.798,
+    "newDuration": 243.421,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 270.798,
+      "musicInSource": "silence",
+      "tonalHint": 6
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner:set-head"
+  },
+  "12-1Vq2mphGY9xsEzfLZlKNxrtDexU2_7": {
+    "name": "Romeo Santos - Aventura, Bad Bunny - Volví (Video Oficial).mp3",
+    "headKind": "owner-set",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -73.4,
+      "other": -91,
+      "vocals": -84.3
+    },
+    "sourceDuration": 231.184,
+    "headSeconds": 24.821,
+    "tailSeconds": 227.802,
+    "newDuration": 202.981,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 227.802,
+      "musicInSource": "silence",
+      "tonalHint": 26
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1ZfYV1MLMXh9M3PYcsvcCFBY9HsmrbEx7": {
+    "name": "Sech - Sech - 911 (Video Oficial).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -84.3,
+      "drums": -84.3,
+      "other": -77.5,
+      "vocals": -84.3
+    },
+    "sourceDuration": 220.682,
+    "headSeconds": 0,
+    "tailSeconds": 216.528,
+    "newDuration": 216.528,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 216.528,
+      "musicInSource": "silence",
+      "tonalHint": 22
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "12XFDJTSaWT5Dk4hs034_Hgt9LoukifIE": {
+    "name": "Wisin & Yandel - Algo Me Gusta De Ti (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -74,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 295.889,
+    "headSeconds": 0,
+    "tailSeconds": 290.907,
+    "newDuration": 290.907,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 290.907,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1nJbcYUURlJAOdQBgUwqChkfaB9pBMJ1z": {
+    "name": "XtremeVEVO - Xtreme - Te Extrano.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -70.4,
+      "drums": -91,
+      "guitar": -91,
+      "other": -77.8,
+      "vocals": -91
+    },
+    "sourceDuration": 217.156,
+    "headSeconds": 0,
+    "tailSeconds": 211.887,
+    "newDuration": 211.887,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 211.887,
+      "musicInSource": "silence",
+      "tonalHint": 4
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "12of7m1qlLQ3OuHBZVZFqqTuyqDdeiUlY": {
+    "name": "iPerol - Bad Bunny - DtMF (Letra).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -80.3,
+      "guitar": -87.3,
+      "other": -91,
+      "vocals": -90.3
+    },
+    "sourceDuration": 240.353,
+    "headSeconds": 0,
+    "tailSeconds": 236.524,
+    "newDuration": 236.524,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 236.524,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1aGrG4rk3PW2qtWTXjQ7i43sSk6wJ4CSd": {
+    "name": "bluemood69 - Celia Cruz - Quimbara.mp3",
+    "headKind": "owner-set",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -78.5,
+      "piano": -90.3,
+      "vocals": -91
+    },
+    "sourceDuration": 295.915,
+    "headSeconds": 16,
+    "tailSeconds": 289.522,
+    "newDuration": 273.522,
+    "detected": {
+      "musicIn": 2.661,
+      "musicOut": 289.522,
+      "musicInSource": "silence",
+      "tonalHint": 22
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner:set-head"
+  },
+  "1oOIyc-rZj0P9KvPZhAq_1hDFMZJmtKED": {
+    "name": "Yng Lvcas - Yng Lvcas & Peso Pluma - La Bebe (Remix) [Video Oficial].mp3",
+    "headKind": "owner-set",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -90.3,
+      "piano": -91,
+      "vocals": -51.4
+    },
+    "sourceDuration": 244.689,
+    "headSeconds": 31.446,
+    "tailSeconds": 226.634,
+    "newDuration": 195.188,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 226.634,
+      "musicInSource": "silence",
+      "tonalHint": 20
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner:set-head"
+  },
+  "1Zqb_yR2bMh3vL7XjMBOhDWGWzDS2RJdf": {
+    "name": "Zion & Lennox - Zion & Lennox ft. J Balvin - Otra Vez (Video Oficial).mp3",
+    "headKind": "owner-set",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "other": -91,
+      "vocals": -50
+    },
+    "sourceDuration": 212.689,
+    "headSeconds": 30.353,
+    "tailSeconds": 206.63,
+    "newDuration": 176.277,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 206.63,
+      "musicInSource": "silence",
+      "tonalHint": 30
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner:set-head"
+  },
+  "1HqIDlKTxVN3B-D4pLJR9ibEEF_YSRAnZ": {
+    "name": "Yandel, Wisin - Como Antes.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -70.8,
+      "other": -71.4,
+      "vocals": -49.4
+    },
+    "sourceDuration": 210.86,
+    "headSeconds": 0,
+    "tailSeconds": 207.432,
+    "newDuration": 207.432,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 207.432,
+      "musicInSource": "silence",
+      "tonalHint": 14
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1SCjPpyKsM3SxO5w_O1E0T-KHuF9mCp_j": {
+    "name": "Yandel - Yandel - Plakito (Remix)[Official Video] ft. El General Gadiel, Farruko.mp3",
+    "headKind": "silence",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -87.3,
+      "drums": -84.3,
+      "other": -84.3,
+      "vocals": -76.2
+    },
+    "tailLevels": {},
+    "sourceDuration": 207.673,
+    "headSeconds": 2.695,
+    "tailSeconds": null,
+    "newDuration": 204.978,
+    "detected": {
+      "musicIn": 3.74,
+      "musicOut": 207.673,
+      "musicInSource": "silence",
+      "tonalHint": 24
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1ZIT1EgHAoXaDB5Mhyk8GKoXeQVuN4wRp": {
+    "name": "Willie Colón, Héctor Lavoe - El Día De Mi Suerte.mp3",
+    "headKind": "owner-set",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -76.2,
+      "vocals": -91
+    },
+    "sourceDuration": 328.856,
+    "headSeconds": 0,
+    "tailSeconds": 323.338,
+    "newDuration": 323.338,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 323.338,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner:set-head"
+  },
+  "12fan99KLrLNZWGNwWpfVnm6HKHcbOE8n": {
+    "name": "Wisin & Yandel, Chris Brown, T-Pain - Algo Me Gusta De Ti.mp3",
+    "headKind": "vocals-only",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -84.3,
+      "drums": -83.3,
+      "guitar": -83.3,
+      "other": -82.5,
+      "vocals": -41.1
+    },
+    "tailLevels": {},
+    "sourceDuration": 275.043,
+    "headSeconds": 3.159,
+    "tailSeconds": null,
+    "newDuration": 271.884,
+    "detected": {
+      "musicIn": 3.165,
+      "musicOut": 275.043,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1W4m6Q79dEtcGcWPSIw9nZBhH-cSSbxfU": {
+    "name": "Wisin, Ozuna - Escápate Conmigo.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -80.3,
+      "other": -74.5,
+      "vocals": -87.3
+    },
+    "sourceDuration": 232.856,
+    "headSeconds": 0,
+    "tailSeconds": 228.787,
+    "newDuration": 228.787,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 228.787,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1Nav860Vb3Wybapm7dpe1SV7udKq4sKhr": {
+    "name": "Wisin - Wisin, Carlos Vives - Nota de Amor (Official Video) ft. Daddy Yankee.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -81.9,
+      "guitar": -90.3,
+      "other": -87.3,
+      "piano": -87.3,
+      "vocals": -90.3
+    },
+    "sourceDuration": 235.076,
+    "headSeconds": 0,
+    "tailSeconds": 231.692,
+    "newDuration": 231.692,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 231.692,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1YhZWH6yAYCFh1cjBgAxG6EFQUxINw81D": {
+    "name": "Trap Capos, Noriel, Bad Bunny, Arcángel - De las 2.mp3",
+    "headKind": "owner-set",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "other": -78.3,
+      "vocals": -30.8
+    },
+    "sourceDuration": 260.571,
+    "headSeconds": 30.253,
+    "tailSeconds": 256.216,
+    "newDuration": 225.963,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 256.216,
+      "musicInSource": "silence",
+      "tonalHint": 32
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner:set-head"
+  },
+  "1dt76JNo3mad9HfdCbHkTZSFaBmoMK81i": {
+    "name": "Tiësto - Tiësto & Karol G - Don't Be Shy (Official Music Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -84.3,
+      "drums": -91,
+      "other": -84.3,
+      "vocals": -84.3
+    },
+    "sourceDuration": 187.141,
+    "headSeconds": 0,
+    "tailSeconds": 182.679,
+    "newDuration": 182.679,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 182.679,
+      "musicInSource": "silence",
+      "tonalHint": 38
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1ggDNSv9nGmmIhK_IfP8cUo9DDYr5PO-6": {
+    "name": "Thalia, Maluma - Desde Esa Noche.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -87.3,
+      "drums": -90.3,
+      "guitar": -90.3,
+      "other": -73.9,
+      "vocals": -90.3
+    },
+    "sourceDuration": 227.788,
+    "headSeconds": 0,
+    "tailSeconds": 224.785,
+    "newDuration": 224.785,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 224.785,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1EBe6MJ1c1t-leKCOSqB8J6ry8kyOmHPx": {
+    "name": "Shakira, Maluma - Clandestino.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -90.3,
+      "other": -91,
+      "piano": -90.3,
+      "vocals": -25.4
+    },
+    "sourceDuration": 231.993,
+    "headSeconds": 0,
+    "tailSeconds": 226.87,
+    "newDuration": 226.87,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 226.87,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "18-mTMlYS9Y6b1zbtw-lJQcGsEUZO7XB0": {
+    "name": "Shakira, El Cata - Loca.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -90.3,
+      "other": -74.9,
+      "piano": -91,
+      "vocals": -25.4
+    },
+    "sourceDuration": 183.771,
+    "headSeconds": 0,
+    "tailSeconds": 180.456,
+    "newDuration": 180.456,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 180.456,
+      "musicInSource": "silence",
+      "tonalHint": 4
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "13LzjabNjba1pK4-8aZx-lTRXGcoe7C_8": {
+    "name": "Shakira - Shakira - Soltera (Official Video).mp3",
+    "headKind": "owner-set",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -83.3,
+      "drums": -85.5,
+      "guitar": -85.5,
+      "other": -87.3,
+      "vocals": -22.1
+    },
+    "sourceDuration": 248.999,
+    "headSeconds": 22.455,
+    "tailSeconds": 233.958,
+    "newDuration": 211.503,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 233.958,
+      "musicInSource": "silence",
+      "tonalHint": 24
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner:set-head"
+  },
+  "1oIgZn7U6a1AGenCSqUfAR8a9Ja_GhLVT": {
+    "name": "Aventura - Aventura - Un Beso.mp3",
+    "headKind": "silence",
+    "tailKind": "quiet",
+    "headLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -90.3
+    },
+    "tailLevels": {
+      "bass": -68.9,
+      "drums": -73.8,
+      "guitar": -77.1,
+      "other": -91,
+      "vocals": -78.3
+    },
+    "sourceDuration": 292.232,
+    "headSeconds": 4.422,
+    "tailSeconds": 285.939,
+    "newDuration": 281.517,
+    "detected": {
+      "musicIn": 6.315,
+      "musicOut": 285.939,
+      "musicInSource": "silence",
+      "tonalHint": 18
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "17QVOdpM0GKVZ9Sc-I8RkCmjLM0EZv_mW": {
+    "name": "Sech - Sech, Daddy Yankee, J Balvin, Rosalía, Farruko - Relación Remix (Video Oficial).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -85.5,
+      "other": -81.9,
+      "vocals": -29.5
+    },
+    "sourceDuration": 250.044,
+    "headSeconds": 0,
+    "tailSeconds": 246.679,
+    "newDuration": 246.679,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 246.679,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1dbFbBZNcv-D7dV56QReqPCle6yHtY5Km": {
+    "name": "Romeo Santos - Romeo Santos - Eres Mía (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -74.7,
+      "other": -91,
+      "vocals": -90.3
+    },
+    "sourceDuration": 292.049,
+    "headSeconds": 0,
+    "tailSeconds": 288.086,
+    "newDuration": 288.086,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 288.086,
+      "musicInSource": "silence",
+      "tonalHint": 2
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1FZlKbboE-GRLwulSDpJqRSPhQYLr5IdH": {
+    "name": "Rvssian - Rvssian, Farruko, J Balvin - Ponle (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -72.7,
+      "guitar": -91,
+      "other": -87.3,
+      "piano": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 168.882,
+    "headSeconds": 0,
+    "tailSeconds": 164.501,
+    "newDuration": 164.501,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 164.501,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "178Cgj1RggGQzc5I78x6g_N87P-RtAr9Q": {
+    "name": "Revol, Ozuna, Cosculluela, Arcangel, Brytiago - Me Ama Me Odia.mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -69.9,
+      "piano": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 327.027,
+    "headSeconds": 0,
+    "tailSeconds": 323.913,
+    "newDuration": 323.913,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 323.913,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1XyPfh_us_rEA5bPFa34fC3Z-uMT9Yh_8": {
+    "name": "Rimas Music - Nicky Jam, Farruko, Amenazzy - Baby (Video Oficial).mp3",
+    "headKind": "silence",
+    "tailKind": "quiet",
+    "headLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -90.3,
+      "piano": -91,
+      "vocals": -90.3
+    },
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -77.1,
+      "piano": -91,
+      "vocals": -59.3
+    },
+    "sourceDuration": 239.83,
+    "headSeconds": 0.837,
+    "tailSeconds": 235.052,
+    "newDuration": 234.215,
+    "detected": {
+      "musicIn": 3.405,
+      "musicOut": 235.052,
+      "musicInSource": "silence",
+      "tonalHint": 6
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1jgtBlaLnemrerFYta3FSxpVS67-OD_VL": {
+    "name": "Ricky Martin, Maluma - Vente Pa' Ca.mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -68.8,
+      "other": -82.5,
+      "vocals": -91
+    },
+    "sourceDuration": 259.265,
+    "headSeconds": 0,
+    "tailSeconds": 254.707,
+    "newDuration": 254.707,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 254.707,
+      "musicInSource": "silence",
+      "tonalHint": 12
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1OaN3PlWXFWPGmrfz6ZVqX0fiX69Ae-WG": {
+    "name": "Rauw Alejandro - Rauw Alejandro, Anuel AA, Natti Natasha Ft. Farruko y Lunay - Fantasías Remix (Video Oficial).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -74.9,
+      "piano": -91,
+      "vocals": -90.3
+    },
+    "sourceDuration": 273.241,
+    "headSeconds": 0,
+    "tailSeconds": 268.767,
+    "newDuration": 268.767,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 268.767,
+      "musicInSource": "silence",
+      "tonalHint": 4
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1rZQnHfrQbKrtKsR6gBE6-6yGQl_fN6XD": {
+    "name": "Reik, Ozuna, Wisin - Me Niego.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -82.5,
+      "drums": -90.3,
+      "guitar": -87.3,
+      "other": -83.3,
+      "vocals": -30.1
+    },
+    "sourceDuration": 221.727,
+    "headSeconds": 0,
+    "tailSeconds": 217.898,
+    "newDuration": 217.898,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 217.898,
+      "musicInSource": "silence",
+      "tonalHint": 2
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "18Fln3HyEYJIG6cjCZaFYR_Rwfyj5EP3e": {
+    "name": "Pitbull - Pitbull, Ne-Yo - Time of Our Lives (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -85.5,
+      "guitar": -83.3,
+      "other": -87.3,
+      "vocals": -24.4
+    },
+    "sourceDuration": 281.678,
+    "headSeconds": 0,
+    "tailSeconds": 275.697,
+    "newDuration": 275.697,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 275.697,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1a_PoYduyOZTSMORrVWxI5fHrypHn0Od9": {
+    "name": "Prince Royce, Maluma - El Clavo (Remix).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -81.3,
+      "drums": -81.9,
+      "guitar": -81.3,
+      "other": -81.9,
+      "vocals": -36.9
+    },
+    "sourceDuration": 172.251,
+    "headSeconds": 0,
+    "tailSeconds": 167.139,
+    "newDuration": 167.139,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 167.139,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1oAbvadypYfvipLG7jhktI0zg6qupQ95W": {
+    "name": "Pitbull - Pitbull, Ke$ha - Timber (featuring Ke$ha - Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -84.3,
+      "drums": -84.3,
+      "guitar": -84.3,
+      "other": -84.3,
+      "vocals": -84.3
+    },
+    "sourceDuration": 214.1,
+    "headSeconds": 0,
+    "tailSeconds": 205.664,
+    "newDuration": 205.664,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 205.664,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "10nG9TkhRf2u1cwS966gd_7R0kaWCqT--": {
+    "name": "Pitbull - Pitbull - Feel This Moment (Official Video) ft. Christina Aguilera.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -73.3,
+      "piano": -91,
+      "vocals": -54.3
+    },
+    "sourceDuration": 229.355,
+    "headSeconds": 0,
+    "tailSeconds": 226.217,
+    "newDuration": 226.217,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 226.217,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1fGVfPXW5x1hIAx0s455aeb7mvEYBcpp5": {
+    "name": "Pitbull - Pitbull - Don't Stop The Party ft. TJR.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "guitar": -91,
+      "other": -91,
+      "piano": -91,
+      "vocals": -33.5
+    },
+    "sourceDuration": 213.316,
+    "headSeconds": 0,
+    "tailSeconds": 204.361,
+    "newDuration": 204.361,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 204.361,
+      "musicInSource": "silence",
+      "tonalHint": 14
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1LAt4k3WhJXJNlUKSGdqCnI6W71YD3Ln3": {
+    "name": "Ozuna, Daddy Yankee, J Balvin, Farruko, Anuel AA - Baila Baila Baila (Remix).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -76.7,
+      "piano": -91,
+      "vocals": -29.1
+    },
+    "sourceDuration": 235.363,
+    "headSeconds": 0,
+    "tailSeconds": 231.201,
+    "newDuration": 231.201,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 231.201,
+      "musicInSource": "silence",
+      "tonalHint": 6
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1a0A9336htwdq2mbVPkcAk7NMDAVnYiHe": {
+    "name": "Piso 21, Maluma - Me Llamas (feat. Maluma) [Remix].mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -68.8,
+      "drums": -91,
+      "guitar": -90.3,
+      "other": -91,
+      "vocals": -55.7
+    },
+    "sourceDuration": 210.39,
+    "headSeconds": 0,
+    "tailSeconds": 207.293,
+    "newDuration": 207.293,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 207.293,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1N4daN-c0aBMUYtQp71ciKMn3gwcvLQ__": {
+    "name": "Ozuna - Unica.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -90.3,
+      "other": -79.5,
+      "piano": -91,
+      "vocals": -29.1
+    },
+    "sourceDuration": 218.462,
+    "headSeconds": 0,
+    "tailSeconds": 209.765,
+    "newDuration": 209.765,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 209.765,
+      "musicInSource": "silence",
+      "tonalHint": 12
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1IwH71CN9rnB8ve5QaCBOnddJMlDk2T-x": {
+    "name": "Ozuna - Se Preparó.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -87.3,
+      "drums": -79.5,
+      "other": -81.3,
+      "vocals": -46.6
+    },
+    "sourceDuration": 188.16,
+    "headSeconds": 0,
+    "tailSeconds": 182.919,
+    "newDuration": 182.919,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 182.919,
+      "musicInSource": "silence",
+      "tonalHint": 2
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1KAhbaDMe8wCtr_HIqvv4uFasNeQvAMAw": {
+    "name": "Ozuna - Tú Foto.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "guitar": -91,
+      "other": -70.4,
+      "vocals": -51.3
+    },
+    "sourceDuration": 193.306,
+    "headSeconds": 0,
+    "tailSeconds": 188.615,
+    "newDuration": 188.615,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 188.615,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1S_F8KXgNo_kjAsm4GOakQ7nw9_nVySEW": {
+    "name": "Ozuna - El Farsante.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -85.5,
+      "guitar": -90.3,
+      "other": -74,
+      "vocals": -91
+    },
+    "sourceDuration": 233.9,
+    "headSeconds": 0,
+    "tailSeconds": 230.584,
+    "newDuration": 230.584,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 230.584,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1lWXu9LtKExaUrZS306SF79Sq3yZzvSAV": {
+    "name": "Ozuna - Dile Que Tu Me Quieres.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -85.5,
+      "drums": -82.5,
+      "other": -74.2,
+      "vocals": -91
+    },
+    "sourceDuration": 226.586,
+    "headSeconds": 0,
+    "tailSeconds": 222.419,
+    "newDuration": 222.419,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 222.419,
+      "musicInSource": "silence",
+      "tonalHint": 22
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1P_GjozF75UsNTpEQXFBLZJ3DGb_wa1mO": {
+    "name": "Nicki Minaj, Drake - Moment 4 Life (Album Version (Edited)).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -85.5,
+      "other": -78.5,
+      "piano": -90.3,
+      "vocals": -29.6
+    },
+    "sourceDuration": 279.38,
+    "headSeconds": 0,
+    "tailSeconds": 274.78,
+    "newDuration": 274.78,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 274.78,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1Cs1xbpTn6Gv_gFrkeB0tUU37jYxXWU9f": {
+    "name": "MrPepeQuintana - Pepe Quintana - Ella y Yo [Official Video] ft. Farruko , Anuel AA , Tempo , Almighty , Bryant Myers.mp3",
+    "headKind": "silence",
+    "tailKind": "silence",
+    "headLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -91,
+      "piano": -91,
+      "vocals": -91
+    },
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -84.3,
+      "piano": -76.3,
+      "vocals": -91
+    },
+    "sourceDuration": 312.059,
+    "headSeconds": 3.376,
+    "tailSeconds": 307.032,
+    "newDuration": 303.656,
+    "detected": {
+      "musicIn": 5.151,
+      "musicOut": 307.032,
+      "musicInSource": "silence",
+      "tonalHint": 8
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "18hNSw6JAM6Zg81PIruq9yL8ZA0qV5NMh": {
+    "name": "NATTI NATASHA  - Natti Natasha x Becky G - Ram Pam Pam [Official Video].mp3",
+    "headKind": "vocals-only",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -90.3,
+      "drums": -90.3,
+      "other": -90.3,
+      "piano": -90.3,
+      "vocals": -22.6
+    },
+    "tailLevels": {},
+    "sourceDuration": 218.122,
+    "headSeconds": 7.477,
+    "tailSeconds": null,
+    "newDuration": 210.645,
+    "detected": {
+      "musicIn": 8.714,
+      "musicOut": 218.122,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1aeMRFB54R7E1qT_QKrHLUt6poCjDtzh0": {
+    "name": "Marc Anthony - Marc Anthony - Valio La Pena (Salsa Version).mp3",
+    "headKind": "silence",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -90.3,
+      "drums": -90.3,
+      "guitar": -91,
+      "other": -91,
+      "piano": -91,
+      "vocals": -91
+    },
+    "tailLevels": {},
+    "sourceDuration": 292.676,
+    "headSeconds": 4.504,
+    "tailSeconds": null,
+    "newDuration": 288.172,
+    "detected": {
+      "musicIn": 4.507,
+      "musicOut": 292.676,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "118ZreiDj6rhlW2oxqikUOJrctL09gZ9U": {
+    "name": "Maluma, Eli Palacios - La Temperatura.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -84.3,
+      "drums": -90.3,
+      "other": -91,
+      "piano": -90.3,
+      "vocals": -33.1
+    },
+    "sourceDuration": 224.862,
+    "headSeconds": 0,
+    "tailSeconds": 220.117,
+    "newDuration": 220.117,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 220.117,
+      "musicInSource": "silence",
+      "tonalHint": 2
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1BR-h4VMG02QwuLSeJ5TdKNVOMr2PFNKD": {
+    "name": "Maluma, Bad Bunny, Arcángel, Ñengo Flow, De La Ghetto - Un Polvo.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -84.3,
+      "other": -90.3,
+      "piano": -90.3,
+      "vocals": -34.2
+    },
+    "sourceDuration": 306.442,
+    "headSeconds": 0,
+    "tailSeconds": 301.024,
+    "newDuration": 301.024,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 301.024,
+      "musicInSource": "silence",
+      "tonalHint": 14
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1LbHp3g9VtXwmlxC4MexbUK78UV5jnBlT": {
+    "name": "Maluma, Don Omar, Wisin - Sin Contrato (Remix).mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -65.2,
+      "piano": -91,
+      "vocals": -78.5
+    },
+    "sourceDuration": 231.549,
+    "headSeconds": 0,
+    "tailSeconds": 228.471,
+    "newDuration": 228.471,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 228.471,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1qnU5G_fZ6Y9emAm0o4MP2IoNsBSGRe0I": {
+    "name": "Maluma - Ya No Es Niña.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -78.5,
+      "guitar": -90.3,
+      "other": -90.3,
+      "piano": -80.3,
+      "vocals": -91
+    },
+    "sourceDuration": 215.771,
+    "headSeconds": 0,
+    "tailSeconds": 212.127,
+    "newDuration": 212.127,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 212.127,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1wwEu4wtaTPT_wiNbTkWdYpZTCErhcxWd": {
+    "name": "Maluma, Arcángel - Tu Cariño.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -84.3,
+      "drums": -87.3,
+      "other": -79.9,
+      "vocals": -23
+    },
+    "sourceDuration": 185.234,
+    "headSeconds": 0,
+    "tailSeconds": 180.945,
+    "newDuration": 180.945,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 180.945,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1ICM3FE621v4PO_C-2IvHGfUb5B5S2sAU": {
+    "name": "Maluma - Maluma - Hawái (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -75.1,
+      "drums": -91,
+      "guitar": -91,
+      "other": -84.3,
+      "vocals": -91
+    },
+    "sourceDuration": 258.429,
+    "headSeconds": 0,
+    "tailSeconds": 254.633,
+    "newDuration": 254.633,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 254.633,
+      "musicInSource": "silence",
+      "tonalHint": 4
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1Kb5Itcjdl_FhczJ4CQRvmJUz6DDuBbyl": {
+    "name": "Maluma - Pasarla Bien.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -81.9,
+      "piano": -91,
+      "vocals": -30.3
+    },
+    "sourceDuration": 214.57,
+    "headSeconds": 0,
+    "tailSeconds": 207.427,
+    "newDuration": 207.427,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 207.427,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "120QnfCgbMTHo8gficiQKDlgi7MLnaDqY": {
+    "name": "Maluma - Obsesión.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -91,
+      "other": -83.3,
+      "vocals": -27.5
+    },
+    "sourceDuration": 180.245,
+    "headSeconds": 0,
+    "tailSeconds": 173.975,
+    "newDuration": 173.975,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 173.975,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "12jEZgNXVq5nX9QHXax5hcgg7pSGWgv2T": {
+    "name": "Maluma - Marinero.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -91,
+      "guitar": -72.1,
+      "other": -90.3,
+      "vocals": -47.9
+    },
+    "sourceDuration": 189.205,
+    "headSeconds": 0,
+    "tailSeconds": 185.126,
+    "newDuration": 185.126,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 185.126,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1hWutrnqbNaz20e1bWmNpTZmIjUgHzt7v": {
+    "name": "Maluma - Mala Mía.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -87.3,
+      "drums": -90.3,
+      "guitar": -90.3,
+      "other": -84.3,
+      "vocals": -20.4
+    },
+    "sourceDuration": 183.824,
+    "headSeconds": 0,
+    "tailSeconds": 173.815,
+    "newDuration": 173.815,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 173.815,
+      "musicInSource": "silence",
+      "tonalHint": 2
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1UZrG6wct3CPXQPCC_1cwTEe_Da61vENF": {
+    "name": "Maluma - Mala.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "guitar": -91,
+      "other": -91,
+      "piano": -90.3,
+      "vocals": -27.6
+    },
+    "sourceDuration": 171.102,
+    "headSeconds": 0,
+    "tailSeconds": 165.809,
+    "newDuration": 165.809,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 165.809,
+      "musicInSource": "silence",
+      "tonalHint": 2
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1eyOU0yjnBFdatUJi-oIOqFth894zgIuf": {
+    "name": "Maluma - HP.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -74.5,
+      "other": -82.5,
+      "vocals": -70.8
+    },
+    "sourceDuration": 184.503,
+    "headSeconds": 0,
+    "tailSeconds": 180.961,
+    "newDuration": 180.961,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 180.961,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1lPskbZNOlP9KER_ye0kzr8mdSrAENwat": {
+    "name": "Maluma - Carnaval.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -87.3,
+      "guitar": -84.3,
+      "other": -75.5,
+      "piano": -83.3,
+      "vocals": -23
+    },
+    "sourceDuration": 214.57,
+    "headSeconds": 0,
+    "tailSeconds": 210.44,
+    "newDuration": 210.44,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 210.44,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "129fPrdpzdA3N66z-QlZevPhS_sgbSyBm": {
+    "name": "Maluma - Borro Cassette.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -83.3,
+      "guitar": -90.3,
+      "other": -90.3,
+      "piano": -90.3,
+      "vocals": -37.6
+    },
+    "sourceDuration": 207.386,
+    "headSeconds": 0,
+    "tailSeconds": 203.832,
+    "newDuration": 203.832,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 203.832,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1sb8MyYBGQyYve6UE_dqiyjUmrEF22QPe": {
+    "name": "Lunay, Daddy Yankee, Bad Bunny - Soltera (Remix).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -82.5,
+      "drums": -87.3,
+      "other": -87.3,
+      "piano": -84.3,
+      "vocals": -19.6
+    },
+    "sourceDuration": 266.162,
+    "headSeconds": 0,
+    "tailSeconds": 262.217,
+    "newDuration": 262.217,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 262.217,
+      "musicInSource": "silence",
+      "tonalHint": 26
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1A0Y68E3BBBOTtb1DjVuaTaCPL5nOqPer": {
+    "name": "Maluma - 11 PM.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -72.3,
+      "other": -91,
+      "vocals": -47.2
+    },
+    "sourceDuration": 175.804,
+    "headSeconds": 0,
+    "tailSeconds": 170.736,
+    "newDuration": 170.736,
+    "detected": {
+      "musicIn": 2.42,
+      "musicOut": 170.736,
+      "musicInSource": "silence",
+      "tonalHint": 6
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1mYCmDG_BlH-AirDKWYbTzSV4Li1LKoU6": {
+    "name": "Luis Fonsi - Luis Fonsi, Daddy Yankee - Despacito (Audio) ft. Justin Bieber.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "guitar": -73.6,
+      "other": -91,
+      "vocals": -21.7
+    },
+    "sourceDuration": 229.016,
+    "headSeconds": 0,
+    "tailSeconds": 225.288,
+    "newDuration": 225.288,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 225.288,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1Lmxnqy5GWjscqgERNifTj5yzMmDP6E2P": {
+    "name": "Luis Fonsi - Luis Fonsi, Demi Lovato - Échame La Culpa.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -72.8,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 210.495,
+    "headSeconds": 0,
+    "tailSeconds": 202.206,
+    "newDuration": 202.206,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 202.206,
+      "musicInSource": "silence",
+      "tonalHint": 2
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1gNZS_TYMP5R8C2NBwdSJLpDhr_vkFO3A": {
+    "name": "Luis Fonsi - Luis Fonsi - Despacito ft. Daddy Yankee.mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -85.5,
+      "drums": -78.3,
+      "guitar": -84.3,
+      "other": -85.5,
+      "vocals": -62.4
+    },
+    "sourceDuration": 281.574,
+    "headSeconds": 0,
+    "tailSeconds": 273.106,
+    "newDuration": 273.106,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 273.106,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1B0aErwDePiocQR3TDAgML_MVmUiwAS0d": {
+    "name": "Khea - Loca.mp3",
+    "headKind": "silence",
+    "tailKind": "vocals-only",
+    "headLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -91,
+      "vocals": -91
+    },
+    "tailLevels": {
+      "bass": -91,
+      "drums": -76.3,
+      "other": -91,
+      "vocals": -53.1
+    },
+    "sourceDuration": 259.161,
+    "headSeconds": 10.065,
+    "tailSeconds": 253.938,
+    "newDuration": 243.873,
+    "detected": {
+      "musicIn": 12.178,
+      "musicOut": 253.938,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1lEFt-qHpgygYWIA0Gdq8q-Kl0J_aiTpG": {
+    "name": "Klasico - Corazon De Seda (feat. Ozuna).mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -84.3,
+      "drums": -84.3,
+      "other": -76.5,
+      "vocals": -65.8
+    },
+    "sourceDuration": 187.037,
+    "headSeconds": 0,
+    "tailSeconds": 183.048,
+    "newDuration": 183.048,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 183.048,
+      "musicInSource": "silence",
+      "tonalHint": 20
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1wFsCUw8Kf33b7oSUqyP-EMHJRMsAhOE8": {
+    "name": "KAROL G, Nicki Minaj - Tusa.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -87.3,
+      "drums": -90.3,
+      "other": -72.2,
+      "piano": -85.5,
+      "vocals": -90.3
+    },
+    "sourceDuration": 201.038,
+    "headSeconds": 0,
+    "tailSeconds": 197.006,
+    "newDuration": 197.006,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 197.006,
+      "musicInSource": "silence",
+      "tonalHint": 20
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1H-oyKHw9a49lGDxks1v5PkjQb2LTT3xu": {
+    "name": "KAROL G - KAROL G - Provenza (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -84.3,
+      "drums": -84.3,
+      "guitar": -84.3,
+      "other": -84.3,
+      "piano": -84.3,
+      "vocals": -84.3
+    },
+    "sourceDuration": 226.456,
+    "headSeconds": 0,
+    "tailSeconds": 221.479,
+    "newDuration": 221.479,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 221.479,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1z76ZZJUfII0sgslPpCopxUBcR_OCI7P9": {
+    "name": "Jory Boy - No Te Hagas.mp3",
+    "headKind": "crowd-or-ambience",
+    "tailKind": "quiet",
+    "headLevels": {
+      "bass": -53.4,
+      "drums": -90.3,
+      "other": -85.5,
+      "vocals": -40.7
+    },
+    "tailLevels": {
+      "bass": -91,
+      "drums": -74.4,
+      "other": -69.2,
+      "vocals": -64.4
+    },
+    "sourceDuration": 233.326,
+    "headSeconds": 1.885,
+    "tailSeconds": 227.547,
+    "newDuration": 225.662,
+    "detected": {
+      "musicIn": 3.266,
+      "musicOut": 227.547,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1ZgSorOnMb3QD1_z0PV3pjDoWKKXlrgNW": {
+    "name": "Justin Quiles - Justin Quiles, @ChimbalaHD  @ZionLennox   - Loco (Video Oficial).mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -65.9,
+      "vocals": -90.3
+    },
+    "sourceDuration": 240.849,
+    "headSeconds": 0,
+    "tailSeconds": 237.811,
+    "newDuration": 237.811,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 237.811,
+      "musicInSource": "silence",
+      "tonalHint": 8
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1a6UkRldLAQjXTD7RR4V7PqKwNAO38bQ_": {
+    "name": "Jacob Forever - Jacob Forever - Quiéreme (Official Video) ft. Farruko.mp3",
+    "headKind": "silence",
+    "tailKind": "vocals-only",
+    "headLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -91
+    },
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -90.3,
+      "guitar": -91,
+      "other": -81.9,
+      "vocals": -48.4
+    },
+    "sourceDuration": 235.468,
+    "headSeconds": 1.021,
+    "tailSeconds": 218.084,
+    "newDuration": 217.063,
+    "detected": {
+      "musicIn": 3.04,
+      "musicOut": 218.084,
+      "musicInSource": "silence",
+      "tonalHint": 14
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1F53Y8klIVIXHbDOWBH0k61qiRl3n5oCM": {
+    "name": "Justin Quiles - Justin Quiles @NattiNatasha @farruko Zion @dalex @LennyTavarezMusic DJ No Pare REMIX (Video Oficial).mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -91,
+      "guitar": -75.5,
+      "other": -91,
+      "vocals": -58.7
+    },
+    "sourceDuration": 260.911,
+    "headSeconds": 0,
+    "tailSeconds": 257.648,
+    "newDuration": 257.648,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 257.648,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1GLenHaGSo8lCk5cNfDD0qWyxuB_4QBja": {
+    "name": "JHAYCO, J Balvin, Bad Bunny - No Me Conoce (Remix).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -80.8,
+      "guitar": -90.3,
+      "other": -90.3,
+      "vocals": -23.4
+    },
+    "sourceDuration": 309.185,
+    "headSeconds": 0,
+    "tailSeconds": 292.701,
+    "newDuration": 292.701,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 292.701,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1L6AdTe0UfpqjRsyxBsdXUm7X065efMLH": {
+    "name": "J Balvin, Pharrell Williams, BIA, Sky - Safari.mp3",
+    "headKind": "quiet",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -90.3,
+      "drums": -87.3,
+      "guitar": -87.3,
+      "other": -91,
+      "vocals": -69.6
+    },
+    "tailLevels": {},
+    "sourceDuration": 205.662,
+    "headSeconds": 0.501,
+    "tailSeconds": null,
+    "newDuration": 205.161,
+    "detected": {
+      "musicIn": 3.003,
+      "musicOut": 203.536,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1bAJTOLLftnqB_eFrCwGvAmgRFLIywWOo": {
+    "name": "J Balvin, Willy William - J Balvin, Willy William - Mi Gente (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -85.5,
+      "other": -91,
+      "vocals": -28.5
+    },
+    "sourceDuration": 185.913,
+    "headSeconds": 0,
+    "tailSeconds": 182.226,
+    "newDuration": 182.226,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 182.226,
+      "musicInSource": "silence",
+      "tonalHint": 36
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1puPEE7aG3XT-qrfLBepOCOcgx6gWGhcH": {
+    "name": "J Balvin - J.Balvin, Karol G, Nicky Jam, Crissin, Totoy El Frio, Natan & Shander - Poblado.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -70.4,
+      "guitar": -91,
+      "other": -80.8,
+      "vocals": -91
+    },
+    "sourceDuration": 398.132,
+    "headSeconds": 0,
+    "tailSeconds": 394.285,
+    "newDuration": 394.285,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 394.285,
+      "musicInSource": "silence",
+      "tonalHint": 4
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1b9wMWp-pK-PXdH4qLmzhTEIKwZ0qQolI": {
+    "name": "J Balvin, Farruko - 6 AM.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -84.3,
+      "drums": -84.3,
+      "other": -76.3,
+      "piano": -84.3,
+      "vocals": -85.5
+    },
+    "sourceDuration": 243.304,
+    "headSeconds": 0,
+    "tailSeconds": 240.002,
+    "newDuration": 240.002,
+    "detected": {
+      "musicIn": 2.889,
+      "musicOut": 240.002,
+      "musicInSource": "silence",
+      "tonalHint": 4
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1jgFZrzTyzQuMTGKt7NaR2eoKKSaf0k_S": {
+    "name": "J Balvin - Sigo Extrañándote.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -87.3,
+      "drums": -90.3,
+      "other": -76.2,
+      "piano": -85.5,
+      "vocals": -43.8
+    },
+    "sourceDuration": 201.352,
+    "headSeconds": 0,
+    "tailSeconds": 197.89,
+    "newDuration": 197.89,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 197.89,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1Edd0nDbcEaxX7cmh6i8Q_yhAswMKYXnn": {
+    "name": "J Balvin - J. Balvin, Skrillex - In Da Getto (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -80.8,
+      "guitar": -91,
+      "other": -91,
+      "piano": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 173.584,
+    "headSeconds": 0,
+    "tailSeconds": 166.584,
+    "newDuration": 166.584,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 166.584,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1NUHNAPMcXAFikoAuYLhi9gBYn4S-ta-4": {
+    "name": "Hear This Music, Bad Bunny, Prince Royce, J Balvin - Sensualidad (feat. Mambo Kingz & DJ Luian).mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -72.4,
+      "drums": -73.8,
+      "guitar": -69.8,
+      "other": -72.2,
+      "piano": -72.3,
+      "vocals": -73.6
+    },
+    "sourceDuration": 297.561,
+    "headSeconds": 0,
+    "tailSeconds": 291.947,
+    "newDuration": 291.947,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 291.947,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1RhUNK76UrxC1SzoEisvqHEhQGsdm3vFM": {
+    "name": "J Balvin - Bobo.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -90.3,
+      "other": -91,
+      "piano": -82.5,
+      "vocals": -33.6
+    },
+    "sourceDuration": 209.502,
+    "headSeconds": 0,
+    "tailSeconds": 205.908,
+    "newDuration": 205.908,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 205.908,
+      "musicInSource": "silence",
+      "tonalHint": 22
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1LxyCDNmZ9Q4bS0fX3YZ2RhiJAbDAQrHn": {
+    "name": "Hear This Music - Loco Remix - Beéle x Farruko x Natti Natasha x Manuel Turizo.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -81.3,
+      "other": -73.4,
+      "vocals": -91
+    },
+    "sourceDuration": 253.675,
+    "headSeconds": 0,
+    "tailSeconds": 248.134,
+    "newDuration": 248.134,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 248.134,
+      "musicInSource": "silence",
+      "tonalHint": 4
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1NJMrGN1_wb8T1Q276BmBhcq_b4flCqj5": {
+    "name": "Gente de Zona, Mau y Ricky - Tan Buena.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -85.5,
+      "other": -91,
+      "vocals": -33.8
+    },
+    "sourceDuration": 225.175,
+    "headSeconds": 0,
+    "tailSeconds": 220.205,
+    "newDuration": 220.205,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 220.205,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1P6YpAQU-fiTCkjUjmAx9bKD5BcXaCoOw": {
+    "name": "Gente de Zona, El Micha - Hazle Completo el Cuento.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -78.8,
+      "drums": -82.5,
+      "other": -80.8,
+      "vocals": -20.9
+    },
+    "sourceDuration": 214.1,
+    "headSeconds": 0,
+    "tailSeconds": 210.097,
+    "newDuration": 210.097,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 210.097,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1X96bENOFCa0dJAWwiwn4gJ6NYi6B8r1x": {
+    "name": "Gente De Zona - Gente de Zona - Te Duele (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -73.4,
+      "guitar": -91,
+      "other": -91,
+      "piano": -91,
+      "vocals": -81.9
+    },
+    "sourceDuration": 207.02,
+    "headSeconds": 0,
+    "tailSeconds": 203.246,
+    "newDuration": 203.246,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 203.246,
+      "musicInSource": "silence",
+      "tonalHint": 2
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1VwhDt50fssxN8xJgOJXb33e7tNWYOuhz": {
+    "name": "Gente de Zona - Ella.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -87.3,
+      "drums": -87.3,
+      "guitar": -81.3,
+      "other": -85.5,
+      "vocals": -49
+    },
+    "sourceDuration": 193.358,
+    "headSeconds": 0,
+    "tailSeconds": 186.386,
+    "newDuration": 186.386,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 186.386,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1UsrmBmyhf3-kQEMFLZfpvWZcZbDaKSBD": {
+    "name": "Gente De Zona - Gente de Zona - Si No Vuelves (Official Video).mp3",
+    "headKind": "silence",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -91
+    },
+    "tailLevels": {},
+    "sourceDuration": 237.688,
+    "headSeconds": 4.126,
+    "tailSeconds": null,
+    "newDuration": 233.562,
+    "detected": {
+      "musicIn": 6.508,
+      "musicOut": 237.688,
+      "musicInSource": "silence",
+      "tonalHint": 42
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1jpPUff5lDoQkJXKv2F4YixI15fHZYaq8": {
+    "name": "Farruko, Makaco El Cerebro - Farruko X Makaco “El Cerebro” - Abatido (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -79.2,
+      "guitar": -90.3,
+      "other": -90.3,
+      "piano": -80.8,
+      "vocals": -90.3
+    },
+    "sourceDuration": 290.482,
+    "headSeconds": 0,
+    "tailSeconds": 287.408,
+    "newDuration": 287.408,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 287.408,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1A5TVE6k_e-hGmo9weLbhpMfaVBZKL6jE": {
+    "name": "Farruko - Pepas.mp3",
+    "headKind": "vocals-only",
+    "tailKind": "silence",
+    "headLevels": {
+      "bass": -82.5,
+      "drums": -81.9,
+      "other": -85.5,
+      "piano": -74.4,
+      "vocals": -17.2
+    },
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -71.4,
+      "piano": -91,
+      "vocals": -84.3
+    },
+    "sourceDuration": 287.19,
+    "headSeconds": 5.918,
+    "tailSeconds": 282.813,
+    "newDuration": 276.895,
+    "detected": {
+      "musicIn": 5.941,
+      "musicOut": 282.813,
+      "musicInSource": "silence",
+      "tonalHint": 8
+    },
+    "snappedToDownbeat": true,
+    "approved": false,
+    "approvedBy": null
+  },
+  "1-YOJX-J11n5m_YnaVqgDRqtKkWTq2ojv": {
+    "name": "Farruko, Bad Bunny - La Cartera.mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -58,
+      "drums": -91,
+      "guitar": -90.3,
+      "other": -91,
+      "piano": -90.3,
+      "vocals": -33.3
+    },
+    "sourceDuration": 289.985,
+    "headSeconds": 0,
+    "tailSeconds": 286.599,
+    "newDuration": 286.599,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 286.599,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "19RCdVMTm8AISad8Dy6i_DJVZJtjmrrSU": {
+    "name": "Farruko - Milly, Farruko, Jay Wheeler, Nio Garcia & Amenazzy - No Te Enamores Remix 🍯🐝 (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -76.9,
+      "vocals": -32.9
+    },
+    "sourceDuration": 290.011,
+    "headSeconds": 0,
+    "tailSeconds": 285.451,
+    "newDuration": 285.451,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 285.451,
+      "musicInSource": "silence",
+      "tonalHint": 22
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "18fvkXK7pCCd-cU_zx1qz_7PTiTDC7tgu": {
+    "name": "Farruko - Farruko - Sunset (Official Video) ft. Shaggy, Nicky Jam.mp3",
+    "headKind": "vocals-only",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -90.3,
+      "drums": -80.3,
+      "guitar": -90.3,
+      "other": -91,
+      "piano": -90.3,
+      "vocals": -23.4
+    },
+    "tailLevels": {},
+    "sourceDuration": 316.082,
+    "headSeconds": 6.082,
+    "tailSeconds": null,
+    "newDuration": 310,
+    "detected": {
+      "musicIn": 6.242,
+      "musicOut": 314.015,
+      "musicInSource": "silence",
+      "tonalHint": 50
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1HRmzYQj3g6Hd4pFaOVnj8dyauiv2uQii": {
+    "name": "Farruko - Farruko - Real Guerrero (Remix - Live).mp3",
+    "headKind": "silence",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "other": -81.3,
+      "piano": -91,
+      "vocals": -74
+    },
+    "tailLevels": {},
+    "sourceDuration": 268.878,
+    "headSeconds": 2.085,
+    "tailSeconds": null,
+    "newDuration": 266.793,
+    "detected": {
+      "musicIn": 3.387,
+      "musicOut": 268.878,
+      "musicInSource": "silence",
+      "tonalHint": 36
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1y9ezpx_HohPg67NMlcedcbH-abd-6ZdD": {
+    "name": "Farruko - Farruko - Passion Whine ft. Sean Paul (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -87.3,
+      "drums": -85.5,
+      "guitar": -70.9,
+      "other": -87.3,
+      "vocals": -87.3
+    },
+    "sourceDuration": 222.171,
+    "headSeconds": 0,
+    "tailSeconds": 219.012,
+    "newDuration": 219.012,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 219.012,
+      "musicInSource": "silence",
+      "tonalHint": 20
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1PFFYpL2MoCKAmfG0S4VlHzLz6kDL2Pv8": {
+    "name": "Farruko - Farruko - Don't Let Go (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -72.5,
+      "vocals": -91
+    },
+    "sourceDuration": 317.858,
+    "headSeconds": 0,
+    "tailSeconds": 302.032,
+    "newDuration": 302.032,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 302.032,
+      "musicInSource": "silence",
+      "tonalHint": 2
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1E1MJVpI6aaRJeMc7VizxPx3YNe1p9LOu": {
+    "name": "Farruko - Farruko - Chillax (Official Video) ft. Ky-Mani Marley.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -75,
+      "piano": -91,
+      "vocals": -80.8
+    },
+    "sourceDuration": 337.006,
+    "headSeconds": 0,
+    "tailSeconds": 321.953,
+    "newDuration": 321.953,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 321.953,
+      "musicInSource": "silence",
+      "tonalHint": 4
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1AO4B-ms8VRuXjfr_kazRSl3fuz8NE83O": {
+    "name": "Farruko - Farruko - Cositas Que Haciamos (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "other": -76.7,
+      "vocals": -38.3
+    },
+    "sourceDuration": 256.914,
+    "headSeconds": 0,
+    "tailSeconds": 250.49,
+    "newDuration": 250.49,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 250.49,
+      "musicInSource": "silence",
+      "tonalHint": 22
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1uIDikHpK8kRk2J2g8eIhrd8G_H4l85Mi": {
+    "name": "Farruko - Farruko -  S ̶A̶N̶  MIG ̶U̶E̶L̶.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -72.1,
+      "vocals": -43.8
+    },
+    "sourceDuration": 291.579,
+    "headSeconds": 0,
+    "tailSeconds": 286.425,
+    "newDuration": 286.425,
+    "detected": {
+      "musicIn": 2.316,
+      "musicOut": 286.425,
+      "musicInSource": "silence",
+      "tonalHint": 28
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1SNNN_F_Rd_sYRL5MHcFZlns29MwNjj5d": {
+    "name": "Farruko - Farruko - NAZARENO (Official Video).mp3",
+    "headKind": "silence",
+    "tailKind": "quiet",
+    "headLevels": {
+      "bass": -91,
+      "drums": -87.3,
+      "other": -90.3,
+      "piano": -90.3,
+      "vocals": -87.3
+    },
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -69.6,
+      "piano": -91,
+      "vocals": -64.2
+    },
+    "sourceDuration": 224.784,
+    "headSeconds": 3.159,
+    "tailSeconds": 220.802,
+    "newDuration": 217.643,
+    "detected": {
+      "musicIn": 3.162,
+      "musicOut": 220.802,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1sShbeDuiwLPK8CShjxUVcMcujVhw9BLa": {
+    "name": "Farruko - Farruko - La Tóxica (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -85.5,
+      "drums": -81.9,
+      "other": -85.5,
+      "vocals": -51.6
+    },
+    "sourceDuration": 205.218,
+    "headSeconds": 0,
+    "tailSeconds": 193.48,
+    "newDuration": 193.48,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 193.48,
+      "musicInSource": "silence",
+      "tonalHint": 36
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "15kNu_8Qhxj8dBORot3qLMkakLnnVY3ng": {
+    "name": "Enrique Iglesias - Enrique Iglesias - DUELE EL CORAZON ft. Wisin.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -87.3,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 239.412,
+    "headSeconds": 0,
+    "tailSeconds": 231.889,
+    "newDuration": 231.889,
+    "detected": {
+      "musicIn": 2.067,
+      "musicOut": 231.889,
+      "musicInSource": "silence",
+      "tonalHint": 8
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1sLNaKjykWjLGPbumVIci6lI9hKmE9lAt": {
+    "name": "Enrique Iglesias - Enrique Iglesias - Bailando ft. Descemer Bueno, Gente De Zona.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -81.9,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 286.851,
+    "headSeconds": 0,
+    "tailSeconds": 265.085,
+    "newDuration": 265.085,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 265.085,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1Q7d8A94r8sbmpg4nyR68XBheRMVGyDXi": {
+    "name": "Elvis Crespo - Tu Sonrisa.mp3",
+    "headKind": "vocals-only",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -85.5,
+      "drums": -85.5,
+      "other": -90.3,
+      "vocals": -17
+    },
+    "tailLevels": {},
+    "sourceDuration": 274.233,
+    "headSeconds": 13.485,
+    "tailSeconds": null,
+    "newDuration": 260.748,
+    "detected": {
+      "musicIn": 14.768,
+      "musicOut": 271.285,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1lWwt7rm8SgwmuqjNdiCHDnakELFbR86c": {
+    "name": "Enrique Iglesias - Enrique Iglesias - ME PASE (Official Video) ft. Farruko.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -84.3,
+      "drums": -81.3,
+      "guitar": -84.3,
+      "other": -84.3,
+      "piano": -84.3,
+      "vocals": -85.5
+    },
+    "sourceDuration": 201.822,
+    "headSeconds": 0,
+    "tailSeconds": 197.268,
+    "newDuration": 197.268,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 197.268,
+      "musicInSource": "silence",
+      "tonalHint": 14
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1BTwKUCZx_oXFkcSvXa4C6A6k2nDrR0Jh": {
+    "name": "Don Omar - Pobre Diabla.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -71.7,
+      "piano": -90.3,
+      "vocals": -90.3
+    },
+    "sourceDuration": 255.765,
+    "headSeconds": 0,
+    "tailSeconds": 251.864,
+    "newDuration": 251.864,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 251.864,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1f-Q6WQ7DqlR4V6spwAQ99FNlb7InZbVZ": {
+    "name": "Elvis Crespo - Suavemente.mp3",
+    "headKind": "vocals-only",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -84.3,
+      "drums": -84.3,
+      "guitar": -87.3,
+      "other": -87.3,
+      "vocals": -17.1
+    },
+    "tailLevels": {},
+    "sourceDuration": 267.076,
+    "headSeconds": 14.16,
+    "tailSeconds": null,
+    "newDuration": 252.916,
+    "detected": {
+      "musicIn": 15.247,
+      "musicOut": 267.076,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1qg186SsbHCOADywgM8quK73ss3pMC2ny": {
+    "name": "Daddy Yankee - Daddy Yankee - Llegamos a La Disco (Video Oficial).mp3",
+    "headKind": "quiet",
+    "tailKind": "silence",
+    "headLevels": {
+      "bass": -91,
+      "drums": -78.5,
+      "other": -90.3,
+      "vocals": -58.3
+    },
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -91,
+      "other": -79.9,
+      "vocals": -90.3
+    },
+    "sourceDuration": 480.026,
+    "headSeconds": 7.576,
+    "tailSeconds": 474.029,
+    "newDuration": 466.453,
+    "detected": {
+      "musicIn": 7.593,
+      "musicOut": 474.029,
+      "musicInSource": "silence",
+      "tonalHint": 22
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1TCRcPG-qFU9FmFxeEZnJeiWhHwedG9r1": {
+    "name": "Descemer Bueno - Descemer Bueno, Gente De Zona - Después Que Bailamos (Video Oficial).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -74.2,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 238.707,
+    "headSeconds": 0,
+    "tailSeconds": 230.1,
+    "newDuration": 230.1,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 230.1,
+      "musicInSource": "silence",
+      "tonalHint": 6
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1ozVkM49h5br7OksLeujEJ2mF1RlJfJ7F": {
+    "name": "Daddy Yankee, Bad Bunny - Vuelve.mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -80.3,
+      "drums": -85.5,
+      "guitar": -81.9,
+      "other": -82.5,
+      "piano": -81.9,
+      "vocals": -67.4
+    },
+    "sourceDuration": 279.693,
+    "headSeconds": 0,
+    "tailSeconds": 275.28,
+    "newDuration": 275.28,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 275.28,
+      "musicInSource": "silence",
+      "tonalHint": 12
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1dsS9APhuCRgU97VOwj-8QzCo6ammeQYu": {
+    "name": "Daddy Yankee, Ozuna - La Rompe Corazones.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -78.5,
+      "drums": -80.8,
+      "guitar": -81.9,
+      "other": -78.5,
+      "vocals": -23.3
+    },
+    "sourceDuration": 204.591,
+    "headSeconds": 0,
+    "tailSeconds": 197.284,
+    "newDuration": 197.284,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 197.284,
+      "musicInSource": "silence",
+      "tonalHint": 12
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1PN1IV-Ew9UPel6_kUzpa-9cTcs2CF7-S": {
+    "name": "Daddy Yankee - Vaivén.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -85.5,
+      "other": -91,
+      "vocals": -31.5
+    },
+    "sourceDuration": 224.418,
+    "headSeconds": 0,
+    "tailSeconds": 218.032,
+    "newDuration": 218.032,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 218.032,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "12maRh1IhXcJ4aLm_WKCp7hVFuw9Col9P": {
+    "name": "Daddy Yankee - Daddy Yankee - Limbo (Video Oficial).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -90.3,
+      "vocals": -91
+    },
+    "sourceDuration": 254.642,
+    "headSeconds": 0,
+    "tailSeconds": 249.238,
+    "newDuration": 249.238,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 249.238,
+      "musicInSource": "silence",
+      "tonalHint": 54
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1kMjtpPq3rOHG5GeBI5P4ljRn_av2F1An": {
+    "name": "Daddy Yankee - Daddy Yankee - Dura (Video Oficial).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -90.3,
+      "guitar": -90.3,
+      "other": -87.3,
+      "vocals": -91
+    },
+    "sourceDuration": 217.731,
+    "headSeconds": 0,
+    "tailSeconds": 207.866,
+    "newDuration": 207.866,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 207.866,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "1SM39vbmiOZ1g70CZ-gE8I9cAYs8Ft3iH": {
+    "name": "Daddy Yankee - Daddy Yankee & Snow - Con Calma (Video Oficial).mp3",
+    "headKind": "silence",
+    "tailKind": "vocals-only",
+    "headLevels": {
+      "bass": -90.3,
+      "drums": -83.3,
+      "other": -80.3,
+      "piano": -90.3,
+      "vocals": -90.3
+    },
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -91,
+      "piano": -90.3,
+      "vocals": -23.8
+    },
+    "sourceDuration": 210.678,
+    "headSeconds": 5.315,
+    "tailSeconds": 193.34,
+    "newDuration": 188.025,
+    "detected": {
+      "musicIn": 5.318,
+      "musicOut": 193.34,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1s-Xap8QnXqhvlS5pTjbmSETFzyOwRKNF": {
+    "name": "DJ Snake - DJ Snake - Taki Taki ft. Selena Gomez, Ozuna, Cardi B (Official Music Video).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -71.5,
+      "other": -87.3,
+      "vocals": -80.8
+    },
+    "sourceDuration": 231.628,
+    "headSeconds": 0,
+    "tailSeconds": 226.499,
+    "newDuration": 226.499,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 226.499,
+      "musicInSource": "silence",
+      "tonalHint": 6
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1Q1-afBZ-lruWBquYnVZ34_d5PzOMO35o": {
+    "name": "Bad Bunny, Mambo Kingz, Dj Luian, Arcangel, Almighty, Bryant Myers, Noriel, Baby Rasta, Brytiago - Me Mata.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -73.8,
+      "other": -91,
+      "vocals": -87.3
+    },
+    "sourceDuration": 413.074,
+    "headSeconds": 0,
+    "tailSeconds": 408.151,
+    "newDuration": 408.151,
+    "detected": {
+      "musicIn": 2.166,
+      "musicOut": 408.151,
+      "musicInSource": "silence",
+      "tonalHint": 8
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1C4WPk-jmEmag14fAAAwEC9Wo_uEUca7z": {
+    "name": "Brytiago, Bad Bunny - Netflixxx.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -77.3,
+      "vocals": -51.2
+    },
+    "sourceDuration": 219.089,
+    "headSeconds": 0,
+    "tailSeconds": 214.225,
+    "newDuration": 214.225,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 214.225,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1Dd154ZTeHPWcTbWdt3xl0_LOmdLU2VFe": {
+    "name": "Black Eyed Peas - Black Eyed Peas, J Balvin - RITMO (Bad Boys For Life) (Official Music Video).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -87.3,
+      "other": -90.3,
+      "vocals": -21.5
+    },
+    "sourceDuration": 218.906,
+    "headSeconds": 0,
+    "tailSeconds": 214.384,
+    "newDuration": 214.384,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 214.384,
+      "musicInSource": "silence",
+      "tonalHint": 4
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1K7QykRVRyAJAyGSFUoPBV5mhMTl3UssG": {
+    "name": "Bad Bunny, Benito A. Martinez Ocasio, Roberto José Rosado Torres, Marcos Efraín Masis, Luis Amed Irizarry, Jay Anthony Nuñez - LA MuDANZA.mp3",
+    "headKind": "vocals-only",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -85.5,
+      "drums": -87.3,
+      "guitar": -87.3,
+      "other": -90.3,
+      "piano": -84.3,
+      "vocals": -17.9
+    },
+    "tailLevels": {},
+    "sourceDuration": 213.081,
+    "headSeconds": 36.237,
+    "tailSeconds": null,
+    "newDuration": 176.844,
+    "detected": {
+      "musicIn": 38.367,
+      "musicOut": 213.081,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1XqBxxvC2L6FrKKIQGAhXSoAfIC1NDIUn": {
+    "name": "Bad Bunny, Benito Antonio Martínez Ocasio - Después de la Playa.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -90.3,
+      "guitar": -84.3,
+      "other": -84.3,
+      "vocals": -24.6
+    },
+    "sourceDuration": 230.452,
+    "headSeconds": 0,
+    "tailSeconds": 221.421,
+    "newDuration": 221.421,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 221.421,
+      "musicInSource": "silence",
+      "tonalHint": 12
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1vEKg1NFfOJQxq2RKdiyIEHu33t5qQM4m": {
+    "name": "Bad Bunny, Benito A Martinez - Soy Peor.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -84.3,
+      "drums": -91,
+      "other": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 257.463,
+    "headSeconds": 0,
+    "tailSeconds": 254.082,
+    "newDuration": 254.082,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 254.082,
+      "musicInSource": "silence",
+      "tonalHint": 16
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1lrLoOZeietBmmGMXdztxDjG5SfYimcxw": {
+    "name": "Bad Bunny, Benito A Martinez - Dime Si Te Acuerdas.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "other": -82.5,
+      "piano": -91,
+      "vocals": -76.9
+    },
+    "sourceDuration": 187.35,
+    "headSeconds": 0,
+    "tailSeconds": 178.145,
+    "newDuration": 178.145,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 178.145,
+      "musicInSource": "silence",
+      "tonalHint": 2
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1CVmzbOIsabKSEMw1HRdlMECcWw_SQnr2": {
+    "name": "Bad Bunny, Arcangel, Ñengo Flow, Dj Luian, Mambo Kingz, Ozuna, Farruko, Benito A Martinez - Diles.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -81.9,
+      "drums": -84.3,
+      "guitar": -82.5,
+      "other": -77.5,
+      "vocals": -23.9
+    },
+    "sourceDuration": 286.119,
+    "headSeconds": 0,
+    "tailSeconds": 277.781,
+    "newDuration": 277.781,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 277.781,
+      "musicInSource": "silence",
+      "tonalHint": 16
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1EQ7-7_ZsaqdLiWPokjENhPOc3CLzw3OB": {
+    "name": "Bad Bunny, Benito A Martinez - Chambea.mp3",
+    "headKind": "vocals-only",
+    "tailKind": "vocals-only",
+    "headLevels": {
+      "bass": -90.3,
+      "drums": -90.3,
+      "other": -91,
+      "vocals": -21.1
+    },
+    "tailLevels": {
+      "bass": -76.9,
+      "drums": -91,
+      "other": -91,
+      "vocals": -25.8
+    },
+    "sourceDuration": 192.078,
+    "headSeconds": 8.318,
+    "tailSeconds": 182.827,
+    "newDuration": 174.509,
+    "detected": {
+      "musicIn": 8.323,
+      "musicOut": 182.827,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1VCrYv4JdKeHGqu4IK4IQf4utrcf1Cg8M": {
+    "name": "Bad Bunny, Benito A Martinez - Amorfoda.mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -91,
+      "piano": -68.6,
+      "vocals": -91
+    },
+    "sourceDuration": 153.94,
+    "headSeconds": 0,
+    "tailSeconds": 150.574,
+    "newDuration": 150.574,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 150.574,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1CO6cH-ZBVlmt0UbBh5hWGKZDFm32xXVP": {
+    "name": "Bad Bunny - La Romana FT El Alfa.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -90.3,
+      "other": -78.3,
+      "vocals": -26.2
+    },
+    "sourceDuration": 300.669,
+    "headSeconds": 0,
+    "tailSeconds": 296.453,
+    "newDuration": 296.453,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 296.453,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "15nD8z8fjseKSMiJ7oQlHJKvR15mVpIdz": {
+    "name": "Bad Bunny - Si Estuviésemos Juntos Juntos.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -90.3,
+      "guitar": -87.3,
+      "other": -90.3,
+      "piano": -74.7,
+      "vocals": -30.4
+    },
+    "sourceDuration": 169.3,
+    "headSeconds": 0,
+    "tailSeconds": 164.833,
+    "newDuration": 164.833,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 164.833,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1OugPJVjyFQXnM5ZwRbIArfZvaM8BNFV5": {
+    "name": "Bad Bunny - NI BIEN NI MAL.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -70.3,
+      "vocals": -37.9
+    },
+    "sourceDuration": 236.304,
+    "headSeconds": 0,
+    "tailSeconds": 233.148,
+    "newDuration": 233.148,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 233.148,
+      "musicInSource": "silence",
+      "tonalHint": 22
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1e2pko5Ql0f9gPXr-B0KigHFHZJK50Fid": {
+    "name": "Arcangel, Bad Bunny, Mambo Kingz, DJ Luian - Tu No Vive Asi (feat. Mambo Kingz & DJ Luian).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -87.3,
+      "drums": -87.3,
+      "other": -90.3,
+      "vocals": -27.9
+    },
+    "sourceDuration": 264.072,
+    "headSeconds": 0,
+    "tailSeconds": 257.245,
+    "newDuration": 257.245,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 257.245,
+      "musicInSource": "silence",
+      "tonalHint": 14
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "14foRlMB7t2jENoowTKKyIqB-O8USeHpZ": {
+    "name": "Alexio “La Bestia” - ALEXIO - Tumba La Casa Remix ft. Daddy, Nicky Jam, Arcangel, Ñengo Flow, Zion, Farruko, De la Ghetto.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "guitar": -91,
+      "other": -82.5,
+      "vocals": -28.6
+    },
+    "sourceDuration": 477.701,
+    "headSeconds": 0,
+    "tailSeconds": 472.827,
+    "newDuration": 472.827,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 472.827,
+      "musicInSource": "silence",
+      "tonalHint": 52
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1BNHFwNLLHd19TYCNp8NzF7j_onKfovmd": {
+    "name": "Abraham Mateo - Abraham Mateo, Farruko, Christian Daniel - Loco Enamorado (Video Oficial).mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -87.3,
+      "guitar": -91,
+      "other": -69.7,
+      "vocals": -80.3
+    },
+    "sourceDuration": 278.7,
+    "headSeconds": 0,
+    "tailSeconds": 269.254,
+    "newDuration": 269.254,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 269.254,
+      "musicInSource": "silence",
+      "tonalHint": 6
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1P4S90ciCxnywDuDAMVD_wpYoAVsOAm6e": {
+    "name": "Arcangel - Arcángel - 50 Sombras de Austin (Video Oficial).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -91,
+      "other": -91,
+      "vocals": -33.4
+    },
+    "sourceDuration": 212.088,
+    "headSeconds": 0,
+    "tailSeconds": 201.081,
+    "newDuration": 201.081,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 201.081,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1whi7jQ7ULoTdtq4xqq6ZmR6Buoz3Vu2b": {
+    "name": "Después de la Playa.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -90.3,
+      "guitar": -90.3,
+      "other": -85.5,
+      "vocals": -25.2
+    },
+    "sourceDuration": 230.452,
+    "headSeconds": 0,
+    "tailSeconds": 221.792,
+    "newDuration": 221.792,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 221.792,
+      "musicInSource": "silence",
+      "tonalHint": 12
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1oxC4EjuyKz4CmbUSbLHhMkvo-6Z6vGpx": {
+    "name": "El Apagón.mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -76.5,
+      "drums": -85.5,
+      "guitar": -84.3,
+      "other": -83.3,
+      "vocals": -30
+    },
+    "sourceDuration": 201.9,
+    "headSeconds": 0,
+    "tailSeconds": 198.372,
+    "newDuration": 198.372,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 198.372,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1KlE1SV5btPqevo1xU3Sni1KlLSHtm1ca": {
+    "name": "LA MuDANZA.mp3",
+    "headKind": "vocals-only",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -85.5,
+      "drums": -87.3,
+      "guitar": -87.3,
+      "other": -90.3,
+      "piano": -84.3,
+      "vocals": -17.9
+    },
+    "tailLevels": {},
+    "sourceDuration": 213.081,
+    "headSeconds": 36.237,
+    "tailSeconds": null,
+    "newDuration": 176.844,
+    "detected": {
+      "musicIn": 38.369,
+      "musicOut": 213.081,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "15Ddg9u2x9gRtZhyxb9UbzTPtJDlAKeMn": {
+    "name": "El Día De Mi Suerte.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "guitar": -81.9,
+      "other": -78.5,
+      "vocals": -91
+    },
+    "sourceDuration": 328.856,
+    "headSeconds": 0,
+    "tailSeconds": 323.277,
+    "newDuration": 323.277,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 323.277,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1-StuBC__PjgIWhssFj86bTwBZfKsY6Un": {
+    "name": "Pepas.mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -91,
+      "other": -75.5,
+      "piano": -90.3,
+      "vocals": -90.3
+    },
+    "sourceDuration": 287.19,
+    "headSeconds": 0,
+    "tailSeconds": 282.482,
+    "newDuration": 282.482,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 282.482,
+      "musicInSource": "silence",
+      "tonalHint": 8
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1Pt-QEKt8xknQ_PwPFzH11av7CDMFCPcq": {
+    "name": "Tití Me Preguntó.mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -69.9,
+      "drums": -90.3,
+      "other": -78,
+      "vocals": -72
+    },
+    "sourceDuration": 243.775,
+    "headSeconds": 0,
+    "tailSeconds": 239.715,
+    "newDuration": 239.715,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 239.715,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "1I6GJF3GjfRTVftbOm5XjHnZL9dRlmBVN": {
+    "name": "Shakira - Soltera (Official Video).mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -81.9,
+      "drums": -85.5,
+      "guitar": -85.5,
+      "other": -85.5,
+      "vocals": -22
+    },
+    "sourceDuration": 248.999,
+    "headSeconds": 0,
+    "tailSeconds": 233.971,
+    "newDuration": 233.971,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 233.971,
+      "musicInSource": "silence",
+      "tonalHint": 24
+    },
+    "snappedToDownbeat": false,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:AlexisyFidoOfficial - Alexis y Fido - Una En Un Millón (Video Oficial) [HLODpE__LZE].mp3": {
+    "name": "AlexisyFidoOfficial - Alexis y Fido - Una En Un Millón (Video Oficial) [HLODpE__LZE].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -90.3,
+      "other": -79.5,
+      "vocals": -21.7
+    },
+    "sourceDuration": 225.567,
+    "headSeconds": 0,
+    "tailSeconds": 222.399,
+    "newDuration": 222.399,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 222.399,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.26742857694625854,
+          "bpm": 95.00675201416016
+        }
+      ],
+      "anchor": 0.26742857694625854,
+      "bpm": 95.00675201416016
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Atlantic Records - Fabolous - Breathe (Official Video) [HD Remaster] [t6q9Vc1ZtQI].mp3": {
+    "name": "Atlantic Records - Fabolous - Breathe (Official Video) [HD Remaster] [t6q9Vc1ZtQI].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -87.3,
+      "guitar": -87.3,
+      "other": -91,
+      "vocals": -24.5
+    },
+    "sourceDuration": 259.056,
+    "headSeconds": 0,
+    "tailSeconds": 256.036,
+    "newDuration": 256.036,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 256.036,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 1.3037142753601074,
+          "bpm": 82.92623138427734
+        }
+      ],
+      "anchor": 1.3037142753601074,
+      "bpm": 82.92623138427734
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Bad Bunny - BAD BUNNY x NESI x IVY QUEEN - YO PERREO SOLA REMIX ｜ YHLQMDLG (Audio Oficial) [WBnBntk7LbE].mp3": {
+    "name": "Bad Bunny - BAD BUNNY x NESI x IVY QUEEN - YO PERREO SOLA REMIX ｜ YHLQMDLG (Audio Oficial) [WBnBntk7LbE].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -81.3,
+      "other": -90.3,
+      "vocals": -23.3
+    },
+    "sourceDuration": 174.08,
+    "headSeconds": 0,
+    "tailSeconds": 170.118,
+    "newDuration": 170.118,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 170.118,
+      "musicInSource": "silence",
+      "tonalHint": 2
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.3217500150203705,
+          "bpm": 97.00160217285156
+        }
+      ],
+      "anchor": 0.3217500150203705,
+      "bpm": 97.00160217285156
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Bad Bunny - BAD BUNNY x YANDEL - CANCIÓN CON YANDEL ｜ LAS QUE NO IBAN A SALIR (Audio Oficial) [R82Pk0VQWOQ].mp3": {
+    "name": "Bad Bunny - BAD BUNNY x YANDEL - CANCIÓN CON YANDEL ｜ LAS QUE NO IBAN A SALIR (Audio Oficial) [R82Pk0VQWOQ].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -83.3,
+      "drums": -81.9,
+      "other": -83.3,
+      "piano": -82.5,
+      "vocals": -19.5
+    },
+    "sourceDuration": 209.084,
+    "headSeconds": 0,
+    "tailSeconds": 205.906,
+    "newDuration": 205.906,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 205.906,
+      "musicInSource": "silence",
+      "tonalHint": 24
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 5.0435357093811035,
+          "bpm": 80.00211334228516
+        }
+      ],
+      "anchor": 5.0435357093811035,
+      "bpm": 80.00211334228516
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Bad Bunny - Bad Bunny ft. Bomba Estéreo - Ojitos Lindos (Video Oficial) ｜ Un Verano Sin Ti [wAjHQXrIj9o].mp3": {
+    "name": "Bad Bunny - Bad Bunny ft. Bomba Estéreo - Ojitos Lindos (Video Oficial) ｜ Un Verano Sin Ti [wAjHQXrIj9o].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -90.3,
+      "guitar": -77.5,
+      "other": -77.5,
+      "vocals": -53.8
+    },
+    "sourceDuration": 270.707,
+    "headSeconds": 0,
+    "tailSeconds": 265.685,
+    "newDuration": 265.685,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 265.685,
+      "musicInSource": "silence",
+      "tonalHint": 6
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Clean Radio Promo - Lil Wayne - Got Money (feat. T-Pain) [Explicit Version] [ZURis3A6FYM].mp3": {
+    "name": "Clean Radio Promo - Lil Wayne - Got Money (feat. T-Pain) [Explicit Version] [ZURis3A6FYM].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -84.3,
+      "drums": -84.3,
+      "other": -84.3,
+      "vocals": -28.5
+    },
+    "sourceDuration": 244.846,
+    "headSeconds": 0,
+    "tailSeconds": 236.204,
+    "newDuration": 236.204,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 236.204,
+      "musicInSource": "silence",
+      "tonalHint": 8
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Common - Common - I Used to Love H.E.R. (Official Video) [TrUERC2Zk64].mp3": {
+    "name": "Common - Common - I Used to Love H.E.R. (Official Video) [TrUERC2Zk64].mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -83.3,
+      "other": -91,
+      "vocals": -73.1
+    },
+    "sourceDuration": 265.143,
+    "headSeconds": 0,
+    "tailSeconds": 260.799,
+    "newDuration": 260.799,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 260.799,
+      "musicInSource": "silence",
+      "tonalHint": 8
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Cypress Hill - Cypress Hill - How I Could Just Kill a Man (Official HD Video) [Yg-RIOATCbU].mp3": {
+    "name": "Cypress Hill - Cypress Hill - How I Could Just Kill a Man (Official HD Video) [Yg-RIOATCbU].mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -76.2,
+      "guitar": -90.3,
+      "other": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 245.473,
+    "headSeconds": 0,
+    "tailSeconds": 242.044,
+    "newDuration": 242.044,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 242.044,
+      "musicInSource": "silence",
+      "tonalHint": 4
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Daddy Yankee - Daddy Yankee & Anuel AA - Adictiva (Video Oficial) [BvFJstCIrpw].mp3": {
+    "name": "Daddy Yankee - Daddy Yankee & Anuel AA - Adictiva (Video Oficial) [BvFJstCIrpw].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -74,
+      "other": -91,
+      "piano": -90.3,
+      "vocals": -23.3
+    },
+    "sourceDuration": 209.032,
+    "headSeconds": 0,
+    "tailSeconds": 205.554,
+    "newDuration": 205.554,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 205.554,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:El Micha - El Micha, Lenier - Pa Los Haters [vP_jAwlRRto].mp3": {
+    "name": "El Micha - El Micha, Lenier - Pa Los Haters [vP_jAwlRRto].mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -81.3,
+      "other": -71.2,
+      "piano": -91,
+      "vocals": -72.2
+    },
+    "sourceDuration": 190.198,
+    "headSeconds": 0,
+    "tailSeconds": 186.92,
+    "newDuration": 186.92,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 186.92,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.10864286124706268,
+          "bpm": 133.9934539794922
+        }
+      ],
+      "anchor": 0.10864286124706268,
+      "bpm": 133.9934539794922
+    },
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "local:EminemMusic - Godzilla (feat. Juice WRLD) [Official Audio] [9XvXF1LrWgA].mp3": {
+    "name": "EminemMusic - Godzilla (feat. Juice WRLD) [Official Audio] [9XvXF1LrWgA].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -84.3,
+      "drums": -90.3,
+      "other": -91,
+      "vocals": -21.2
+    },
+    "sourceDuration": 210.887,
+    "headSeconds": 0,
+    "tailSeconds": 207.699,
+    "newDuration": 207.699,
+    "detected": {
+      "musicIn": 2.551,
+      "musicOut": 207.699,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.17967857420444489,
+          "bpm": 82.9998550415039
+        }
+      ],
+      "anchor": 0.17967857420444489,
+      "bpm": 82.9998550415039
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Enrique Iglesias - Enrique Iglesias - Tonight (I'm Lovin' You) (Explicit Lyrics) ft. Ludacris, DJ Frank E.mp3": {
+    "name": "Enrique Iglesias - Enrique Iglesias - Tonight (I'm Lovin' You) (Explicit Lyrics) ft. Ludacris, DJ Frank E.mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -90.3,
+      "vocals": -65.2
+    },
+    "sourceDuration": 301.166,
+    "headSeconds": 0,
+    "tailSeconds": 289.831,
+    "newDuration": 289.831,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 289.831,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.46799999475479126,
+          "bpm": 125.99044799804688
+        }
+      ],
+      "anchor": 0.46799999475479126,
+      "bpm": 125.99044799804688
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Farruko - Farruko - MADRID (Official Video) [6vzJ3d-GqHQ].mp3": {
+    "name": "Farruko - Farruko - MADRID (Official Video) [6vzJ3d-GqHQ].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -87.3,
+      "guitar": -87.3,
+      "other": -75.5,
+      "piano": -87.3,
+      "vocals": -42.3
+    },
+    "sourceDuration": 185.704,
+    "headSeconds": 0,
+    "tailSeconds": 182.416,
+    "newDuration": 182.416,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 182.416,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.37607142329216003,
+          "bpm": 121.9933853149414
+        }
+      ],
+      "anchor": 0.37607142329216003,
+      "bpm": 121.9933853149414
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Farruko - Farruko - Nadie (Official Video) [HIHahVfa2aA].mp3": {
+    "name": "Farruko - Farruko - Nadie (Official Video) [HIHahVfa2aA].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -90.3,
+      "other": -77.3,
+      "vocals": -26.5
+    },
+    "sourceDuration": 233.195,
+    "headSeconds": 0,
+    "tailSeconds": 229.306,
+    "newDuration": 229.306,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 229.306,
+      "musicInSource": "silence",
+      "tonalHint": 6
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Flow La Movie - Nio Garcia - AM (Video Oficial) [N06bpHYU1ow].mp3": {
+    "name": "Flow La Movie - Nio Garcia - AM (Video Oficial) [N06bpHYU1ow].mp3",
+    "headKind": "none",
+    "tailKind": "crowd-or-ambience",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -78,
+      "drums": -35.1,
+      "guitar": -65.5,
+      "other": -57.7,
+      "vocals": -63.3
+    },
+    "sourceDuration": 182.439,
+    "headSeconds": 0,
+    "tailSeconds": 179.26,
+    "newDuration": 179.26,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 179.26,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.06267856806516647,
+          "bpm": 86.00027465820312
+        }
+      ],
+      "anchor": 0.06267856806516647,
+      "bpm": 86.00027465820312
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Gente De Zona - Gente De Zona - Por Ahí (Video Oficial) [tfZwnTfHvvM].mp3": {
+    "name": "Gente De Zona - Gente De Zona - Por Ahí (Video Oficial) [tfZwnTfHvvM].mp3",
+    "headKind": "quiet",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -91,
+      "drums": -65.1,
+      "guitar": -78,
+      "other": -91,
+      "vocals": -37.9
+    },
+    "tailLevels": {},
+    "sourceDuration": 160.131,
+    "headSeconds": 12.214,
+    "tailSeconds": null,
+    "newDuration": 147.917,
+    "detected": {
+      "musicIn": 12.214,
+      "musicOut": 160.131,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": false,
+    "approvedBy": null
+  },
+  "local:Gente De Zona - Gente de Zona - Algo Contigo (Official Video) [yvhx5gMmSPs].mp3": {
+    "name": "Gente De Zona - Gente de Zona - Algo Contigo (Official Video) [yvhx5gMmSPs].mp3",
+    "headKind": "none",
+    "tailKind": "quiet",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -71.4,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -59.7
+    },
+    "sourceDuration": 223.739,
+    "headSeconds": 0,
+    "tailSeconds": 220.314,
+    "newDuration": 220.314,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 220.314,
+      "musicInSource": "silence",
+      "tonalHint": 4
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Gente De Zona - Gente de Zona - TikTok (Audio) [p4MwFBkAEJI].mp3": {
+    "name": "Gente De Zona - Gente de Zona - TikTok (Audio) [p4MwFBkAEJI].mp3",
+    "headKind": "vocals-only",
+    "tailKind": "vocals-only",
+    "headLevels": {
+      "bass": -91,
+      "drums": -83.3,
+      "guitar": -80.3,
+      "other": -91,
+      "vocals": -26.9
+    },
+    "tailLevels": {
+      "bass": -87.3,
+      "drums": -90.3,
+      "guitar": -77.3,
+      "other": -90.3,
+      "vocals": -27.5
+    },
+    "sourceDuration": 187.611,
+    "headSeconds": 5.811,
+    "tailSeconds": 183.199,
+    "newDuration": 177.388,
+    "detected": {
+      "musicIn": 6.41,
+      "musicOut": 183.199,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": true,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 1.011214256286621,
+          "bpm": 100.001708984375
+        }
+      ],
+      "anchor": 1.011214256286621,
+      "bpm": 100.001708984375
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Gente de Zona - La Fiesta No Se Ha Acabado [5S5YrJ7c9Xc].mp3": {
+    "name": "Gente de Zona - La Fiesta No Se Ha Acabado [5S5YrJ7c9Xc].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -79.5,
+      "drums": -79.9,
+      "guitar": -79.5,
+      "other": -79.2,
+      "piano": -79.5,
+      "vocals": -28.1
+    },
+    "sourceDuration": 85.551,
+    "headSeconds": 0,
+    "tailSeconds": 82.33,
+    "newDuration": 82.33,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 82.33,
+      "musicInSource": "silence",
+      "tonalHint": 10
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.4387499988079071,
+          "bpm": 100.00072479248047
+        }
+      ],
+      "anchor": 0.4387499988079071,
+      "bpm": 100.00072479248047
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Geto Boys - Still (Instrumental).mp3": {
+    "name": "Geto Boys - Still (Instrumental).mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -72.5,
+      "other": -90.3,
+      "vocals": -91
+    },
+    "sourceDuration": 268.121,
+    "headSeconds": 0,
+    "tailSeconds": 262.479,
+    "newDuration": 262.479,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 262.479,
+      "musicInSource": "silence",
+      "tonalHint": 22
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.4011428654193878,
+          "bpm": 88.00189208984375
+        }
+      ],
+      "anchor": 0.4011428654193878,
+      "bpm": 88.00189208984375
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:IAMCHINO - Enrique Iglesias x Pitbull x IAmChino - Tamo Bien (Audio Oficial) [3PSkP8Di1uo].mp3": {
+    "name": "IAMCHINO - Enrique Iglesias x Pitbull x IAmChino - Tamo Bien (Audio Oficial) [3PSkP8Di1uo].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -85.5,
+      "other": -84.3,
+      "piano": -90.3,
+      "vocals": -17.2
+    },
+    "sourceDuration": 184.372,
+    "headSeconds": 0,
+    "tailSeconds": 181.323,
+    "newDuration": 181.323,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 181.323,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:KYENESOfficial - KYEN？ES？, DJ Nelson - Oye Mi Canto (Visualizer) [_TE-FKJh4z4].mp3": {
+    "name": "KYENESOfficial - KYEN？ES？, DJ Nelson - Oye Mi Canto (Visualizer) [_TE-FKJh4z4].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "other": -72.7,
+      "vocals": -49.7
+    },
+    "sourceDuration": 186.932,
+    "headSeconds": 0,
+    "tailSeconds": 183.744,
+    "newDuration": 183.744,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 183.744,
+      "musicInSource": "silence",
+      "tonalHint": 12
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Kany Garcia - Kany García, Rawayana - La Culpa (Video Oficial) [pio_znWfSOc].mp3": {
+    "name": "Kany Garcia - Kany García, Rawayana - La Culpa (Video Oficial) [pio_znWfSOc].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -77.3,
+      "guitar": -87.3,
+      "other": -90.3,
+      "vocals": -18.6
+    },
+    "sourceDuration": 161.593,
+    "headSeconds": 0,
+    "tailSeconds": 156.606,
+    "newDuration": 156.606,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 156.606,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.30085715651512146,
+          "bpm": 119.90792846679688
+        }
+      ],
+      "anchor": 0.30085715651512146,
+      "bpm": 119.90792846679688
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Kapo - OHNANA - KAPO (Video Oficial) [lmDfmilZ4Xo].mp3": {
+    "name": "Kapo - OHNANA - KAPO (Video Oficial) [lmDfmilZ4Xo].mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -78.3,
+      "drums": -71.8,
+      "guitar": -78.3,
+      "other": -78.5,
+      "vocals": -80.8
+    },
+    "sourceDuration": 156.291,
+    "headSeconds": 0,
+    "tailSeconds": 152.331,
+    "newDuration": 152.331,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 152.331,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.0710357129573822,
+          "bpm": 104.99312591552734
+        }
+      ],
+      "anchor": 0.0710357129573822,
+      "bpm": 104.99312591552734
+    },
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "local:Kapo - UWAIE - KAPO (Video Oficial) [spbagny8OjM].mp3": {
+    "name": "Kapo - UWAIE - KAPO (Video Oficial) [spbagny8OjM].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -76.9,
+      "vocals": -50.6
+    },
+    "sourceDuration": 171.572,
+    "headSeconds": 0,
+    "tailSeconds": 167.924,
+    "newDuration": 167.924,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 167.924,
+      "musicInSource": "silence",
+      "tonalHint": 36
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.1546071469783783,
+          "bpm": 102.99940490722656
+        }
+      ],
+      "anchor": 0.1546071469783783,
+      "bpm": 102.99940490722656
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Linkin Park - Dirt Off Your Shoulder ⧸ Lying From You (Official Audio) - Linkin Park ⧸ JAY-Z [MG2S0ns8Dj8].mp3": {
+    "name": "Linkin Park - Dirt Off Your Shoulder ⧸ Lying From You (Official Audio) - Linkin Park ⧸ JAY-Z [MG2S0ns8Dj8].mp3",
+    "headKind": "vocals-only",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -79.5,
+      "drums": -81.3,
+      "guitar": -79.5,
+      "other": -79.5,
+      "vocals": -23.9
+    },
+    "tailLevels": {},
+    "sourceDuration": 244.767,
+    "headSeconds": 3.197,
+    "tailSeconds": null,
+    "newDuration": 241.57,
+    "detected": {
+      "musicIn": 4.116,
+      "musicOut": 244.767,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": true,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.19636622071266174,
+          "bpm": 79.99622344970703
+        }
+      ],
+      "anchor": 0.19636622071266174,
+      "bpm": 79.99622344970703
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Mario Alvarez - C. Rosas. Morena  de mi corazón (Canción del mariachi) para orquesta de guitarras [dMOWydjN4Yo].mp3": {
+    "name": "Mario Alvarez - C. Rosas. Morena  de mi corazón (Canción del mariachi) para orquesta de guitarras [dMOWydjN4Yo].mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 155.611,
+    "headSeconds": 0,
+    "tailSeconds": 146.862,
+    "newDuration": 146.862,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 146.862,
+      "musicInSource": "silence",
+      "tonalHint": 6
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Mr. 305 Records  - Pitbull - Hoy Se Bebe ft. Farruko [Official Audio] [jYJYM4_dOKE].mp3": {
+    "name": "Mr. 305 Records  - Pitbull - Hoy Se Bebe ft. Farruko [Official Audio] [jYJYM4_dOKE].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -78.8,
+      "drums": -87.3,
+      "guitar": -90.3,
+      "other": -91,
+      "piano": -90.3,
+      "vocals": -26.2
+    },
+    "sourceDuration": 217.156,
+    "headSeconds": 0,
+    "tailSeconds": 211.273,
+    "newDuration": 211.273,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 211.273,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.31339284777641296,
+          "bpm": 128.0043487548828
+        }
+      ],
+      "anchor": 0.31339284777641296,
+      "bpm": 128.0043487548828
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:NWA - N.W.A. - Straight Outta Compton (Official Music Video) [TMZi25Pq3T8].mp3": {
+    "name": "NWA - N.W.A. - Straight Outta Compton (Official Music Video) [TMZi25Pq3T8].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -81.9,
+      "guitar": -87.3,
+      "other": -90.3,
+      "vocals": -24.9
+    },
+    "sourceDuration": 261.042,
+    "headSeconds": 0,
+    "tailSeconds": 257.209,
+    "newDuration": 257.209,
+    "detected": {
+      "musicIn": 2.161,
+      "musicOut": 257.209,
+      "musicInSource": "silence",
+      "tonalHint": 4
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 1.0738928318023682,
+          "bpm": 101.77881622314453
+        }
+      ],
+      "anchor": 1.0738928318023682,
+      "bpm": 101.77881622314453
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Nas - Get Down [HGcWhJiIv1c].mp3": {
+    "name": "Nas - Get Down [HGcWhJiIv1c].mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "guitar": -90.3,
+      "other": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 244.323,
+    "headSeconds": 0,
+    "tailSeconds": 237.226,
+    "newDuration": 237.226,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 237.226,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.5599285960197449,
+          "bpm": 94.3247299194336
+        }
+      ],
+      "anchor": 0.5599285960197449,
+      "bpm": 94.3247299194336
+    },
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "local:Onyx - Onyx - Throw Ya Gunz [mQmfzGf9904].mp3": {
+    "name": "Onyx - Onyx - Throw Ya Gunz [mQmfzGf9904].mp3",
+    "headKind": "vocals-only",
+    "tailKind": "silence",
+    "headLevels": {
+      "bass": -91,
+      "drums": -85.5,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -29.4
+    },
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 196.284,
+    "headSeconds": 12.636,
+    "tailSeconds": 190.174,
+    "newDuration": 177.538,
+    "detected": {
+      "musicIn": 12.636,
+      "musicOut": 190.174,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": false,
+    "approvedBy": null
+  },
+  "local:Outkast - Outkast - Rosa Parks (Official Audio) [qrOKZeCdaRM].mp3": {
+    "name": "Outkast - Outkast - Rosa Parks (Official Audio) [qrOKZeCdaRM].mp3",
+    "headKind": "vocals-only",
+    "tailKind": "quiet",
+    "headLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -53.7
+    },
+    "tailLevels": {
+      "bass": -91,
+      "drums": -67.9,
+      "guitar": -90.3,
+      "other": -91,
+      "vocals": -28.4
+    },
+    "sourceDuration": 325.878,
+    "headSeconds": 4.07,
+    "tailSeconds": 322.085,
+    "newDuration": 318.015,
+    "detected": {
+      "musicIn": 4.298,
+      "musicOut": 322.085,
+      "musicInSource": "silence",
+      "tonalHint": 18
+    },
+    "snappedToDownbeat": true,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 4.0699286460876465,
+          "bpm": 103.92111206054688
+        }
+      ],
+      "anchor": 4.0699286460876465,
+      "bpm": 103.92111206054688
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Ozuna - Ozuna - Ibiza (Feat. Romeo Santos) (Audio Oficial) [3jyy-1v-GgM].mp3": {
+    "name": "Ozuna - Ozuna - Ibiza (Feat. Romeo Santos) (Audio Oficial) [3jyy-1v-GgM].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -78.5,
+      "other": -91,
+      "vocals": -20.4
+    },
+    "sourceDuration": 201.169,
+    "headSeconds": 0,
+    "tailSeconds": 196.965,
+    "newDuration": 196.965,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 196.965,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.25489285588264465,
+          "bpm": 96.00220489501953
+        }
+      ],
+      "anchor": 0.25489285588264465,
+      "bpm": 96.00220489501953
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Ozuna - Ozuna - Un Get (Audio Oficial) [aCUqy-DmXkM].mp3": {
+    "name": "Ozuna - Ozuna - Un Get (Audio Oficial) [aCUqy-DmXkM].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -87.3,
+      "drums": -87.3,
+      "other": -85.5,
+      "vocals": -26
+    },
+    "sourceDuration": 211.618,
+    "headSeconds": 0,
+    "tailSeconds": 206.586,
+    "newDuration": 206.586,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 206.586,
+      "musicInSource": "silence",
+      "tonalHint": 2
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.19221428036689758,
+          "bpm": 80.00543975830078
+        }
+      ],
+      "anchor": 0.19221428036689758,
+      "bpm": 80.00543975830078
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Pitbull - Pitbull x Farruko x IAmChino x El Alfa x Omar Courtz - Ten Cuidado (Official Audio) [AqG2fAFSJAo].mp3": {
+    "name": "Pitbull - Pitbull x Farruko x IAmChino x El Alfa x Omar Courtz - Ten Cuidado (Official Audio) [AqG2fAFSJAo].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -90.3,
+      "drums": -78.5,
+      "guitar": -90.3,
+      "other": -91,
+      "vocals": -36.5
+    },
+    "sourceDuration": 213.603,
+    "headSeconds": 0,
+    "tailSeconds": 209.572,
+    "newDuration": 209.572,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 209.572,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.6058928370475769,
+          "bpm": 105.01444244384766
+        }
+      ],
+      "anchor": 0.6058928370475769,
+      "bpm": 105.01444244384766
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:RadioInnocence Music - Maluma - Hangover (feat. Prince Royce) (Audio) [PRgLHMoCndg].mp3": {
+    "name": "RadioInnocence Music - Maluma - Hangover (feat. Prince Royce) (Audio) [PRgLHMoCndg].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -81.9,
+      "guitar": -91,
+      "other": -90.3,
+      "piano": -91,
+      "vocals": -33.6
+    },
+    "sourceDuration": 239.595,
+    "headSeconds": 0,
+    "tailSeconds": 235.638,
+    "newDuration": 235.638,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 235.638,
+      "musicInSource": "silence",
+      "tonalHint": 6
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Rapperyoungjd - Lil Wayne - Steady Mobbin (Feat. Gucci Mane) (Official Video) (Dirty Version) (720p HD) [6V6A86WpEGE].mp3": {
+    "name": "Rapperyoungjd - Lil Wayne - Steady Mobbin (Feat. Gucci Mane) (Official Video) (Dirty Version) (720p HD) [6V6A86WpEGE].mp3",
+    "headKind": "vocals-only",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -90.3,
+      "drums": -83.3,
+      "other": -82.5,
+      "vocals": -16
+    },
+    "tailLevels": {},
+    "sourceDuration": 328.176,
+    "headSeconds": 11.706,
+    "tailSeconds": null,
+    "newDuration": 316.47,
+    "detected": {
+      "musicIn": 11.706,
+      "musicOut": 325.333,
+      "musicInSource": "silence",
+      "tonalHint": 34
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": false,
+    "approvedBy": null
+  },
+  "local:Red Hot Chili Peppers - Red Hot Chili Peppers - Soul To Squeeze [Official Music Video] [0XcN12uVHeQ].mp3": {
+    "name": "Red Hot Chili Peppers - Red Hot Chili Peppers - Soul To Squeeze [Official Music Video] [0XcN12uVHeQ].mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -85.5,
+      "guitar": -71.6,
+      "other": -90.3,
+      "vocals": -90.3
+    },
+    "sourceDuration": 292.702,
+    "headSeconds": 0,
+    "tailSeconds": 289.686,
+    "newDuration": 289.686,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 289.686,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 1.1449285745620728,
+          "bpm": 88.4285888671875
+        }
+      ],
+      "anchor": 1.1449285745620728,
+      "bpm": 88.4285888671875
+    },
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "local:The Real G Music TV - Dr. Dre - Stranded On Death Row (feat. Bushwick Bill, RBX, The Lady of Rage, Kurupt & Snoop Dogg) [EEEDSh12jec].mp3": {
+    "name": "The Real G Music TV - Dr. Dre - Stranded On Death Row (feat. Bushwick Bill, RBX, The Lady of Rage, Kurupt & Snoop Dogg) [EEEDSh12jec].mp3",
+    "headKind": "vocals-only",
+    "tailKind": "none",
+    "headLevels": {
+      "bass": -91,
+      "drums": -91,
+      "guitar": -91,
+      "other": -91,
+      "vocals": -29.8
+    },
+    "tailLevels": {},
+    "sourceDuration": 287.425,
+    "headSeconds": 7.081,
+    "tailSeconds": null,
+    "newDuration": 280.344,
+    "detected": {
+      "musicIn": 9.198,
+      "musicOut": 287.425,
+      "musicInSource": "silence",
+      "tonalHint": 12
+    },
+    "snappedToDownbeat": true,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 1.826035737991333,
+          "bpm": 91.3408432006836
+        }
+      ],
+      "anchor": 1.826035737991333,
+      "bpm": 91.3408432006836
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:Tribal Seeds - Tribal Seeds - In Your Eyes (Official Audio) [YOrThAYngYk].mp3": {
+    "name": "Tribal Seeds - Tribal Seeds - In Your Eyes (Official Audio) [YOrThAYngYk].mp3",
+    "headKind": "none",
+    "tailKind": "silence",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -72.8,
+      "drums": -78.8,
+      "guitar": -90.3,
+      "other": -91,
+      "piano": -91,
+      "vocals": -91
+    },
+    "sourceDuration": 301.871,
+    "headSeconds": 0,
+    "tailSeconds": 297.732,
+    "newDuration": 297.732,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 297.732,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "auto:silence"
+  },
+  "local:Wisin - Wisin - Vacaciones (Remix)[Audio] ft. Don Omar, Zion & Lennox, Tito El Bambino [Yl2-ZAM9irw].mp3": {
+    "name": "Wisin - Wisin - Vacaciones (Remix)[Audio] ft. Don Omar, Zion & Lennox, Tito El Bambino [Yl2-ZAM9irw].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -70.5,
+      "drums": -71.8,
+      "guitar": -70.1,
+      "other": -70.2,
+      "vocals": -28.7
+    },
+    "sourceDuration": 256.758,
+    "headSeconds": 0,
+    "tailSeconds": 253.544,
+    "newDuration": 253.544,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 253.544,
+      "musicInSource": "silence",
+      "tonalHint": 12
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": null,
+    "approved": true,
+    "approvedBy": "owner"
+  },
+  "local:YNST Music - A Tu Merced - Bad Bunny (Audio Oficial) ｜ YHLQMDLG [X4Mqm0sBGYE].mp3": {
+    "name": "YNST Music - A Tu Merced - Bad Bunny (Audio Oficial) ｜ YHLQMDLG [X4Mqm0sBGYE].mp3",
+    "headKind": "none",
+    "tailKind": "vocals-only",
+    "headLevels": {},
+    "tailLevels": {
+      "bass": -91,
+      "drums": -90.3,
+      "guitar": -85.5,
+      "other": -78.5,
+      "vocals": -46.6
+    },
+    "sourceDuration": 176.065,
+    "headSeconds": 0,
+    "tailSeconds": 170.279,
+    "newDuration": 170.279,
+    "detected": {
+      "musicIn": 0,
+      "musicOut": 170.279,
+      "musicInSource": "silence",
+      "tonalHint": null
+    },
+    "snappedToDownbeat": false,
+    "sourceGrid": {
+      "markers": [
+        {
+          "position": 0.24235714972019196,
+          "bpm": 92.0047836303711
+        }
+      ],
+      "anchor": 0.24235714972019196,
+      "bpm": 92.0047836303711
+    },
+    "approved": true,
+    "approvedBy": "owner"
+  }
+}

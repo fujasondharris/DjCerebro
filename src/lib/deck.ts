@@ -17,7 +17,7 @@
 // milestone can drive it directly).
 import { PitchShifter } from "soundtouchjs";
 import type { AudioCore } from "./audio-core";
-import { duckStateInitial, duckStateOnDuck, duckStateOnUnduck, composeGain, type DuckState } from "./gain-math";
+import { duckStateInitial, duckStateOnDuck, duckStateOnUnduck, composeGain, type DuckState } from "./gain-math.ts";
 import {
   clampWet,
   delayTimeForBeats,
@@ -27,7 +27,7 @@ import {
   NEUTRAL_LPF_HZ,
   REVERB_WET_CAP,
   DEFAULT_ECHO_RAMP_OUT_SECONDS,
-} from "./fx-sends";
+} from "./fx-sends.ts";
 
 export interface ProgressUpdate {
   percentagePlayed: number;
@@ -58,7 +58,7 @@ const EQ_TIME_CONSTANT_SECONDS = 0.012;
 const ECHO_MAX_DELAY_SECONDS = 2; // DelayNode's maxDelayTime cap — covers real-world BPM well below anything this app will see
 const DUCK_TIME_CONSTANT_SECONDS = 0.015; // scratch overlay ducking (M4 Part C) — same order of magnitude as the EQ constant, smooth but quick
 
-type EqBand = "low" | "mid" | "high";
+export type EqBand = "low" | "mid" | "high";
 export interface EqValues {
   low: number;
   mid: number;
@@ -68,6 +68,9 @@ export interface EqValues {
 export class Deck {
   private core: AudioCore;
   private gainNode: GainNode | null = null;
+  private overlayDucker: GainNode | null = null;
+  private overlayDuckUntil = 0;
+  private overlayDuckFactor = 1;
   private gainValue = 1;
   private shifter: PitchShifter | null = null;
   private buffer: AudioBuffer | null = null;
@@ -77,6 +80,7 @@ export class Deck {
   private positionSecondsValue = 0;
   private progressListeners = new Set<ProgressListener>();
   private endedListeners = new Set<EndedListener>();
+  private scheduledSource: { source: AudioBufferSourceNode; when: number; offset: number; rate: number; timer: ReturnType<typeof setInterval> } | null = null;
 
   // EQ nodes + cached values (M4 Part A) — cached so setEq()/killX() can be
   // called (and reflected by getEq()) before ensureContext() has ever run,
@@ -138,6 +142,8 @@ export class Deck {
       this.gainNode = ctx.createGain();
       this.gainNode.gain.value = this.gainValue;
       this.gainNode.connect(this.core.master);
+      this.overlayDucker = ctx.createGain();
+      this.overlayDucker.connect(this.gainNode);
     }
     if (!this.lowFilter) {
       this.lowFilter = ctx.createBiquadFilter();
@@ -179,7 +185,7 @@ export class Deck {
       this.midFilter.connect(this.highFilter);
       this.highFilter.connect(this.hpfFilter);
       this.hpfFilter.connect(this.lpfFilter);
-      this.lpfFilter.connect(this.gainNode);
+      this.lpfFilter.connect(this.overlayDucker!);
 
       this.delayNode = ctx.createDelay(ECHO_MAX_DELAY_SECONDS);
       this.feedbackGain = ctx.createGain();
@@ -210,9 +216,11 @@ export class Deck {
   }
 
   /** Decode raw file bytes into an AudioBuffer and wire up a fresh PitchShifter for it. */
-  async decode(arrayBuffer: ArrayBuffer): Promise<AudioBuffer> {
+  async decode(arrayBuffer: ArrayBuffer, signal?: AbortSignal): Promise<AudioBuffer> {
     const ctx = this.ensureContext();
+    this.pause();
     const decoded = await ctx.decodeAudioData(arrayBuffer);
+    signal?.throwIfAborted();
     this.buffer = decoded;
     this.reversedBufferCache = null; // invalidate the scratch engine's cached reverse copy — see getReversedBuffer()
     this.positionSecondsValue = 0; // fresh PitchShifter below starts at source position 0
@@ -268,9 +276,52 @@ export class Deck {
     return this.tempoValue;
   }
 
+  get scheduledPlaybackTime(): number | null { return this.scheduledSource?.when ?? null; }
+
   /** Current playback position, in SOURCE-track seconds. Updated from progress events and seeks. */
   get positionSeconds(): number {
+    if (this.scheduledSource) {
+      const s = this.scheduledSource;
+      return Math.min(this.duration, s.offset + Math.max(0, this.core.ensureContext().currentTime - s.when) * s.rate);
+    }
     return this.positionSecondsValue;
+  }
+
+  /**
+   * A prepared stem performance returns to the full mix at an absolute audio time.
+   * This transport keeps the stems' playback-rate/pitch semantics through that
+   * handoff, with no timer or SoundTouch block-start gap. A later tempo/seek/pause
+   * operation returns to the ordinary pitch-preserving transport. Callers must
+   * apply the same narrow tempo eligibility gate as the stems.
+   */
+  scheduleBufferPlayback(when: number, offset: number, rate: number): void {
+    const ctx = this.ensureContext();
+    if (!this.buffer || !Number.isFinite(when) || when < ctx.currentTime || !Number.isFinite(offset) || offset < 0 || offset >= this.duration || !Number.isFinite(rate) || rate <= 0) throw new Error("Full-mix handoff is not prepared");
+    this.pause();
+    const source = ctx.createBufferSource();
+    source.buffer = this.buffer;
+    source.playbackRate.value = rate;
+    source.connect(this.lowFilter!);
+    const timer = setInterval(() => {
+      const timePlayed = this.positionSeconds;
+      this.progressListeners.forEach(listener => listener({ timePlayed, duration: this.duration, percentagePlayed: 100 * timePlayed / this.duration }));
+    }, 100);
+    this.scheduledSource = { source, when, offset, rate, timer };
+    this.positionSecondsValue = offset;
+    this.tempoValue = rate;
+    if (this.shifter) this.shifter.tempo = rate;
+    this.playingState = true;
+    source.onended = () => {
+      if (this.scheduledSource?.source !== source) return;
+      clearInterval(timer);
+      source.disconnect();
+      this.scheduledSource = null;
+      this.playingState = false;
+      this.positionSecondsValue = 0;
+      if (this.shifter) this.shifter.percentagePlayed = 0;
+      this.endedListeners.forEach(listener => listener());
+    };
+    source.start(when, offset);
   }
 
   onProgress(listener: ProgressListener): () => void {
@@ -294,14 +345,29 @@ export class Deck {
   }
 
   pause(): void {
+    if (this.scheduledSource) {
+      const s = this.scheduledSource;
+      this.positionSecondsValue = this.positionSeconds;
+      this.scheduledSource = null;
+      clearInterval(s.timer);
+      s.source.onended = null;
+      try { s.source.stop(); } catch { /* already ended */ }
+      s.source.disconnect();
+      if (this.shifter) this.shifter.percentagePlayed = this.positionSecondsValue / this.duration;
+      this.playingState = false;
+      return;
+    }
     if (!this.playingState || !this.shifter) return;
     this.shifter.disconnect();
     this.playingState = false;
   }
 
   setTempo(tempo: number): void {
+    const resume = this.scheduledSource !== null;
+    if (resume) this.pause();
     this.tempoValue = tempo;
     if (this.shifter) this.shifter.tempo = tempo;
+    if (resume) this.play();
   }
 
   /**
@@ -316,14 +382,24 @@ export class Deck {
    */
   seekTo(sourceSeconds: number): void {
     if (!this.shifter || this.duration <= 0) return;
+    const resume = this.scheduledSource !== null;
+    if (resume) this.pause();
     const clamped = Math.min(Math.max(sourceSeconds, 0), this.duration);
     this.shifter.percentagePlayed = clamped / this.duration;
     this.positionSecondsValue = clamped;
+    this.progressListeners.forEach((listener) =>
+      listener({
+        percentagePlayed: (clamped / this.duration) * 100,
+        timePlayed: clamped,
+        duration: this.duration,
+      })
+    );
+    if (resume) this.play();
   }
 
   /** Seek by a relative SOURCE-seconds delta (positive = forward). */
   seekBy(sourceSeconds: number): void {
-    this.seekTo(this.positionSecondsValue + sourceSeconds);
+    this.seekTo(this.positionSeconds + sourceSeconds);
   }
 
   /**
@@ -337,7 +413,45 @@ export class Deck {
    */
   setGain(value: number): void {
     this.gainValue = value;
-    if (this.gainNode) this.gainNode.gain.value = composeGain(this.gainValue, this.duckState);
+    if (this.gainNode) {
+      const ctx = this.core.ensureContext();
+      this.gainNode.gain.cancelScheduledValues(ctx.currentTime);
+      this.gainNode.gain.setValueAtTime(composeGain(this.gainValue, this.duckState), ctx.currentTime);
+    }
+  }
+
+  get gain(): number { return this.gainValue; }
+
+  /** Short scratch duck with its own gain stage and audio-clock release. */
+  duckOverlay(db: number, duration: number): void {
+    const ctx = this.ensureContext(), now = ctx.currentTime;
+    const factor = Math.pow(10, Math.min(0, db) / 20);
+    this.overlayDuckFactor = this.overlayDuckUntil > now ? Math.min(factor, this.overlayDuckFactor) : factor;
+    this.overlayDuckUntil = Math.max(this.overlayDuckUntil, now + duration);
+    const param = this.overlayDucker!.gain;
+    if (typeof param.cancelAndHoldAtTime === "function") param.cancelAndHoldAtTime(now);
+    else { const current = param.value; param.cancelScheduledValues(now); param.setValueAtTime(current, now); }
+    param.linearRampToValueAtTime(this.overlayDuckFactor, now + 0.005);
+    param.setValueAtTime(this.overlayDuckFactor, this.overlayDuckUntil);
+    param.linearRampToValueAtTime(1, this.overlayDuckUntil + 0.01);
+  }
+
+  /**
+   * Schedule a fader envelope on the AudioContext clock. This is used for
+   * performance handoffs where a throttled JavaScript interval must not turn
+   * a gradual blend into a late hard cut. A later setGain()/duck() call still
+   * intentionally supersedes the schedule.
+   */
+  scheduleGainEnvelope(values: readonly number[], durationSeconds: number, startTime?: number): void {
+    if (values.length === 0) return;
+    const clamped = values.map((value) => Math.min(1, Math.max(0, value)));
+    this.gainValue = clamped[clamped.length - 1];
+    if (!this.gainNode) return;
+    this.scheduleParamEnvelope(
+      this.gainNode.gain,
+      clamped.map((value) => composeGain(value, this.duckState)),
+      durationSeconds, startTime
+    );
   }
 
   // --- 3-band EQ (M4 Part A) ---
@@ -356,12 +470,38 @@ export class Deck {
     if (eq.high !== undefined) this.applyEqBand("high", eq.high);
   }
 
+  /** Audio-clock EQ counterpart to scheduleGainEnvelope(). */
+  scheduleEqEnvelope(band: EqBand, values: readonly number[], durationSeconds: number, startTime?: number): void {
+    if (values.length === 0) return;
+    const clamped = values.map((value) => Math.min(EQ_MAX_DB, Math.max(EQ_KILL_DB, value)));
+    this.eqValues[band] = clamped[clamped.length - 1];
+    const filter = band === "low" ? this.lowFilter : band === "mid" ? this.midFilter : this.highFilter;
+    if (!filter) return;
+    this.scheduleParamEnvelope(filter.gain, clamped, durationSeconds, startTime);
+  }
+
+  private scheduleParamEnvelope(param: AudioParam, values: readonly number[], durationSeconds: number, startTime?: number): void {
+    const ctx = this.core.ensureContext();
+    const now = Math.max(ctx.currentTime, startTime ?? ctx.currentTime);
+    param.cancelScheduledValues(now);
+    if (values.length === 1 || durationSeconds <= 0) {
+      param.setValueAtTime(values[values.length - 1], now);
+      return;
+    }
+    const stepSeconds = durationSeconds / (values.length - 1);
+    param.setValueAtTime(values[0], now);
+    for (let index = 1; index < values.length; index += 1) {
+      param.linearRampToValueAtTime(values[index], now + stepSeconds * index);
+    }
+  }
+
   private applyEqBand(band: EqBand, valueDb: number): void {
     const clamped = Math.min(EQ_MAX_DB, Math.max(EQ_KILL_DB, valueDb));
     this.eqValues[band] = clamped;
     const filter = band === "low" ? this.lowFilter : band === "mid" ? this.midFilter : this.highFilter;
     if (filter) {
       const ctx = this.core.ensureContext();
+      filter.gain.cancelScheduledValues(ctx.currentTime);
       filter.gain.setTargetAtTime(clamped, ctx.currentTime, EQ_TIME_CONSTANT_SECONDS);
     }
   }
@@ -573,10 +713,13 @@ export class Deck {
   private rampGainTo(target: number, rampSeconds: number): void {
     if (!this.gainNode) return;
     const ctx = this.core.ensureContext();
+    this.gainNode.gain.cancelScheduledValues(ctx.currentTime);
     this.gainNode.gain.setTargetAtTime(target, ctx.currentTime, rampSeconds);
   }
 
   dispose(): void {
+    this.overlayDucker?.disconnect();
+    this.overlayDucker = null;
     this.pause();
     // Choir round #2 (C7): dispose() used to clear only the echo's SELF-
     // SCHEDULED ring/fade-out timeout, never the wet/feedback send gains

@@ -180,9 +180,9 @@ function makeBrake() {
 }
 
 // REAL-SFX SWAP (2026-07-26): airhorn/siren/rewind/laser/brake/cheer are now
-// real licensed recordings copied into public/sfx/ (provenance in
-// public/sfx/LICENSES.txt)
-// — the owner's call after hearing the synthesized airhorn ("sounds like a
+// real licensed recordings copied into public/sfx/ from
+// C:\Users\Shadow\dj-tools\sfx-real\ (provenance in public/sfx/LICENSES.txt)
+// — Jason's own call after hearing the synthesized airhorn ("sounds like a
 // clown-car horn"). makeAirhorn()/makeSiren()/makeRewind()/makeLaser()/
 // makeBrake() above stay in this file FOR REFERENCE ONLY (e.g. a fallback if
 // a license is ever revoked) — they are no longer part of this script's
@@ -196,7 +196,160 @@ function makeBrake() {
 // script and diffing against git. That's fine (it's still just a texture),
 // but don't be surprised if `git status` shows riser.mp3 changed after a
 // rerun.
-const DEFAULT_CLIPS = { riser: makeRiser() };
+// --- subdrop: 808 sub-bass impact drop (98Hz -> 33Hz saturated sub glide + transient punch click), ~1.85s ---
+function makeSubdrop() {
+  const duration = 1.85;
+  const dt = 1 / SAMPLE_RATE;
+  let subPhase = 0;
+  let clickPhase = 0;
+  let lp = 0;
+  return samplesFor(duration, (t) => {
+    // 1. Fast transient attack click (1600Hz -> 130Hz in 22ms) so Beat 1 cuts through
+    const clickEnv = t < 0.025 ? Math.exp(-140 * t) : 0;
+    const clickFreq = 130 + 1470 * Math.exp(-180 * t);
+    clickPhase += clickFreq * dt;
+    const click = 0.45 * clickEnv * Math.sin(2 * Math.PI * clickPhase);
+
+    // 2. Warm saturated 808 sub-bass glide (98Hz -> 33Hz)
+    const subFreq = 33 + 65 * Math.exp(-3.4 * t);
+    subPhase += subFreq * dt;
+    const rawSub = Math.sin(2 * Math.PI * subPhase) + 0.28 * Math.sin(4 * Math.PI * subPhase);
+    const env = Math.min(1, t / 0.006) * Math.exp(-1.55 * t);
+    const saturatedSub = Math.tanh(2.1 * rawSub) * env * 0.78;
+
+    // 3. Brief low-passed impact rumble
+    const noise = (Math.random() * 2 - 1) * Math.exp(-14 * t);
+    lp += 0.08 * (noise - lp);
+
+    return Math.max(-0.98, Math.min(0.98, saturatedSub + click + 0.22 * lp));
+  });
+}
+
+// --- crash: 1.2s reverse metallic cymbal swell into Beat-1 impact crash (~2.25s total) ---
+function makeCrash() {
+  const duration = 2.25;
+  const peakAt = 1.20; // aligns with 1.25s pre-drop trigger so impact hits right on Beat 1
+  const dt = 1 / SAMPLE_RATE;
+  const modes = [347, 521, 788, 1193, 1847, 2930, 4610, 7180];
+  const phases = new Float64Array(modes.length);
+  let hpPrevX = 0;
+  let hpPrevY = 0;
+  let bpState = 0;
+  return samplesFor(duration, (t) => {
+    // Metallic inharmonic shimmer bank with FM cross-modulation
+    let metal = 0;
+    for (let i = 0; i < modes.length; i++) {
+      const mod = 1 + 0.018 * Math.sin(2 * Math.PI * (modes[(i + 3) % modes.length] * 0.25) * t);
+      phases[i] += modes[i] * mod * dt;
+      metal += Math.sin(2 * Math.PI * phases[i]);
+    }
+    metal /= modes.length;
+
+    // High-frequency sizzle air
+    const white = Math.random() * 2 - 1;
+    const fc = t < peakAt
+      ? 900 * Math.pow(8500 / 900, t / peakAt)
+      : 5500 * Math.exp(-0.6 * (t - peakAt));
+    const rc = 1 / (2 * Math.PI * Math.max(400, fc));
+    const alpha = rc / (rc + dt);
+    const hp = alpha * (hpPrevY + white - hpPrevX);
+    hpPrevX = white;
+    hpPrevY = hp;
+    bpState += 0.25 * (hp - bpState);
+
+    // Reverse exponential swell (0..peakAt) -> crisp transient strike + shimmer decay (peakAt..duration)
+    let env;
+    if (t < peakAt) {
+      env = Math.pow(t / peakAt, 3.2) * 0.92;
+    } else {
+      const dtPost = t - peakAt;
+      const strike = dtPost < 0.015 ? 1.0 : 0.82;
+      env = strike * Math.exp(-2.6 * dtPost);
+    }
+    return Math.max(-0.98, Math.min(0.98, env * (0.62 * hp + 0.38 * metal)));
+  });
+}
+
+// --- timbale: Latin timbale + dembow snare 4-beat fill into mambo cowbell & rimshot (~1.25s) ---
+function makeTimbale() {
+  const duration = 1.25;
+  const dt = 1 / SAMPLE_RATE;
+  // Syncopated 8-hit Latin timbale/snare roll (ta-ka-ta-ka-tum-tum-PA-PA!)
+  const hits = [
+    { at: 0.00, freq: 242, rim: 0.35, bell: 0.0, amp: 0.65 }, // macho
+    { at: 0.14, freq: 246, rim: 0.45, bell: 0.0, amp: 0.58 }, // macho ghost
+    { at: 0.28, freq: 238, rim: 0.55, bell: 0.0, amp: 0.72 }, // macho accent
+    { at: 0.42, freq: 176, rim: 0.30, bell: 0.0, amp: 0.68 }, // hembra
+    { at: 0.56, freq: 172, rim: 0.40, bell: 0.0, amp: 0.74 }, // hembra
+    { at: 0.72, freq: 210, rim: 0.65, bell: 0.35, amp: 0.82 }, // snare + bell
+    { at: 0.88, freq: 255, rim: 0.85, bell: 0.55, amp: 0.90 }, // flam lead-in
+    { at: 0.96, freq: 268, rim: 1.00, bell: 0.85, amp: 1.00 }, // final rimshot + cowbell crack!
+  ];
+  return samplesFor(duration, (t) => {
+    let sample = 0;
+    for (const h of hits) {
+      const rel = t - h.at;
+      if (rel < 0 || rel > 0.32) continue;
+      // Resonant drum head pitch drop
+      const headFreq = h.freq * (1 + 0.38 * Math.exp(-55 * rel));
+      const headEnv = Math.exp(-19 * rel);
+      const overtone = Math.sin(2 * Math.PI * headFreq * 1.58 * rel) * Math.exp(-32 * rel);
+      const drum = (Math.sin(2 * Math.PI * headFreq * rel) + 0.42 * overtone) * headEnv;
+
+      // Metallic shell / rimshot crack (band-limited burst around 1.8kHz - 2.6kHz)
+      const rimEnv = Math.exp(-65 * rel);
+      const rimCrack = h.rim * rimEnv * (
+        0.6 * Math.sin(2 * Math.PI * 1890 * rel) +
+        0.4 * (Math.random() * 2 - 1)
+      );
+
+      // Mambo cowbell (560Hz + 845Hz inharmonic pair)
+      const bellEnv = Math.exp(-24 * rel);
+      const bell = h.bell * bellEnv * 0.45 * (
+        Math.sin(2 * Math.PI * 560 * rel) +
+        0.7 * Math.sin(2 * Math.PI * 845 * rel)
+      );
+
+      sample += h.amp * (0.62 * drum + 0.48 * rimCrack + bell);
+    }
+    return Math.max(-0.98, Math.min(0.98, Math.tanh(1.4 * sample)));
+  });
+}
+
+// --- downlifter: resonant club jet-exhaust noise sweep (5.8kHz -> 130Hz) + sub tail, ~2.0s ---
+function makeDownlifter() {
+  const duration = 2.0;
+  const dt = 1 / SAMPLE_RATE;
+  let low = 0;
+  let band = 0;
+  let subPhase = 0;
+  return samplesFor(duration, (t) => {
+    const white = Math.random() * 2 - 1;
+    // Exponential downward cutoff sweep 5800Hz -> 130Hz
+    const cutoff = 5800 * Math.pow(130 / 5800, t / duration);
+    const f = Math.min(0.85, 2 * Math.sin((Math.PI * cutoff) / SAMPLE_RATE));
+    const q = 0.28; // resonant club filter peak
+    low += f * band;
+    const high = white - low - q * band;
+    band += f * high;
+
+    // Subtle sub-undertone (115Hz -> 36Hz) so the exhaust has club weight
+    const subFreq = 36 + 79 * Math.exp(-2.8 * t);
+    subPhase += subFreq * dt;
+    const sub = 0.32 * Math.sin(2 * Math.PI * subPhase) * Math.exp(-1.7 * t);
+
+    const env = Math.min(1, t / 0.012) * Math.pow(1 - t / duration, 1.35);
+    return Math.max(-0.98, Math.min(0.98, env * (0.72 * band + 0.28 * low + sub)));
+  });
+}
+
+const DEFAULT_CLIPS = {
+  riser: makeRiser(),
+  subdrop: makeSubdrop(),
+  crash: makeCrash(),
+  timbale: makeTimbale(),
+  downlifter: makeDownlifter(),
+};
 
 const RETIRED_SYNTH_CLIPS = {
   airhorn: makeAirhorn(),
@@ -206,12 +359,6 @@ const RETIRED_SYNTH_CLIPS = {
   brake: makeBrake(),
 };
 
-// Explicit, deliberately unshortened opt-in guard — set this only if you
-// really mean to overwrite the real recordings with synthesized ones (e.g.
-// recovering from a revoked license). Must be EXACTLY "1" (review-panel
-// fix: any truthy string used to pass, so e.g. OVERWRITE_REAL_SFX_WITH_SYNTH=0
-// — a common "explicitly disabled" convention elsewhere — would have
-// silently clobbered the real recordings here instead).
 const clips = process.env.OVERWRITE_REAL_SFX_WITH_SYNTH === "1"
   ? { ...DEFAULT_CLIPS, ...RETIRED_SYNTH_CLIPS }
   : DEFAULT_CLIPS;
@@ -225,9 +372,26 @@ try {
     const wavPath = join(tmpDirPath, `${name}.wav`);
     const mp3Path = join(OUT_DIR, `${name}.mp3`);
     writeFileSync(wavPath, toWavBuffer(samples));
-    execFileSync("ffmpeg", ["-y", "-i", wavPath, "-codec:a", "libmp3lame", "-qscale:a", "2", mp3Path], {
-      stdio: "inherit",
-    });
+    execFileSync(
+      "ffmpeg",
+      [
+        "-y",
+        "-i",
+        wavPath,
+        "-af",
+        "loudnorm=I=-14:TP=-1.5:LRA=11",
+        "-ar",
+        "44100",
+        "-ac",
+        "2",
+        "-codec:a",
+        "libmp3lame",
+        "-qscale:a",
+        "2",
+        mp3Path,
+      ],
+      { stdio: "inherit" }
+    );
     console.log(`wrote ${mp3Path}`);
   }
 } finally {

@@ -1,10 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { BRAIN_MODELS, BRAIN_MODEL_STORAGE_KEY, isBrainModelId, type BrainModelId, type BrainModelOption } from "@/lib/brain-models";
+import { CRATE_SORTS, searchAndSortCrate, trackSearchMetadata, type CrateSort } from "@/lib/crate-search";
+import { resolveMusicMetadata, musicLabel, needsGenreReview, type GenreSource } from "@/lib/music-metadata";
+import { genreAllowed, parseGenreRequest, isPartnerDanceTrack, requestsPerformanceMix, recipeGapNeedsBlend, genreRecoveryTrack, type GenreRequest } from "@/lib/genre-policy";
+import { usableStemEntry, describeStems } from "@/lib/stem-catalog";
+import type { GenreOverride } from "@/lib/crate-metadata-sync";
 import { AudioCore } from "@/lib/audio-core";
 import { Deck, type ProgressUpdate } from "@/lib/deck";
 import { parseId3Tags, type Id3Tags } from "@/lib/id3";
 import { parseSeratoBeatgrid, type SeratoBeatgrid } from "@/lib/serato";
+import { playbackMetadata, type PlaybackMetadata } from "@/lib/playback-metadata";
+import { queueForResidency, residencyHandoffDelay } from "@/lib/queue-policy";
 import { syncTempo } from "@/lib/beatmatch";
 import { phaseAlignOffset, type BeatGridLike } from "@/lib/beatclock";
 import { createTransitionEngine, type TransitionResult } from "@/lib/transition";
@@ -15,11 +23,17 @@ import {
   type TempoNudgeCommand,
   type FxCommand,
   type EqCommand,
+  type EqSweepCommand,
+  type TranceBreakdownCommand,
+  type LoopCommand,
+  type RoutineCommand,
+  type StemMigrateCommand,
   type DjState,
   type DjLiveState,
   type CompactCrateEntry,
   type ConsultReason,
   isHumanInitiated,
+  isPerformanceMove,
   resolveCooldownReason,
   buildCompactCrateEntry,
   buildCrateWindow,
@@ -34,8 +48,7 @@ import {
   type LessonEvent,
 } from "@/lib/lesson-ledger";
 import lessonsSeedJson from "@/data/lessons-seed.json";
-import { computeRmsPerSecond, findMixPoints, applyMixInCueOverride, type MixPoints } from "@/lib/energy";
-import { cleanTrackName } from "@/lib/lyrics-match";
+import { computeRmsPerSecond, findMixPoints, applyMixInCueOverride, avoidEarlyVocalIntro, type MixPoints } from "@/lib/energy";
 import { toCamelot } from "@/lib/camelot";
 import { nextPhraseBoundaries } from "@/lib/phrase";
 import {
@@ -88,6 +101,14 @@ const PARTY_LENGTH_OPTIONS: { label: string; seconds: number | null }[] = [
   { label: "3h", seconds: 10800 },
   { label: "4h", seconds: 14400 },
 ];
+const STAGE_VISUALIZER_LOOPS: { id: string; label: string; shortLabel: string; src: string }[] = [
+  { id: "cerebro-neural-core", label: "El Cerebro Neural Core", shortLabel: "Neural Core", src: "/videos/cerebro-neural-core.mp4" },
+  { id: "supermercado-neon-crate", label: "Supermercado Neon Crate", shortLabel: "Neon Crate", src: "/videos/supermercado-neon-crate.mp4" },
+  { id: "bass-spectrum-tunnel", label: "Sub-Bass Spectrum Tunnel", shortLabel: "Bass Tunnel", src: "/videos/bass-spectrum-tunnel.mp4" },
+  { id: "vinyl-cyber-strobe", label: "Vinyl Cyber Strobe", shortLabel: "Vinyl Strobe", src: "/videos/vinyl-cyber-strobe.mp4" },
+  { id: "latin-gold-equalizer", label: "Latin Gold Equalizer", shortLabel: "Latin Gold", src: "/videos/latin-gold-equalizer.mp4" },
+  { id: "hypnotic-laser-club", label: "Hypnotic Laser Club", shortLabel: "Laser Club", src: "/videos/hypnotic-laser-club.mp4" },
+];
 // Vocal-clash awareness (Part 1): the minimum instrumental-gap length considered
 // a real "next vocal gap" — matches the ~8s FACTS convention buildVocalIntervalsFromLines
 // already uses for capping a lone line's span.
@@ -131,7 +152,7 @@ import { loadCostTotal, saveCostTotal, resetCostTotal } from "@/lib/cost-store";
 import { fetchTagHeader } from "@/lib/crate-lazy";
 import { runWithConcurrency, sleep } from "@/lib/concurrency";
 import { getTrackBlob, createIndexedDbStore } from "@/lib/track-cache";
-import { loadCrateList, saveCrateList, type PersistedCrateEntry } from "@/lib/crate-store";
+import { loadCrateList, saveCrateList, reconcileCrateList, type PersistedCrateEntry } from "@/lib/crate-store";
 import {
   loadCueStore,
   saveCueStore,
@@ -151,6 +172,35 @@ import { upcomingCues, computeExpectedFireAtMs, shouldRearm } from "@/lib/cue-sc
 import cueSuggestionsJson from "@/data/cue-suggestions.json";
 import crateManifestJson from "@/data/crate-manifest.json";
 import { glideStepCount, nextGlideTempo, TEMPO_GLIDE_STEP_MS, TEMPO_GLIDE_START_DELAY_MS } from "@/lib/tempo-glide";
+import { parseResidencyRequest, applyResidencyParse, isResidencyConsultDue, type ResidencyRequest } from "@/lib/residency";
+import { findDownParts, pickDownPart } from "@/lib/down-part";
+import {
+  planHeldLoop,
+  fireIsolatedLoopHold,
+  sampleMixEnvelope,
+  sampleMixHandoffIsLate,
+  SAMPLE_MIX_TIMER_LATE_TOLERANCE_MS,
+  type HeldLoopHandle,
+  type LoopHoldStemSource,
+} from "@/lib/loop-hold";
+import {
+  getLoopPoints,
+  pickLoopCandidate,
+  selectMidTrackEntryPoint,
+  selectMidTrackExitPoint,
+  type LoopPointsFile,
+} from "@/lib/loop-points";
+import LOOP_POINTS from "@/data/loop-points.json";
+import { planStemMigration } from "@/lib/stem-migration";
+import { abortable, stemClock, planTranceBreakdown, STEM_PREPARE_SECONDS, STEM_TAIL_SECONDS, STEM_MEMORY_BYTES, STEM_HANDOFF_SECONDS } from "@/lib/stem-performance";
+import {
+  loadStemSet, loadStemLoopMixBuffer, startStemSet, disposeStemSet, scheduleMigration,
+  type StemSet, type StemManifestEntry,
+} from "@/lib/stems";
+import STEM_MANIFEST from "@/data/stem-manifest.json";
+import BEAT_IN from "@/data/beat-in.json";
+import { compatibleLoopPoints, isPartnerDanceTrackName, isTranceTrackName, type TransitionRecipe, type TransitionRecipeFile } from "@/lib/transition-recipes";
+import TRANSITION_RECIPES from "@/data/transition-recipes.json";
 import {
   loadFxDemonstrations,
   appendFxDemonstration,
@@ -172,6 +222,25 @@ const CUE_SUGGESTIONS = cueSuggestionsJson as CueSuggestionsFile;
 // LISTING itself came from this same manifest or (as in production today) a
 // live Drive API call — see buildManifestTagIndex()'s own doc comment.
 const CRATE_MANIFEST_TAG_INDEX = buildManifestTagIndex(crateManifestJson as CrateManifestEntry[]);
+const PLAYBACK_MANIFEST = new Map((crateManifestJson as CrateManifestEntry[]).map(entry => [entry.id, entry]));
+const CURRENT_LOOP_POINTS = compatibleLoopPoints((crateManifestJson as CrateManifestEntry[]).map(t => ({ ...t, source: "drive" as const, size: t.size ?? null, bpm: t.bpm ?? null, key: t.key ?? null, durationSeconds: t.durationSeconds ?? null, grid: t.grid ?? null })), LOOP_POINTS as LoopPointsFile);
+
+const STUDIO_TRACK_IDS = new Set([
+  "el_cerebro_dembow_fuego",
+  "supermercado_salsa_brava",
+  "medianoche_tech_guaracha",
+  "costa_dorada_bachata_vip",
+]);
+
+function resolveAudioAssetUrl(idOrPath: string): { url: string; needsPasscode: boolean } {
+  if (idOrPath.startsWith("/audio/")) {
+    return { url: idOrPath, needsPasscode: false };
+  }
+  if (STUDIO_TRACK_IDS.has(idOrPath)) {
+    return { url: `/audio/tracks/${idOrPath}.mp3`, needsPasscode: false };
+  }
+  return { url: `/api/crate/${encodeURIComponent(idOrPath)}`, needsPasscode: true };
+}
 
 // Drive tag-probe throttle (M6.2 probe-storm fix): a manifest/already-known
 // hit skips the network entirely (no throttle needed), but a genuinely
@@ -224,11 +293,61 @@ const AUTOPILOT_OPENER_REASK_MS = 60000;
 // human asked directly, in the moment) — only autopilot-driven calls with
 // no accompanying message are floored.
 const AUTOPILOT_FX_COOLDOWN_SECONDS = 120;
+// M7 Phase 3 — the cadence budget is split by CLASS. The 120s floor above was
+// written for STINGERS (a horn every 90s is worse than silence, per the
+// 2026-07-26 FX research) but it was applied to every fx, so a beat roll cost
+// the same budget as an airhorn. That is why El Cerebro never performed and
+// Jason ended up pressing the pads himself. Performance moves — rolls, the
+// band-isolated hold, EQ kills — are craft, not punctuation: a real
+// open-format DJ touches them constantly, so they get a much looser floor.
+// Salsa/bachata total suppression is a separate gate entirely and is
+// untouched by this split.
+const AUTOPILOT_PERFORMANCE_COOLDOWN_SECONDS = 10;
+const REGGAETON_SHOWCASE_TRACK_IDS = [
+  "1AqZS9S-R2Jzkq6r-gjtCellJV0TxkGrf", // 1. Daddy Yankee - Gasolina (96 BPM)
+  "13hRsJn3nMqxa4q3dPTbk7migoxXQstOc", // 2. Bad Bunny, Jowell & Randy, Ñengo Flow - Safaera (96 BPM)
+  "1z07ku7vUEVQm6w0WLZ6cWo5sfO61B5yb", // 3. DJ Snake ft. Selena Gomez, Ozuna, Cardi B - Taki Taki (96 BPM)
+  "1gxeziASsQtQcDsxbWGQa_nnArZsvk0cg", // 4. Bad Bunny, Nesi & Ivy Queen - Yo Perreo Sola (Remix) (97 BPM)
+  "1OM_IkZdq0SL7h_YikTJpUiroYw74uKXb", // 5. Karol G, Cris MJ & Ryan Castro - Una Noche En Medellín (Remix) (95.75 BPM)
+  "1qiVM9gp291CzGEG7Oe66Kvn8_IiUpMRO", // 6. Maluma, Don Omar, Wisin - Sin Contrato (Remix) (96 BPM)
+  "14mfDc7jTP1D818KiyjKwzCei0rBdotuM", // 7. J Balvin, Jowell & Randy - Bonita (96 BPM)
+  "1jQvV-YvC_9jo-m_aAQnfaJRPTs0OdMcC", // 8. Nio Garcia, Casper Magico, Bad Bunny, Darell, Ozuna, Nicky Jam - Te Boté (Remix) (96.5 BPM)
+  "1cPP-QcoRZrC1-_2TDDn27egoPy6sWM_g", // 9. Bad Bunny & Don Omar - Pa' Romperla (94 BPM)
+  "1iG_33rFLw_YW0CNubSGLlckvf3NjLZeU", // 10. Don Omar - Dile (94 BPM)
+] as const;
+// Longest a queue/routine/migration can legitimately be "in flight" before the
+// watchdog assumes it died. 90s sample_mix hold + 16s phrase wait + decode, with margin.
+const QUEUE_INFLIGHT_STALE_SECONDS = 150;
+// Cheap-DJ mode: routine autopilot handoffs should usually come from the
+// precomputed catalog recipes, not from a fresh model call. Fresh human notes
+// still go to the brain, and every few local handoffs we ask the brain again
+// so set-level taste can course-correct instead of locking into one heuristic.
+const LOCAL_RECIPE_FRESH_NOTE_SECONDS = 45;
+const LOCAL_RECIPE_AI_REFRESH_MOVES = 4;
+// The held loop IS the mix while it runs, so the deck under it is ducked
+// deeper than a roll's -15dB (roll.ts) — the captured slice should read as
+// the whole record, not as a layer over it.
+const HELD_LOOP_DUCK_DB = -40;
+const HELD_LOOP_DUCK_RAMP_SECONDS = 0.08;
+// Deck.duck() uses setTargetAtTime, whose argument is a time constant rather
+// than a finish duration. Five constants gets the retired deck effectively
+// silent before the phrase-scheduled overlay begins.
+const HELD_LOOP_DUCK_LEAD_SECONDS = HELD_LOOP_DUCK_RAMP_SECONDS * 5;
+// How far before a hold's exit to re-consult the brain so the incoming track
+// is picked, downloaded and decoded in time to land on the "1". page.tsx's
+// own measurement of the queue path is ~16s past the brain's response.
+const HELD_LOOP_HANDOFF_LEAD_SECONDS = 18;
+// A drop-relative entry must still leave real airtime before the track's own
+// analyzed mix-out — entering 20s before the outro is not a mid-track entry.
+const MIN_ENTRY_RESIDENCY_SECONDS = 45;
+// Length of the El Cerebro name-drop clip (tag2-nopare.mp3, 2.85s) — a down
+// part has to hold it with air to spare or it is not a usable placement.
+const NAME_DROP_CLIP_SECONDS = 2.9;
 // Deferred re-consult (owner soundcheck fix): if brainBusy at the scheduled
 // followUpSeconds fire time, retry once after this short delay, then drop
 // with a log line rather than queueing indefinitely — see fireFollowUp().
 const FOLLOW_UP_BUSY_RETRY_MS = 2000;
-const BRAIN_LOG_LIMIT = 5;
+const BRAIN_LOG_LIMIT = 20;
 const HISTORY_LIMIT = 10;
 const NEUTRAL_BPM_FALLBACK = 120; // used only when a crate track has no BPM tag, so tempo math stays finite
 const EQ_MIN_DB = -40;
@@ -336,6 +455,10 @@ async function fetchWithPasscode(url: string, init: RequestInit = {}): Promise<R
 interface CrateTrack {
   id: string;
   name: string;
+  title?: string | null;
+  artist?: string | null;
+  genre?: string | null;
+  genreSource?: GenreSource;
   size: number | null;
   bpm: number | null;
   key: string | null;
@@ -375,8 +498,13 @@ function useDeckController(
 
   const [trackId, setTrackId] = useState<string | null>(null);
   const [trackName, setTrackName] = useState<string | null>(null);
-  const [tags, setTags] = useState<Id3Tags>({});
-  const [grid, setGrid] = useState<SeratoBeatgrid | null>(null);
+  const [, setMetadata] = useState<PlaybackMetadata>({ tags: {}, grid: null, gridSource: null });
+  const metadataRef = useRef<PlaybackMetadata>({ tags: {}, grid: null, gridSource: null });
+  const metadataTrackRef = useRef<{ id: string; source: "drive" | "local"; size: number } | null>(null);
+  function publishMetadata(next: PlaybackMetadata) {
+    metadataRef.current = next;
+    setMetadata(next);
+  }
   const [status, setStatus] = useState<Status>("idle");
   const [isDecoded, setIsDecoded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -402,6 +530,10 @@ function useDeckController(
   // for this load. Reset on every new loadFromBlob, same lifecycle as
   // tags/grid above.
   const [mixPoints, setMixPoints] = useState<MixPoints | null>(null);
+  // M7 Phase 5: the per-second RMS profile computed during mix-point
+  // analysis, kept so down-part detection can reuse it instead of
+  // re-walking the decoded buffer every time deckLiveState() runs.
+  const [rmsProfile, setRmsProfile] = useState<number[] | null>(null);
   // When this deck actually went live (Date.now(), OUTPUT/wall-clock time) —
   // feeds DjLiveState.playedSeconds. Ref, not state: nothing renders off it
   // directly, deckLiveState() just reads it at request-build time.
@@ -432,9 +564,10 @@ function useDeckController(
     setStatus("loading");
     setTrackId(id ?? name);
     setTrackName(name);
-    setTags({});
-    setGrid(null);
+    publishMetadata({ tags: {}, grid: null, gridSource: null });
+    metadataTrackRef.current = { id: id ?? name, source, size: blob.size };
     setMixPoints(null); // in-and-out mixing: a new track needs fresh analysis
+    setRmsProfile(null);
     wentLiveAtRef.current = null;
     // Cue-point keying (see src/lib/cue-store.ts's cueTrackKey doc comment):
     // Drive tracks use their real Drive file id (stable across a reload);
@@ -450,6 +583,10 @@ function useDeckController(
     tempoRef.current = 1;
     setTempo(1);
     setSyncNotice(null);
+    setEqState(FLAT_EQ);
+    setEqKilled({ low: false, mid: false, high: false });
+    deckRef.current?.setEq(FLAT_EQ);
+    deckRef.current?.allNeutral();
     deckRef.current?.pause();
 
     // ID3/Serato parsing is best-effort and never blocks playback/tempo controls.
@@ -459,11 +596,9 @@ function useDeckController(
         parseId3Tags(file),
         parseSeratoBeatgrid(file),
       ]);
-      setTags(parsedTags);
-      setGrid(parsedGrid);
+      publishMetadata({ tags: parsedTags, grid: parsedGrid, gridSource: parsedGrid ? "embedded" : null });
     } catch {
-      setTags({});
-      setGrid(null);
+      publishMetadata({ tags: {}, grid: null, gridSource: null });
     }
 
     try {
@@ -481,17 +616,21 @@ function useDeckController(
   }
 
   /** Decode the currently-loaded pending buffer if not already decoded. Safe to call more than once. Ref-backed (not state-backed) so it's safe to call immediately after loadFile in the same async chain. */
-  async function decodeIfNeeded(): Promise<boolean> {
+  async function decodeIfNeeded(signal?: AbortSignal): Promise<boolean> {
     if (isDecodedRef.current) return true;
     if (!pendingBufferRef.current) return false;
     const deck = deckRef.current!;
     try {
-      await deck.decode(pendingBufferRef.current);
+      const decoded = await deck.decode(pendingBufferRef.current, signal);
+      const identity = metadataTrackRef.current;
+      if (identity) publishMetadata(playbackMetadata(metadataRef.current.tags, metadataRef.current.grid,
+        identity, PLAYBACK_MANIFEST.get(identity.id), decoded.duration));
       deck.setTempo(tempoRef.current);
       isDecodedRef.current = true;
       setIsDecoded(true);
       return true;
     } catch {
+      if (signal?.aborted) return false;
       setStatus("error");
       return false;
     }
@@ -501,10 +640,12 @@ function useDeckController(
     const file = event.target.files?.[0];
     event.target.value = ""; // allow re-picking the same file later
     if (!file) return;
+    opts.onManualPause?.();
     await loadFromBlob(file, file.name);
   }
 
   async function handleLoadTestTrack() {
+    opts.onManualPause?.();
     setStatus("loading");
     try {
       const response = await fetch(fixture.url);
@@ -617,8 +758,11 @@ function useDeckController(
     fileInputRef,
     trackId,
     trackName,
-    tags,
-    grid,
+    // Async executors retain a controller across load/decode awaits. Getters
+    // read this load's metadata immediately, without waiting for React render.
+    get tags() { return metadataRef.current.tags; },
+    get grid() { return metadataRef.current.grid; },
+    get gridSource() { return metadataRef.current.gridSource; },
     status,
     isDecoded,
     isPlaying,
@@ -630,6 +774,8 @@ function useDeckController(
     eqKilled,
     mixPoints,
     setMixPoints,
+    rmsProfile,
+    setRmsProfile,
     wentLiveAtMs: () => wentLiveAtRef.current,
     loadFile,
     decodeIfNeeded,
@@ -664,6 +810,7 @@ function DeckPanel({
   syncDisabled,
   syncDisabledReason,
   onSync,
+  onJumpToBeat,
   cues,
   rehearsing,
   onToggleRehearse,
@@ -680,6 +827,7 @@ function DeckPanel({
   syncDisabled: boolean;
   syncDisabledReason: string;
   onSync: () => void;
+  onJumpToBeat: () => void;
   cues: Cue[];
   rehearsing: boolean;
   onToggleRehearse: () => void;
@@ -757,7 +905,7 @@ function DeckPanel({
 
       {hasTrack && (
         <div className={styles.trackInfo}>
-          <p className={styles.trackName}>{trackName}</p>
+          <p className={styles.trackName} title={trackName ?? undefined}>{trackName ? musicLabel({ name: trackName }) : ""}</p>
           <p className={styles.metaLine}>
             BPM: <strong>{tags.bpm ? tags.bpm : "no BPM tag"}</strong>
             {tags.key && (
@@ -788,7 +936,18 @@ function DeckPanel({
             {isPlaying ? "Pause" : "Play"}
           </button>
 
-          <div className={styles.progressWrap}>
+          <div
+            className={styles.progressWrap}
+            style={{ cursor: duration > 0 ? "pointer" : "default" }}
+            title={duration > 0 ? "Click anywhere on the bar to jump/scrub through the track" : undefined}
+            onClick={(event) => {
+              if (duration <= 0) return;
+              const rect = event.currentTarget.getBoundingClientRect();
+              if (rect.width <= 0) return;
+              const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+              deck.seekTo(ratio * duration);
+            }}
+          >
             <div className={styles.progressTrack} aria-hidden="true">
               <div className={styles.progressFill} style={{ width: `${progress}%` }} />
             </div>
@@ -801,6 +960,49 @@ function DeckPanel({
                   aria-hidden="true"
                 />
               ))}
+          </div>
+
+          <div className={styles.nudgeSection} style={{ marginTop: 6, marginBottom: 8, flexWrap: "wrap", gap: 6 }}>
+            <span className={styles.nudgeLabel} style={{ minWidth: 90 }}>
+              {duration > 0 ? `${formatMmSs(deck.positionSeconds)} / ${formatMmSs(duration)}` : "Seek / Intro"}
+            </span>
+            <button
+              type="button"
+              className={styles.nudgeButton}
+              onClick={() => deck.seekBy(-15)}
+              disabled={!isDecoded}
+              title="Rewind 15 seconds"
+            >
+              ⏪ -15s
+            </button>
+            <button
+              type="button"
+              className={styles.nudgeButton}
+              onClick={() => deck.seekBy(15)}
+              disabled={!isDecoded}
+              title="Fast-forward 15 seconds"
+            >
+              ⏩ +15s
+            </button>
+            <button
+              type="button"
+              className={styles.nudgeButton}
+              onClick={() => deck.seekBy(30)}
+              disabled={!isDecoded}
+              title="Fast-forward 30 seconds past a slow video intro"
+            >
+              ⏩ +30s
+            </button>
+            <button
+              type="button"
+              className={styles.nudgeButton}
+              onClick={onJumpToBeat}
+              disabled={!isDecoded}
+              title="Jump straight past a slow intro to the track's analyzed beat-in / drop"
+              style={{ fontWeight: 700 }}
+            >
+              🔥 Skip Intro / Drop
+            </button>
           </div>
 
           <div className={styles.tempoSection}>
@@ -1035,6 +1237,8 @@ function CratePanel({
   cachedIds,
   onPrefetchNext10,
   prefetching,
+  onGenreChange,
+  metadataStatus,
 }: {
   crate: CrateTrack[];
   adding: boolean;
@@ -1052,7 +1256,19 @@ function CratePanel({
   cachedIds: Set<string>;
   onPrefetchNext10: () => void;
   prefetching: boolean;
+  onGenreChange: (id: string, genre: string) => void;
+  metadataStatus: string;
 }) {
+  const [query, setQuery] = useState("");
+  const [genre, setGenre] = useState("");
+  const [sort, setSort] = useState<CrateSort>("original");
+  const labels = useMemo(() => new Map(crate.map(track => [track.id, {
+    ...trackSearchMetadata(track), label: musicLabel(track), review: needsGenreReview(track),
+    stemCount: describeStems(track, (STEM_MANIFEST as Record<string, StemManifestEntry>)[track.id]).length,
+  }])), [crate]);
+  const visible = useMemo(() => searchAndSortCrate(crate, query, genre, sort), [crate, query, genre, sort]);
+  const genres = useMemo(() => Array.from(new Set(crate.map(t => trackSearchMetadata(t).genre).filter(Boolean)))
+    .sort((a, b) => a.localeCompare(b)), [crate]);
   const playableCount = driveTracks?.filter((t) => t.playable).length ?? 0;
   const uncachedDriveCount = crate.filter((t) => t.source === "drive" && !cachedIds.has(t.id)).length;
 
@@ -1073,33 +1289,67 @@ function CratePanel({
         />
       </div>
 
+      <div className={styles.crateControls}>
+        <input type="search" className={styles.chatInput} value={query} onChange={e => setQuery(e.target.value)}
+          placeholder="Search song, artist, or genre…" aria-label="Search crate by song, artist, or genre" />
+        <select className={styles.cueSelect} aria-label="Filter crate by genre" value={genre} onChange={e => setGenre(e.target.value)}>
+          <option value="">All genres</option>
+          <option value="__untagged">Untagged</option>
+          <option value="__review">Needs genre review</option>
+          {genre && !["__untagged", "__review"].includes(genre) && !genres.includes(genre) && <option value={genre}>{genre} (no tracks)</option>}
+          {genres.map(value => <option key={value} value={value}>{value}</option>)}
+        </select>
+        <select className={styles.cueSelect} aria-label="Sort crate" value={sort} onChange={e => setSort(e.target.value as CrateSort)}>
+          {CRATE_SORTS.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+        </select>
+        {(query || genre || sort !== "original") && <button type="button" className={styles.resetButton}
+          onClick={() => { setQuery(""); setGenre(""); setSort("original"); }}>Clear filters</button>}
+      </div>
+      <p className={styles.hint} role="status">{visible.length} of {crate.length} tracks</p>
+      <datalist id="crate-genres">
+        {Array.from(new Set([...genres, "Salsa", "Bachata", "Reggaeton", "Merengue", "Dembow", "Hip-Hop", "House", "Trance", "Pop"]))
+          .map(value => <option key={value} value={value} />)}
+      </datalist>
       {crate.length === 0 ? (
         <p className={styles.hint}>
           No tracks yet — add MP3s to build your crate. Local file-picker tracks are in-memory only (reloading
           clears them); Drive tracks restore automatically.
         </p>
+      ) : visible.length === 0 ? (
+        <p className={styles.hint}>No matching tracks. Try another search or clear the filters.</p>
       ) : (
         <ul className={styles.crateList}>
-          {crate.map((track) => {
+          {visible.map((track) => {
             // A track is "party-safe" (plays even if wifi dies) once its full
             // audio is cached — local file-picker entries always are (the
             // File is already in memory), Drive entries once getTrackBlob()
             // has actually downloaded them at least once.
             const isCached = track.source === "local" || cachedIds.has(track.id);
+            const metadata = labels.get(track.id)!;
             return (
               <li key={track.id}>
-                <button type="button" className={styles.crateItemButton} onClick={() => onTapTrack(track)}>
+                <button type="button" className={styles.crateItemButton} title={track.name} onClick={() => onTapTrack(track)}>
                   <span className={styles.crateItemName}>
                     {isCached ? "• " : ""}
-                    {track.name}
+                    {metadata.label}
                   </span>
                   <span className={styles.crateItemMeta}>
+                    {metadata.genre || "Untagged"}{" · "}
+                    {metadata.review ? "needs review · " : ""}
                     {track.bpm ? `${track.bpm} BPM` : "no BPM"}
                     {track.key ? ` · ${track.key}` : ""}
                     {" · grid: "}
                     {track.grid ? "yes" : "est"}
+                    {` · ${metadata.stemCount} stems`}
                   </span>
                 </button>
+                <label className={styles.genreEditor}>
+                  Genre
+                  <input key={`${track.id}:${track.genre ?? ""}`} type="text" list="crate-genres" maxLength={80}
+                    defaultValue={metadata.genre} placeholder="Add genre…"
+                    aria-label={`Genre for ${metadata.label}`} onBlur={e => onGenreChange(track.id, e.target.value.trim())}
+                    onKeyDown={e => { if (e.key === "Enter") e.currentTarget.blur(); }} />
+                </label>
               </li>
             );
           })}
@@ -1107,6 +1357,8 @@ function CratePanel({
       )}
 
       <div className={styles.driveSection}>
+        <p className={styles.hint}>Full songs and their stems share artist, title and genre. Artist-based estimates are marked “needs review”; they are not verified tags. Edit a genre and press Enter to save across devices. Original audio filenames stay unchanged.</p>
+        <p className={styles.hint} role="status">{metadataStatus}</p>
         <div className={styles.driveRow}>
           <button type="button" className={styles.secondaryButton} onClick={onLoadDrive} disabled={driveListing}>
             {driveListing ? "Loading…" : "Load crate from Drive"}
@@ -1177,6 +1429,19 @@ function BrainPanel({
   lastCost,
   lastModel,
   onResetCost,
+  modelOptions,
+  selectedModel,
+  onModelChange,
+  modelOnly,
+  onModelOnlyChange,
+  unpricedCalls,
+  lastLatency,
+  onStartReggaetonShowcase,
+  showcaseRemaining,
+  onSkipNext,
+  onSeekLive,
+  onJumpToBeatLive,
+  hasLiveTrack,
 }: {
   autopilot: boolean;
   onToggleAutopilot: () => void;
@@ -1191,10 +1456,23 @@ function BrainPanel({
   lastCost: number | null;
   lastModel: string | null;
   onResetCost: () => void;
+  modelOptions: BrainModelOption[];
+  selectedModel: BrainModelId;
+  onModelChange: (model: BrainModelId) => void;
+  modelOnly: boolean;
+  onModelOnlyChange: (value: boolean) => void;
+  unpricedCalls: number;
+  lastLatency: number | null;
+  onStartReggaetonShowcase: () => void;
+  showcaseRemaining: number;
+  onSkipNext: (instantCut: boolean) => void;
+  onSeekLive: (deltaSeconds: number) => void;
+  onJumpToBeatLive: () => void;
+  hasLiveTrack: boolean;
 }) {
   return (
     <section className={styles.brainPanel}>
-      <div className={styles.deckHeader}>
+      <div className={styles.deckHeader} style={{ flexWrap: "wrap", gap: 8 }}>
         <span className={styles.deckLabel}>Brain</span>
         <button
           type="button"
@@ -1203,6 +1481,21 @@ function BrainPanel({
           aria-pressed={autopilot}
         >
           {autopilot ? "Autopilot: ON" : "Start autopilot"}
+        </button>
+        <button
+          type="button"
+          className={styles.syncButton}
+          onClick={onStartReggaetonShowcase}
+          style={{
+            background: showcaseRemaining > 0 ? "linear-gradient(135deg, #f97316, #dc2626)" : "linear-gradient(135deg, #ea580c, #b91c1c)",
+            color: "#fff",
+            fontWeight: 700,
+          }}
+          title="Spin up a 10-song High-Energy Reggaeton demo (~45s per song including transitions) with hot mid-track lead-ins, 3-cycle loops + flanger + dub echo + 250 Hz crossover, stem migrations, rolls, scratches, Colombian El Cerebro vocals, and SFX"
+        >
+          {showcaseRemaining > 0
+            ? `🔥 Reggaeton 10-Song Demo (${10 - showcaseRemaining + 1}/10)`
+            : "🔥 10-Song Reggaeton Demo (45s · All Skills)"}
         </button>
         <select
           className={styles.cueSelect}
@@ -1221,20 +1514,94 @@ function BrainPanel({
         </select>
       </div>
 
+      <div className={styles.fxRow} style={{ marginTop: 8, marginBottom: 8, flexWrap: "wrap", gap: 6 }}>
+        <button
+          type="button"
+          className={styles.syncButton}
+          onClick={() => onSkipNext(false)}
+          title="Immediately transition out of the current song into the next track using DJ skills (loop / stem mix)"
+          style={{ fontWeight: 700 }}
+        >
+          ⏭️ Next Song (Mix Now)
+        </button>
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={() => onSkipNext(true)}
+          title="Ditch the current song immediately and cut straight to the next song's hot lead-in"
+          style={{ fontWeight: 700 }}
+        >
+          ⚡ Cut to Next
+        </button>
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={() => onSeekLive(-15)}
+          disabled={!hasLiveTrack}
+          title="Rewind the currently playing track by 15 seconds"
+        >
+          ⏪ -15s
+        </button>
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={() => onSeekLive(15)}
+          disabled={!hasLiveTrack}
+          title="Fast-forward the currently playing track by 15 seconds"
+        >
+          ⏩ +15s
+        </button>
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={() => onSeekLive(30)}
+          disabled={!hasLiveTrack}
+          title="Fast-forward the currently playing track by 30 seconds (skip slow intro)"
+        >
+          ⏩ +30s
+        </button>
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={onJumpToBeatLive}
+          disabled={!hasLiveTrack}
+          title="Skip past any slow video intro straight to the track's analyzed beat-in / drop"
+          style={{ fontWeight: 700 }}
+        >
+          🔥 Skip Intro / Drop
+        </button>
+      </div>
+
+      <div className={styles.brainModelRow}>
+        <label className={styles.modelLabel}>Cerebro model
+          <select className={styles.cueSelect} aria-label="Cerebro model" value={selectedModel}
+            disabled={brainBusy} onChange={e => { if (isBrainModelId(e.target.value)) onModelChange(e.target.value); }}>
+            {modelOptions.map(option => <option key={option.id} value={option.id} disabled={!option.available}>
+              {option.label}{option.available ? "" : " — not configured"}
+            </option>)}
+          </select>
+        </label>
+        <label className={styles.modelTestLabel}>
+          <input type="checkbox" checked={modelOnly} onChange={e => onModelOnlyChange(e.target.checked)} />
+          Ask selected model for every handoff (more API calls)
+        </label>
+      </div>
       <div className={styles.costTicker}>
         <span className={styles.costTotal}>
-          Session cost: <strong>${costTotal.toFixed(4)}</strong>
+          Estimated cost since Reset: <strong>${costTotal.toFixed(4)}</strong>
+          <span style={{ marginLeft: 10, opacity: 0.45, fontSize: "0.8em" }} title="build — if this does not match the latest deploy, close the tab and reopen">build {process.env.NEXT_PUBLIC_BUILD}</span>
         </span>
-        {lastCost !== null && (
+        {lastModel !== null && (
           <span className={styles.costLastCall}>
-            last call: ${lastCost.toFixed(4)}
-            {lastModel ? ` (${lastModel})` : ""}
+            {lastModel} · {lastLatency !== null ? `${(lastLatency / 1000).toFixed(1)}s · ` : ""}
+            {lastCost !== null ? `last successful call: $${lastCost.toFixed(4)}` : "cost unavailable"}
           </span>
         )}
         <button type="button" className={styles.resetButton} onClick={onResetCost}>
           Reset
         </button>
       </div>
+      {unpricedCalls > 0 && <p className={styles.hint}>{unpricedCalls} call(s) have no cost estimate and are not included above. See provider billing for their charges.</p>}
 
       <form className={styles.chatRow} onSubmit={onChatSubmit}>
         <input
@@ -1331,6 +1698,37 @@ function FxPanel({
         </button>
         <button type="button" className={styles.fxButton} onClick={() => onPlayFx("cheer")}>
           Cheer
+        </button>
+        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("subdrop")}>
+          Sub Drop
+        </button>
+      </div>
+      <div className={styles.fxRow}>
+        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("crash")}>
+          Crash Swell
+        </button>
+        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("timbale")}>
+          Timbale Fill
+        </button>
+        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("downlifter")}>
+          Downlifter
+        </button>
+        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("dub_siren")}>
+          Dub Siren
+        </button>
+      </div>
+      <div className={styles.fxRow}>
+        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("horn_stab")}>
+          Brass Stab
+        </button>
+        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("cryo_jet")}>
+          CO2 Cannon
+        </button>
+        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("booyaka")}>
+          808 Boom
+        </button>
+        <button type="button" className={styles.fxButton} onClick={() => onPlayFx("gunshot")}>
+          Ricochet Zap
         </button>
       </div>
       <div className={styles.fxRow}>
@@ -1581,8 +1979,20 @@ export default function Home() {
   // ~10-minute frequency-cap rule (SYSTEM_PROMPT) has something to check via
   // DjLiveState.fxLastSecondsAgo. null until the first fx of the session.
   const lastFxAtRef = useRef<number | null>(null);
-  function recordFxFired() {
-    lastFxAtRef.current = Date.now();
+  // M7 Phase 3: performance moves keep their OWN clock. Sharing one
+  // timestamp meant a beat roll consumed the stinger budget (and vice
+  // versa), so a single roll could silence airhorns for two minutes and one
+  // airhorn could silence every performance move for two minutes. Separate
+  // clocks are what let the two classes have genuinely different cadences.
+  const lastPerformanceAtRef = useRef<number | null>(null);
+  // The single in-flight band-isolated hold, if any (latest-and-only-one —
+  // a second hold while one is running is refused, not stacked).
+  const heldLoopRef = useRef<HeldLoopHandle | null>(null);
+  const routineTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const routineIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  function recordFxFired(performance = false) {
+    if (performance) lastPerformanceAtRef.current = Date.now();
+    else lastFxAtRef.current = Date.now();
   }
 
   // FX demonstration log (scope addendum, 2026-07-26): the human DJ's own
@@ -1687,6 +2097,9 @@ export default function Home() {
 
   // --- Crate (Part A) ---
   const [crate, setCrate] = useState<CrateTrack[]>([]);
+  const [metadataStatus, setMetadataStatus] = useState("Loading shared genre corrections…");
+  const genreOverridesRef = useRef(new Map<string, GenreOverride>());
+  const genreEditsRef = useRef(new Map<string, number>());
   const crateRef = useRef(crate);
   crateRef.current = crate;
   const [crateAdding, setCrateAdding] = useState(false);
@@ -1732,31 +2145,95 @@ export default function Home() {
   const [costTotal, setCostTotal] = useState(0);
   const [lastCost, setLastCost] = useState<number | null>(null);
   const [lastModel, setLastModel] = useState<string | null>(null);
+  const [lastLatency, setLastLatency] = useState<number | null>(null);
+  const [unpricedCalls, setUnpricedCalls] = useState(0);
+  const [selectedModel, setSelectedModel] = useState<BrainModelId>("gemini");
+  const selectedModelRef = useRef<BrainModelId>("gemini");
+  const [modelOptions, setModelOptions] = useState<BrainModelOption[]>(BRAIN_MODELS.map(option => ({ ...option, available: false })));
+  const [modelOnly, setModelOnly] = useState(false);
+  const modelOnlyRef = useRef(false);
   useEffect(() => {
     setCostTotal(loadCostTotal());
+    try {
+      const saved = localStorage.getItem(BRAIN_MODEL_STORAGE_KEY);
+      if (isBrainModelId(saved)) { selectedModelRef.current = saved; setSelectedModel(saved); }
+      const count = Number(localStorage.getItem("djsm.unpriced-brain-calls"));
+      if (Number.isSafeInteger(count) && count > 0) setUnpricedCalls(count);
+    } catch { /* private browsing can disable storage */ }
+    let active = true;
+    void fetchWithPasscode("/api/dj", { cache: "no-store" }).then(async response => {
+      if (!response.ok) throw new Error("Model list unavailable");
+      const data = await response.json();
+      if (active && Array.isArray(data.models)) setModelOptions(data.models);
+    }).catch(() => { if (active) pushBrainLog("error", "Could not load the model list. Refresh to retry."); });
+    return () => { active = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // --- Lazy-crate: auto-restore the metadata list on page load (a reload
   // at the party must not lose the crate) ---
   useEffect(() => {
-    const restored = loadCrateList();
+    const savedCrate = loadCrateList();
+    const manifestEntries = crateManifestJson as CrateManifestEntry[];
+    const initialEntries: PersistedCrateEntry[] =
+      savedCrate.length > 0
+        ? savedCrate
+        : manifestEntries.map((m) => ({
+            id: m.id,
+            name: m.name,
+            size: m.size ?? null,
+            bpm: m.bpm ?? null,
+            key: m.key ?? null,
+            grid: m.grid ?? null,
+          }));
+    const { entries: restored, relinked } = reconcileCrateList(
+      initialEntries,
+      manifestEntries,
+    );
     if (restored.length === 0) return;
     setCrate((prev) => {
       const existingIds = new Set(prev.map((t) => t.id));
       const restoredTracks: CrateTrack[] = restored
         .filter((entry) => !existingIds.has(entry.id))
-        .map((entry) => ({
-          id: entry.id,
-          name: entry.name,
-          size: entry.size,
-          bpm: entry.bpm,
-          key: entry.key,
-          grid: entry.grid,
-          source: "drive",
-        }));
+        .map((entry) => {
+          const manifestEntry = PLAYBACK_MANIFEST.get(entry.id);
+          return {
+            id: entry.id,
+            name: entry.name,
+            ...resolveMusicMetadata(entry),
+            size: entry.size ?? manifestEntry?.size ?? null,
+            bpm: entry.bpm ?? manifestEntry?.bpm ?? null,
+            key: entry.key ?? manifestEntry?.key ?? null,
+            grid: entry.grid ?? manifestEntry?.grid ?? null,
+            source: "drive",
+          };
+        });
       return [...prev, ...restoredTracks];
     });
     pushBrainLog("crate", `Crate restored (${restored.length} track${restored.length === 1 ? "" : "s"})`);
+    if (relinked > 0) {
+      pushBrainLog("crate", `Updated ${relinked} saved track link${relinked === 1 ? "" : "s"} to the current library`);
+    }
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("demo") === "reggaeton10") {
+        pushBrainLog(
+          "plan",
+          "🔥 10-Song Reggaeton Showcase armed via ?demo=reggaeton10 — click anywhere (or tap the orange 🔥 Demo button) to unlock audio and drop Song 1/10!"
+        );
+        const startOnGesture = () => {
+          window.removeEventListener("pointerdown", startOnGesture);
+          window.removeEventListener("keydown", startOnGesture);
+          if (showcaseQueueRef.current.length === 0 && !autopilotRef.current) {
+            handleStartReggaetonShowcase();
+          }
+        };
+        window.addEventListener("pointerdown", startOnGesture, { once: true });
+        window.addEventListener("keydown", startOnGesture, { once: true });
+      }
+    } catch {
+      // ignore URL parse errors
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -1766,9 +2243,60 @@ export default function Home() {
   useEffect(() => {
     const driveEntries: PersistedCrateEntry[] = crate
       .filter((t) => t.source === "drive")
-      .map((t) => ({ id: t.id, name: t.name, size: t.size, bpm: t.bpm, key: t.key, grid: t.grid }));
+      .map((t) => ({ id: t.id, name: t.name, size: t.size, bpm: t.bpm, key: t.key, grid: t.grid,
+        title: t.title, artist: t.artist, genre: t.genre, genreSource: t.genreSource }));
     saveCrateList(driveEntries);
   }, [crate]);
+
+  useEffect(() => {
+    let active = true;
+    const refresh = async () => {
+      try {
+        const response = await fetchWithPasscode("/api/crate-metadata", { cache: "no-store" });
+        if (!response.ok) throw new Error("Shared genre sync unavailable. Library labels still work; edits need a connection.");
+        const data = await response.json() as { overrides: GenreOverride[] };
+        if (!active) return;
+        for (const row of data.overrides) {
+          const previous = genreOverridesRef.current.get(row.id);
+          if (!genreEditsRef.current.has(row.id) && (!previous || row.updatedAt >= previous.updatedAt)) genreOverridesRef.current.set(row.id, row);
+        }
+        setCrate(prev => prev.map(track => {
+          const row = genreOverridesRef.current.get(track.id);
+          return row && !genreEditsRef.current.has(track.id) ? { ...track, genre: row.genre, genreSource: "owner" } : track;
+        }));
+        if (!genreEditsRef.current.size) setMetadataStatus("Shared genres connected. Corrections apply to the song and every stem.");
+      } catch (error) { if (active) setMetadataStatus(error instanceof Error ? error.message : "Shared genre sync unavailable."); }
+    };
+    void refresh();
+    const onFocus = () => { void refresh(); };
+    window.addEventListener("focus", onFocus);
+    return () => { active = false; window.removeEventListener("focus", onFocus); };
+  }, []);
+
+  async function saveGenre(id: string, genre: string) {
+    const track = crateRef.current.find(t => t.id === id);
+    if (!track || (track.genreSource === "owner" && track.genre === genre && !genreEditsRef.current.has(id))) return;
+    if (track.source === "local") {
+      setCrate(prev => prev.map(t => t.id === id ? { ...t, genre, genreSource: "owner" } : t));
+      setMetadataStatus("Local file genre updated for this session only."); return;
+    }
+    // Keep the current saved label until the cloud acknowledges. Failed edits
+    // stay visibly unsaved and may be retried; never claim device-wide success.
+    if (genreEditsRef.current.has(id)) return;
+    genreEditsRef.current.set(id, Date.now());
+    setMetadataStatus(`Saving genre for ${musicLabel(track)}…`);
+    try {
+      const response = await fetchWithPasscode("/api/crate-metadata", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, genre }),
+      });
+      if (!response.ok) throw new Error("Genre NOT saved to cloud. Press Enter in that genre field to retry.");
+      const { override } = await response.json() as { override: GenreOverride };
+      genreOverridesRef.current.set(id, override);
+      setCrate(prev => prev.map(t => t.id === id ? { ...t, genre: override.genre, genreSource: "owner" } : t));
+      setMetadataStatus(`Saved across devices: ${musicLabel(track)} — ${genre || "Untagged"}. Stems updated too.`);
+    } catch (error) { setMetadataStatus(error instanceof Error ? error.message : "Genre not saved."); }
+    finally { genreEditsRef.current.delete(id); }
+  }
 
   // Which crate ids already have a full audio blob cached in IndexedDB —
   // hydrated once on mount so a reloaded crate immediately shows accurate
@@ -2016,6 +2544,9 @@ export default function Home() {
   // clear this outright so the very next poll retries immediately.
   const askedForTrackRef = useRef<{ key: string; at: number } | null>(null);
   const retryStageRef = useRef(0); // 0 = fresh, 1 = one retry already sent
+  const localRecoveryUntilRef = useRef(0);
+  const performanceControlVersionRef = useRef(0);
+  const executionFeedbackRef = useRef<{ action: string; status: "rejected"; reason: string } | null>(null);
   const retryTimeoutHandleRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Review-panel fix (vibe-note persistence): the human's most recent chat
   // submission + when it was sent, so EVERY brain call (autopilot-driven
@@ -2023,6 +2554,19 @@ export default function Home() {
   // state.lastVibeNote with an honest age — previously a vibe note only
   // rode along on the single request it was typed into.
   const lastVibeNoteRef = useRef<{ text: string; at: number } | null>(null);
+  const genreRequestRef = useRef<GenreRequest | null>(null);
+  const performanceMixRef = useRef(false);
+  // M7 blocker fix: the owner's standing EXPLICIT residency instruction
+  // ("30 seconds of a song then mix in the next one"), parsed out of their
+  // chat by src/lib/residency.ts. Sticky on purpose — silence is not a
+  // cancellation, only an explicit "back to normal" clears it (see
+  // applyResidencyParse). Read by buildDjState AND by the autopilot poll,
+  // which is what makes the instruction actually bind instead of being
+  // prompt guidance the brain can drift past.
+  const residencyRequestRef = useRef<ResidencyRequest | null>(null);
+  const showcaseQueueRef = useRef<string[]>([]);
+  const showcaseStepRef = useRef(0);
+  const [showcaseRemaining, setShowcaseRemaining] = useState(0);
   // Deferred re-consult (owner soundcheck fix, 2026-07-26): a brain response
   // can set followUpSeconds ("re-consult me in N seconds") instead of dying
   // silently after a one-command ack — this is the single pending slot for
@@ -2060,6 +2604,11 @@ export default function Home() {
   // async setup window (download/decode/phrase-wait) — see its own
   // "releaseQueueInFlight" helper for exactly what window this covers.
   const queueInFlightRef = useRef(false);
+  // See the watchdog in the live-state builder. Null while nothing is in flight.
+  const queueInFlightSinceRef = useRef<number | null>(null);
+  const queuePreparationRef = useRef<AbortController | null>(null);
+  const pendingGapRef = useRef<{ trackId: string; command: QueueCommand } | null>(null);
+  const localRecipeMovesSinceBrainRef = useRef(0);
 
   const anyPlaying = deckA.isPlaying || deckB.isPlaying;
 
@@ -2130,6 +2679,7 @@ export default function Home() {
   }, [crossfade, transitionRunning]);
 
   function handleCrossfadeChange(event: React.ChangeEvent<HTMLInputElement>) {
+    teardownMigration();
     setCrossfade(parseFloat(event.target.value));
   }
 
@@ -2167,14 +2717,27 @@ export default function Home() {
    * call this after a successful decodeIfNeeded()).
    */
   function analyzeMixPoints(item: CrateTrack, ctrl: DeckController): MixPoints | null {
-    const cached = mixPointsCacheRef.current.get(item.id);
-    if (cached) return cached;
     const buffer = ctrl.deck.audioBuffer;
     if (!buffer) return null;
+    const cached = mixPointsCacheRef.current.get(item.id);
+    if (cached) {
+      // The mix points are cached but the RMS profile lives on the deck
+      // controller, which is cleared on every load — recompute it so a
+      // re-queued track does not silently lose its down parts.
+      if (!ctrl.rmsProfile) ctrl.setRmsProfile(computeRmsPerSecond(buffer.getChannelData(0), buffer.sampleRate));
+      return cached;
+    }
     const rms = computeRmsPerSecond(buffer.getChannelData(0), buffer.sampleRate);
+    ctrl.setRmsProfile(rms); // M7 Phase 5: reused by down-part detection
     const grid = effectiveGrid(ctrl.tags, ctrl.grid);
     let points = findMixPoints(rms, grid ? { anchor: grid.anchor, bpm: grid.bpm } : null);
     const cueKey = cueTrackKey({ source: item.source, id: item.id, name: item.name, size: item.size });
+    points = avoidEarlyVocalIntro(points, getVocalIntervals(VOCAL_MAPS, cueKey), grid ? { anchor: grid.anchor, bpm: grid.bpm } : null, rms.length);
+    const loopEntry = getLoopPoints(CURRENT_LOOP_POINTS, cueKey);
+    const tightenedMixOut = selectMidTrackExitPoint(loopEntry, points.mixOutSeconds, points.mixInSeconds, MIN_ENTRY_RESIDENCY_SECONDS);
+    if (tightenedMixOut < points.mixOutSeconds) {
+      points = { ...points, mixOutSeconds: tightenedMixOut };
+    }
     // Choir round #2 (C6): applyMixInCueOverride now needs the track's own
     // duration to reject a stale/out-of-range "mix in" cue — rms.length is
     // the same whole-second duration findMixPoints itself already used.
@@ -2265,6 +2828,9 @@ export default function Home() {
         file,
         bpm: tags.bpm ?? null,
         key: tags.key ?? null,
+        title: tags.title,
+        artist: tags.artist,
+        genre: tags.genre,
         grid,
       });
     }
@@ -2278,9 +2844,9 @@ export default function Home() {
   function getLiveDeckLabel(): DeckLabel | null {
     const a = deckARef.current;
     const b = deckBRef.current;
-    if (a.isPlaying && !b.isPlaying) return "A";
-    if (b.isPlaying && !a.isPlaying) return "B";
-    if (a.isPlaying && b.isPlaying) return crossfadeRef.current <= 0.5 ? "A" : "B";
+    if (a.deck.playing && !b.deck.playing) return "A";
+    if (b.deck.playing && !a.deck.playing) return "B";
+    if (a.deck.playing && b.deck.playing) return crossfadeRef.current <= 0.5 ? "A" : "B";
     return null;
   }
 
@@ -2315,7 +2881,8 @@ export default function Home() {
    * a real download failure — callers decide what "queue failed" means for
    * their own flow (see executeQueueCommand's/handleCrateTap's catch).
    */
-  async function getTrackForPlayback(track: CrateTrack): Promise<File | Blob> {
+  async function getTrackForPlayback(track: CrateTrack, signal?: AbortSignal): Promise<File | Blob> {
+    signal?.throwIfAborted();
     if (track.source === "local") {
       if (!track.file) throw new Error(`"${track.name}" is a local entry with no file loaded`);
       return track.file;
@@ -2323,7 +2890,10 @@ export default function Home() {
     const blob = await getTrackBlob(
       track.id,
       async () => {
-        const response = await fetchWithPasscode(`/api/crate/${encodeURIComponent(track.id)}`);
+        const asset = resolveAudioAssetUrl(track.id);
+        const response = asset.needsPasscode
+          ? await fetchWithPasscode(asset.url, { signal })
+          : await fetch(asset.url, { signal });
         if (!response.ok) throw new Error(`download failed (HTTP ${response.status})`);
         return response.blob();
       },
@@ -2340,6 +2910,9 @@ export default function Home() {
   }
 
   function handleCrateTap(track: CrateTrack) {
+    performanceControlVersionRef.current += 1;
+    queuePreparationRef.current?.abort(new Error("Playback changed manually"));
+    teardownMigration();
     const label = pickIdleDeckLabel();
     void (async () => {
       try {
@@ -2427,6 +3000,15 @@ export default function Home() {
         try {
           const manifestTags = CRATE_MANIFEST_TAG_INDEX.get(track.id);
           if (manifestTags && hasUsableTags(manifestTags)) {
+            const existing = existingById.get(track.id);
+            const resolved = resolveMusicMetadata({
+              id: track.id,
+              name: track.name,
+              title: existing?.title,
+              artist: existing?.artist,
+              genre: existing?.genre,
+              genreSource: existing?.genreSource,
+            });
             return {
               id: track.id,
               name: track.name,
@@ -2435,6 +3017,10 @@ export default function Home() {
               bpm: manifestTags.bpm,
               key: manifestTags.key,
               grid: manifestTags.grid,
+              title: resolved.title,
+              artist: resolved.artist,
+              genre: resolved.genre,
+              genreSource: resolved.genreSource,
             };
           }
           const existing = existingById.get(track.id);
@@ -2469,6 +3055,9 @@ export default function Home() {
             source: "drive",
             bpm: tags.bpm ?? null,
             key: tags.key ?? null,
+            title: tags.title,
+            artist: tags.artist,
+            genre: existing?.genre ?? tags.genre,
             grid,
           };
         } catch (err) {
@@ -2482,7 +3071,10 @@ export default function Home() {
       }
     );
 
-    const added = results.filter((t): t is CrateTrack => t !== null);
+    const added = results.filter((t): t is CrateTrack => t !== null).map(t => {
+      const saved = genreOverridesRef.current.get(t.id);
+      return { ...t, ...resolveMusicMetadata(saved ? { ...t, genre: saved.genre, genreSource: "owner" } : t) };
+    });
     if (skippedCount > 0) notices.push(`${skippedCount} file(s) skipped (not mp3 — soundtouchjs pipeline is mp3-tested)`);
 
     setCrate((prev) => [...prev.filter((t) => t.source !== "drive"), ...added]);
@@ -2519,17 +3111,60 @@ export default function Home() {
   function handleResetCost() {
     setCostTotal(0);
     resetCostTotal();
+    setUnpricedCalls(0);
+    try { localStorage.removeItem("djsm.unpriced-brain-calls"); } catch { /* best effort */ }
+  }
+
+  function handleModelChange(id: BrainModelId) {
+    if (brainBusyRef.current) return;
+    selectedModelRef.current = id;
+    setSelectedModel(id);
+    localRecoveryUntilRef.current = 0;
+    localRecipeMovesSinceBrainRef.current = LOCAL_RECIPE_AI_REFRESH_MOVES;
+    try { localStorage.setItem(BRAIN_MODEL_STORAGE_KEY, id); } catch { /* best effort */ }
+    pushBrainLog("model", `${modelOptions.find(option => option.id === id)?.label ?? id} selected for the next brain call`);
   }
 
   // --- Brain state serialization + log (Part C) ---
 
+  // Performance actions whose REFUSALS must reach the synced ledger, not just the
+  // on-screen log. Without this, the ledger cannot distinguish "the brain never
+  // asked for stems" from "it asked and the engine refused every time" — which is
+  // exactly the question the owner's 2026-08-16 test left unanswerable.
+  const LEDGERED_SKIP_ACTIONS = new Set(["stem_migrate", "trance_breakdown", "eq_sweep", "loop", "routine", "fx", "eq", "queue"]);
+
   function pushBrainLog(action: string, say: string) {
     const id = brainLogIdRef.current++;
     setBrainLog((prev) => [...prev, { id, action, say }].slice(-BRAIN_LOG_LIMIT));
+    if (LEDGERED_SKIP_ACTIONS.has(action) && /\bskipped\b/i.test(say)) {
+      executionFeedbackRef.current = { action, status: "rejected", reason: say };
+      const ctx = liveTrackContextForLedger();
+      recordLedgerEvent({
+        type: "brain_skip",
+        when: new Date().toISOString(),
+        action,
+        reason: say.replace(/^skipped\s*[—-]?\s*/i, "").trim(),
+        ...ctx,
+      });
+    }
   }
 
   function appendHistory(entry: { trackId: string; name: string }) {
     setHistory((prev) => [...prev, entry].slice(-HISTORY_LIMIT));
+  }
+
+  function checkQueueWatchdog() {
+    if (!queueInFlightRef.current) { queueInFlightSinceRef.current = null; return; }
+    if (queueInFlightSinceRef.current === null) queueInFlightSinceRef.current = Date.now();
+    const stuckFor = (Date.now() - queueInFlightSinceRef.current) / 1000;
+    if (stuckFor > QUEUE_INFLIGHT_STALE_SECONDS && !pendingTransitionTimeoutRef.current && !transitionEngineRef.current.isRunning && !migrationRef.current) {
+      if (queuePreparationRef.current) { queuePreparationRef.current.abort(new Error("queue preparation watchdog")); return; }
+      queueInFlightRef.current = false;
+      queueInFlightSinceRef.current = null;
+      cleanupHeldLoopAndRoutine("watchdog: queueInFlight was stuck");
+      teardownMigration();
+      pushBrainLog("queue", `skipped — WATCHDOG cleared a queue flag stuck for ${stuckFor.toFixed(0)}s (a transition never resolved); brain unblocked`);
+    }
   }
 
   function deckLiveState(ctrl: DeckController, cueKey: string | null = null): DjLiveState | null {
@@ -2571,15 +3206,47 @@ export default function Home() {
       nextVocalGap = gap ? { start: gap.start, end: Number.isFinite(gap.end) ? gap.end : null } : null;
     }
 
+    // M7 Phase 5: the next DOWN PART — a low-energy AND vocal-free window,
+    // which is where El Cerebro's own name-drop belongs. Distinct from
+    // nextVocalGap: a gap only says nobody is singing, which is just as true
+    // over a full-energy instrumental drop. A down part is the breakdown.
+    // Derived from the per-second RMS profile the mix-point analysis already
+    // computed for this track (no new analysis), intersected with the vocal
+    // map — and omitted entirely without a vocal map, since without one we
+    // cannot promise the window isn't over a vocal.
+    let nextDownPart: { start: number; end: number } | null | undefined;
+    if (hasVocals && ctrl.rmsProfile) {
+      const pick = pickDownPart(
+        findDownParts(ctrl.rmsProfile, { hasVocalMap: true, vocalIntervals }),
+        { fromSeconds: positionSeconds, clipSeconds: NAME_DROP_CLIP_SECONDS }
+      );
+      nextDownPart = pick ? { start: pick.fireAtSeconds, end: pick.part.end } : null;
+    }
+
     // Choir round #2 (P1): true while a queue command already issued is
     // still resolving (queueInFlightRef — download/decode/phrase-wait) OR a
     // transition is actively running — see DjLiveState.transitionPending's
     // own doc comment in brain.ts.
+    //
+    // WATCHDOG (M8.2f, owner test 2026-08-16). If queueInFlight sticks true — a decode
+    // that never resolves, a fetch that hangs without rejecting, a routine timer cleared
+    // before its completion fired — the brain is told transitionPending forever and
+    // politely answers "transition already queued, not stepping on it, checking back in
+    // 25s" until the party ends. That exact loop is what the owner pasted. There was no
+    // recovery path. Now: pending older than QUEUE_INFLIGHT_STALE_SECONDS is force-
+    // cleared and ledgered as a brain_skip so the CAUSE is visible next time. Any real
+    // queue/routine/migration resolves in well under this — the longest legitimate hold
+    // is a 90s sample_mix plus a ~16s phrase wait plus a decode.
+    checkQueueWatchdog();
     const transitionPending = queueInFlightRef.current || transitionEngineRef.current.isRunning;
 
     return {
       trackId: ctrl.trackId ?? ctrl.trackName,
-      name: ctrl.trackName,
+      name: musicLabel(crateRef.current.find(t => t.id === ctrl.trackId) ?? { name: ctrl.trackName }),
+      genre: resolveMusicMetadata(crateRef.current.find(t => t.id === ctrl.trackId) ?? { name: ctrl.trackName }).genre,
+      genreSource: resolveMusicMetadata(crateRef.current.find(t => t.id === ctrl.trackId) ?? { name: ctrl.trackName }).genreSource,
+      hasStems: stemEntryFor(ctrl.trackId) !== null,
+      stemRoles: Object.keys(stemEntryFor(ctrl.trackId)?.stems ?? {}),
       bpm,
       key,
       tempo: ctrl.tempo,
@@ -2594,7 +3261,9 @@ export default function Home() {
       vocalActiveNow,
       nextVocalGap,
       vocalEndsAt,
+      nextDownPart,
       transitionPending,
+      hasRealBeatGrid: !!ctrl.grid,
     };
   }
 
@@ -2616,6 +3285,10 @@ export default function Home() {
       fxDemonstrations: summarizeFxDemonstrations(fxDemonstrationsRef.current),
       partyElapsedSeconds,
       partyPlannedSeconds: partyPlannedSecondsRef.current,
+      requestedResidencySeconds: residencyRequestRef.current?.seconds ?? null,
+      requestedGenres: genreRequestRef.current,
+      performanceMixRequested: performanceMixRef.current,
+      executionFeedback: executionFeedbackRef.current,
     };
   }
 
@@ -2632,8 +3305,8 @@ export default function Home() {
     const indexMap = new Map<number, string>();
     const entries = crateRef.current.map((t, n) => {
       indexMap.set(n, t.id);
-      const cleaned = cleanTrackName(t.name);
-      const displayName = cleaned.artist ? `${cleaned.artist} - ${cleaned.title}` : cleaned.title;
+      const metadata = resolveMusicMetadata(t);
+      const displayName = musicLabel(t);
       // Camelot conversion (Part 3) — same toCamelot() call deckLiveState uses.
       const camelotKey = toCamelot(t.key);
       // Vocal map lookup (Part 1) — keyed the same way vocal-maps.json/
@@ -2641,7 +3314,19 @@ export default function Home() {
       const key = cueTrackKey({ source: t.source, id: t.id, name: t.name, size: t.size });
       const intervals = getVocalIntervals(VOCAL_MAPS, key);
       const firstVocalSeconds = intervals.length > 0 ? Math.min(...intervals.map(([s]) => s)) : null;
-      return buildCompactCrateEntry(n, displayName, t.bpm, camelotKey, t.grid !== null, firstVocalSeconds);
+      // M8.2: tell the brain which tracks can be stem_migrate'd. stemEntryFor is the
+      // same gate the executor uses (stems on Drive, not local paths), so the brain
+      // is never told a track has stems that the engine would then refuse.
+      const hasStems = stemEntryFor(t.id) !== null;
+      const entry = buildCompactCrateEntry(n, displayName, t.bpm, camelotKey, t.grid !== null, firstVocalSeconds, hasStems, beatInFor(t.id));
+      entry.genre = metadata.genre || undefined;
+      entry.genreSource = metadata.genreSource;
+      if (hasStems) entry.stemRoles = Object.keys(stemEntryFor(t.id)!.stems);
+      if (hasStems && isTranceTrackName(t.name)) {
+        const drops = CURRENT_LOOP_POINTS[key]?.drops.map(d => d.atSeconds);
+        if (drops?.length) entry.drops = drops.slice(0, 3);
+      }
+      return entry;
     });
     crateIndexMapRef.current = indexMap;
     return entries;
@@ -2654,9 +3339,266 @@ export default function Home() {
     return deckLiveState(deckByLabel(liveLabel))?.effectiveBpm ?? null;
   }
 
+  function resolveCommandTrack(trackId: string): CrateTrack | null {
+    const trackIndex = Number(trackId);
+    if (!Number.isFinite(trackIndex)) return null;
+    const mappedId = crateIndexMapRef.current.get(trackIndex);
+    if (mappedId !== undefined) return crateRef.current.find((t) => t.id === mappedId) ?? null;
+    return crateRef.current[trackIndex] ?? null;
+  }
+
+  function crateIndexForTrackId(trackId: string): number | null {
+    const index = crateRef.current.findIndex((track) => track.id === trackId);
+    return index >= 0 ? index : null;
+  }
+
+  function performanceMoveReady(): boolean {
+    if (lastPerformanceAtRef.current === null) return true;
+    return (Date.now() - lastPerformanceAtRef.current) / 1000 >= AUTOPILOT_PERFORMANCE_COOLDOWN_SECONDS;
+  }
+
+  function hasFreshVibeNote(): boolean {
+    const note = lastVibeNoteRef.current;
+    return note !== null && (Date.now() - note.at) / 1000 < LOCAL_RECIPE_FRESH_NOTE_SECONDS;
+  }
+
+  function commandFromRecipe(recipe: TransitionRecipe, trackIndex: number, recovery = false): Command {
+    const trackId = String(trackIndex);
+    const shortResidency = residencyRequestRef.current !== null && residencyRequestRef.current.seconds <= 60;
+    if (recipe.command.action === "stem_migrate") {
+      return {
+        action: "stem_migrate",
+        trackId,
+        bars: shortResidency ? 8 : recipe.command.bars,
+        anchor: recipe.command.anchor,
+        say: `recipe: ${recipe.reason}`,
+      };
+    }
+    if (recipe.command.action === "queue") {
+      const live = getLiveDeckLabel();
+      const ctrl = live ? deckByLabel(live) : null;
+      const incoming = crateRef.current[trackIndex];
+      const outgoing = crateRef.current.find(t => t.id === ctrl?.trackId) ?? { name: ctrl?.trackName ?? "" };
+      const blend = recipe.command.transition === "gap" && incoming && recipeGapNeedsBlend(outgoing, incoming, performanceMixRef.current);
+      const effectiveTransition = blend ? "bass_swap" : recipe.command.transition;
+      const liveGrid = ctrl ? effectiveGrid(ctrl.tags, ctrl.grid) : null;
+      const inGrid = incoming ? ((crateManifestJson as CrateManifestEntry[]).find(t => t.id === incoming.id)?.grid ?? incoming.grid) : null;
+      const canStemMigrate =
+        !recovery &&
+        performanceMoveReady() &&
+        ctrl &&
+        incoming &&
+        (performanceMixRef.current || (!isPartnerDanceTrack(outgoing) && !isPartnerDanceTrack(incoming))) &&
+        effectiveTransition !== "gap" &&
+        stemEntryFor(ctrl.trackId) !== null &&
+        stemEntryFor(incoming.id) !== null &&
+        liveGrid &&
+        !liveGrid.estimated &&
+        inGrid &&
+        Math.abs(ctrl.deck.tempo - 1) <= 0.06 &&
+        Math.abs((liveGrid.bpm * ctrl.deck.tempo) / inGrid.bpm - 1) <= 0.05;
+      if (canStemMigrate && localRecipeMovesSinceBrainRef.current % 2 === 1) {
+        const migrateBars = shortResidency ? 8 : 16;
+        return {
+          action: "stem_migrate",
+          trackId,
+          bars: migrateBars,
+          anchor: "out",
+          say: `recipe: ${migrateBars}-bar stem migration (${recipe.reason})`,
+        };
+      }
+      return queueForResidency({
+        action: "queue",
+        trackId,
+        transition: effectiveTransition,
+        durationBars: recipe.command.durationBars,
+        startAt: recipe.command.startAt,
+        ...(recipe.command.maskFx ? { maskFx: recipe.command.maskFx } : {}),
+        say: `recipe: ${blend ? "blend follows current genres and your mixing request" : recipe.reason}`,
+      }, residencyRequestRef.current?.seconds ?? null, ctrl?.tags.bpm ?? null,
+        ctrl?.deck.tempo ?? 1, crateRef.current[trackIndex]?.bpm ?? null);
+    }
+    return {
+      action: "routine",
+      routine: "sample_mix",
+      sample: {
+        ...recipe.command.sample,
+        ...(shortResidency ? { holdSeconds: 18 } : {}),
+      },
+      queue: {
+        trackId,
+        transition: recipe.command.queue.transition,
+        durationBars: recipe.command.queue.durationBars,
+        startAt: recipe.command.queue.startAt,
+        ...(recipe.command.queue.maskFx ? { maskFx: recipe.command.queue.maskFx } : {}),
+      },
+      say: `recipe: ${recipe.reason}`,
+    };
+  }
+
+  function tryExecuteShowcaseStep(liveTrackId: string | null): boolean {
+    if (queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current) return false;
+    while (showcaseQueueRef.current.length > 0 && showcaseQueueRef.current[0] === liveTrackId) {
+      showcaseQueueRef.current.shift();
+    }
+    if (showcaseQueueRef.current.length === 0) {
+      setShowcaseRemaining(0);
+      return false;
+    }
+    const nextTrackId = showcaseQueueRef.current.shift()!;
+    setShowcaseRemaining(showcaseQueueRef.current.length);
+    const trackIndex = crateIndexForTrackId(nextTrackId);
+    const target = crateRef.current.find((t) => t.id === nextTrackId);
+    if (trackIndex === null || !target) return false;
+
+    const step = showcaseStepRef.current;
+    showcaseStepRef.current = step + 1;
+    const songNumber = Math.min(10, 10 - showcaseQueueRef.current.length);
+    const liveLabel = getLiveDeckLabel();
+    const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
+    if (!liveCtrl || liveTrackId === null) {
+      pushBrainLog(
+        "plan",
+        `🔥 Reggaeton Demo [${songNumber}/10]: opening on "${musicLabel(target)}" (hot mid-track lead-in + Colombian El Cerebro hype drop)`
+      );
+      executeCommand(
+        {
+          action: "queue",
+          trackId: String(trackIndex),
+          transition: "bass_swap",
+          durationBars: 4,
+          startAt: "auto",
+          say: `Showcase Song ${songNumber}/10: ${musicLabel(target)} (hot mid-track lead-in)`,
+        },
+        "user_chat"
+      );
+      setTimeout(() => {
+        playVocalCategory("drop", false);
+        void fxPlayerRef.current?.play("airhorn");
+      }, 2800);
+      return true;
+    }
+
+    const liveGrid = effectiveGrid(liveCtrl.tags, liveCtrl.grid);
+    const inGrid = (crateManifestJson as CrateManifestEntry[]).find((t) => t.id === target.id)?.grid ?? target.grid;
+    const canStem =
+      stemEntryFor(liveCtrl.trackId) !== null &&
+      stemEntryFor(target.id) !== null &&
+      liveGrid !== null &&
+      !liveGrid.estimated &&
+      inGrid !== null &&
+      Math.abs(liveCtrl.deck.tempo - 1) <= 0.06 &&
+      Math.abs((liveGrid.bpm * liveCtrl.deck.tempo) / inGrid.bpm - 1) <= 0.05;
+
+    if (canStem && step % 2 === 1) {
+      const anchor = step % 4 === 1 ? "out" : "in";
+      pushBrainLog(
+        "plan",
+        `🔥 Reggaeton Demo [${songNumber}/10]: 8-bar stem_migrate (${anchor} anchor, drums→harmony→bass→vocals + riser/drop SFX) into "${musicLabel(target)}"`
+      );
+      executeCommand(
+        {
+          action: "stem_migrate",
+          trackId: String(trackIndex),
+          bars: 8,
+          anchor,
+          say: `Showcase Song ${songNumber}/10: 8-bar stem migration into ${musicLabel(target)}`,
+        },
+        "user_chat"
+      );
+      return true;
+    }
+
+    pushBrainLog(
+      "plan",
+      `🔥 Reggaeton Demo [${songNumber}/10]: 3-cycle sample_mix (flat 0 dB loop + flanger + dub delay throw + Colombian vocal + airhorn + 250 Hz crossover) into "${musicLabel(target)}"`
+    );
+    executeCommand(
+      {
+        action: "routine",
+        routine: "sample_mix",
+        sample: {
+          isolation: "beat",
+          captureBars: 4,
+          holdSeconds: 18,
+          halvings: 0,
+          sweepToBpm: (liveGrid?.bpm ?? liveCtrl.tags.bpm ?? 96) * liveCtrl.deck.tempo,
+        },
+        queue: {
+          trackId: String(trackIndex),
+          transition: "bass_swap",
+          durationBars: 4,
+          startAt: "auto",
+          maskFx: "space_sweep",
+        },
+        say: `Showcase Song ${songNumber}/10: 3-cycle loop + 250 Hz crossover into ${musicLabel(target)}`,
+      },
+      "user_chat"
+    );
+    return true;
+  }
+
+  function tryExecuteLocalAutopilotRecipe(liveState: Pick<DjLiveState, "trackId">, recovery = false): boolean {
+    if (queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current) return false;
+    if (showcaseQueueRef.current.length > 0 && tryExecuteShowcaseStep(liveState.trackId)) {
+      return true;
+    }
+    recovery = recovery || Date.now() < localRecoveryUntilRef.current;
+    if (!recovery && modelOnlyRef.current) return false;
+    if (!recovery && hasFreshVibeNote() && residencyRequestRef.current === null && genreRequestRef.current === null) return false;
+    if (!recovery && localRecipeMovesSinceBrainRef.current >= LOCAL_RECIPE_AI_REFRESH_MOVES) {
+      pushBrainLog("recipe", "asking El Cerebro for a set-level refresh after local recipes");
+      return false;
+    }
+    const file = TRANSITION_RECIPES as TransitionRecipeFile;
+    const candidates = file.recipes[liveState.trackId] ?? [];
+
+    const availableIds = new Set(crateRef.current.map((track) => track.id));
+    const recentIds = new Set(historyRef.current.slice(-HISTORY_LIMIT).map((entry) => entry.trackId));
+    for (const recipe of candidates) {
+      if (!availableIds.has(recipe.toId) || recentIds.has(recipe.toId)) continue;
+      const target = crateRef.current.find(t => t.id === recipe.toId);
+      if (!target || !genreAllowed(resolveMusicMetadata(target).genre, genreRequestRef.current)) continue;
+      // A failed cloud refresh must not launch another complex routine as its
+      // recovery. Use a precomputed normal handoff and retain all queue guards.
+      if (recovery && recipe.command.action !== "queue") continue;
+      if ((recipe.command.action === "routine" || recipe.command.action === "stem_migrate") && !performanceMoveReady()) continue;
+      const trackIndex = crateIndexForTrackId(recipe.toId);
+      if (trackIndex === null) continue;
+      const command = commandFromRecipe(recipe, trackIndex, recovery);
+      const parsed = CommandSchema.safeParse(command);
+      if (!parsed.success) continue;
+      localRecipeMovesSinceBrainRef.current += 1;
+      if (recovery) {
+        if (Date.now() >= localRecoveryUntilRef.current) localRecoveryUntilRef.current = Date.now() + 120000;
+        pushBrainLog("recovery", "brain delayed or unavailable — continuing with a local transition; no other model called");
+      } else pushBrainLog("recipe", `local recipe ${localRecipeMovesSinceBrainRef.current}/${LOCAL_RECIPE_AI_REFRESH_MOVES}: ${command.say ?? recipe.reason}`);
+      executeCommand(parsed.data, "autopilot_poll");
+      return true;
+    }
+    if (recovery || genreRequestRef.current !== null || residencyRequestRef.current !== null) {
+      const liveLabel = getLiveDeckLabel();
+      const ctrl = liveLabel ? deckByLabel(liveLabel) : null;
+      const target = genreRecoveryTrack(crateRef.current, liveState.trackId, recentIds, genreRequestRef.current, ctrl?.tags.bpm ?? null);
+      const index = target ? crateIndexForTrackId(target.id) : null;
+      if (target && index !== null && ctrl) {
+        const command = queueForResidency({ action: "queue", trackId: String(index),
+          transition: !performanceMixRef.current && isPartnerDanceTrack(target) ? "gap" : "bass_swap",
+          durationBars: 4, startAt: "auto", say: "Local handoff within your requested genres" },
+          residencyRequestRef.current?.seconds ?? null, ctrl.tags.bpm ?? null, ctrl.deck.tempo, target.bpm);
+        if (recovery) localRecoveryUntilRef.current = Date.now() + 120000;
+        pushBrainLog("recipe", `genre-matched handoff into "${musicLabel(target)}"`);
+        executeCommand(command, "autopilot_poll");
+        return true;
+      }
+    }
+    return false;
+  }
+
   // --- Command execution (Parts B+C: brain picks, engine executes) ---
 
   function executeTempoNudge(command: TempoNudgeCommand) {
+    if (migrationRef.current || migrationPreparingRef.current) return;
     const liveLabel = getLiveDeckLabel();
     if (!liveLabel) {
       pushBrainLog("error", "tempo_nudge: no live deck to adjust");
@@ -2685,6 +3627,7 @@ export default function Home() {
    * cooldown floor below, "autopilot_poll"/"opener" stay floored.
    */
   function executeFxCommand(command: FxCommand, cooldownReason: ConsultReason) {
+    if (migrationRef.current || migrationPreparingRef.current) { pushBrainLog("fx", "skipped — stem performance owns the audio"); return; }
     // Code-side guard (review-panel fix): the prompt already forbids firing
     // fx mid-transition, but enforce it here too rather than trusting the
     // model every time — an honest log line either way.
@@ -2699,12 +3642,18 @@ export default function Home() {
     // follow-up chain rooted in a chat) is exempt, the human asked directly.
     // recordFxFired() itself (below, success-only) still won't fire if this
     // skip happens, so the cooldown clock is untouched by a skip.
+    // M7 Phase 3: which floor applies depends on the CLASS of the move.
+    // Rolls are performance (loose floor, own clock); airhorns and the rest
+    // of the stingers keep the rare, research-backed cap.
+    const performance = isPerformanceMove(command.fx);
     if (!isHumanInitiated(cooldownReason)) {
-      const secondsAgo = lastFxAtRef.current === null ? null : (Date.now() - lastFxAtRef.current) / 1000;
-      if (secondsAgo !== null && secondsAgo < AUTOPILOT_FX_COOLDOWN_SECONDS) {
+      const clockRef = performance ? lastPerformanceAtRef : lastFxAtRef;
+      const floorSeconds = performance ? AUTOPILOT_PERFORMANCE_COOLDOWN_SECONDS : AUTOPILOT_FX_COOLDOWN_SECONDS;
+      const secondsAgo = clockRef.current === null ? null : (Date.now() - clockRef.current) / 1000;
+      if (secondsAgo !== null && secondsAgo < floorSeconds) {
         pushBrainLog(
           "fx",
-          `skipped "${command.fx}" — hard cooldown floor (${secondsAgo.toFixed(0)}s < ${AUTOPILOT_FX_COOLDOWN_SECONDS}s), root=${cooldownReason}`
+          `skipped "${command.fx}" — ${performance ? "performance" : "stinger"} cooldown floor (${secondsAgo.toFixed(0)}s < ${floorSeconds}s), root=${cooldownReason}`
         );
         return;
       }
@@ -2720,7 +3669,7 @@ export default function Home() {
       // (review-panel fix — previously it burned the cooldown even on a
       // silent no-op, e.g. no buffer decoded yet).
       const scratchPattern = command.fx.slice("scratch_".length) as ScratchPattern;
-      const started = scratch(deckByLabel(liveLabel).deck, coreRef.current!, scratchPattern);
+      const started = scratch(deckByLabel(liveLabel).deck, coreRef.current!, scratchPattern, (deckByLabel(liveLabel).tags.bpm ?? NEUTRAL_BPM_FALLBACK) * deckByLabel(liveLabel).deck.tempo);
       if (started) {
         recordFxFired();
         recordLedgerFx(command.fx, "brain");
@@ -2737,7 +3686,7 @@ export default function Home() {
       const bpm = liveCtrl.tags.bpm ?? NEUTRAL_BPM_FALLBACK;
       const started = fireRoll(liveCtrl.deck, coreRef.current!, bpm, ROLL_SUBDIVISION_BY_FX[command.fx as RollFxName]);
       if (started) {
-        recordFxFired();
+        recordFxFired(true); // performance clock, not the stinger clock
         recordLedgerFx(command.fx, "brain");
       }
       return;
@@ -2782,19 +3731,1181 @@ export default function Home() {
   }
 
   function executeEqCommand(command: EqCommand) {
+    if (migrationRef.current || migrationPreparingRef.current) return;
     const liveLabel = getLiveDeckLabel();
     if (!liveLabel) {
       pushBrainLog("error", "eq: no live deck to adjust");
       return;
     }
-    deckByLabel(liveLabel).deck.setEq({ low: command.low, mid: command.mid, high: command.high });
+    const ctrl = deckByLabel(liveLabel);
+    const safeLow = command.low !== undefined ? Math.max(-12, command.low) : undefined;
+    const safeMid = command.mid !== undefined ? Math.max(-6, command.mid) : undefined;
+    const safeHigh = command.high !== undefined ? Math.max(-6, command.high) : undefined;
+    ctrl.deck.setEq({ low: safeLow, mid: safeMid, high: safeHigh });
+    if ((safeLow !== undefined && safeLow < 0) || (safeMid !== undefined && safeMid < 0) || (safeHigh !== undefined && safeHigh < 0)) {
+      setTimeout(() => {
+        ctrl.deck.setEq({ low: 0, mid: 0, high: 0 });
+      }, 6000);
+    }
+  }
+
+  function executeEqSweepCommand(command: EqSweepCommand) {
+    const label = getLiveDeckLabel();
+    if (!label || queueInFlightRef.current || transitionRunning) return;
+    const ctrl = deckByLabel(label), grid = effectiveGrid(ctrl.tags, ctrl.grid);
+    if (!grid || grid.estimated || isPartnerDanceTrackName(ctrl.trackName ?? "")) {
+      pushBrainLog("eq_sweep", "skipped — needs a real grid and an eligible musical lane");
+      return;
+    }
+    const delay = nextPhraseBoundaries(grid, ctrl.deck.positionSeconds, ctrl.deck.tempo, 2)[0];
+    if (delay === undefined || delay > PHRASE_CANDIDATE_CAP_SECONDS) return;
+    const ctx = coreRef.current!.ensureContext();
+    const currentDb = ctrl.deck.getEq()[command.band];
+    const targetDb = command.toDb < 0 ? Math.max(-9, command.toDb) : command.toDb;
+    const envelopeValues = targetDb < 0 ? [currentDb, targetDb, 0] : [currentDb, targetDb];
+    ctrl.deck.scheduleEqEnvelope(command.band, envelopeValues, command.bars * 240 / (grid.bpm * ctrl.deck.tempo), ctx.currentTime + delay);
+    lastPerformanceAtRef.current = Date.now();
+    pushBrainLog("eq_sweep", `${command.band} → ${targetDb} dB${targetDb < 0 ? " → 0 dB" : ""} over ${command.bars} bars, on the next phrase`);
+  }
+
+  function clearRoutineTimers() {
+    for (const timer of routineTimersRef.current) clearTimeout(timer);
+    routineTimersRef.current = [];
+    if (routineIntervalRef.current) {
+      clearInterval(routineIntervalRef.current);
+      routineIntervalRef.current = null;
+    }
+  }
+
+  function cleanupHeldLoopAndRoutine(reason: string) {
+    if (!heldLoopRef.current && routineTimersRef.current.length === 0 && !routineIntervalRef.current) return false;
+    const handle = heldLoopRef.current;
+    heldLoopRef.current = null;
+    clearRoutineTimers();
+    handle?.stop();
+    queueInFlightRef.current = false;
+    askedForTrackRef.current = null;
+    setTransitionRunning(false);
+    deckA.deck.unduck(HELD_LOOP_DUCK_RAMP_SECONDS);
+    deckB.deck.unduck(HELD_LOOP_DUCK_RAMP_SECONDS);
+    // A manual pause can arrive after the AudioContext handoff envelopes have
+    // started. Supersede both schedules now, then give the surviving deck
+    // explicit crossfader ownership so React cannot reapply a stale midpoint.
+    const deckAStillPlaying = deckA.deck.playing;
+    const deckBStillPlaying = deckB.deck.playing;
+    deckA.deck.setGain(1);
+    deckB.deck.setGain(1);
+    if (deckAStillPlaying && !deckBStillPlaying) setCrossfade(0);
+    else if (deckBStillPlaying && !deckAStillPlaying) setCrossfade(1);
+    deckA.deck.setEq({ low: 0, mid: 0, high: 0 });
+    deckB.deck.setEq({ low: 0, mid: 0, high: 0 });
+    deckA.deck.filterRelease(0.05);
+    deckA.deck.reverbWash(0, 0.05);
+    deckB.deck.filterRelease(0.05);
+    deckB.deck.reverbWash(0, 0.05);
+    cancelFollowUp();
+    pushBrainLog("loop", reason);
+    return true;
+  }
+
+  /**
+   * M7 Phase 3 — the band-isolated HELD loop, fired by El Cerebro himself.
+   *
+   * Grid-truth (GOAL-M7.md PRINCIPLE 4): planHeldLoop returns null without a
+   * real BeatGrid and this refuses rather than falling back to an unsnapped
+   * hold — a hold that isn't on the grid can't exit on the "1", which is the
+   * whole point of the move.
+   *
+   * Uses the loop-points.json candidate for this track when there is one, so
+   * the bars being held are the song's actual recurring hook rather than
+   * whatever four bars happen to be under the playhead (the owner's core
+   * correction, 2026-07-30: a filter strip on arbitrary bars sounds thin).
+   * Falls back to the current position when the track has no candidate.
+   */
+  async function executeLoopCommand(command: LoopCommand, cooldownReason: ConsultReason) {
+    if (migrationRef.current || migrationPreparingRef.current) return;
+    const controlVersion = performanceControlVersionRef.current;
+    const liveLabel = getLiveDeckLabel();
+    if (!liveLabel) {
+      pushBrainLog("error", "loop: no live deck to hold");
+      return;
+    }
+    if (transitionEngineRef.current.isRunning) {
+      pushBrainLog("loop", "skipped — a transition is currently in progress");
+      return;
+    }
+    if (heldLoopRef.current) {
+      pushBrainLog("loop", "skipped — a held loop is already running");
+      return;
+    }
+    // Same class-aware cadence gate as executeFxCommand: a hold is a
+    // performance move, so it answers to the loose floor, not the stinger cap.
+    if (!isHumanInitiated(cooldownReason)) {
+      const secondsAgo = lastPerformanceAtRef.current === null ? null : (Date.now() - lastPerformanceAtRef.current) / 1000;
+      if (secondsAgo !== null && secondsAgo < AUTOPILOT_PERFORMANCE_COOLDOWN_SECONDS) {
+        pushBrainLog("loop", `skipped — performance cooldown floor (${secondsAgo.toFixed(0)}s < ${AUTOPILOT_PERFORMANCE_COOLDOWN_SECONDS}s)`);
+        return;
+      }
+    }
+
+    const liveCtrl = deckByLabel(liveLabel);
+    const liveTrackId = liveCtrl.trackId;
+    // An ESTIMATED (anchor-0, tag-BPM) grid is explicitly not good enough
+    // here: a hold that isn't on the real grid can't exit on the "1".
+    const grid = effectiveGrid(liveCtrl.tags, liveCtrl.grid);
+    if (!grid || grid.estimated) {
+      pushBrainLog("loop", "skipped — no real BeatGrid on the live track (never an unsnapped hold)");
+      return;
+    }
+
+    // Prefer the precomputed recurring-pattern range for this track.
+    // When transitioning near the end of a track, also allow sampling the
+    // track's strongest earlier vocal-free hook (e.g. a 1:07–1:22 horn + bassline
+    // break), or a stem-isolated hook when separated stems strip out vocals.
+    const entry = getLoopPoints(CURRENT_LOOP_POINTS, cueKeyForLabel(liveLabel) ?? "");
+    const candidate =
+      pickLoopCandidate(entry, {
+        fromSeconds: liveCtrl.deck.positionSeconds,
+        requireVocalFree: true,
+        isolation: command.isolation,
+      }) ??
+      pickLoopCandidate(entry, {
+        fromSeconds: 0,
+        requireVocalFree: true,
+        isolation: command.isolation,
+      }) ??
+      pickLoopCandidate(entry, {
+        fromSeconds: 0,
+        requireVocalFree: true,
+      }) ??
+      (stemEntryFor(liveTrackId)
+        ? pickLoopCandidate(entry, {
+            fromSeconds: 0,
+            requireVocalFree: false,
+            isolation: command.isolation,
+          }) ??
+          pickLoopCandidate(entry, {
+            fromSeconds: 0,
+            requireVocalFree: false,
+          })
+        : null);
+    const fromSeconds = candidate ? candidate.startSeconds : liveCtrl.deck.positionSeconds;
+    const halvingStages = command.halvings ?? 0;
+
+    const plan = planHeldLoop(grid, fromSeconds, liveCtrl.deck.tempo, {
+      captureBars: command.captureBars ?? (candidate ? candidate.lengthBars : 4),
+      targetHoldSeconds: Math.min(20, command.holdSeconds ?? 12), // owner: bare loop max ~15-20s, never 30
+      halvingStages,
+      isolation: command.isolation ?? candidate?.isolation ?? "beat",
+      peakRate: halvingStages > 1 ? 1.04 : 1.0,
+      // Loop-covered tempo sweep: ride the loop from this track's own tempo
+      // to the incoming track's, so the incoming deck enters unclamped.
+      resolveToRate: command.sweepToBpm ? command.sweepToBpm / grid.bpm : undefined,
+    });
+    if (!plan) {
+      pushBrainLog("loop", "skipped — the held-loop planner refused (no usable grid)");
+      return;
+    }
+
+    const stemSource = candidate?.vocalFree
+      ? null
+      : await loadStemBufferForLoop(
+          liveTrackId,
+          plan.isolation,
+          plan.loopStart,
+          plan.loopEnd
+        );
+    if (
+      controlVersion !== performanceControlVersionRef.current ||
+      !liveCtrl.deck.playing ||
+      liveCtrl.trackId !== liveTrackId ||
+      heldLoopRef.current ||
+      transitionEngineRef.current.isRunning ||
+      migrationRef.current
+    ) {
+      return;
+    }
+
+    // Duck the deck for the hold's duration: the captured slice IS the mix
+    // while it runs. Deliberately duck rather than pause, matching roll.ts's
+    // and scratch.ts's established overlay pattern, so nothing in the deck's
+    // own state machine has to be unwound on exit.
+    liveCtrl.deck.duck(HELD_LOOP_DUCK_DB, HELD_LOOP_DUCK_RAMP_SECONDS);
+    const handle = fireIsolatedLoopHold(
+      liveCtrl.deck,
+      coreRef.current!,
+      plan,
+      () => {
+        heldLoopRef.current = null;
+        liveCtrl.deck.unduck(HELD_LOOP_DUCK_RAMP_SECONDS);
+      },
+      0,
+      stemSource
+    );
+    if (!handle) {
+      liveCtrl.deck.unduck(HELD_LOOP_DUCK_RAMP_SECONDS);
+      pushBrainLog("loop", "skipped — nothing decoded to loop yet");
+      return;
+    }
+    heldLoopRef.current = handle;
+    recordFxFired(true);
+    recordLedgerFx("loop_hold", "brain");
+
+    // M7 Phase 3, "make performance sequences expressible". One command per
+    // consult cannot carry "hold, then drop back in on the 1", and asking the
+    // model to compute the right followUpSeconds for a quantized hold it
+    // can't see the length of is exactly the kind of timing that drifts. The
+    // app knows the hold's real duration, so it books the return consult
+    // itself, landing HELD_LOOP_HANDOFF_LEAD_SECONDS before the exit — early
+    // enough to pick, download and decode the incoming track so it can land
+    // on the "1" the hold resolves to. Any followUpSeconds the model also set
+    // is superseded (scheduleFollowUp is a single latest-wins slot), which is
+    // the intended precedence: the app's measured timing beats a guess.
+    scheduleFollowUp(
+      Math.max(5, plan.totalDurationSeconds - HELD_LOOP_HANDOFF_LEAD_SECONDS),
+      cooldownReason
+    );
+    pushBrainLog(
+      "loop",
+      `held ${plan.captureBeats / 4} bar(s) @${plan.loopStart.toFixed(1)}s, ${plan.isolation} mode${stemSource ? " (isolated stems)" : ""}, ${plan.totalDurationSeconds.toFixed(1)}s (${plan.totalBeats / 16} phrases), exits at ${plan.exitBpm.toFixed(1)} BPM${candidate ? " — recurring-pattern range" : " — current position (no candidate)"}`
+    );
   }
 
   /** Phrase-aligned firing (Part 2): cancels any pending phrase-delayed transition start — a new queue command superseding it, or the user manually intervening (pause on either deck — see useDeckController's onManualPause). Single slot, latest/only-one wins. Logs a line when it actually had something to cancel (choir round #2, P1 — "make every cancelation log a line to the brain log"). */
+  // --- M8.2: stem migration (the real club transition) ---
+  // Two stem sets live at once during a migration; refs so a later command can
+  // tear them down. Only one migration runs at a time.
+  const migrationRef = useRef<{ out: StemSet; inc: StemSet; endsAt: number; cancel: () => void } | null>(null);
+  const migrationPreparingRef = useRef<AbortController | null>(null);
+  const stemLoopCacheRef = useRef<Map<string, LoopHoldStemSource>>(new Map());
+
+  function stemEntryFor(trackId: string | null | undefined): StemManifestEntry | null {
+    if (!trackId) return null;
+    const entry = (STEM_MANIFEST as Record<string, StemManifestEntry>)[trackId];
+    // Only usable once the stems are on Drive (ids, not local paths). A local
+    // relative path means the batch ran but the upload has not — refuse cleanly.
+    return usableStemEntry(entry);
+  }
+
+  async function loadStemBufferForLoop(
+    trackId: string | null | undefined,
+    isolation: "beat" | "melody",
+    fromSeconds: number,
+    toSeconds: number
+  ): Promise<LoopHoldStemSource | null> {
+    const entry = stemEntryFor(trackId);
+    const core = coreRef.current;
+    if (!trackId || !entry || !core) return null;
+    const cacheKey = `${trackId}:${isolation}:${Math.floor(fromSeconds)}:${Math.ceil(toSeconds)}`;
+    const cached = stemLoopCacheRef.current.get(cacheKey);
+    if (cached) return cached;
+    const manifestEntry = (crateManifestJson as CrateManifestEntry[]).find((t) => t.id === trackId);
+    const aborter = new AbortController();
+    const timer = setTimeout(() => aborter.abort(), 12000);
+    try {
+      const fetchBytes = async (id: string) => {
+        const blob = await getTrackBlob(
+          id,
+          async () => {
+            const asset = resolveAudioAssetUrl(id);
+            const response = asset.needsPasscode
+              ? await fetchWithPasscode(asset.url, { signal: aborter.signal })
+              : await fetch(asset.url, { signal: aborter.signal });
+            if (!response.ok) throw new Error(`stem download HTTP ${response.status}`);
+            return response.blob();
+          },
+          { store: trackCacheStoreRef.current }
+        );
+        aborter.signal.throwIfAborted();
+        return blob.arrayBuffer();
+      };
+      const source = await loadStemLoopMixBuffer(core, entry, fetchBytes, {
+        isolation,
+        fromSeconds: Math.max(0, fromSeconds - 0.5),
+        toSeconds: toSeconds + 0.5,
+        expectedTrackDuration: manifestEntry?.durationSeconds ?? undefined,
+        signal: aborter.signal,
+      });
+      if (source) {
+        if (stemLoopCacheRef.current.size >= 8) {
+          const oldest = stemLoopCacheRef.current.keys().next().value;
+          if (oldest) stemLoopCacheRef.current.delete(oldest);
+        }
+        stemLoopCacheRef.current.set(cacheKey, source);
+      }
+      return source;
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  /**
+   * M8.2i — where the BEAT is in, from the drums stem (scripts/make-beat-in.mjs), in
+   * the same timeline as the audio the app plays. Null when unknown or when the beat is
+   * in from the start. This is what startAt:"auto" should prefer over the loudness
+   * mixIn: a sung intro is loud, and loudness cannot tell a voice from a kick.
+   */
+  function beatInFor(trackId: string | null | undefined): number | null {
+    if (!trackId) return null;
+    const e = (BEAT_IN as Record<string, { beatInSeconds: number | null }>)[trackId];
+    const v = e?.beatInSeconds ?? null;
+    return typeof v === "number" && v >= 1 ? v : null;
+  }
+
+  function midTrackEntryFor(item: CrateTrack, maxEntrySeconds = 85, preferBeats: 16 | 32 = 16): { seconds: number; reason: string } | null {
+    const loopEntry = getLoopPoints(
+      CURRENT_LOOP_POINTS,
+      cueTrackKey({ source: item.source, id: item.id, name: item.name, size: item.size })
+    );
+    const minEntry = isPartnerDanceTrackName(item.name) ? 0 : 18;
+    return selectMidTrackEntryPoint(loopEntry, {
+      minEntrySeconds: minEntry,
+      maxEntrySeconds,
+      preferBeats,
+      beatInSeconds: beatInFor(item.id),
+    });
+  }
+
+  function teardownMigration() {
+    migrationPreparingRef.current?.abort();
+    const m = migrationRef.current;
+    migrationRef.current = null;
+    m?.cancel();
+  }
+
+  function pickTransitionSeamSfx(
+    fromName: string,
+    toName: string,
+    requestedMaskFx?: string
+  ): {
+    soloVocalCategory?: VocalCategory;
+    soloAccentSfx?: SfxName;
+    preDropSfx?: SfxName;
+    dropSfx?: SfxName;
+    layerSubdrop?: boolean;
+  } | null {
+    if (isPartnerDanceTrackName(fromName) || isPartnerDanceTrackName(toName)) return null;
+    let hash = 0;
+    const key = `${fromName}->${toName}`;
+    for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) | 0;
+    const idx = Math.abs(hash);
+    const vocalChoices: VocalCategory[] = ["tag", "drop", "crowd", "cue_hype", "adlib"];
+    const soloVocalCategory = vocalChoices[idx % vocalChoices.length];
+    const accentChoices: SfxName[] = ["airhorn", "horn_stab", "timbale", "dub_siren", "laser", "gunshot"];
+    const soloAccentSfx = accentChoices[idx % accentChoices.length];
+
+    if (requestedMaskFx && requestedMaskFx !== "space_sweep") {
+      const explicit = requestedMaskFx as SfxName;
+      if (
+        explicit === "rewind" ||
+        explicit === "siren" ||
+        explicit === "dub_siren" ||
+        explicit === "riser" ||
+        explicit === "brake" ||
+        explicit === "timbale" ||
+        explicit === "crash"
+      ) {
+        return { soloVocalCategory, soloAccentSfx, preDropSfx: explicit, dropSfx: "subdrop", layerSubdrop: true };
+      }
+      return { soloVocalCategory, soloAccentSfx, preDropSfx: "rewind", dropSfx: explicit, layerSubdrop: explicit !== "subdrop" };
+    }
+    const toGenre = resolveMusicMetadata({ name: toName }).genre;
+    if (
+      toGenre === "House" ||
+      toGenre === "Trance" ||
+      toGenre === "Melodic Techno" ||
+      toGenre === "Guaracha" ||
+      toGenre === "Dance" ||
+      toGenre === "Dance Pop"
+    ) {
+      const electronicPre: SfxName[] = ["crash", "riser", "rewind", "crash"];
+      const electronicDrop: SfxName[] = ["cryo_jet", "downlifter", "subdrop", "laser", "airhorn"];
+      const dropSfx = electronicDrop[idx % electronicDrop.length];
+      return {
+        soloVocalCategory,
+        soloAccentSfx: idx % 2 === 0 ? "laser" : "cryo_jet",
+        preDropSfx: electronicPre[idx % electronicPre.length],
+        dropSfx,
+        layerSubdrop: dropSfx !== "subdrop",
+      };
+    }
+    // Reggaeton, Cubaton, Latin Pop, Latin Trap, Dembow, Merengue, Cumbia, Hip-Hop, Open-Format:
+    const preChoices: SfxName[] = ["rewind", "timbale", "crash", "dub_siren", "rewind", "timbale", "siren"];
+    const dropChoices: SfxName[] = ["airhorn", "subdrop", "cryo_jet", "horn_stab", "downlifter", "booyaka", "gunshot"];
+    const dropSfx = dropChoices[idx % dropChoices.length];
+    return {
+      soloVocalCategory,
+      soloAccentSfx,
+      preDropSfx: preChoices[idx % preChoices.length],
+      dropSfx,
+      layerSubdrop: dropSfx !== "subdrop" && dropSfx !== "booyaka",
+    };
+  }
+
+  /** Prepared performance; all audible handoffs are scheduled before the first fade. */
+  async function executeStemMigrateCommand(command: StemMigrateCommand | TranceBreakdownCommand, cooldownReason: ConsultReason) {
+    const controlVersion = performanceControlVersionRef.current;
+    const action = command.action;
+    const liveLabel = getLiveDeckLabel();
+    if (!liveLabel || queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current) {
+      pushBrainLog(action, "skipped — no free live performance slot");
+      return;
+    }
+    if (!isHumanInitiated(cooldownReason) && !performanceMoveReady()) return;
+    const liveCtrl = deckByLabel(liveLabel);
+    const item = resolveCommandTrack(command.trackId);
+    const refuse = (reason: string) => {
+      pushBrainLog(action, `skipped — ${reason}; current track kept playing`);
+      askedForTrackRef.current = null;
+      // A rejected showcase move must not strand playback. Defer until the
+      // preparation finally block releases its reservation; never resurrect a
+      // command canceled by a transport change or autopilot stop.
+      queueMicrotask(() => {
+        if (!item || item.id === liveCtrl.trackId || controlVersion !== performanceControlVersionRef.current || !liveCtrl.deck.playing || queueInFlightRef.current) return;
+        pushBrainLog("recovery", `${action} did not run — preparing an ordinary handoff to ${musicLabel(item)}; this is not a stem mix`);
+        const fallback = queueForResidency({ action: "queue", trackId: command.trackId,
+          transition: isPartnerDanceTrack(item) && !performanceMixRef.current ? "gap" : "bass_swap", durationBars: 4, startAt: "auto" },
+          residencyRequestRef.current?.seconds ?? null, liveCtrl.tags.bpm ?? null, liveCtrl.deck.tempo, item.bpm);
+        void executeQueueCommand(fallback, !isHumanInitiated(cooldownReason));
+      });
+    };
+    if (!item || item.id === liveCtrl.trackId) { refuse("target is missing or already live"); return; }
+    if (!performanceMixRef.current && (isPartnerDanceTrack(crateRef.current.find(t => t.id === liveCtrl.trackId) ?? { name: liveCtrl.trackName ?? "" }) || isPartnerDanceTrack(item))) {
+      refuse("partner-dance tracks keep their full-song clean ending"); return;
+    }
+    const outEntry = stemEntryFor(liveCtrl.trackId), inEntry = stemEntryFor(item.id);
+    const liveGrid = effectiveGrid(liveCtrl.tags, liveCtrl.grid);
+    const inGrid = (crateManifestJson as CrateManifestEntry[]).find(t => t.id === item.id)?.grid ?? item.grid;
+    if (!outEntry || !inEntry || !liveGrid || liveGrid.estimated || !inGrid) { refuse("both tracks need prepared stems and real BeatGrids"); return; }
+    if (liveCtrl.grid?.markers.some(m => typeof m.bpm === "number" && Math.abs(m.bpm - liveGrid.bpm) > 0.1) || inGrid.markers.some(m => typeof m.bpm === "number" && Math.abs(m.bpm - inGrid.bpm) > 0.1)) { refuse("variable-tempo grids need a different transition"); return; }
+    const rate = liveCtrl.deck.tempo, outgoingId = liveCtrl.trackId;
+    const effectiveBpm = liveGrid.bpm * rate, incomingRate = effectiveBpm / inGrid.bpm;
+    // Allow up to ±6% incoming rate (around ±1 semitone) and ±8% live rate so
+    // club-range BPM neighbors (e.g. 92 -> 96 BPM or 124 -> 128 BPM) can stem_migrate.
+    if (Math.abs(incomingRate - 1) > 0.06 || Math.abs(rate - 1) > 0.08) { refuse("stem tempo would change pitch too far; use a normal key-locked blend"); return; }
+    const breakdown = command.action === "trance_breakdown";
+    const loopEntry = CURRENT_LOOP_POINTS[cueTrackKey({ source: item.source, id: item.id, name: item.name, size: item.size })];
+    if (breakdown && (!isTranceTrackName(liveCtrl.trackName ?? "") || !isTranceTrackName(item.name) || !loopEntry?.drops.some(d => Math.abs(d.atSeconds - command.dropSeconds) < 0.05))) {
+      refuse("trance breakdown requires two eligible trance tracks and a current analyzed drop cue"); return;
+    }
+    const core = coreRef.current!, ctx = core.ensureContext();
+    const idleLabel: DeckLabel = liveLabel === "A" ? "B" : "A";
+    const idleCtrl = deckByLabel(idleLabel);
+    if (idleCtrl.deck.playing) { refuse("the other deck is already playing"); return; }
+    cancelTempoGlide();
+    const aborter = new AbortController();
+    migrationPreparingRef.current = aborter;
+    queueInFlightRef.current = true;
+    queueInFlightSinceRef.current = Date.now();
+    const deadline = setTimeout(() => aborter.abort(), STEM_PREPARE_SECONDS * 1000);
+    let outSet: StemSet | null = null, inSet: StemSet | null = null;
+    let committed = false;
+    const check = () => {
+      aborter.signal.throwIfAborted();
+      if (!liveCtrl.deck.playing || deckByLabel(liveLabel).trackId !== outgoingId || Math.abs(liveCtrl.deck.tempo - rate) > 1e-6) throw new Error("live playback changed during preparation");
+    };
+    try {
+      const knownInDuration = loopEntry?.durationSeconds ?? (crateManifestJson as CrateManifestEntry[]).find(t => t.id === item.id)?.durationSeconds ?? null;
+      let migBars = command.bars;
+      let stemBeatIn = midTrackEntryFor(item, 80, 16)?.seconds ?? beatInFor(item.id) ?? 0;
+      if (knownInDuration && !breakdown) {
+        while (migBars > 8 && stemBeatIn + ((migBars * 240 / effectiveBpm) + 2) * incomingRate >= knownInDuration) {
+          migBars = migBars === 32 ? 16 : 8;
+        }
+        if (stemBeatIn + ((migBars * 240 / effectiveBpm) + 2) * incomingRate >= knownInDuration) {
+          stemBeatIn = Math.max(0, Math.min(beatInFor(item.id) ?? 0, knownInDuration - ((migBars * 240 / effectiveBpm) + 4) * incomingRate));
+        }
+      }
+      const initial = stemClock({ now: ctx.currentTime, delay: 0, outgoingPosition: liveCtrl.deck.positionSeconds, outgoingRate: rate, outgoingBpm: liveGrid.bpm, incomingBpm: inGrid.bpm, incomingAnchor: inGrid.anchor, beatIn: stemBeatIn, bars: migBars, ...(breakdown ? { dropSeconds: command.dropSeconds } : {}) });
+      pushBrainLog(action, `preparing full track and stem windows for "${item.name}"…`);
+      const fetchBytes = async (id: string) => {
+        const stemBlob = await getTrackBlob(id, async () => {
+          const asset = resolveAudioAssetUrl(id);
+          const response = asset.needsPasscode
+            ? await fetchWithPasscode(asset.url, { signal: aborter.signal })
+            : await fetch(asset.url, { signal: aborter.signal });
+          if (!response.ok) throw new Error(`stem download HTTP ${response.status}`);
+          return response.blob();
+        }, { store: trackCacheStoreRef.current });
+        aborter.signal.throwIfAborted();
+        return stemBlob.arrayBuffer();
+      };
+      // Warm stem blobs into IndexedDB/memory cache in parallel with the full track download.
+      for (const stemId of [...Object.values(outEntry.stems), ...Object.values(inEntry.stems)]) {
+        if (stemId) void fetchBytes(stemId).catch(() => {});
+      }
+      const blob = await abortable(getTrackForPlayback(item, aborter.signal), aborter.signal);
+      check();
+      await idleCtrl.loadFile(blob, item.name, item.id, item.source);
+      if (!await abortable(idleCtrl.decodeIfNeeded(aborter.signal), aborter.signal)) throw new Error("incoming full-track decode failed");
+      check();
+      idleCtrl.setTempoDirectly(incomingRate);
+      const windowStart = liveCtrl.deck.positionSeconds;
+      outSet = await abortable(loadStemSet(core, outgoingId!, outEntry, fetchBytes, { signal: aborter.signal, fromSeconds: windowStart, toSeconds: windowStart + (STEM_PREPARE_SECONDS + initial.duration + 2) * rate, maxDecodedBytes: STEM_MEMORY_BYTES }), aborter.signal);
+      check();
+      inSet = await abortable(loadStemSet(core, item.id, inEntry, fetchBytes, { signal: aborter.signal, fromSeconds: initial.incomingOffset, toSeconds: initial.incomingOffset + (initial.duration + STEM_TAIL_SECONDS) * incomingRate, maxDecodedBytes: STEM_MEMORY_BYTES - outSet.decodedBytes }), aborter.signal);
+      check();
+      if (deckByLabel(idleLabel).trackId !== item.id) throw new Error("incoming deck changed during preparation");
+      const delay = nextPhraseBoundaries(liveGrid, liveCtrl.deck.positionSeconds, rate, 3).find(d => d >= 0.5);
+      if (delay === undefined || delay > PHRASE_CANDIDATE_CAP_SECONDS) throw new Error("no nearby phrase boundary");
+      const clock = stemClock({ now: ctx.currentTime, delay, outgoingPosition: liveCtrl.deck.positionSeconds, outgoingRate: rate, outgoingBpm: liveGrid.bpm, incomingBpm: inGrid.bpm, incomingAnchor: inGrid.anchor, beatIn: stemBeatIn, bars: migBars, ...(breakdown ? { dropSeconds: command.dropSeconds } : {}) });
+      const covers = (set: StemSet, offset: number, length: number) => offset >= set.bufferOffset && Array.from(set.stems.values()).every(st => offset + length <= set.bufferOffset + st.buffer.duration);
+      if (!covers(outSet, clock.outgoingOffset, (clock.duration + 0.2) * rate) || !covers(inSet, clock.incomingOffset, (clock.duration + 0.2) * incomingRate) || clock.incomingOffset + (clock.duration + 2) * incomingRate >= idleCtrl.deck.duration) throw new Error("not enough prepared audio for this many bars");
+      if (breakdown) {
+        // An intentional bass gap must retain audible melodic material. Check the
+        // retained incoming harmony in one-second windows; unknown/quiet is refused.
+        const harmony = Array.from(inSet.stems.values()).filter(st => ["other", "guitar", "piano"].includes(st.name));
+        for (let second = 2; second < clock.duration - 1; second++) {
+          const audible = harmony.some(st => {
+            const data = st.buffer.getChannelData(0), start = Math.floor(second * incomingRate * st.buffer.sampleRate);
+            const end = Math.min(data.length, start + st.buffer.sampleRate);
+            let sum = 0, n = 0;
+            for (let i = start; i < end; i += 32) { sum += data[i] * data[i]; n++; }
+            return n > 0 && Math.sqrt(sum / n) > 0.001;
+          });
+          if (!audible) throw new Error("incoming breakdown has an unverified melodic gap");
+        }
+      }
+      const plan = breakdown ? planTranceBreakdown(Object.keys(outEntry.stems), Object.keys(inEntry.stems), effectiveBpm, migBars) : planStemMigration({ outgoingStems: Object.keys(outEntry.stems), incomingStems: Object.keys(inEntry.stems), bpm: effectiveBpm, totalBars: migBars as 8 | 16 | 32, anchor: command.anchor });
+      if (plan.warnings.some(w => w.includes("BASS DROPS TO ZERO"))) throw new Error("no continuous bass carrier for this migration");
+      for (const warning of plan.warnings) pushBrainLog(action, warning);
+      const outgoing = outSet, incoming = inSet;
+      const originalGain = liveCtrl.deck.gain;
+      const originalEq = liveCtrl.deck.getEq();
+      if (Object.values(originalEq).some(db => Math.abs(db) > 0.1)) {
+        liveCtrl.deck.setEq({ low: 0, mid: 0, high: 0 });
+      }
+      idleCtrl.deck.allNeutral();
+      idleCtrl.deck.setGain(0);
+      // Reserve the full-mix return FIRST. Failure cannot mute the live track.
+      idleCtrl.deck.scheduleBufferPlayback(clock.endsAt, clock.incomingOffset + clock.duration * incomingRate, incomingRate);
+      const anchorLoopBars = 4;
+      startStemSet(core, outgoing, {
+        when: clock.startTime,
+        offsetSeconds: clock.outgoingOffset,
+        playbackRate: rate,
+        loopRhythmSeconds: !breakdown && command.anchor === "out" ? anchorLoopBars * plan.barSeconds * rate : undefined,
+      });
+      startStemSet(core, incoming, {
+        when: clock.startTime,
+        offsetSeconds: clock.incomingOffset,
+        playbackRate: incomingRate,
+        loopRhythmSeconds: !breakdown && command.anchor === "in" ? anchorLoopBars * plan.barSeconds * incomingRate : undefined,
+      });
+      for (const stem of Array.from(incoming.stems.values())) stem.gain.gain.setValueAtTime(0, clock.startTime);
+      scheduleMigration(ctx, plan, outgoing, incoming, clock.startTime);
+      outgoing.setGain.gain.setValueAtTime(0, clock.startTime);
+      outgoing.setGain.gain.linearRampToValueAtTime(originalGain, clock.startTime + 0.05);
+      liveCtrl.deck.scheduleGainEnvelope([originalGain, 0], 0.05, clock.startTime);
+      incoming.setGain.gain.setValueAtTime(0, clock.startTime);
+      incoming.setGain.gain.linearRampToValueAtTime(1, clock.startTime + 0.05);
+      incoming.setGain.gain.setValueAtTime(1, clock.endsAt);
+      incoming.setGain.gain.linearRampToValueAtTime(0, clock.endsAt + STEM_HANDOFF_SECONDS);
+      idleCtrl.deck.scheduleGainEnvelope([0, 1], STEM_HANDOFF_SECONDS, clock.endsAt);
+      for (const set of [outgoing, incoming]) for (const stem of Array.from(set.stems.values())) stem.source?.stop(clock.endsAt + STEM_HANDOFF_SECONDS + 0.05);
+      setTransitionRunning(true);
+      lastPerformanceAtRef.current = Date.now();
+      const seamSfx = pickTransitionSeamSfx(liveCtrl.trackName ?? "", item.name);
+      let seamTimer: ReturnType<typeof setTimeout> | undefined;
+      if (seamSfx?.preDropSfx) {
+        const preDelayMs = Math.max(0, (clock.endsAt - 1.25 - ctx.currentTime) * 1000);
+        seamTimer = setTimeout(() => {
+          if (migrationRef.current?.out !== outgoing) return;
+          void fxPlayerRef.current?.play(seamSfx.preDropSfx!).then((ok) => {
+            if (ok) {
+              recordFxFired();
+              recordLedgerFx(seamSfx.preDropSfx!, "brain");
+            }
+          });
+        }, preDelayMs);
+      }
+      let timer: ReturnType<typeof setTimeout>;
+      const cancel = () => {
+        clearTimeout(timer);
+        if (seamTimer) clearTimeout(seamTimer);
+        clearInterval(monitor);
+        idleCtrl.deck.pause(); idleCtrl.markPaused();
+        liveCtrl.deck.setGain(originalGain);
+        disposeStemSet(outgoing); disposeStemSet(incoming);
+        queueInFlightRef.current = false;
+        queueInFlightSinceRef.current = null;
+        askedForTrackRef.current = null;
+        setCrossfade(liveLabel === "A" ? 0 : 1);
+        setTransitionRunning(false);
+      };
+      migrationRef.current = { out: outgoing, inc: incoming, endsAt: clock.endsAt, cancel };
+      committed = true;
+      const monitor = setInterval(() => {
+        if (ctx.currentTime < clock.endsAt && (deckByLabel(liveLabel).trackId !== outgoingId || deckByLabel(idleLabel).trackId !== item.id || Math.abs(liveCtrl.deck.tempo - rate) > 1e-6 || idleCtrl.deck.scheduledPlaybackTime !== clock.endsAt)) {
+          teardownMigration();
+          pushBrainLog(action, "canceled — manual transport changed during the performance");
+        }
+      }, 100);
+      const finish = () => {
+        if (migrationRef.current?.out !== outgoing) return;
+        // UI callbacks may wake early while AudioContext is suspended. Wait for
+        // audio time; the actual full-mix source already owns the scheduled return.
+        if (ctx.currentTime < clock.endsAt + STEM_HANDOFF_SECONDS) {
+          timer = setTimeout(finish, 100); return;
+        }
+        migrationRef.current = null;
+        if (seamTimer) clearTimeout(seamTimer);
+        clearInterval(monitor);
+        disposeStemSet(outgoing); disposeStemSet(incoming);
+        liveCtrl.deck.pause(); liveCtrl.markPaused();
+        if (idleCtrl.deck.playing) idleCtrl.markPlaying();
+        setCrossfade(idleLabel === "A" ? 0 : 1);
+        setTransitionRunning(false);
+        if (seamSfx?.dropSfx) {
+          void fxPlayerRef.current?.play(seamSfx.dropSfx).then((ok) => {
+            if (ok) {
+              recordFxFired();
+              recordLedgerFx(seamSfx.dropSfx!, "brain");
+            }
+          });
+        }
+        queueInFlightRef.current = false;
+        queueInFlightSinceRef.current = null;
+        askedForTrackRef.current = null;
+        appendHistory({ trackId: item.id, name: item.name });
+        setTransitionRecords(appendTransitionRecord({
+          when: Date.now(), fromTrack: liveCtrl.trackName ?? outgoingId ?? "unknown", toTrack: item.name,
+          bpmFrom: liveGrid.bpm, bpmTo: inGrid.bpm, clamped: false, degraded: false,
+          transitionType: action, durationBars: command.bars, rating: null,
+          note: `Prepared ${action}; incoming cue ${clock.incomingOffset.toFixed(2)}s; rate ${incomingRate.toFixed(5)}`,
+          outPositionSeconds: clock.outgoingOffset,
+        }));
+        pushBrainLog(action, `completed on the audio clock — "${item.name}"${idleCtrl.deck.playing ? " is live" : " finished while the tab was inactive"}`);
+        if (autopilotRef.current && residencyRequestRef.current === null && showcaseQueueRef.current.length === 0) {
+          scheduleFollowUp(2, cooldownReason);
+        }
+      };
+      timer = setTimeout(finish, Math.max(0, (clock.endsAt + STEM_HANDOFF_SECONDS - ctx.currentTime) * 1000));
+      pushBrainLog(action, `scheduled ${command.bars} bars into "${item.name}", source cue ${clock.incomingOffset.toFixed(2)}s; full-track return prepared`);
+    } catch (error) {
+      if (!committed) {
+        aborter.abort(error); // also cancel prefetched compressed stem files
+        if (outSet) disposeStemSet(outSet);
+        if (inSet) disposeStemSet(inSet);
+        idleCtrl.deck.pause(); idleCtrl.markPaused();
+        liveCtrl.deck.setGain(1);
+        refuse(error instanceof Error ? error.message : "preparation failed");
+      }
+    } finally {
+      clearTimeout(deadline);
+      if (migrationPreparingRef.current === aborter) migrationPreparingRef.current = null;
+      if (!committed) { queueInFlightRef.current = false; queueInFlightSinceRef.current = null; }
+    }
+  }
+
+  async function executeRoutineCommand(command: RoutineCommand, cooldownReason: ConsultReason) {
+    if (command.routine !== "sample_mix") return;
+    const controlVersion = performanceControlVersionRef.current;
+    const originalLiveLabel = getLiveDeckLabel();
+    const originalLiveId = originalLiveLabel ? deckByLabel(originalLiveLabel).trackId : null;
+    const releaseAutopilotAskOnFailure = (recover = true) => {
+      if (!isHumanInitiated(cooldownReason)) askedForTrackRef.current = null;
+      if (!recover || controlVersion !== performanceControlVersionRef.current || queueInFlightRef.current ||
+          transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current) return;
+      const currentLabel = getLiveDeckLabel();
+      const current = currentLabel ? deckByLabel(currentLabel) : null;
+      if (current && current.trackId !== originalLiveId) return;
+      const target = resolveCommandTrack(command.queue.trackId);
+      if (!target || target.id === current?.trackId) return;
+      cancelFollowUp();
+      const partnerDance = isPartnerDanceTrackName(current?.trackName ?? "") || isPartnerDanceTrackName(target.name);
+      const transition = partnerDance ? "gap" : current?.tags.bpm && target.bpm ? "bass_swap" : "cut";
+      pushBrainLog("recovery", `sample_mix did not run — using ${transition} into "${target.name}" instead; this is not a loop`);
+      void executeQueueCommand({ action: "queue", trackId: command.queue.trackId, transition,
+        durationBars: 4, startAt: partnerDance ? "beginning" : command.queue.startAt ?? "auto" });
+    };
+    if (queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current) {
+      pushBrainLog("routine", "skipped sample_mix — another queue, transition, or sample is already running");
+      releaseAutopilotAskOnFailure(false);
+      return;
+    }
+
+    const liveLabel = getLiveDeckLabel();
+    if (!liveLabel) {
+      pushBrainLog("error", "sample_mix: no live deck to sample");
+      releaseAutopilotAskOnFailure();
+      return;
+    }
+
+    if (!isHumanInitiated(cooldownReason)) {
+      const secondsAgo = lastPerformanceAtRef.current === null ? null : (Date.now() - lastPerformanceAtRef.current) / 1000;
+      if (secondsAgo !== null && secondsAgo < AUTOPILOT_PERFORMANCE_COOLDOWN_SECONDS) {
+        pushBrainLog("routine", `skipped sample_mix — performance cooldown floor (${secondsAgo.toFixed(0)}s < ${AUTOPILOT_PERFORMANCE_COOLDOWN_SECONDS}s)`);
+        releaseAutopilotAskOnFailure();
+        return;
+      }
+    }
+
+    const liveCtrl = deckByLabel(liveLabel);
+    const liveGrid = effectiveGrid(liveCtrl.tags, liveCtrl.grid);
+    if (!liveGrid || liveGrid.estimated) {
+      pushBrainLog("routine", "sample_mix skipped — no real BeatGrid on the live track");
+      releaseAutopilotAskOnFailure();
+      return;
+    }
+
+    const item = resolveCommandTrack(command.queue.trackId);
+    if (!item) {
+      pushBrainLog("error", `sample_mix: track index "${command.queue.trackId}" not found in crate`);
+      releaseAutopilotAskOnFailure();
+      return;
+    }
+    if (item.id === liveCtrl.trackId) {
+      pushBrainLog("routine", `sample_mix skipped - "${item.name}" is already live`);
+      releaseAutopilotAskOnFailure();
+      return;
+    }
+
+    const idleLabel = pickIdleDeckLabel();
+    const idleCtrl = deckByLabel(idleLabel);
+    queueInFlightRef.current = true;
+    clearRoutineTimers();
+
+    const preEntry = getLoopPoints(CURRENT_LOOP_POINTS, cueKeyForLabel(liveLabel) ?? "");
+    const preSample = command.sample ?? {};
+    const hasLiveStems = Boolean(stemEntryFor(liveCtrl.trackId));
+    const preCandidate =
+      pickLoopCandidate(preEntry, {
+        fromSeconds: liveCtrl.deck.positionSeconds,
+        requireVocalFree: true,
+        isolation: preSample.isolation,
+      }) ??
+      pickLoopCandidate(preEntry, {
+        fromSeconds: 0,
+        requireVocalFree: true,
+        isolation: preSample.isolation,
+      }) ??
+      pickLoopCandidate(preEntry, {
+        fromSeconds: 0,
+        requireVocalFree: true,
+      }) ??
+      (hasLiveStems
+        ? pickLoopCandidate(preEntry, {
+            fromSeconds: 0,
+            requireVocalFree: false,
+            isolation: preSample.isolation,
+          }) ??
+          pickLoopCandidate(preEntry, {
+            fromSeconds: 0,
+            requireVocalFree: false,
+          })
+        : null);
+    const preFromSeconds = preCandidate ? preCandidate.startSeconds : liveCtrl.deck.positionSeconds;
+    const preIsolation = preSample.isolation ?? preCandidate?.isolation ?? "beat";
+    const stemSourcePromise = preCandidate?.vocalFree
+      ? Promise.resolve(null)
+      : loadStemBufferForLoop(
+          liveCtrl.trackId,
+          preIsolation,
+          preFromSeconds,
+          preFromSeconds + 24
+        );
+
+    let blob: File | Blob;
+    try {
+      blob = await getTrackForPlayback(item);
+    } catch (err) {
+      pushBrainLog("error", `sample_mix: could not download "${item.name}" (${err instanceof Error ? err.message : "network error"})`);
+      queueInFlightRef.current = false;
+      releaseAutopilotAskOnFailure();
+      return;
+    }
+
+    await idleCtrl.loadFile(blob, item.name, item.id, item.source);
+    const [decoded, stemSource] = await Promise.all([
+      idleCtrl.decodeIfNeeded(),
+      stemSourcePromise,
+    ]);
+    if (!decoded) {
+      pushBrainLog("error", `sample_mix: could not decode "${item.name}"`);
+      queueInFlightRef.current = false;
+      releaseAutopilotAskOnFailure();
+      return;
+    }
+    // A user pause/load or a different live deck during download is not a
+    // permission to start the old routine (or its fallback) later.
+    if (controlVersion !== performanceControlVersionRef.current ||
+        (getLiveDeckLabel() !== null && deckByLabel(getLiveDeckLabel()!).trackId !== originalLiveId)) {
+      queueInFlightRef.current = false;
+      pushBrainLog("routine", "sample_mix canceled — playback was changed during preparation");
+      return;
+    }
+    if (!liveCtrl.deck.playing) {
+      queueInFlightRef.current = false;
+      pushBrainLog("routine", "sample_mix skipped — the source ended during preparation");
+      releaseAutopilotAskOnFailure();
+      return;
+    }
+    idleCtrl.deck.ensureContext();
+
+    const mixPoints = analyzeMixPoints(item, idleCtrl);
+    idleCtrl.setMixPoints(mixPoints);
+    const startAt = command.queue.startAt ?? "auto";
+    if (startAt === "auto") {
+      const maxEntry = mixPoints ? Math.min(85, Math.max(20, mixPoints.mixOutSeconds - MIN_ENTRY_RESIDENCY_SECONDS)) : 85;
+      const midEntry = midTrackEntryFor(item, maxEntry, 16);
+      const beatIn = beatInFor(item.id);
+      const seekTo = midEntry?.seconds ?? beatIn ?? (mixPoints && mixPoints.mixInSeconds > 0 ? mixPoints.mixInSeconds : null);
+      if (seekTo !== null && seekTo > 0) {
+        idleCtrl.deck.seekTo(seekTo);
+        pushBrainLog(
+          "routine",
+          `sample_mix entering "${item.name}" at ${seekTo.toFixed(1)}s (${midEntry?.reason ?? "analyzed mix-in"})`
+        );
+      }
+    }
+
+    const entry = getLoopPoints(CURRENT_LOOP_POINTS, cueKeyForLabel(liveLabel) ?? "");
+    const sample = command.sample ?? {};
+    const candidate =
+      pickLoopCandidate(entry, {
+        fromSeconds: liveCtrl.deck.positionSeconds,
+        requireVocalFree: true,
+        isolation: sample.isolation,
+      }) ??
+      pickLoopCandidate(entry, {
+        fromSeconds: 0,
+        requireVocalFree: true,
+        isolation: sample.isolation,
+      }) ??
+      pickLoopCandidate(entry, {
+        fromSeconds: 0,
+        requireVocalFree: true,
+      }) ??
+      (hasLiveStems
+        ? pickLoopCandidate(entry, {
+            fromSeconds: 0,
+            requireVocalFree: false,
+            isolation: sample.isolation,
+          }) ??
+          pickLoopCandidate(entry, {
+            fromSeconds: 0,
+            requireVocalFree: false,
+          })
+        : null);
+    const fromSeconds = candidate ? candidate.startSeconds : liveCtrl.deck.positionSeconds;
+    const sampleIsolation = sample.isolation ?? candidate?.isolation ?? "beat";
+    const sampleHalvings = sample.halvings ?? 0;
+    const plan = planHeldLoop(liveGrid, fromSeconds, liveCtrl.deck.tempo, {
+      captureBars: sample.captureBars === 2 ? 2 : 4,
+      targetHoldSeconds: Math.min(26, Math.max(20, sample.holdSeconds ?? 22)),
+      halvingStages: sampleHalvings,
+      isolation: sampleIsolation,
+      peakRate: sampleHalvings > 1 ? 1.04 : 1.0,
+      resolveToRate: sample.sweepToBpm ? sample.sweepToBpm / liveGrid.bpm : undefined,
+    });
+    if (!plan) {
+      pushBrainLog("routine", "sample_mix skipped — sampler planner refused");
+      queueInFlightRef.current = false;
+      releaseAutopilotAskOnFailure();
+      return;
+    }
+    let finalStemSource = candidate?.vocalFree ? null : stemSource;
+    if (
+      !candidate?.vocalFree &&
+      (!finalStemSource ||
+        plan.loopStart < (finalStemSource.bufferOffset ?? 0) ||
+        plan.loopEnd > (finalStemSource.bufferOffset ?? 0) + finalStemSource.buffer.duration)
+    ) {
+      finalStemSource = await loadStemBufferForLoop(
+        liveCtrl.trackId,
+        sampleIsolation,
+        plan.loopStart,
+        plan.loopEnd + 2
+      );
+    }
+
+    const idleBpm = idleCtrl.tags.bpm ?? null;
+    const idleGrid = effectiveGrid(idleCtrl.tags, idleCtrl.grid);
+    if (!idleBpm || !idleGrid || idleGrid.estimated) {
+      pushBrainLog("routine", "sample_mix skipped - incoming track has no real BPM/grid");
+      queueInFlightRef.current = false;
+      releaseAutopilotAskOnFailure();
+      return;
+    }
+    const sync = syncTempo(plan.exitBpm, 1, idleBpm);
+    if (sync.clamped) {
+      pushBrainLog("routine", "sample_mix skipped - incoming BPM cannot lock to the sample exit");
+      queueInFlightRef.current = false;
+      releaseAutopilotAskOnFailure();
+      return;
+    }
+    idleCtrl.setTempoDirectly(sync.tempo);
+    const phaseGrid = sync.multiplier === 1 ? idleGrid : { ...idleGrid, bpm: idleGrid.bpm * sync.multiplier };
+    const phraseDelay = nextPhraseBoundaries(liveGrid, liveCtrl.deck.positionSeconds, liveCtrl.deck.tempo, 3).find(
+      (delay) => delay >= HELD_LOOP_DUCK_LEAD_SECONDS
+    );
+    if (phraseDelay === undefined || phraseDelay > 24) {
+      pushBrainLog("routine", "sample_mix skipped - no phrase boundary is close enough to prepare cleanly");
+      queueInFlightRef.current = false;
+      releaseAutopilotAskOnFailure();
+      return;
+    }
+    const activationDelaySeconds = phraseDelay;
+
+    const routineStartedAt = Date.now() + activationDelaySeconds * 1000;
+    const outPositionSeconds = liveCtrl.deck.positionSeconds;
+    let routineFinished = false;
+    let incomingStarted = false;
+    let seamSweepFired = false;
+    let dropFxFired = false;
+    let handle: HeldLoopHandle | null = null;
+
+    const alignIncomingToSample = (handoffElapsedSeconds: number) => {
+      const virtualSamplePosition = plan.loopStart + Math.max(0, handoffElapsedSeconds) * plan.exitRate;
+      const offset = phaseAlignOffset(
+        virtualSamplePosition,
+        { anchor: liveGrid.anchor, bpm: liveGrid.bpm },
+        plan.exitRate,
+        idleCtrl.deck.positionSeconds,
+        phaseGrid,
+        sync.tempo
+      );
+      idleCtrl.deck.seekBy(offset);
+    };
+
+    const startIncoming = (handoffElapsedSeconds: number = 0) => {
+      if (incomingStarted) return;
+      const startProgress = Math.min(1, Math.max(0, handoffElapsedSeconds / plan.handoffDurationSeconds));
+      const remainingSeconds = Math.max(0, plan.handoffDurationSeconds - handoffElapsedSeconds);
+      const envelope = sampleMixEnvelope(plan.isolation, startProgress);
+      alignIncomingToSample(handoffElapsedSeconds);
+      idleCtrl.deck.setGain(envelope.incomingGain[0]);
+      idleCtrl.deck.setEq({ low: envelope.incomingLowDb[0], mid: 0, high: 0 });
+      idleCtrl.deck.play();
+      idleCtrl.markPlaying();
+      appendHistory({ trackId: item.id, name: item.name });
+      incomingStarted = true;
+
+      // From this point the audible handoff is owned by AudioParams. The
+      // interval below only mirrors progress in React; background throttling
+      // cannot freeze the fader or bass swap halfway through.
+      handle?.scheduleHandoff(remainingSeconds, startProgress, {
+        hpfTargetHz: SPACE_SWEEP_HPF_TARGET_HZ,
+        effectiveBpm: plan.exitBpm,
+        echoBeats: SPACE_SWEEP_ECHO_BEATS,
+        echoFeedback: SPACE_SWEEP_ECHO_FEEDBACK,
+        echoWet: SPACE_SWEEP_ECHO_WET,
+        reverbWet: SPACE_SWEEP_REVERB_WET,
+      });
+      idleCtrl.deck.scheduleGainEnvelope(envelope.incomingGain, remainingSeconds);
+      idleCtrl.deck.scheduleEqEnvelope("low", envelope.incomingLowDb, remainingSeconds);
+
+      const seamSfx = pickTransitionSeamSfx(liveCtrl.trackName ?? "", item.name, command.queue.maskFx);
+      if (!seamSweepFired) {
+        seamSweepFired = true;
+        const untilSweepFraction = startProgress >= 0.5 ? 0 : (0.5 - startProgress) / Math.max(0.001, 1 - startProgress);
+        const seamLogTimer = setTimeout(() => {
+          if (routineFinished) return;
+          recordFxFired();
+          recordLedgerFx("space_sweep", "brain");
+        }, remainingSeconds * untilSweepFraction * 1000);
+        routineTimersRef.current.push(seamLogTimer);
+        if (seamSfx?.preDropSfx) {
+          const preDropDelayMs = Math.max(0, (remainingSeconds - 1.25) * 1000);
+          const preDropTimer = setTimeout(() => {
+            if (routineFinished) return;
+            void fxPlayerRef.current?.play(seamSfx.preDropSfx!).then((ok) => {
+              if (ok) {
+                recordFxFired();
+                recordLedgerFx(seamSfx.preDropSfx!, "brain");
+              }
+            });
+          }, preDropDelayMs);
+          routineTimersRef.current.push(preDropTimer);
+        }
+      }
+    };
+
+    const cancelArmedRoutine = (reason: string) => {
+      if (routineFinished) return;
+      routineFinished = true;
+      clearRoutineTimers();
+      handle?.stop();
+      if (heldLoopRef.current === handle) heldLoopRef.current = null;
+      setTransitionRunning(false);
+      queueInFlightRef.current = false;
+      askedForTrackRef.current = null;
+      pushBrainLog("routine", reason);
+    };
+
+    const abortRoutine = (reason: string) => {
+      if (routineFinished) return;
+      liveCtrl.deck.unduck(HELD_LOOP_DUCK_RAMP_SECONDS);
+      liveCtrl.deck.setGain(1);
+      liveCtrl.deck.setEq({ low: 0, mid: 0, high: 0 });
+      idleCtrl.deck.pause();
+      idleCtrl.deck.setGain(1);
+      idleCtrl.deck.setEq({ low: 0, mid: 0, high: 0 });
+      idleCtrl.markPaused();
+      setCrossfade(liveLabel === "A" ? 0 : 1);
+      cancelArmedRoutine(reason);
+    };
+
+    const finishRoutine = () => {
+      if (routineFinished) return;
+      if (!incomingStarted) {
+        abortRoutine("sample_mix aborted - the handoff missed its phrase; kept the outgoing deck live");
+        return;
+      }
+      routineFinished = true;
+      clearRoutineTimers();
+      handle?.setGain(0);
+      handle?.stop();
+      if (heldLoopRef.current === handle) heldLoopRef.current = null;
+      liveCtrl.deck.unduck(HELD_LOOP_DUCK_RAMP_SECONDS);
+      liveCtrl.deck.pause();
+      liveCtrl.deck.setGain(1);
+      liveCtrl.deck.setEq({ low: 0, mid: 0, high: 0 });
+      liveCtrl.markPaused();
+      idleCtrl.deck.setEq({ low: 0, mid: 0, high: 0 });
+      idleCtrl.deck.setGain(1);
+      setCrossfade(idleLabel === "A" ? 0 : 1);
+      setTransitionRunning(false);
+      const finishSfx = pickTransitionSeamSfx(liveCtrl.trackName ?? "", item.name, command.queue.maskFx);
+      if (finishSfx?.dropSfx && !dropFxFired) {
+        dropFxFired = true;
+        void fxPlayerRef.current?.play(finishSfx.dropSfx).then((success) => {
+          if (success) {
+            recordFxFired();
+            recordLedgerFx(finishSfx.dropSfx!, "brain");
+          }
+        });
+        if (finishSfx.layerSubdrop) {
+          void fxPlayerRef.current?.play("subdrop");
+        }
+      }
+      startTempoGlide(idleLabel);
+      queueInFlightRef.current = false;
+      const record: TransitionRecord = {
+        when: Date.now(),
+        fromTrack: liveCtrl.trackName ?? liveCtrl.trackId ?? "unknown",
+        toTrack: item.name,
+        bpmFrom: liveCtrl.tags.bpm ?? null,
+        bpmTo: idleCtrl.tags.bpm ?? null,
+        clamped: sync.clamped,
+        degraded: false,
+        transitionType: command.queue.transition,
+        durationBars: plan.handoffBeats / 4,
+        rating: null,
+        note: `sample_mix ${plan.isolation} ${plan.captureBeats / 4}-bar sample, ${plan.handoffBeats / 4}-bar handoff over ${Math.max(0, (Date.now() - routineStartedAt) / 1000).toFixed(1)}s`,
+        outPositionSeconds,
+      };
+      setTransitionRecords(appendTransitionRecord(record));
+      pushBrainLog("routine", `sample_mix completed — "${item.name}" is live`);
+      executionFeedbackRef.current = null;
+      if (typeof command.followUpSeconds === "number") scheduleFollowUp(command.followUpSeconds, cooldownReason);
+    };
+
+    const usableStemSource =
+      finalStemSource &&
+      plan.loopStart >= (finalStemSource.bufferOffset ?? 0) &&
+      plan.loopEnd <= (finalStemSource.bufferOffset ?? 0) + finalStemSource.buffer.duration
+        ? finalStemSource
+        : null;
+    handle = fireIsolatedLoopHold(
+      liveCtrl.deck,
+      coreRef.current!,
+      plan,
+      finishRoutine,
+      activationDelaySeconds,
+      usableStemSource
+    );
+    if (!handle) {
+      pushBrainLog("routine", "sample_mix skipped — nothing decoded to sample");
+      queueInFlightRef.current = false;
+      releaseAutopilotAskOnFailure();
+      return;
+    }
+
+    heldLoopRef.current = handle;
+    setTransitionRunning(true);
+    const preparedLiveTrackId = liveCtrl.trackId;
+    const activationGuardDelaySeconds = Math.max(0, activationDelaySeconds - HELD_LOOP_DUCK_LEAD_SECONDS);
+    const activationTimer = setTimeout(() => {
+      const activationGuardAtMs = routineStartedAt - HELD_LOOP_DUCK_LEAD_SECONDS * 1000;
+      const activationNowMs = Date.now();
+      if (sampleMixHandoffIsLate(activationNowMs, activationGuardAtMs, SAMPLE_MIX_TIMER_LATE_TOLERANCE_MS)) {
+        cancelArmedRoutine(
+          `sample_mix canceled - phrase activation timer was ${Math.round(activationNowMs - activationGuardAtMs)}ms late`
+        );
+        return;
+      }
+      const currentLive = deckByLabel(liveLabel);
+      if (currentLive.trackId !== preparedLiveTrackId || !currentLive.deck.playing) {
+        cancelArmedRoutine("sample_mix canceled - live deck changed before the phrase boundary");
+        return;
+      }
+      currentLive.deck.duck(HELD_LOOP_DUCK_DB, HELD_LOOP_DUCK_RAMP_SECONDS);
+      recordFxFired(true);
+      recordLedgerFx("sample_mix", "brain");
+      pushBrainLog("routine", `sample captured on the phrase - ${plan.handoffStartAtSeconds.toFixed(1)}s solo before the handoff`);
+    }, activationGuardDelaySeconds * 1000);
+    routineTimersRef.current.push(activationTimer);
+
+    const routineSfx = pickTransitionSeamSfx(liveCtrl.trackName ?? "", item.name, command.queue.maskFx);
+    if (routineSfx?.soloVocalCategory && plan.handoffStartAtSeconds >= 3) {
+      const soloHypeTimer = setTimeout(() => {
+        if (routineFinished || heldLoopRef.current !== handle) return;
+        playVocalCategory(routineSfx.soloVocalCategory!, false);
+      }, (activationDelaySeconds + plan.handoffStartAtSeconds * 0.45) * 1000);
+      routineTimersRef.current.push(soloHypeTimer);
+      const accentSfx = routineSfx.soloAccentSfx ?? "airhorn";
+      const soloAccentTimer = setTimeout(() => {
+        if (routineFinished || heldLoopRef.current !== handle) return;
+        void fxPlayerRef.current?.play(accentSfx).then((ok) => {
+          if (ok) {
+            recordFxFired();
+            recordLedgerFx(accentSfx, "brain");
+          }
+        });
+      }, (activationDelaySeconds + plan.handoffStartAtSeconds * 0.72) * 1000);
+      routineTimersRef.current.push(soloAccentTimer);
+    }
+
+    const handoffTimer = setTimeout(() => {
+      if (routineFinished || heldLoopRef.current !== handle) return;
+      const handoffStartMs = routineStartedAt + plan.handoffStartAtSeconds * 1000;
+      const handoffNowMs = Date.now();
+      const handoffLateMs = Math.max(0, handoffNowMs - handoffStartMs);
+      if (sampleMixHandoffIsLate(handoffNowMs, handoffStartMs)) {
+        abortRoutine(`sample_mix aborted - handoff timer was ${Math.round(handoffLateMs)}ms late; kept the outgoing deck live`);
+        return;
+      }
+      startIncoming(handoffLateMs / 1000);
+
+      routineIntervalRef.current = setInterval(() => {
+        const progress = Math.min(1, (Date.now() - handoffStartMs) / (plan.handoffDurationSeconds * 1000));
+        setCrossfade(idleLabel === "A" ? 1 - progress : progress);
+        if (progress >= 1 && routineIntervalRef.current) {
+          clearInterval(routineIntervalRef.current);
+          routineIntervalRef.current = null;
+          finishRoutine();
+        }
+      }, 50);
+    }, (activationDelaySeconds + plan.handoffStartAtSeconds) * 1000);
+    routineTimersRef.current.push(handoffTimer);
+
+    pushBrainLog(
+      "routine",
+      `sample_mix armed: ${plan.captureBeats / 4}-bar ${plan.isolation}${usableStemSource ? " stem" : ""} sample, ${plan.handoffStartAtSeconds.toFixed(1)}s solo + ${plan.handoffBeats / 4}-bar EQ crossfade into "${item.name}"${candidate ? " — recurring-pattern sample" : ""}`
+    );
+  }
+
   function cancelPendingTransitionStart() {
     if (pendingTransitionTimeoutRef.current) {
       clearTimeout(pendingTransitionTimeoutRef.current);
       pendingTransitionTimeoutRef.current = null;
+      queueInFlightRef.current = false;
+      queueInFlightSinceRef.current = null;
+      askedForTrackRef.current = null;
       pushBrainLog("transition", "canceled a pending phrase-delayed transition start");
     }
   }
@@ -2824,7 +4935,12 @@ export default function Home() {
    * own timer this also cancels).
    */
   function handleManualPauseDuringTransition() {
+    performanceControlVersionRef.current += 1;
+    queuePreparationRef.current?.abort(new Error("Playback changed manually"));
+    pendingGapRef.current = null;
     cancelPendingTransitionStart();
+    teardownMigration();
+    cleanupHeldLoopAndRoutine("canceled held loop/routine â€” a deck was paused manually");
     if (transitionEngineRef.current.isRunning) {
       // clearPendingMaskFxRelease() lives INSIDE this branch, not
       // unconditionally above it (self-review catch): a deferred maskFx
@@ -2843,7 +4959,8 @@ export default function Home() {
     }
   }
 
-  async function executeQueueCommand(command: QueueCommand) {
+  async function executeQueueCommand(command: QueueCommand, residencyTimed = false) {
+    const fullSongRequested = command.transition === "gap";
     // Choir round #2 (P1): single-flight the queue path — this async setup
     // window (download/decode/up-to-16s phrase-wait) used to have NO guard
     // at all, so a second queue command (a stale follow-up racing a fresh
@@ -2859,16 +4976,19 @@ export default function Home() {
     // "running" reentrancy guard (see transition.ts) takes over as the
     // real single-flight protection from the moment a transition actually
     // starts.
-    if (queueInFlightRef.current) {
+    if (queueInFlightRef.current || transitionEngineRef.current.isRunning) {
       pushBrainLog("error", `queue: dropped — still resolving a previous queue command`);
       return;
     }
     queueInFlightRef.current = true;
+    queueInFlightSinceRef.current = Date.now();
+    const controlVersion = performanceControlVersionRef.current;
     let queueInFlightReleased = false;
     const releaseQueueInFlight = () => {
       if (queueInFlightReleased) return;
       queueInFlightReleased = true;
       queueInFlightRef.current = false;
+      queueInFlightSinceRef.current = null;
     };
 
     // Owner soundcheck fix: any new queue command — opener or transition —
@@ -2884,9 +5004,7 @@ export default function Home() {
     // entry's index (see src/lib/brain.ts's CompactCrateEntry), not a real
     // crate id — resolve it back via the per-call index map built by
     // buildFullCompactCrate() before this response could have arrived.
-    const trackIndex = Number(command.trackId);
-    const realId = Number.isFinite(trackIndex) ? crateIndexMapRef.current.get(trackIndex) : undefined;
-    const item = realId !== undefined ? crateRef.current.find((t) => t.id === realId) : undefined;
+    const item = resolveCommandTrack(command.trackId);
     if (!item) {
       pushBrainLog("error", `queue: track index "${command.trackId}" not found in crate`);
       // Review-panel fix: clear the "already asked" guard on failure so the
@@ -2911,26 +5029,34 @@ export default function Home() {
     // same guard-reset-and-log path as the pre-existing "not found"/
     // "could not decode" failures below, so autopilot's failure ladder
     // (retry, then stop with a log line) still applies unchanged.
-    let blob: File | Blob;
+    const preparation = new AbortController();
+    queuePreparationRef.current = preparation;
+    const preparationTimeout = setTimeout(() => preparation.abort(new Error("audio preparation exceeded 45 seconds")), 45000);
+    const checkPreparation = () => {
+      preparation.signal.throwIfAborted();
+      if (controlVersion !== performanceControlVersionRef.current) throw new Error("playback changed during preparation");
+    };
     try {
-      blob = await getTrackForPlayback(track);
+      await abortable((async () => {
+        const blob = await getTrackForPlayback(track, preparation.signal);
+        checkPreparation();
+        pushBrainLog("queue", `download ready — preparing "${track.name}"`);
+        await idleCtrl.loadFile(blob, track.name, track.id, track.source);
+        checkPreparation();
+        if (!await idleCtrl.decodeIfNeeded(preparation.signal)) throw new Error("audio decode failed");
+        checkPreparation();
+      })(), preparation.signal);
     } catch (err) {
       pushBrainLog(
         "error",
-        `queue: could not download "${track.name}" (${err instanceof Error ? err.message : "network error"})`
+        `queue: could not prepare "${track.name}" (${err instanceof Error ? err.message : "network error"})`
       );
       askedForTrackRef.current = null;
       releaseQueueInFlight();
       return;
-    }
-
-    await idleCtrl.loadFile(blob, track.name, track.id, track.source);
-    const decoded = await idleCtrl.decodeIfNeeded();
-    if (!decoded) {
-      pushBrainLog("error", `queue: could not decode "${track.name}"`);
-      askedForTrackRef.current = null; // see the comment on the missing-track branch above
-      releaseQueueInFlight();
-      return;
+    } finally {
+      clearTimeout(preparationTimeout);
+      if (queuePreparationRef.current === preparation) queuePreparationRef.current = null;
     }
     idleCtrl.deck.ensureContext();
 
@@ -2955,8 +5081,18 @@ export default function Home() {
     const mixPoints = analyzeMixPoints(track, idleCtrl);
     idleCtrl.setMixPoints(mixPoints);
     const startAt = command.startAt ?? "auto";
-    if (startAt === "auto" && mixPoints && mixPoints.mixInSeconds > 0) {
-      idleCtrl.deck.seekTo(mixPoints.mixInSeconds);
+    if (startAt === "auto") {
+      const maxEntry = mixPoints ? Math.min(85, Math.max(20, mixPoints.mixOutSeconds - MIN_ENTRY_RESIDENCY_SECONDS)) : 85;
+      const midEntry = midTrackEntryFor(track, maxEntry, 32);
+      const beatIn = beatInFor(item.id);
+      const seekTo = midEntry?.seconds ?? beatIn ?? (mixPoints && mixPoints.mixInSeconds > 0 ? mixPoints.mixInSeconds : null);
+      if (seekTo !== null && seekTo > 0) {
+        idleCtrl.deck.seekTo(seekTo);
+        pushBrainLog(
+          "queue",
+          `entering "${track.name}" at ${seekTo.toFixed(1)}s (${midEntry?.reason ?? "analyzed mix-in"})`
+        );
+      }
     }
 
     if (liveLabel === null) {
@@ -2972,6 +5108,10 @@ export default function Home() {
     const liveCtrl = deckByLabel(liveLabel);
     const liveBpmTag = liveCtrl.tags.bpm ?? null;
     const idleBpmTag = idleCtrl.tags.bpm ?? null;
+    const timedCommand = queueForResidency(command, residencyRequestRef.current?.seconds ?? null,
+      liveBpmTag, liveCtrl.deck.tempo, idleBpmTag);
+    if (timedCommand !== command) pushBrainLog("queue", timedCommand.say!);
+    command = timedCommand;
     const fromBpm = liveBpmTag ?? NEUTRAL_BPM_FALLBACK;
     const toBpm = idleBpmTag ?? NEUTRAL_BPM_FALLBACK;
     const liveGrid = effectiveGrid(liveCtrl.tags, liveCtrl.grid);
@@ -3038,7 +5178,8 @@ export default function Home() {
       // re-asked the brain (dead air in the meantime). Play it directly
       // instead (opener-style, same as the "nothing else playing" bootstrap
       // branch above), logged honestly so this path stays visible.
-      if (!liveCtrl.isPlaying) {
+      if (controlVersion !== performanceControlVersionRef.current) { releaseQueueInFlight(); return; }
+      if (!liveCtrl.deck.playing) {
         pushBrainLog(
           "queue",
           `live deck stopped before a phrase-delayed transition fired — playing "${track.name}" directly instead of abandoning it`
@@ -3074,6 +5215,13 @@ export default function Home() {
           ? planLoopBlend(liveGrid, outPositionSeconds, liveBpmTag ?? NEUTRAL_BPM_FALLBACK, liveCtrl.tempo, command.durationBars)
           : null;
       let loopOverlayStop: (() => void) | null = null;
+      let incomingStarted = false;
+      const markIncoming = () => {
+        if (incomingStarted || !idleCtrl.deck.playing) return;
+        incomingStarted = true;
+        idleCtrl.markPlaying();
+        appendHistory({ trackId: track.id, name: track.name });
+      };
 
       const outcome = transitionEngineRef.current.runTransition({
         fromDeck: liveCtrl.deck,
@@ -3094,6 +5242,7 @@ export default function Home() {
           loopOverlayStop = null;
         },
         onGain: (progress) => {
+          markIncoming();
           setCrossfade(idleLabel === "B" ? progress : 1 - progress);
           if (command.maskFx && !maskFxFired && progress >= maskFxSeamThreshold) {
             maskFxFired = true;
@@ -3127,6 +5276,9 @@ export default function Home() {
         },
         onTempoSet: (t) => idleCtrl.setTempoDirectly(t),
         onDone: (result: TransitionResult) => {
+          pendingGapRef.current = null;
+          markIncoming();
+          pushBrainLog("transition", `${result.transition} completed — "${track.name}" is live`);
           liveCtrl.markPaused();
           // Safety reset (audio engine v2, Part 1) — filters/reverb ONLY,
           // deliberately NOT the echo send (NOT Deck.allNeutral(), which
@@ -3197,9 +5349,12 @@ export default function Home() {
         return;
       }
 
-      idleCtrl.markPlaying();
-      setTransitionRunning(true);
-      appendHistory({ trackId: track.id, name: track.name });
+      markIncoming();
+      setTransitionRunning(transitionEngineRef.current.isRunning);
+      if (effectiveTransition === "gap" && transitionEngineRef.current.isRunning) {
+        pendingGapRef.current = { trackId: track.id, command };
+        pushBrainLog("transition", `full-song handoff armed — waiting for "${liveCtrl.trackName}" to end; incoming audio has not started`);
+      }
       releaseQueueInFlight();
     }
 
@@ -3219,6 +5374,18 @@ export default function Home() {
       PHRASE_CANDIDATE_COUNT,
       liveBpmTag
     ).filter((delay) => delay <= PHRASE_CANDIDATE_CAP_SECONDS);
+
+    const requestedSeconds = residencyRequestRef.current?.seconds ?? null;
+    if (requestedSeconds !== null && (residencyTimed || fullSongRequested)) {
+      const wentLive = liveCtrl.wentLiveAtMs();
+      const played = wentLive === null ? 0 : (Date.now() - wentLive) / 1000;
+      const delay = residencyHandoffDelay(requestedSeconds, played, effectiveTransition,
+        command.durationBars, fromBpm * liveCtrl.deck.tempo, candidates);
+      pushBrainLog("queue", `${requestedSeconds}s residency — ${effectiveTransition} starts in ${delay.toFixed(1)}s into "${track.name}"`);
+      if (delay <= 0) fireTransition();
+      else pendingTransitionTimeoutRef.current = setTimeout(fireTransition, delay * 1000);
+      return;
+    }
 
     if (candidates.length === 0) {
       // No phrase boundary computable within the cap (no bpm/grid at all, or
@@ -3245,7 +5412,7 @@ export default function Home() {
     if (vocalOverlapMatters && liveCueKey && hasVocalMap(VOCAL_MAPS, liveCueKey) && hasVocalMap(VOCAL_MAPS, idleCueKey)) {
       const effectiveLiveBpm = liveBpmTag ? liveBpmTag * liveCtrl.tempo : null;
       const blendSeconds = effectiveLiveBpm && effectiveLiveBpm > 0 ? (command.durationBars * 4 * 60) / effectiveLiveBpm : PHRASE_CANDIDATE_CAP_SECONDS;
-      const incomingStartSeconds = startAt === "auto" && mixPoints ? mixPoints.mixInSeconds : 0;
+      const incomingStartSeconds = idleCtrl.deck.positionSeconds;
       delaySeconds = pickTransitionStart(
         candidates,
         blendSeconds,
@@ -3270,19 +5437,92 @@ export default function Home() {
 
   /** `cooldownReason` is the resolved ROOT reason (see executeFxCommand's doc comment) — not the raw wire consultReason. */
   function executeCommand(command: Command, cooldownReason: ConsultReason) {
-    pushBrainLog(command.action, command.say ?? "");
+    const requestedId = command.action === "routine" ? command.queue.trackId : "trackId" in command ? command.trackId : null;
+    const requestedTrack = requestedId ? resolveCommandTrack(requestedId) : null;
+    if (requestedTrack && !genreAllowed(resolveMusicMetadata(requestedTrack).genre, genreRequestRef.current)) {
+      pushBrainLog(command.action, `skipped — ${musicLabel(requestedTrack)} is outside your requested genres`);
+      askedForTrackRef.current = null;
+      return;
+    }
+    // Model prose is a request, not proof the executor has played anything.
+    pushBrainLog(command.action === "none" ? "none" : "plan", command.action === "none" ? command.say ?? "No move requested" : `${command.action}: ${command.say ?? "requested"}`);
     switch (command.action) {
-      case "queue":
-        void executeQueueCommand(command);
+      case "queue": {
+        const liveLabel = getLiveDeckLabel();
+        const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
+        const liveGrid = liveCtrl ? effectiveGrid(liveCtrl.tags, liveCtrl.grid) : null;
+        const inGrid = requestedTrack ? ((crateManifestJson as CrateManifestEntry[]).find(t => t.id === requestedTrack.id)?.grid ?? requestedTrack.grid) : null;
+        const partnerDance =
+          !performanceMixRef.current &&
+          (isPartnerDanceTrackName(liveCtrl?.trackName ?? "") || isPartnerDanceTrackName(requestedTrack?.name ?? ""));
+        const canPromoteToSampleMix =
+          liveCtrl !== null &&
+          requestedTrack !== null &&
+          !partnerDance &&
+          command.transition !== "gap" &&
+          performanceMoveReady() &&
+          liveGrid !== null &&
+          !liveGrid.estimated &&
+          inGrid !== null &&
+          liveCtrl.tags.bpm !== undefined &&
+          requestedTrack.bpm !== null &&
+          !syncTempo(liveGrid.bpm * liveCtrl.deck.tempo, 1, requestedTrack.bpm).clamped;
+        if (canPromoteToSampleMix) {
+          const shortResidency = residencyRequestRef.current !== null && residencyRequestRef.current.seconds <= 60;
+          pushBrainLog(
+            "routine",
+            `upgrading queue (${command.transition}) -> 3-cycle stem-loop sample_mix (flanger + 250 Hz crossover + dub throw + vocal tag + drop SFX)`
+          );
+          void executeRoutineCommand(
+            {
+              action: "routine",
+              routine: "sample_mix",
+              sample: {
+                isolation: "beat",
+                captureBars: 4,
+                holdSeconds: shortResidency ? 18 : 22,
+                halvings: 0,
+                sweepToBpm: liveGrid.bpm * liveCtrl.deck.tempo,
+              },
+              queue: {
+                trackId: command.trackId,
+                transition: "bass_swap",
+                durationBars: 4,
+                startAt: command.startAt ?? "auto",
+                ...(command.maskFx ? { maskFx: command.maskFx } : {}),
+              },
+              say: command.say,
+            },
+            cooldownReason
+          );
+          return;
+        }
+        void executeQueueCommand(command, !isHumanInitiated(cooldownReason));
         return;
+      }
       case "tempo_nudge":
         executeTempoNudge(command);
         return;
       case "fx":
         executeFxCommand(command, cooldownReason);
         return;
+      case "eq_sweep":
+        executeEqSweepCommand(command);
+        return;
+      case "trance_breakdown":
+        void executeStemMigrateCommand(command, cooldownReason);
+        return;
       case "eq":
         executeEqCommand(command);
+        return;
+      case "loop":
+        void executeLoopCommand(command, cooldownReason);
+        return;
+      case "routine":
+        void executeRoutineCommand(command, cooldownReason);
+        return;
+      case "stem_migrate":
+        void executeStemMigrateCommand(command, cooldownReason);
         return;
       case "none":
         return;
@@ -3292,16 +5532,27 @@ export default function Home() {
   // --- Calling the brain (Part C+D) ---
 
   function handleAutopilotFailure(originalMessage: string | null, reason: ConsultReason) {
+    if (!autopilotRef.current) return;
+    const liveLabel = getLiveDeckLabel();
+    const liveState = liveLabel ? deckLiveState(deckByLabel(liveLabel)) : historyRef.current.at(-1) ?? null;
+    if (liveState && tryExecuteLocalAutopilotRecipe(liveState, true)) {
+      retryStageRef.current = 0;
+      cancelFollowUp();
+      if (retryTimeoutHandleRef.current) clearTimeout(retryTimeoutHandleRef.current);
+      retryTimeoutHandleRef.current = null;
+      return;
+    }
     if (retryStageRef.current === 0) {
       retryStageRef.current = 1;
+      pushBrainLog("recovery", "no eligible local handoff — retrying the selected model in 10 seconds");
       retryTimeoutHandleRef.current = setTimeout(() => {
         retryTimeoutHandleRef.current = null;
-        void callBrain(originalMessage, { autopilotDriven: true, consultReason: reason });
+        if (autopilotRef.current) void callBrain(originalMessage, { autopilotDriven: true, consultReason: reason });
       }, AUTOPILOT_RETRY_DELAY_MS);
     } else {
       retryStageRef.current = 0;
       setAutopilot(false);
-      pushBrainLog("error", "autopilot stopped — the retry also failed");
+      pushBrainLog("error", "autopilot stopped — the retry also failed and no eligible local handoff was available");
     }
   }
 
@@ -3325,6 +5576,13 @@ export default function Home() {
 
   function fireFollowUp() {
     followUpTimeoutRef.current = null;
+    checkQueueWatchdog();
+    if (queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current) {
+      // Keep the original follow-up root, but wait locally rather than paying
+      // a model to say "still pending". This timer is canceled by Stop/new chat.
+      followUpTimeoutRef.current = setTimeout(fireFollowUp, FOLLOW_UP_BUSY_RETRY_MS);
+      return;
+    }
     if (brainBusyRef.current) {
       followUpRetryTimeoutRef.current = setTimeout(() => {
         followUpRetryTimeoutRef.current = null;
@@ -3332,8 +5590,7 @@ export default function Home() {
           pushBrainLog("error", "follow-up dropped — brain still busy");
           return;
         }
-        pushBrainLog("none", "El Cerebro checking back now (after a busy retry)…");
-        void callBrain(null, { consultReason: "follow_up" });
+        fireFollowUp();
       }, FOLLOW_UP_BUSY_RETRY_MS);
       return;
     }
@@ -3353,6 +5610,8 @@ export default function Home() {
     message: string | null,
     options: { autopilotDriven?: boolean; consultReason: ConsultReason }
   ) {
+    if (options.consultReason !== "user_chat" &&
+        (queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current)) return;
     if (brainBusyRef.current) return;
     brainBusyRef.current = true;
     setBrainBusy(true);
@@ -3363,6 +5622,14 @@ export default function Home() {
     // flight), fail closed to the floored classification rather than
     // assuming human origin.
     const cooldownReason: ConsultReason = resolveCooldownReason(options.consultReason, followUpRootReasonRef.current);
+    const automatic = !!options.autopilotDriven || !isHumanInitiated(cooldownReason);
+    const controlVersion = performanceControlVersionRef.current;
+    const requestLiveLabel = getLiveDeckLabel();
+    const requestLiveId = requestLiveLabel ? deckByLabel(requestLiveLabel).trackId : null;
+    const requestAborter = new AbortController();
+    let localHandoffStarted = false;
+    let recoveryTimer: ReturnType<typeof setTimeout> | null = null;
+    const stillAuthorized = () => controlVersion === performanceControlVersionRef.current && (!automatic || autopilotRef.current);
     try {
       // Cost addendum (2026-07-26): build the FULL compact crate (rebuilds
       // the index map), then window it against the live effective BPM (+
@@ -3374,6 +5641,7 @@ export default function Home() {
         entries: fullCrate,
         liveEffectiveBpm: liveEffectiveBpmForWindow(),
         vibeNoteText: lastVibeNoteRef.current?.text ?? null,
+        genreRequest: genreRequestRef.current,
       });
 
       // Lesson ledger (2026-07-28): distill against the STABLE real crate
@@ -3395,10 +5663,32 @@ export default function Home() {
       }
       const ledgerDigest = { global: rawLedgerDigest.global, perTrack: perTrackByIndex };
 
+      // A cloud planner cannot own the final seconds of the song. After a
+      // bounded wait, use an eligible precomputed handoff. Aborting the client
+      // also prevents a late plan from acting on a deck that has since changed.
+      // The provider may have incurred usage before cancellation: mark unpriced.
+      if (automatic && requestLiveId) recoveryTimer = setTimeout(() => {
+        if (!stillAuthorized()) return;
+        const currentLabel = getLiveDeckLabel();
+        if (currentLabel && deckByLabel(currentLabel).trackId !== requestLiveId) return;
+        if (!tryExecuteLocalAutopilotRecipe({ trackId: requestLiveId }, true)) return;
+        localHandoffStarted = true;
+        retryStageRef.current = 0;
+        cancelFollowUp();
+        setUnpricedCalls(prev => {
+          const next = prev + 1;
+          try { localStorage.setItem("djsm.unpriced-brain-calls", String(next)); } catch { /* best effort */ }
+          return next;
+        });
+        requestAborter.abort();
+      }, 15000);
+      pushBrainLog("request", `${modelOptions.find(option => option.id === selectedModelRef.current)?.label ?? selectedModelRef.current}: waiting for a DJ plan…`);
       const response = await fetchWithPasscode("/api/dj", {
         method: "POST",
+        signal: requestAborter.signal,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          brainModel: selectedModelRef.current,
           message,
           state: buildDjState(options.consultReason),
           crate: window.entries,
@@ -3408,17 +5698,18 @@ export default function Home() {
         }),
       });
 
-      let json: { command?: unknown; error?: string; cost_usd?: number; model?: string } | null = null;
+      let json: { command?: unknown; error?: string; cost_usd?: number | null; model?: string; latency_ms?: number } | null = null;
       try {
         json = await response.json();
       } catch {
         json = null;
       }
 
+      if (localHandoffStarted) return;
       if (!response.ok || !json || json.error) {
         const errMsg = json?.error || `brain call failed (HTTP ${response.status})`;
         pushBrainLog("error", errMsg);
-        if (options.autopilotDriven) handleAutopilotFailure(message, options.consultReason);
+        if (automatic && stillAuthorized()) handleAutopilotFailure(message, options.consultReason);
         return;
       }
 
@@ -3428,25 +5719,41 @@ export default function Home() {
       const parsed = CommandSchema.safeParse(json.command);
       if (!parsed.success) {
         pushBrainLog("none", "(brain reply failed local validation — treated as no-op)");
+        if (automatic && stillAuthorized()) handleAutopilotFailure(message, options.consultReason);
         return;
       }
 
-      // M5 cost ticker: cost fields are only present on the route's clean
-      // success path (see api/dj/route.ts) — offline/no-key/refusal paths
-      // never reach here with a cost_usd, so the ticker naturally doesn't
-      // advance for them.
+      // Provider-specific accounting: valid responses (including refusals)
+      // may carry usage. Unknown usage is visibly unpriced, never counted free.
+      if (typeof json.model === "string") setLastModel(json.model);
+      setLastLatency(typeof json.latency_ms === "number" ? json.latency_ms : null);
       if (typeof json.cost_usd === "number" && Number.isFinite(json.cost_usd)) {
         const callCost = json.cost_usd;
         setLastCost(callCost);
-        if (typeof json.model === "string") setLastModel(json.model);
         setCostTotal((prev) => {
           const next = prev + callCost;
           saveCostTotal(next);
           return next;
         });
+      } else {
+        setLastCost(null);
+        setUnpricedCalls(prev => {
+          const next = prev + 1;
+          try { localStorage.setItem("djsm.unpriced-brain-calls", String(next)); } catch { /* best effort */ }
+          return next;
+        });
+      }
+      pushBrainLog("model", `${json.model ?? selectedModelRef.current} returned ${parsed.data.action}`);
+
+      const currentLabel = getLiveDeckLabel();
+      const currentId = currentLabel ? deckByLabel(currentLabel).trackId : null;
+      if (localHandoffStarted || !stillAuthorized() || (currentId !== null && currentId !== requestLiveId)) {
+        pushBrainLog("plan", "discarded stale response — playback or automation changed while the model was thinking");
+        return;
       }
 
       retryStageRef.current = 0; // a successful round-trip resets the retry ladder
+      localRecipeMovesSinceBrainRef.current = 0;
       executeCommand(parsed.data, cooldownReason);
       // Deferred re-consult: honor followUpSeconds from ANY response
       // (chat-initiated or autopilot-initiated) — this does not itself
@@ -3455,14 +5762,24 @@ export default function Home() {
       // scheduleFollowUp/cancelFollowUp). Re-schedule inherits cooldownReason
       // (the resolved root), not options.consultReason, so a follow_up chain
       // never loses/mutates its root.
-      if (typeof parsed.data.followUpSeconds === "number") {
-        scheduleFollowUp(parsed.data.followUpSeconds, cooldownReason);
+      // stem_migrate is the one command with no followUpSeconds field (schema
+      // optional-param limit); it re-consults on its own completion instead.
+      // A routine's follow-up starts only after the actual audio handoff, not
+      // while it is preparing/playing or after its plan was rejected.
+      const followUp = parsed.data.action !== "routine" && "followUpSeconds" in parsed.data ? parsed.data.followUpSeconds : undefined;
+      if (typeof followUp === "number") {
+        scheduleFollowUp(followUp, cooldownReason);
       }
     } catch (err) {
+      if (localHandoffStarted) {
+        pushBrainLog("recovery", "slow model request abandoned; local handoff owns playback and a late reply cannot interrupt it");
+        return;
+      }
       const errMsg = err instanceof Error ? err.message : "network error contacting the brain";
       pushBrainLog("error", errMsg);
-      if (options.autopilotDriven) handleAutopilotFailure(message, options.consultReason);
+      if (automatic && stillAuthorized()) handleAutopilotFailure(message, options.consultReason);
     } finally {
+      if (recoveryTimer) clearTimeout(recoveryTimer);
       brainBusyRef.current = false;
       setBrainBusy(false);
     }
@@ -3505,6 +5822,18 @@ export default function Home() {
     // here (kept in sync every render, same pattern as every other *Ref
     // mirror in this component).
     const turningOn = !autopilotRef.current;
+    // Stopping automation invalidates its pending performance preparations.
+    if (!turningOn) {
+      performanceControlVersionRef.current += 1;
+      teardownMigration();
+      queuePreparationRef.current?.abort(new Error("Autopilot stopped"));
+      cancelPendingTransitionStart();
+      if (pendingGapRef.current) {
+        transitionEngineRef.current.cancel();
+        pendingGapRef.current = null;
+        setTransitionRunning(false);
+      }
+    }
     setAutopilot((prev) => {
       const next = !prev;
       if (next) {
@@ -3536,12 +5865,246 @@ export default function Home() {
     if (turningOn) void handleWarmUpFx();
   }
 
+  function handleStartReggaetonShowcase() {
+    coreRef.current?.ensureContext();
+    void handleWarmUpFx();
+    const noteText =
+      "10 songs high energy reggaeton with 45 seconds each total including transitions and use all the skills, efx, loops, stems, hot lead ins";
+    lastVibeNoteRef.current = { text: noteText, at: Date.now() };
+    genreRequestRef.current = { include: ["reggaeton"], exclude: [] };
+    performanceMixRef.current = true;
+    residencyRequestRef.current = { seconds: 45, clamped: false };
+    showcaseQueueRef.current = [...REGGAETON_SHOWCASE_TRACK_IDS];
+    showcaseStepRef.current = 0;
+    setShowcaseRemaining(showcaseQueueRef.current.length);
+    askedForTrackRef.current = null;
+    retryStageRef.current = 0;
+    cancelFollowUp();
+    if (!autopilotRef.current) {
+      autopilotRef.current = true;
+      setAutopilot(true);
+      if (partyStartMsRef.current === null) {
+        partyStartMsRef.current = Date.now();
+        savePartyStartMs(partyStartMsRef.current);
+      }
+    }
+    pushBrainLog(
+      "plan",
+      "🔥 10-Song High-Energy Reggaeton Showcase started — 45s per song including transitions (hot mid-track lead-ins + 3-cycle loops + flanger + dub delay + 250 Hz crossover + stem migrations + rolls + scratches + Colombian El Cerebro vocals + SFX)"
+    );
+    const liveLabel = getLiveDeckLabel();
+    const liveId = liveLabel ? deckByLabel(liveLabel).trackId : null;
+    tryExecuteShowcaseStep(liveId);
+  }
+
+  function handleSeekLive(deltaSeconds: number) {
+    coreRef.current?.ensureContext();
+    const label = getLiveDeckLabel();
+    const ctrl = label
+      ? deckByLabel(label)
+      : deckA.trackName
+        ? deckA
+        : deckB.trackName
+          ? deckB
+          : null;
+    if (!ctrl || !ctrl.trackName) return;
+    const duration = ctrl.deck.duration;
+    const current = ctrl.deck.positionSeconds;
+    const target = Math.max(0, Math.min(duration > 0 ? duration - 1 : current + deltaSeconds, current + deltaSeconds));
+    ctrl.deck.seekTo(target);
+    pushBrainLog(
+      "seek",
+      `Deck ${ctrl === deckA ? "A" : "B"} ${deltaSeconds >= 0 ? "⏩" : "⏪"} ${deltaSeconds >= 0 ? `+${deltaSeconds}s` : `${deltaSeconds}s`} → ${formatMmSs(target)}`
+    );
+  }
+
+  function handleJumpToBeat(forLabel?: DeckLabel) {
+    coreRef.current?.ensureContext();
+    const label =
+      forLabel ??
+      getLiveDeckLabel() ??
+      (deckA.trackName ? "A" : deckB.trackName ? "B" : null);
+    if (!label) return;
+    const ctrl = deckByLabel(label);
+    if (!ctrl.trackName) return;
+    const current = ctrl.deck.positionSeconds;
+    const duration = ctrl.deck.duration;
+    const track = ctrl.trackId ? crateRef.current.find((t) => t.id === ctrl.trackId) : null;
+    const midEntry = track ? midTrackEntryFor(track, 90, 16) : null;
+    const beatIn = beatInFor(ctrl.trackId);
+    const mixIn = ctrl.mixPoints?.mixInSeconds ?? 0;
+    const cueKey = label === "A" ? cueKeyARef.current : cueKeyBRef.current;
+    const loopPts = cueKey ? getLoopPoints(CURRENT_LOOP_POINTS, cueKey) : undefined;
+    const drops = (loopPts?.drops ?? [])
+      .map((d) => d.atSeconds)
+      .filter((s) => Number.isFinite(s) && s > 2);
+
+    // 1. If we're still in the intro before the hot mid-track entry / beat-in, jump straight to it:
+    const entryCandidates = [
+      midEntry?.seconds ?? 0,
+      beatIn ?? 0,
+      mixIn,
+      drops[0] ?? 0,
+    ].filter((s) => s > 4 && (duration <= 0 || s < duration - 15));
+    const hotEntry = entryCandidates.length > 0 ? Math.max(...entryCandidates) : 25;
+
+    let target: number;
+    let reason: string;
+    if (current + 3 < hotEntry) {
+      target = hotEntry;
+      reason = midEntry?.reason ?? "skipped slow intro to main beat / drop";
+    } else {
+      // Already past the first entry — jump to the next drop if available, otherwise +25s
+      const nextDrop = drops.find((d) => d > current + 4 && (duration <= 0 || d < duration - 12));
+      if (nextDrop !== undefined) {
+        target = nextDrop;
+        reason = "jumped to next drop";
+      } else {
+        target = Math.min(duration > 0 ? Math.max(0, duration - 10) : current + 25, current + 25);
+        reason = "fast-forwarded +25s past intro/breakdown";
+      }
+    }
+    ctrl.deck.seekTo(target);
+    pushBrainLog("seek", `🔥 Deck ${label} → ${formatMmSs(target)} (${reason})`);
+  }
+
+  function handleSkipToNextSong(instantCut: boolean) {
+    coreRef.current?.ensureContext();
+    const liveLabel = getLiveDeckLabel();
+    const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
+    const liveId = liveCtrl?.trackId ?? null;
+
+    // Cancel any in-flight preparation, pending transition, or active transition engine
+    performanceControlVersionRef.current += 1;
+    queuePreparationRef.current?.abort(new Error("Skipped to next song"));
+    queuePreparationRef.current = null;
+    cancelPendingTransitionStart();
+    teardownMigration();
+    cleanupHeldLoopAndRoutine("skipped to next song");
+    transitionEngineRef.current.cancel();
+    pendingGapRef.current = null;
+    setTransitionRunning(false);
+    queueInFlightRef.current = false;
+    askedForTrackRef.current = null;
+    lastPerformanceAtRef.current = null;
+
+    if (instantCut && liveCtrl) {
+      // Immediately silence the current song so the next track cuts in right away at its hot lead-in!
+      liveCtrl.deck.pause();
+      liveCtrl.markPaused();
+      liveCtrl.deck.allNeutral();
+    }
+
+    // If showcase queue has tracks remaining, advance the showcase immediately
+    if (showcaseQueueRef.current.length > 0) {
+      pushBrainLog(
+        "skip",
+        instantCut
+          ? `⚡ Cut straight to next showcase track (${showcaseQueueRef.current.length} left)`
+          : `⏭️ Mixing into next showcase track now (${showcaseQueueRef.current.length} left)`
+      );
+      if (!instantCut && tryExecuteShowcaseStep(liveId)) {
+        return;
+      }
+      const nextTrackId = showcaseQueueRef.current.shift()!;
+      setShowcaseRemaining(showcaseQueueRef.current.length);
+      executeCommand(
+        {
+          action: "queue",
+          trackId: nextTrackId,
+          startAt: "auto",
+          transition: instantCut ? "cut" : "bass_swap",
+          durationBars: instantCut ? 1 : 4,
+          maskFx: "airhorn",
+        },
+        "user_chat"
+      );
+      return;
+    }
+
+    // Standard autopilot / crate skip
+    if (!instantCut && liveId && tryExecuteLocalAutopilotRecipe({ trackId: liveId })) {
+      pushBrainLog("skip", "⏭️ Manual Next Song — triggered immediate transition into next track");
+      return;
+    }
+
+    // Pick a high-compatibility next track from the crate (respecting any active genre request)
+    const crate = crateRef.current;
+    if (crate.length === 0) return;
+    const recentIds = new Set(historyRef.current.map((r) => r.trackId));
+    if (liveId) recentIds.add(liveId);
+    const genreFilter = genreRequestRef.current;
+    let pool = crate.filter(
+      (t) => !recentIds.has(t.id) && (PLAYBACK_MANIFEST.get(t.id)?.durationSeconds ?? 180) >= 60
+    );
+    if (genreFilter) {
+      const genreMatches = pool.filter((t) => genreAllowed(resolveMusicMetadata(t).genre, genreFilter));
+      if (genreMatches.length > 0) pool = genreMatches;
+    }
+    if (pool.length === 0) {
+      pool = crate.filter((t) => t.id !== liveId);
+    }
+    const chosen = pool[Math.floor(Math.random() * pool.length)] ?? crate[0];
+    if (!chosen) return;
+
+    pushBrainLog(
+      "skip",
+      instantCut
+        ? `⚡ Cut straight to "${chosen.name}" (hot lead-in)`
+        : `⏭️ Mixing immediately into "${chosen.name}"`
+    );
+    executeCommand(
+      {
+        action: "queue",
+        trackId: chosen.id,
+        startAt: "auto",
+        transition: instantCut ? "cut" : "bass_swap",
+        durationBars: instantCut ? 1 : 4,
+        maskFx: instantCut ? "rewind" : "airhorn",
+      },
+      "user_chat"
+    );
+  }
+
   function handleChatSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmed = chatInput.trim();
     if (!trimmed) return;
     coreRef.current?.ensureContext(); // this submit is a user gesture too
     lastVibeNoteRef.current = { text: trimmed, at: Date.now() }; // persists into every later call's state.lastVibeNote, not just this one
+    const genreRequest = parseGenreRequest(trimmed);
+    if (genreRequest) genreRequestRef.current = genreRequest;
+    if (requestsPerformanceMix(trimmed)) performanceMixRef.current = true;
+    if (/\b(no|without|avoid|stop)\s+(stems?|loops?|mixing|blending)\b|\bfull songs?\b/i.test(trimmed)) performanceMixRef.current = false;
+    // M7 blocker fix: pull any explicit residency instruction out of this
+    // note. applyResidencyParse keeps the standing request when the note
+    // says nothing about residency — "more salsa" must not silently cancel
+    // "30 seconds of a song".
+    residencyRequestRef.current = applyResidencyParse(residencyRequestRef.current, parseResidencyRequest(trimmed));
+    // If the user asked for a 10-song reggaeton demo/showcase, arm the 10-song showcase queue directly:
+    if (
+      genreRequest?.include.includes("reggaeton") &&
+      (/\b(10|ten)\s+songs?\b/i.test(trimmed) || /\b(demo|showcase|all the skills|all the shit)\b/i.test(trimmed))
+    ) {
+      setChatInput("");
+      handleStartReggaetonShowcase();
+      return;
+    }
+    if (!autopilotRef.current && (residencyRequestRef.current || genreRequest || performanceMixRef.current)) {
+      autopilotRef.current = true;
+      setAutopilot(true);
+      void handleWarmUpFx();
+    }
+    // A newly requested short showcase must also release an already-armed
+    // full-song wait, not just change what the next model request says.
+    const pendingGap = pendingGapRef.current;
+    if (pendingGap && residencyRequestRef.current) {
+      transitionEngineRef.current.cancel();
+      pendingGapRef.current = null;
+      setTransitionRunning(false);
+      const index = crateIndexForTrackId(pendingGap.trackId);
+      if (index !== null) void executeQueueCommand({ ...pendingGap.command, trackId: String(index) });
+    }
     recordLedgerEvent({ type: "vibe_note", when: new Date().toISOString(), text: trimmed, ...liveTrackContextForLedger() });
     cancelFollowUp(); // a new user chat supersedes any pending deferred re-consult
     setChatInput("");
@@ -3566,10 +6129,11 @@ export default function Home() {
   }
 
   function handleScratchButton(pattern: ScratchPattern) {
+    if (migrationRef.current || migrationPreparingRef.current) return;
     coreRef.current?.ensureContext();
     const liveLabel = getLiveDeckLabel();
     if (!liveLabel) return; // button is already disabled in this state; defensive no-op
-    const started = scratch(deckByLabel(liveLabel).deck, coreRef.current!, pattern);
+    const started = scratch(deckByLabel(liveLabel).deck, coreRef.current!, pattern, (deckByLabel(liveLabel).tags.bpm ?? NEUTRAL_BPM_FALLBACK) * deckByLabel(liveLabel).deck.tempo);
     if (started) {
       recordFxFired();
       recordFxDemonstration(`scratch_${pattern}`);
@@ -3579,6 +6143,7 @@ export default function Home() {
 
   /** Audio engine v2, Part 2 (beat rolls) — manual pad handler, mirrors handleScratchButton's duck-overlay shape exactly. `bpm` is the live deck's TAGGED bpm (fireRoll needs it, same convention as every other bpm-aware Deck-adjacent call in this file); an untagged live track falls back to NEUTRAL_BPM_FALLBACK so the roll still fires (at a guessed tempo) rather than silently doing nothing. */
   function handleRollButton(fx: RollFxName) {
+    if (migrationRef.current || migrationPreparingRef.current) return;
     coreRef.current?.ensureContext();
     const liveLabel = getLiveDeckLabel();
     if (!liveLabel) return; // button is already disabled with no live deck; defensive no-op
@@ -3593,6 +6158,7 @@ export default function Home() {
   }
 
   function handlePlayVocal(category: VocalCategory) {
+    if (migrationRef.current || migrationPreparingRef.current) return;
     coreRef.current?.ensureContext(); // this tap is a user gesture too
     // demonstrate=true — a manual pad tap, so playVocalCategory also logs a
     // fx-demonstration entry on success (recordFxFired() happens inside its
@@ -3858,6 +6424,9 @@ export default function Home() {
     withCueKey(label, (cues) => nudgeCue(cues, index, deltaSeconds));
   }
 
+  const lastAutoDropMoveTrackRef = useRef<string | null>(null);
+  const lastAutoVocalDropTrackRef = useRef<string | null>(null);
+
   // Autopilot poll loop (Part D). Deliberately narrow deps ([autopilot,
   // crate.length]) so this doesn't tear down/recreate the interval on every
   // progress-bar tick — see the deckARef/deckBRef/crateRef mirrors above for
@@ -3866,10 +6435,17 @@ export default function Home() {
     if (!autopilot) return;
     const interval = setInterval(() => {
       if (brainBusyRef.current || transitionEngineRef.current.isRunning) return;
+      checkQueueWatchdog();
+      // Let preparation/the audio clock finish its accepted move. Polling the
+      // cloud again here creates competing plans and unnecessary paid calls.
+      if (queueInFlightRef.current || heldLoopRef.current || migrationRef.current) return;
 
       const liveLabel = getLiveDeckLabel();
       if (liveLabel === null) {
         if (crateRef.current.length > 0) {
+          if (showcaseQueueRef.current.length > 0 && tryExecuteShowcaseStep(null)) {
+            return;
+          }
           const asked = askedForTrackRef.current;
           // Review-panel fix: re-ask the opener after the reask window even
           // if we already asked once — a "none" reply or a failed queue
@@ -3884,7 +6460,8 @@ export default function Home() {
         return;
       }
 
-      const liveState = deckLiveState(deckByLabel(liveLabel));
+      const liveCueKey = cueKeyForLabel(liveLabel);
+      const liveState = deckLiveState(deckByLabel(liveLabel), liveCueKey);
       if (!liveState) return;
       // In-and-out mixing: consult early either when the track's genuinely
       // ending soon OR when it's approaching its OWN analyzed mix-out point
@@ -3897,9 +6474,90 @@ export default function Home() {
           : null;
       const nearingEnd = liveState.remainingSeconds < AUTOPILOT_REMAINING_THRESHOLD_SECONDS;
       const nearingMixOut = mixOutRemainingSeconds !== null && mixOutRemainingSeconds < AUTOPILOT_REMAINING_THRESHOLD_SECONDS;
-      if ((nearingEnd || nearingMixOut) && askedForTrackRef.current?.key !== liveState.trackId) {
+      // M7 blocker fix ("you are going way longer than 30 seconds"): when the
+      // owner has asked for a specific residency, that mark is its OWN
+      // consult trigger. When performanceMixRef is active, start the ~20s
+      // sample_mix / stem_migrate 20s before targetSeconds so each track's
+      // total airtime including the transition is ~targetSeconds (e.g. 45s).
+      const residencyLeadSeconds = performanceMixRef.current ? 20 : undefined;
+      const residencyDue = isResidencyConsultDue(
+        liveState.playedSeconds,
+        residencyRequestRef.current?.seconds ?? null,
+        residencyLeadSeconds
+      );
+      if ((nearingEnd || nearingMixOut || residencyDue) && askedForTrackRef.current?.key !== liveState.trackId) {
         askedForTrackRef.current = { key: liveState.trackId, at: Date.now() };
+        if (tryExecuteLocalAutopilotRecipe(liveState)) return;
         void callBrain(null, { autopilotDriven: true, consultReason: "autopilot_poll" });
+        return;
+      }
+
+      // Live human-DJ mid-track performance moves during solo track play:
+      // 1) Pre-drop beat roll or baby scratch right before an analyzed internal drop (or at ~11s in showcase/residency mode).
+      // 2) Colombian El Cerebro vocal tag / hype drop during an instrumental gap or breakdown.
+      const minMidTrackPlayedSeconds =
+        residencyRequestRef.current !== null
+          ? Math.max(8, Math.min(13, Math.floor(residencyRequestRef.current.seconds * 0.25)))
+          : 18;
+      if (
+        !nearingEnd &&
+        !nearingMixOut &&
+        !residencyDue &&
+        liveState.playedSeconds >= minMidTrackPlayedSeconds &&
+        (residencyRequestRef.current !== null ||
+          liveState.remainingSeconds >= AUTOPILOT_REMAINING_THRESHOLD_SECONDS + 12) &&
+        !isPartnerDanceTrackName(liveState.name)
+      ) {
+        const loopEntry = liveCueKey ? getLoopPoints(CURRENT_LOOP_POINTS, liveCueKey) : null;
+        const upcomingDrop = loopEntry?.drops.find((d) => {
+          const untilDrop = (d.atSeconds - liveState.positionSeconds) / Math.max(liveState.tempo, 1e-6);
+          return untilDrop >= 1.0 && untilDrop <= 2.6;
+        });
+        if (upcomingDrop && lastAutoDropMoveTrackRef.current !== liveState.trackId && performanceMoveReady()) {
+          lastAutoDropMoveTrackRef.current = liveState.trackId;
+          pushBrainLog("fx", `live performance move — pre-drop roll before drop @${upcomingDrop.atSeconds.toFixed(1)}s`);
+          executeFxCommand({ action: "fx", fx: "roll_quarter", say: "Pre-drop 1/4-beat roll into the drop" }, "autopilot_poll");
+          return;
+        }
+        if (
+          (performanceMixRef.current || residencyRequestRef.current !== null) &&
+          lastAutoDropMoveTrackRef.current !== liveState.trackId &&
+          performanceMoveReady()
+        ) {
+          lastAutoDropMoveTrackRef.current = liveState.trackId;
+          const showcaseMoveIndex = historyRef.current.length % 3;
+          const moveFx = showcaseMoveIndex === 0 ? "roll_quarter" : showcaseMoveIndex === 1 ? "scratch_baby" : "roll_eighth";
+          pushBrainLog("fx", `live performance move — mid-track ${moveFx} skill @${liveState.positionSeconds.toFixed(1)}s`);
+          executeFxCommand(
+            { action: "fx", fx: moveFx, say: `Mid-track ${moveFx} skill on the beat` },
+            "user_chat"
+          );
+          if (!liveState.vocalActiveNow && lastAutoVocalDropTrackRef.current !== liveState.trackId) {
+            lastAutoVocalDropTrackRef.current = liveState.trackId;
+            const vocalCat: VocalCategory = showcaseMoveIndex === 0 ? "tag" : showcaseMoveIndex === 1 ? "cue_hype" : "adlib";
+            setTimeout(() => {
+              playVocalCategory(vocalCat, false);
+            }, 900);
+          }
+          return;
+        }
+        const fxCooldown =
+          performanceMixRef.current || residencyRequestRef.current !== null ? 18 : AUTOPILOT_FX_COOLDOWN_SECONDS;
+        const fxReady =
+          lastFxAtRef.current === null ||
+          (Date.now() - lastFxAtRef.current) / 1000 >= fxCooldown;
+        if (
+          fxReady &&
+          lastAutoVocalDropTrackRef.current !== liveState.trackId &&
+          !liveState.vocalActiveNow &&
+          liveState.nextDownPart &&
+          liveState.positionSeconds >= liveState.nextDownPart.start - 0.5 &&
+          liveState.positionSeconds <= liveState.nextDownPart.start + 2.0
+        ) {
+          lastAutoVocalDropTrackRef.current = liveState.trackId;
+          pushBrainLog("fx", `live performance move — DJ tag in vocal-free breakdown @${liveState.positionSeconds.toFixed(1)}s`);
+          executeFxCommand({ action: "fx", fx: "tag", say: "DJ tag in the vocal-free breakdown" }, "autopilot_poll");
+        }
       }
     }, AUTOPILOT_POLL_MS);
     return () => clearInterval(interval);
@@ -3912,12 +6570,134 @@ export default function Home() {
     return () => {
       if (retryTimeoutHandleRef.current) clearTimeout(retryTimeoutHandleRef.current);
       cancelFollowUp();
+      teardownMigration();
     };
   }, []);
 
+  const [visualizerLoopId, setVisualizerLoopId] = useState<string>("auto");
+  const [ambientBackdrop, setAmbientBackdrop] = useState<boolean>(true);
+
+  const activeVisualizerLoop = useMemo(() => {
+    if (visualizerLoopId === "off") return null;
+    if (visualizerLoopId !== "auto") {
+      return STAGE_VISUALIZER_LOOPS.find((l) => l.id === visualizerLoopId) ?? STAGE_VISUALIZER_LOOPS[0];
+    }
+    if (brainBusy || transitionRunning) {
+      return STAGE_VISUALIZER_LOOPS[0]; // cerebro-neural-core
+    }
+    const liveCtrl = deckA.isPlaying ? deckA : deckB.isPlaying ? deckB : deckA.trackName ? deckA : deckB;
+    const liveName = (liveCtrl.trackName ?? "").toLowerCase();
+    const liveBpm = (liveCtrl.tags.bpm ?? 120) * liveCtrl.tempo;
+    if (/salsa|bachata|merengue|cumbia|tropical|latin/i.test(liveName)) {
+      return STAGE_VISUALIZER_LOOPS[4]; // latin-gold-equalizer
+    }
+    if (/reggaeton|dembow|perreo|bad bunny|feid|karol|ozuna|daddy yankee/i.test(liveName)) {
+      return STAGE_VISUALIZER_LOOPS[1]; // supermercado-neon-crate
+    }
+    if (liveBpm >= 126) {
+      return STAGE_VISUALIZER_LOOPS[5]; // hypnotic-laser-club
+    }
+    if (liveBpm >= 114) {
+      return STAGE_VISUALIZER_LOOPS[2]; // bass-spectrum-tunnel
+    }
+    return STAGE_VISUALIZER_LOOPS[3]; // vinyl-cyber-strobe
+  }, [visualizerLoopId, brainBusy, transitionRunning, deckA.isPlaying, deckB.isPlaying, deckA.trackName, deckB.trackName, deckA.tags.bpm, deckB.tags.bpm, deckA.tempo, deckB.tempo]);
+
+  const liveStageTitle = deckA.isPlaying
+    ? deckA.trackName
+    : deckB.isPlaying
+      ? deckB.trackName
+      : deckA.trackName ?? deckB.trackName ?? "Standby — Load or Start Autopilot";
+  const liveStageBpm = deckA.isPlaying
+    ? deckA.tags.bpm
+      ? `${(deckA.tags.bpm * deckA.tempo).toFixed(1)} BPM`
+      : null
+    : deckB.isPlaying
+      ? deckB.tags.bpm
+        ? `${(deckB.tags.bpm * deckB.tempo).toFixed(1)} BPM`
+        : null
+      : null;
+
   return (
     <main className={styles.main}>
+      {ambientBackdrop && activeVisualizerLoop && (
+        <video
+          key={`bg-${activeVisualizerLoop.src}`}
+          className={styles.ambientVideoBg}
+          src={activeVisualizerLoop.src}
+          autoPlay
+          loop
+          muted
+          playsInline
+          aria-hidden="true"
+        />
+      )}
       <h1 className={styles.title}>DJ Supermercado</h1>
+
+      <section className={styles.visualizerPanel} aria-label="El Cerebro Stage Visualizer">
+        <div className={styles.deckHeader}>
+          <span className={styles.deckLabel}>El Cerebro Stage Visualizer (60fps 1080p)</span>
+          <button
+            type="button"
+            className={styles.resetButton}
+            onClick={() => setAmbientBackdrop((prev) => !prev)}
+            aria-pressed={ambientBackdrop}
+          >
+            {ambientBackdrop ? "Booth Glow: ON" : "Booth Glow: OFF"}
+          </button>
+        </div>
+
+        {activeVisualizerLoop && (
+          <div className={styles.visualizerStage}>
+            <video
+              key={activeVisualizerLoop.src}
+              className={styles.visualizerVideo}
+              src={activeVisualizerLoop.src}
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+            <div className={styles.visualizerOverlay}>
+              <div className={styles.visualizerTopRow}>
+                <span>{activeVisualizerLoop.label}</span>
+                <span>{transitionRunning ? "MIXING TRANSITION" : brainBusy ? "EL CEREBRO THINKING" : autopilot ? "AUTOPILOT LIVE" : "MANUAL BOOTH"}</span>
+              </div>
+              <div className={styles.visualizerBottomRow}>
+                <span>{liveStageTitle}</span>
+                {liveStageBpm && <strong>{liveStageBpm}</strong>}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className={styles.visualizerControls} role="group" aria-label="Stage visualizer loop selector">
+          <button
+            type="button"
+            className={`${styles.visualizerPill} ${visualizerLoopId === "auto" ? styles.visualizerPillActive : ""}`}
+            onClick={() => setVisualizerLoopId("auto")}
+          >
+            Auto Sync
+          </button>
+          {STAGE_VISUALIZER_LOOPS.map((loop) => (
+            <button
+              key={loop.id}
+              type="button"
+              className={`${styles.visualizerPill} ${visualizerLoopId === loop.id ? styles.visualizerPillActive : ""}`}
+              onClick={() => setVisualizerLoopId(loop.id)}
+            >
+              {loop.shortLabel}
+            </button>
+          ))}
+          <button
+            type="button"
+            className={`${styles.visualizerPill} ${visualizerLoopId === "off" ? styles.visualizerPillActive : ""}`}
+            onClick={() => setVisualizerLoopId("off")}
+          >
+            Off
+          </button>
+        </div>
+      </section>
 
       <CratePanel
         crate={crate}
@@ -3936,6 +6716,8 @@ export default function Home() {
         cachedIds={cachedIds}
         onPrefetchNext10={() => void handlePrefetchNext10()}
         prefetching={prefetching}
+        onGenreChange={(id, genre) => void saveGenre(id, genre)}
+        metadataStatus={metadataStatus}
       />
 
       <BrainPanel
@@ -3952,6 +6734,19 @@ export default function Home() {
         lastCost={lastCost}
         lastModel={lastModel}
         onResetCost={handleResetCost}
+        modelOptions={modelOptions}
+        selectedModel={selectedModel}
+        onModelChange={handleModelChange}
+        modelOnly={modelOnly}
+        onModelOnlyChange={value => { modelOnlyRef.current = value; setModelOnly(value); }}
+        unpricedCalls={unpricedCalls}
+        lastLatency={lastLatency}
+        onStartReggaetonShowcase={handleStartReggaetonShowcase}
+        showcaseRemaining={showcaseRemaining}
+        onSkipNext={handleSkipToNextSong}
+        onSeekLive={handleSeekLive}
+        onJumpToBeatLive={() => handleJumpToBeat()}
+        hasLiveTrack={anyPlaying || Boolean(deckA.trackName || deckB.trackName)}
       />
 
       <TransitionHistoryPanel
@@ -3985,6 +6780,7 @@ export default function Home() {
         syncDisabled={syncDisabled}
         syncDisabledReason={syncDisabledReason}
         onSync={handleBeatSyncAtoB}
+        onJumpToBeat={() => handleJumpToBeat("A")}
         cues={cueKeyA ? getCues(cueStore, cueKeyA) : []}
         rehearsing={rehearseA}
         onToggleRehearse={() => handleToggleRehearse("A")}
@@ -4021,6 +6817,7 @@ export default function Home() {
         syncDisabled={syncDisabled}
         syncDisabledReason={syncDisabledReason}
         onSync={handleBeatSyncBtoA}
+        onJumpToBeat={() => handleJumpToBeat("B")}
         cues={cueKeyB ? getCues(cueStore, cueKeyB) : []}
         rehearsing={rehearseB}
         onToggleRehearse={() => handleToggleRehearse("B")}

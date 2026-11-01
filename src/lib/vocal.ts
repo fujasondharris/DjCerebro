@@ -24,12 +24,6 @@ import { runWithConcurrency } from "./concurrency.ts";
 
 export type { VocalCategory, VocalManifestEntry };
 
-const VOCAL_DUCK_TARGET = 0.35; // ~35% per the dispatch
-// Deck.duck() takes a dB offset, not a linear target (same convention as
-// scratch.ts's DUCK_GAIN_DB) — convert once here.
-const VOCAL_DUCK_DB = 20 * Math.log10(VOCAL_DUCK_TARGET); // ~-9.12dB
-const VOCAL_DUCK_RAMP_SECONDS = 0.08; // ~80ms per the dispatch
-
 export const VOCAL_CATEGORIES: VocalCategory[] = ["tag", "drop", "adlib", "crowd", "cue_warm", "cue_hype"];
 
 /**
@@ -178,20 +172,6 @@ export class VocalPlayer {
         gain.gain.value = 1;
         source.connect(gain);
         gain.connect(this.core.master);
-
-        // Re-evaluate isTransitionRunning HERE, after the fetch/decode has
-        // resolved, not at call time — a transition that started DURING the
-        // fetch must still suppress the duck (it's running by the time
-        // we're about to actually duck), and one that was running at call
-        // time but has since ended should duck normally rather than being
-        // skipped on stale information.
-        const skipDuck = opts.isTransitionRunning?.() ?? false;
-        if (!skipDuck) {
-          for (const deck of decks) deck.duck(VOCAL_DUCK_DB, VOCAL_DUCK_RAMP_SECONDS);
-          setTimeout(() => {
-            for (const deck of decks) deck.unduck(VOCAL_DUCK_RAMP_SECONDS);
-          }, buffer.duration * 1000);
-        }
 
         source.start();
         opts.onResult?.(true);

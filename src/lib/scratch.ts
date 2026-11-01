@@ -25,6 +25,9 @@
 // tradeoff, documented per the dispatch: the overlay is NOT affected by
 // that deck's EQ/kill — acceptable for a personal tool.
 //
+// Scratch cuts use audio-clock gain edges and output-time stops. With a known
+// tempo, each pattern occupies two beats; the separate duck gain releases on
+// the audio clock even if UI timers stall.
 // planScratchSegments() below is the pure, audio-node-free planning logic
 // (testable without a browser — see scripts/check-scratch.mjs). scratch()
 // is the thin, unverifiable-here shell that schedules real nodes from that
@@ -67,7 +70,6 @@ const SPINBACK_REVERSE_RATE_START = 3.5;
 const SPINBACK_REVERSE_RATE_END = 0.4;
 
 const DUCK_GAIN_DB = -12;
-const DUCK_RAMP_SECONDS = 0.05; // fast but smooth — see deck.ts's DUCK_TIME_CONSTANT_SECONDS
 
 /**
  * Pure pattern -> segment-plan logic, no AudioContext dependency. `cursor`
@@ -86,7 +88,8 @@ const DUCK_RAMP_SECONDS = 0.05; // fast but smooth — see deck.ts's DUCK_TIME_C
 export function planScratchSegments(
   pattern: ScratchPattern,
   positionSeconds: number,
-  bufferDurationSeconds: number
+  bufferDurationSeconds: number,
+  effectiveBpm?: number,
 ): ScratchSegment[] {
   if (bufferDurationSeconds <= 0) return []; // nothing to scratch from a track with no decoded audio yet
 
@@ -98,18 +101,22 @@ export function planScratchSegments(
 
   const segments: ScratchSegment[] = [];
   let cursor = clampPos(positionSeconds);
+  const target = pattern === "baby" ? BABY_TOTAL_SECONDS : pattern === "chirp" ? CHIRP_TOTAL_SECONDS : SPINBACK_TOTAL_SECONDS;
+  const scale = effectiveBpm && effectiveBpm > 0 ? (120 / effectiveBpm) / target : 1;
 
   function pushSegment(direction: "forward" | "reverse", duration: number, rateStart: number, rateEnd: number) {
-    const dur = Math.max(0.01, Math.min(duration, bufferDurationSeconds));
+    const averageRate = (rateStart + rateEnd) / 2;
+    const dur = Math.min(duration * scale, bufferDurationSeconds / Math.max(1, averageRate));
+    const sourceSpan = dur * averageRate;
     if (direction === "forward") {
-      const offset = clampOffset(cursor, dur);
+      const offset = clampOffset(cursor, sourceSpan);
       segments.push({ direction, offsetSeconds: offset, durationSeconds: dur, rateStart, rateEnd });
-      cursor = clampPos(cursor + dur);
+      cursor = clampPos(offset + sourceSpan);
     } else {
       const reversedCursor = bufferDurationSeconds - cursor; // position in the reversed buffer
-      const offset = clampOffset(reversedCursor, dur);
+      const offset = clampOffset(reversedCursor, sourceSpan);
       segments.push({ direction, offsetSeconds: offset, durationSeconds: dur, rateStart, rateEnd });
-      cursor = clampPos(cursor - dur);
+      cursor = clampPos(bufferDurationSeconds - offset - sourceSpan);
     }
   }
 
@@ -144,20 +151,20 @@ export function planScratchSegments(
  * use this to only count a scratch toward the fx frequency-cap cooldown
  * when it truly fired (see page.tsx's recordFxFired()).
  */
-export function scratch(deck: Deck, core: AudioCore, pattern: ScratchPattern): boolean {
+export function scratch(deck: Deck, core: AudioCore, pattern: ScratchPattern, effectiveBpm?: number): boolean {
   const ctx = core.ensureContext();
   const buffer = deck.audioBuffer;
   if (!buffer) return false;
 
-  const segments = planScratchSegments(pattern, deck.positionSeconds, buffer.duration);
+  const segments = planScratchSegments(pattern, deck.positionSeconds, buffer.duration, effectiveBpm);
   if (segments.length === 0) return false;
 
   const reversedBuffer = deck.getReversedBuffer(ctx);
-  const gapSeconds = pattern === "chirp" ? CHIRP_GAP_SECONDS : 0;
+  const gapSeconds = pattern === "chirp" ? (effectiveBpm && effectiveBpm > 0 ? (120 / effectiveBpm) * 0.125 : CHIRP_GAP_SECONDS) : 0;
   const totalDuration = segments.reduce((sum, s) => sum + s.durationSeconds, 0);
   const totalRealSeconds = totalDuration + gapSeconds * Math.max(0, segments.length - 1);
 
-  deck.duck(DUCK_GAIN_DB, DUCK_RAMP_SECONDS);
+  deck.duckOverlay(DUCK_GAIN_DB, totalRealSeconds);
 
   let startTime = ctx.currentTime;
   for (const segment of segments) {
@@ -178,11 +185,20 @@ export function scratch(deck: Deck, core: AudioCore, pattern: ScratchPattern): b
       }
       source.playbackRate.setValueCurveAtTime(curve, startTime, segment.durationSeconds);
     }
-    source.connect(core.master);
-    source.start(startTime, segment.offsetSeconds, segment.durationSeconds);
+    const fader = ctx.createGain();
+    const edge = Math.min(0.005, segment.durationSeconds / 4);
+    fader.gain.setValueAtTime(0, startTime);
+    fader.gain.linearRampToValueAtTime(1, startTime + edge);
+    fader.gain.setValueAtTime(1, startTime + segment.durationSeconds - edge);
+    fader.gain.linearRampToValueAtTime(0, startTime + segment.durationSeconds);
+    source.connect(fader); fader.connect(core.master);
+    source.start(startTime, segment.offsetSeconds);
+    // start(duration) is measured in source seconds, so it is wrong for a
+    // variable-rate scratch. Stop on the output clock instead.
+    source.stop(startTime + segment.durationSeconds);
+    source.onended = () => { source.disconnect(); fader.disconnect(); };
     startTime += segment.durationSeconds + gapSeconds;
   }
 
-  setTimeout(() => deck.unduck(DUCK_RAMP_SECONDS), totalRealSeconds * 1000);
   return true;
 }

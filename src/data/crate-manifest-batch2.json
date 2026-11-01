@@ -1,0 +1,3917 @@
+[
+  {
+    "id": "local:4000 CUTS - Eazy-E - Still A Nigga (Official Audio) [CSLi9jLoxkw].mp3",
+    "name": "4000 CUTS - Eazy-E - Still A Nigga (Official Audio) [CSLi9jLoxkw].mp3",
+    "size": 7436697,
+    "bpm": 82.88,
+    "key": "Gm",
+    "durationSeconds": 250.601375,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.13371428847312927,
+          "bpm": 82.8815689086914
+        }
+      ],
+      "anchor": 0.13371428847312927,
+      "bpm": 82.8815689086914
+    }
+  },
+  {
+    "id": "local:50 Cent - 50 Cent - I Get Money (Official Music Video) [GO22Z0T3qPE].mp3",
+    "name": "50 Cent - 50 Cent - I Get Money (Official Music Video) [GO22Z0T3qPE].mp3",
+    "size": 7290271,
+    "bpm": 92.26,
+    "key": "C#m",
+    "durationSeconds": 233.546304,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.17965419590473175,
+          "bpm": 92.25981140136719
+        }
+      ],
+      "anchor": 0.17965419590473175,
+      "bpm": 92.25981140136719
+    }
+  },
+  {
+    "id": "local:888sentz - Geto Boys - Still (Office Space soundtrack).mp3",
+    "name": "888sentz - Geto Boys - Still (Office Space soundtrack).mp3",
+    "size": 6711007,
+    "bpm": 88,
+    "key": "Gm",
+    "durationSeconds": 240.187229,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.08775000274181366,
+          "bpm": 88.00189208984375
+        }
+      ],
+      "anchor": 0.08775000274181366,
+      "bpm": 88.00189208984375
+    }
+  },
+  {
+    "id": "local:90s HipHop - Topic - Nas - Take It In Blood [DeIqryoJoyc].mp3",
+    "name": "90s HipHop - Topic - Nas - Take It In Blood [DeIqryoJoyc].mp3",
+    "size": 6993182,
+    "bpm": 91.75,
+    "key": "Am",
+    "durationSeconds": 283.206625,
+    "grid": null
+  },
+  {
+    "id": "local:A Tribe Called Quest - A Tribe Called Quest - 1nce Again (Official HD Video) ft. Tammy Lucas [5Rt2AEz6QLs].mp3",
+    "name": "A Tribe Called Quest - A Tribe Called Quest - 1nce Again (Official HD Video) ft. Tammy Lucas [5Rt2AEz6QLs].mp3",
+    "size": 7625967,
+    "bpm": 93.55,
+    "key": "Gm",
+    "durationSeconds": 259.227574,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.3342403769493103,
+          "bpm": 93.55292510986328
+        }
+      ],
+      "anchor": 0.3342403769493103,
+      "bpm": 93.55292510986328
+    }
+  },
+  {
+    "id": "local:A V - Bad Bunny - VOY A LLeVARTE PA PR (Official Video) [kQHLx7Awnrc].mp3",
+    "name": "A V - Bad Bunny - VOY A LLeVARTE PA PR (Official Video) [kQHLx7Awnrc].mp3",
+    "size": 4748506,
+    "bpm": 100,
+    "key": "Em",
+    "durationSeconds": 158.3485,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.20892857015132904,
+          "bpm": 99.99783325195312
+        }
+      ],
+      "anchor": 0.20892857015132904,
+      "bpm": 99.99783325195312
+    }
+  },
+  {
+    "id": "local:AJ MUSIC - 50 Cent - Many Men (Wish Death) [Official Audio] HD [XtWb85c4_Pw].mp3",
+    "name": "AJ MUSIC - 50 Cent - Many Men (Wish Death) [Official Audio] HD [XtWb85c4_Pw].mp3",
+    "size": 6639120,
+    "bpm": 80.65,
+    "key": "Am",
+    "durationSeconds": 246.549479,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.09192857146263123,
+          "bpm": 80.6517333984375
+        }
+      ],
+      "anchor": 0.09192857146263123,
+      "bpm": 80.6517333984375
+    }
+  },
+  {
+    "id": "local:AUGE Latino - Gente de Zona - Seré (Official Audio 2019) [C1xthCbCzN0].mp3",
+    "name": "AUGE Latino - Gente de Zona - Seré (Official Audio 2019) [C1xthCbCzN0].mp3",
+    "size": 6026438,
+    "bpm": 94,
+    "key": "Em",
+    "durationSeconds": 198.61,
+    "grid": null
+  },
+  {
+    "id": "local:AUGE Latino - Gente de Zona Ft. El Chacal - Quiero Conocerte (Official Audio 2019) [VTR9nSi06IU].mp3",
+    "name": "AUGE Latino - Gente de Zona Ft. El Chacal - Quiero Conocerte (Official Audio 2019) [VTR9nSi06IU].mp3",
+    "size": 6412386,
+    "bpm": 100.01,
+    "key": "Abm",
+    "durationSeconds": 206.646,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.24653571844100952,
+          "bpm": 100.00604248046875
+        }
+      ],
+      "anchor": 0.24653571844100952,
+      "bpm": 100.00604248046875
+    }
+  },
+  {
+    "id": "local:AlexisyFidoOfficial - Alexis y Fido - Una En Un Millón (Video Oficial) [HLODpE__LZE].mp3",
+    "name": "AlexisyFidoOfficial - Alexis y Fido - Una En Un Millón (Video Oficial) [HLODpE__LZE].mp3",
+    "size": 7145742,
+    "bpm": 95.01,
+    "key": "Am",
+    "durationSeconds": 225.489,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.26742857694625854,
+          "bpm": 95.00675201416016
+        }
+      ],
+      "anchor": 0.26742857694625854,
+      "bpm": 95.00675201416016
+    }
+  },
+  {
+    "id": "local:AllAboutNicki - Drake ft. Nicki Minaj - Up All Night [HsRrSNDybnM].mp3",
+    "name": "AllAboutNicki - Drake ft. Nicki Minaj - Up All Night [HsRrSNDybnM].mp3",
+    "size": 5922038,
+    "bpm": 78,
+    "key": "Abm",
+    "durationSeconds": 232.26,
+    "grid": null
+  },
+  {
+    "id": "local:Anyma - Anyma, Chris Avantgarde - Atmosphere [Official Visualizer] [3qmjx664FeM].mp3",
+    "name": "Anyma - Anyma, Chris Avantgarde - Atmosphere [Official Visualizer] [3qmjx664FeM].mp3",
+    "size": 7454603,
+    "bpm": 128,
+    "key": "Gm",
+    "durationSeconds": 223.341146,
+    "grid": {
+      "markers": [
+        {
+          "position": 2.774571418762207,
+          "bpm": 127.99837493896484
+        }
+      ],
+      "anchor": 2.774571418762207,
+      "bpm": 127.99837493896484
+    }
+  },
+  {
+    "id": "local:Atlantic Records - Fabolous - Breathe (Official Video) [HD Remaster] [t6q9Vc1ZtQI].mp3",
+    "name": "Atlantic Records - Fabolous - Breathe (Official Video) [HD Remaster] [t6q9Vc1ZtQI].mp3",
+    "size": 8447735,
+    "bpm": 82.93,
+    "key": "Gm",
+    "durationSeconds": 258.972167,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.3037142753601074,
+          "bpm": 82.92623138427734
+        }
+      ],
+      "anchor": 1.3037142753601074,
+      "bpm": 82.92623138427734
+    }
+  },
+  {
+    "id": "local:Atlantic Records - Prince Royce - Incondicional (Official Video) [h_fXySfFmM8].mp3",
+    "name": "Atlantic Records - Prince Royce - Incondicional (Official Video) [h_fXySfFmM8].mp3",
+    "size": 6588926,
+    "bpm": 128.91,
+    "key": "Am",
+    "durationSeconds": 207.53,
+    "grid": null
+  },
+  {
+    "id": "local:Atlantic Records - Sean Paul - We Be Burnin' (Recognize It) [Official Video] [uUGFhVWPOFs].mp3",
+    "name": "Atlantic Records - Sean Paul - We Be Burnin' (Recognize It) [Official Video] [uUGFhVWPOFs].mp3",
+    "size": 6020067,
+    "bpm": 117,
+    "key": "Ebm",
+    "durationSeconds": 201.247354,
+    "grid": {
+      "markers": [
+        {
+          "position": 2.014071464538574,
+          "bpm": 116.99552154541016
+        }
+      ],
+      "anchor": 2.014071464538574,
+      "bpm": 116.99552154541016
+    }
+  },
+  {
+    "id": "local:B High Atl - Do Or Die： Scarface To Us If You Can... Po Pimpin, Playa Like Me And You, Picture This [VjbyOqsIKNE].mp3",
+    "name": "B High Atl - Do Or Die： Scarface To Us If You Can... Po Pimpin, Playa Like Me And You, Picture This [VjbyOqsIKNE].mp3",
+    "size": 9240232,
+    "bpm": null,
+    "key": "Ebm",
+    "durationSeconds": 443.605625,
+    "grid": null
+  },
+  {
+    "id": "local:BKLYN SOUNDS - Calvin Haris - Blame (feat. John Newman) - Official Music HQ Sound [4pocLm7xhhc].mp3",
+    "name": "BKLYN SOUNDS - Calvin Haris - Blame (feat. John Newman) - Official Music HQ Sound [4pocLm7xhhc].mp3",
+    "size": 6494452,
+    "bpm": 128,
+    "key": "Cm",
+    "durationSeconds": 207.08,
+    "grid": null
+  },
+  {
+    "id": "local:Bachata Heightz - Bachata Heightz - Me Puedo Matar ft. Hector ＂El Torito＂ Acosta [eshFzjIZZzA].mp3",
+    "name": "Bachata Heightz - Bachata Heightz - Me Puedo Matar ft. Hector ＂El Torito＂ Acosta [eshFzjIZZzA].mp3",
+    "size": 8285262,
+    "bpm": 130,
+    "key": "Am",
+    "durationSeconds": 262.304229,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.16296428442001343,
+          "bpm": 129.9991455078125
+        }
+      ],
+      "anchor": 0.16296428442001343,
+      "bpm": 129.9991455078125
+    }
+  },
+  {
+    "id": "local:Bad Bunny - BAD BUNNY - MONACO (Official Video) ｜ nadie sabe lo que va a pasar mañana [_PJvpq8uOZM].mp3",
+    "name": "Bad Bunny - BAD BUNNY - MONACO (Official Video) ｜ nadie sabe lo que va a pasar mañana [_PJvpq8uOZM].mp3",
+    "size": 13731108,
+    "bpm": 139.01,
+    "key": "Bm",
+    "durationSeconds": 439.925271,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.07939285784959793,
+          "bpm": 139.00613403320312
+        }
+      ],
+      "anchor": 0.07939285784959793,
+      "bpm": 139.00613403320312
+    }
+  },
+  {
+    "id": "local:Bad Bunny - BAD BUNNY - SI VEO A TU MAMÁ ｜ YHLQMDLG (Video Oficial) [CPK_IdHe1Yg].mp3",
+    "name": "Bad Bunny - BAD BUNNY - SI VEO A TU MAMÁ ｜ YHLQMDLG (Video Oficial) [CPK_IdHe1Yg].mp3",
+    "size": 8344675,
+    "bpm": 130,
+    "key": "D",
+    "durationSeconds": 265.717563,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.20475000143051147,
+          "bpm": 130.0049285888672
+        }
+      ],
+      "anchor": 0.20475000143051147,
+      "bpm": 130.0049285888672
+    }
+  },
+  {
+    "id": "local:Bad Bunny - BAD BUNNY - VETE ｜ YHLQMDLG (Video Oficial) [f5aDUB1NCnk].mp3",
+    "name": "Bad Bunny - BAD BUNNY - VETE ｜ YHLQMDLG (Video Oficial) [f5aDUB1NCnk].mp3",
+    "size": 6762041,
+    "bpm": 92,
+    "key": "Ebm",
+    "durationSeconds": 207.261333,
+    "grid": {
+      "markers": [
+        {
+          "position": 2.1101784706115723,
+          "bpm": 92.00047302246094
+        }
+      ],
+      "anchor": 2.1101784706115723,
+      "bpm": 92.00047302246094
+    }
+  },
+  {
+    "id": "local:Bad Bunny - BAD BUNNY ft. RaiNao - PERFuMITO NUEVO (Visualizer) ｜ DeBÍ TiRAR MáS FOToS [XphyMFdyyEg].mp3",
+    "name": "Bad Bunny - BAD BUNNY ft. RaiNao - PERFuMITO NUEVO (Visualizer) ｜ DeBÍ TiRAR MáS FOToS [XphyMFdyyEg].mp3",
+    "size": 6414967,
+    "bpm": 94,
+    "key": "Am",
+    "durationSeconds": 200.666854,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.20475000143051147,
+          "bpm": 93.99905395507812
+        }
+      ],
+      "anchor": 0.20475000143051147,
+      "bpm": 93.99905395507812
+    }
+  },
+  {
+    "id": "local:Bad Bunny - BAD BUNNY x DON OMAR - PA' ROMPERLA ｜ LAS QUE NO IBAN A SALIR (Audio Oficial) [tK4ioPhpal4].mp3",
+    "name": "Bad Bunny - BAD BUNNY x DON OMAR - PA' ROMPERLA ｜ LAS QUE NO IBAN A SALIR (Audio Oficial) [tK4ioPhpal4].mp3",
+    "size": 6286246,
+    "bpm": 94,
+    "key": "Gm",
+    "durationSeconds": 194.049167,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.4262142777442932,
+          "bpm": 94.0008773803711
+        }
+      ],
+      "anchor": 0.4262142777442932,
+      "bpm": 94.0008773803711
+    }
+  },
+  {
+    "id": "local:Bad Bunny - BAD BUNNY x DUKI x PABLO CHILL-E - HABLAMOS MAÑANA ｜ YHLQMDLG (Video Oficial) [j2FNs-hX93E].mp3",
+    "name": "Bad Bunny - BAD BUNNY x DUKI x PABLO CHILL-E - HABLAMOS MAÑANA ｜ YHLQMDLG (Video Oficial) [j2FNs-hX93E].mp3",
+    "size": 9045116,
+    "bpm": 78.01,
+    "key": "Bbm",
+    "durationSeconds": 296.256,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.1699999570846558,
+          "bpm": 78.00656127929688
+        }
+      ],
+      "anchor": 1.1699999570846558,
+      "bpm": 78.00656127929688
+    }
+  },
+  {
+    "id": "local:Bad Bunny - BAD BUNNY x KENDO KAPONI x ARCANGEL - P FKN R ｜ YHLQMDLG [Visualizer] [1FmFxG3Dfi8].mp3",
+    "name": "Bad Bunny - BAD BUNNY x KENDO KAPONI x ARCANGEL - P FKN R ｜ YHLQMDLG [Visualizer] [1FmFxG3Dfi8].mp3",
+    "size": 7976592,
+    "bpm": 100.96,
+    "key": "Cm",
+    "durationSeconds": 258.298792,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.2841428518295288,
+          "bpm": 100.96050262451172
+        }
+      ],
+      "anchor": 0.2841428518295288,
+      "bpm": 100.96050262451172
+    }
+  },
+  {
+    "id": "local:Bad Bunny - BAD BUNNY x NESI x IVY QUEEN - YO PERREO SOLA REMIX ｜ YHLQMDLG (Audio Oficial) [WBnBntk7LbE].mp3",
+    "name": "Bad Bunny - BAD BUNNY x NESI x IVY QUEEN - YO PERREO SOLA REMIX ｜ YHLQMDLG (Audio Oficial) [WBnBntk7LbE].mp3",
+    "size": 5614327,
+    "bpm": 97,
+    "key": "Em",
+    "durationSeconds": 174.016,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.3217500150203705,
+          "bpm": 97.00160217285156
+        }
+      ],
+      "anchor": 0.3217500150203705,
+      "bpm": 97.00160217285156
+    }
+  },
+  {
+    "id": "local:Bad Bunny - BAD BUNNY x ROSALÍA - LA NOCHE DE ANOCHE (Video Oficial) [f5omY8jVrSM].mp3",
+    "name": "Bad Bunny - BAD BUNNY x ROSALÍA - LA NOCHE DE ANOCHE (Video Oficial) [f5omY8jVrSM].mp3",
+    "size": 6757722,
+    "bpm": 82.01,
+    "key": "Em",
+    "durationSeconds": 217.060146,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5181428790092468,
+          "bpm": 82.00676727294922
+        }
+      ],
+      "anchor": 0.5181428790092468,
+      "bpm": 82.00676727294922
+    }
+  },
+  {
+    "id": "local:Bad Bunny - BAD BUNNY x SECH - IGNORANTES ｜ YHLQMDLG (Video Oficial) [PC0GvyEIXfk].mp3",
+    "name": "Bad Bunny - BAD BUNNY x SECH - IGNORANTES ｜ YHLQMDLG (Video Oficial) [PC0GvyEIXfk].mp3",
+    "size": 7765662,
+    "bpm": 96.01,
+    "key": "Ebm",
+    "durationSeconds": 247.594396,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.3705713748931885,
+          "bpm": 96.01016235351562
+        }
+      ],
+      "anchor": 1.3705713748931885,
+      "bpm": 96.01016235351562
+    }
+  },
+  {
+    "id": "local:Bad Bunny - BAD BUNNY x YANDEL - CANCIÓN CON YANDEL ｜ LAS QUE NO IBAN A SALIR (Audio Oficial) [R82Pk0VQWOQ].mp3",
+    "name": "Bad Bunny - BAD BUNNY x YANDEL - CANCIÓN CON YANDEL ｜ LAS QUE NO IBAN A SALIR (Audio Oficial) [R82Pk0VQWOQ].mp3",
+    "size": 6985608,
+    "bpm": 80,
+    "key": "E",
+    "durationSeconds": 209.002813,
+    "grid": {
+      "markers": [
+        {
+          "position": 5.0435357093811035,
+          "bpm": 80.00211334228516
+        }
+      ],
+      "anchor": 5.0435357093811035,
+      "bpm": 80.00211334228516
+    }
+  },
+  {
+    "id": "local:Bad Bunny - Bad Bunny (ft. Tony Dize) - La Corriente (360° Visualizer) ｜ Un Verano Sin Ti [A95yW-LVnbY].mp3",
+    "name": "Bad Bunny - Bad Bunny (ft. Tony Dize) - La Corriente (360° Visualizer) ｜ Un Verano Sin Ti [A95yW-LVnbY].mp3",
+    "size": 6248562,
+    "bpm": 98,
+    "key": "Bm",
+    "durationSeconds": 196.28,
+    "grid": null
+  },
+  {
+    "id": "local:Bad Bunny - Bad Bunny - Enséñame a Bailar (360° Visualizer) ｜ Un Verano Sin Ti [eopPKANmKyg].mp3",
+    "name": "Bad Bunny - Bad Bunny - Enséñame a Bailar (360° Visualizer) ｜ Un Verano Sin Ti [eopPKANmKyg].mp3",
+    "size": 5492269,
+    "bpm": 105,
+    "key": "Eb",
+    "durationSeconds": 172.36,
+    "grid": null
+  },
+  {
+    "id": "local:Bad Bunny - Bad Bunny - WHERE SHE GOES (Video Oficial) [bef8QLNHubw].mp3",
+    "name": "Bad Bunny - Bad Bunny - WHERE SHE GOES (Video Oficial) [bef8QLNHubw].mp3",
+    "size": 8556543,
+    "bpm": 72,
+    "key": "Am",
+    "durationSeconds": 271.882458,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.0835714265704155,
+          "bpm": 71.99784851074219
+        }
+      ],
+      "anchor": 0.0835714265704155,
+      "bpm": 71.99784851074219
+    }
+  },
+  {
+    "id": "local:Bad Bunny - Bad Bunny ft. Bomba Estéreo - Ojitos Lindos (Video Oficial) ｜ Un Verano Sin Ti [wAjHQXrIj9o].mp3",
+    "name": "Bad Bunny - Bad Bunny ft. Bomba Estéreo - Ojitos Lindos (Video Oficial) ｜ Un Verano Sin Ti [wAjHQXrIj9o].mp3",
+    "size": 8692697,
+    "bpm": 80,
+    "key": "Abm",
+    "durationSeconds": 270.64,
+    "grid": null
+  },
+  {
+    "id": "local:Bad Bunny - J BALVIN x BAD BUNNY - YO LE LLEGO ｜ OASIS (Video Oficial) [X-og30D3lxs].mp3",
+    "name": "Bad Bunny - J BALVIN x BAD BUNNY - YO LE LLEGO ｜ OASIS (Video Oficial) [X-og30D3lxs].mp3",
+    "size": 7629640,
+    "bpm": 77.5,
+    "key": "Em",
+    "durationSeconds": 238.250667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.10446428507566452,
+          "bpm": 77.50086975097656
+        }
+      ],
+      "anchor": 0.10446428507566452,
+      "bpm": 77.50086975097656
+    }
+  },
+  {
+    "id": "local:Bass xtreme1 - 105 (Remix) - (Bass Boosted) Kevvo, Farruko, Myke Towers, Arcangel, Darell, Ñengo Flow, Brytiago [K2t5a_IwGMo].mp3",
+    "name": "Bass xtreme1 - 105 (Remix) - (Bass Boosted) Kevvo, Farruko, Myke Towers, Arcangel, Darell, Ñengo Flow, Brytiago [K2t5a_IwGMo].mp3",
+    "size": 13694432,
+    "bpm": 100,
+    "key": "Fm",
+    "durationSeconds": 462.04,
+    "grid": null
+  },
+  {
+    "id": "local:Becky G - Becky G - NO MIENTEN (Audio) [8JAZWOucU0w].mp3",
+    "name": "Becky G - Becky G - NO MIENTEN (Audio) [8JAZWOucU0w].mp3",
+    "size": 4941355,
+    "bpm": 128,
+    "key": "Am",
+    "durationSeconds": 148.967625,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.2285000085830688,
+          "bpm": 128.00392150878906
+        }
+      ],
+      "anchor": 1.2285000085830688,
+      "bpm": 128.00392150878906
+    }
+  },
+  {
+    "id": "local:Black Eyed Peas - Black Eyed Peas, Daddy Yankee - BAILAR CONTIGO (Official Music Video) [heihCpHHjbA].mp3",
+    "name": "Black Eyed Peas - Black Eyed Peas, Daddy Yankee - BAILAR CONTIGO (Official Music Video) [heihCpHHjbA].mp3",
+    "size": 7622897,
+    "bpm": 125,
+    "key": "Bbm",
+    "durationSeconds": 242.555667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.2507142722606659,
+          "bpm": 125.0002670288086
+        }
+      ],
+      "anchor": 0.2507142722606659,
+      "bpm": 125.0002670288086
+    }
+  },
+  {
+    "id": "local:Bladeration - Busta Rhymes - What It Is (feat. Kelis) [Genesis] [HQ] [B0wLhVGM_JI].mp3",
+    "name": "Bladeration - Busta Rhymes - What It Is (feat. Kelis) [Genesis] [HQ] [B0wLhVGM_JI].mp3",
+    "size": 6252331,
+    "bpm": 100.96,
+    "key": "Fm",
+    "durationSeconds": 216.62,
+    "grid": null
+  },
+  {
+    "id": "local:Bob Marley & The Wailers - Sun Is Shining [5T3UmvutR8k].mp3",
+    "name": "Bob Marley & The Wailers - Sun Is Shining [5T3UmvutR8k].mp3",
+    "size": 10364202,
+    "bpm": 128.87,
+    "key": "Abm",
+    "durationSeconds": 298.506667,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.0989643335342407,
+          "bpm": 128.86856079101562
+        }
+      ],
+      "anchor": 1.0989643335342407,
+      "bpm": 128.86856079101562
+    }
+  },
+  {
+    "id": "local:Bob Marley - Bob Marley & The Wailers - Could You Be Loved (Official Music Video) [1ti2YCFgCoI].mp3",
+    "name": "Bob Marley - Bob Marley & The Wailers - Could You Be Loved (Official Music Video) [1ti2YCFgCoI].mp3",
+    "size": 8257555,
+    "bpm": 103.19,
+    "key": "Bm",
+    "durationSeconds": 236.8,
+    "grid": null
+  },
+  {
+    "id": "local:Bob Marley - Natural Mystic (1977) - Bob Marley & The Wailers [UZfaIx57UqU].mp3",
+    "name": "Bob Marley - Natural Mystic (1977) - Bob Marley & The Wailers [UZfaIx57UqU].mp3",
+    "size": 6750841,
+    "bpm": 130.72,
+    "key": "Am",
+    "durationSeconds": 207.737333,
+    "grid": {
+      "markers": [
+        {
+          "position": 3.2551071643829346,
+          "bpm": 130.71652221679688
+        }
+      ],
+      "anchor": 3.2551071643829346,
+      "bpm": 130.71652221679688
+    }
+  },
+  {
+    "id": "local:Bob Marley - Turn Your Lights Down Low (1977) - Bob Marley & The Wailers [fRid8Tjw_bU].mp3",
+    "name": "Bob Marley - Turn Your Lights Down Low (1977) - Bob Marley & The Wailers [fRid8Tjw_bU].mp3",
+    "size": 6994228,
+    "bpm": 71.34,
+    "key": "Em",
+    "durationSeconds": 219.347313,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.7020000219345093,
+          "bpm": 71.33628845214844
+        }
+      ],
+      "anchor": 0.7020000219345093,
+      "bpm": 71.33628845214844
+    }
+  },
+  {
+    "id": "local:Bob Marley - War (1976) - Bob Marley & The Wailers [-JwL3lPBQ5E].mp3",
+    "name": "Bob Marley - War (1976) - Bob Marley & The Wailers [-JwL3lPBQ5E].mp3",
+    "size": 6869761,
+    "bpm": 72.89,
+    "key": "Bbm",
+    "durationSeconds": 216.533333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.11699999868869781,
+          "bpm": 72.88819885253906
+        }
+      ],
+      "anchor": 0.11699999868869781,
+      "bpm": 72.88819885253906
+    }
+  },
+  {
+    "id": "local:ByPavel - Rick Ross-The Boss (Feat. T-Pain) [Iriq2tqhNBk].mp3",
+    "name": "ByPavel - Rick Ross-The Boss (Feat. T-Pain) [Iriq2tqhNBk].mp3",
+    "size": 5908579,
+    "bpm": 89,
+    "key": "Em",
+    "durationSeconds": 225.2,
+    "grid": null
+  },
+  {
+    "id": "local:Carlos Vives, Emiliano Zuleta - La gota fría (Remastered 30 años) [6qFAi7GfdrY].mp3",
+    "name": "Carlos Vives, Emiliano Zuleta - La gota fría (Remastered 30 años) [6qFAi7GfdrY].mp3",
+    "size": 7203193,
+    "bpm": 100.77,
+    "key": "Bbm",
+    "durationSeconds": 211.35,
+    "grid": null
+  },
+  {
+    "id": "local:Chilleando Beats - Marc Anthony - Tu Amor Me Hace Bien (Salsa Version) (Letra) [_9yI0g8gk1M].mp3",
+    "name": "Chilleando Beats - Marc Anthony - Tu Amor Me Hace Bien (Salsa Version) (Letra) [_9yI0g8gk1M].mp3",
+    "size": 10053291,
+    "bpm": 97.68,
+    "key": "Am",
+    "durationSeconds": 300.222417,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.30503571033477783,
+          "bpm": 97.67790985107422
+        }
+      ],
+      "anchor": 0.30503571033477783,
+      "bpm": 97.67790985107422
+    }
+  },
+  {
+    "id": "local:Clean Radio Promo - Lil Wayne - Got Money (feat. T-Pain) [Explicit Version] [ZURis3A6FYM].mp3",
+    "name": "Clean Radio Promo - Lil Wayne - Got Money (feat. T-Pain) [Explicit Version] [ZURis3A6FYM].mp3",
+    "size": 7521796,
+    "bpm": 82.5,
+    "key": "Em",
+    "durationSeconds": 244.77,
+    "grid": null
+  },
+  {
+    "id": "local:Common - Common - I Used to Love H.E.R. (Official Video) [TrUERC2Zk64].mp3",
+    "name": "Common - Common - I Used to Love H.E.R. (Official Video) [TrUERC2Zk64].mp3",
+    "size": 8490742,
+    "bpm": 91.84,
+    "key": "Fm",
+    "durationSeconds": 265.07,
+    "grid": null
+  },
+  {
+    "id": "local:Cypress Hill - Cypress Hill - Hand on the Pump (Official HD Video) [G1SwN70b0bw].mp3",
+    "name": "Cypress Hill - Cypress Hill - Hand on the Pump (Official HD Video) [G1SwN70b0bw].mp3",
+    "size": 7640089,
+    "bpm": 98.13,
+    "key": "Ebm",
+    "durationSeconds": 238.863688,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5432142615318298,
+          "bpm": 98.12940979003906
+        }
+      ],
+      "anchor": 0.5432142615318298,
+      "bpm": 98.12940979003906
+    }
+  },
+  {
+    "id": "local:Cypress Hill - Cypress Hill - How I Could Just Kill a Man (Official HD Video) [Yg-RIOATCbU].mp3",
+    "name": "Cypress Hill - Cypress Hill - How I Could Just Kill a Man (Official HD Video) [Yg-RIOATCbU].mp3",
+    "size": 7957747,
+    "bpm": 101.82,
+    "key": "Bbm",
+    "durationSeconds": 245.4,
+    "grid": null
+  },
+  {
+    "id": "local:DIYB Entertainment Radio - Lil Wayne - MegaMan (Official Audio) HQ [uzW8frEZ0OI].mp3",
+    "name": "DIYB Entertainment Radio - Lil Wayne - MegaMan (Official Audio) HQ [uzW8frEZ0OI].mp3",
+    "size": 6305881,
+    "bpm": 77,
+    "key": "Em",
+    "durationSeconds": 198.314667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.27996429800987244,
+          "bpm": 77.00008392333984
+        }
+      ],
+      "anchor": 0.27996429800987244,
+      "bpm": 77.00008392333984
+    }
+  },
+  {
+    "id": "local:Daddy Yankee - AYO AYO [JTIKMLYuHWU].mp3",
+    "name": "Daddy Yankee - AYO AYO [JTIKMLYuHWU].mp3",
+    "size": 3621394,
+    "bpm": 110,
+    "key": "Em",
+    "durationSeconds": 106.559938,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.07521428912878036,
+          "bpm": 110.00411987304688
+        }
+      ],
+      "anchor": 0.07521428912878036,
+      "bpm": 110.00411987304688
+    }
+  },
+  {
+    "id": "local:Daddy Yankee - Daddy Yankee & Anuel AA - Adictiva (Video Oficial) [BvFJstCIrpw].mp3",
+    "name": "Daddy Yankee - Daddy Yankee & Anuel AA - Adictiva (Video Oficial) [BvFJstCIrpw].mp3",
+    "size": 6621426,
+    "bpm": 99.01,
+    "key": "Am",
+    "durationSeconds": 208.95,
+    "grid": null
+  },
+  {
+    "id": "local:Daft Punk - Daft Punk - Get Lucky (Official Audio) ft. Pharrell Williams, Nile Rodgers [5NV6Rdv1a3I].mp3",
+    "name": "Daft Punk - Daft Punk - Get Lucky (Official Audio) ft. Pharrell Williams, Nile Rodgers [5NV6Rdv1a3I].mp3",
+    "size": 7612708,
+    "bpm": 116.04,
+    "key": "Bm",
+    "durationSeconds": 247.849796,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.2882823050022125,
+          "bpm": 116.0436782836914
+        }
+      ],
+      "anchor": 0.2882823050022125,
+      "bpm": 116.0436782836914
+    }
+  },
+  {
+    "id": "local:Darude - Darude - Feel The Beat [aLZQ-0dHbiU].mp3",
+    "name": "Darude - Darude - Feel The Beat [aLZQ-0dHbiU].mp3",
+    "size": 7479555,
+    "bpm": 137.85,
+    "key": "Ebm",
+    "durationSeconds": 251.17025,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.0710357129573822,
+          "bpm": 137.85418701171875
+        }
+      ],
+      "anchor": 0.0710357129573822,
+      "bpm": 137.85418701171875
+    }
+  },
+  {
+    "id": "local:Dj Zaülo - Juan Magan x Deorro x MAKJ – Muñequita Linda feat. YFN Lucci (Video Vertical) [_romSdh_oQM].mp3",
+    "name": "Dj Zaülo - Juan Magan x Deorro x MAKJ – Muñequita Linda feat. YFN Lucci (Video Vertical) [_romSdh_oQM].mp3",
+    "size": 6623058,
+    "bpm": 130,
+    "key": "Gm",
+    "durationSeconds": 210.581771,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.17967857420444489,
+          "bpm": 129.99818420410156
+        }
+      ],
+      "anchor": 0.17967857420444489,
+      "bpm": 129.99818420410156
+    }
+  },
+  {
+    "id": "local:DjpopiTV - Bad Bunny - Una Velita (VIDEO OFICIAL) 🎵 DJ Popi TV [q5mM2jUIsW8].mp3",
+    "name": "DjpopiTV - Bad Bunny - Una Velita (VIDEO OFICIAL) 🎵 DJ Popi TV [q5mM2jUIsW8].mp3",
+    "size": 7447786,
+    "bpm": 113.99,
+    "key": "Em",
+    "durationSeconds": 240.071125,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.2590714395046234,
+          "bpm": 113.98987579345703
+        }
+      ],
+      "anchor": 0.2590714395046234,
+      "bpm": 113.98987579345703
+    }
+  },
+  {
+    "id": "local:Don Omar - Don Omar - Pura Vida [SPZW7McS1mI].mp3",
+    "name": "Don Omar - Don Omar - Pura Vida [SPZW7McS1mI].mp3",
+    "size": 6656489,
+    "bpm": 128,
+    "key": "Gm",
+    "durationSeconds": 198.65,
+    "grid": null
+  },
+  {
+    "id": "local:Don Omar - Don Omar ｜ Dile (Video Oficial ) [zODmu06pqvg].mp3",
+    "name": "Don Omar - Don Omar ｜ Dile (Video Oficial ) [zODmu06pqvg].mp3",
+    "size": 4773827,
+    "bpm": 94,
+    "key": "Em",
+    "durationSeconds": 235.403917,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.6212856769561768,
+          "bpm": 94.00310516357422
+        }
+      ],
+      "anchor": 1.6212856769561768,
+      "bpm": 94.00310516357422
+    }
+  },
+  {
+    "id": "local:Eazy-E Récords  - Eazy-E - Real Muthaphuckkin G's ft. Gangsta Dresta & B.G. Knoccout (Official Video) [5J7lT5cLDXY].mp3",
+    "name": "Eazy-E Récords  - Eazy-E - Real Muthaphuckkin G's ft. Gangsta Dresta & B.G. Knoccout (Official Video) [5J7lT5cLDXY].mp3",
+    "size": 9466245,
+    "bpm": 85.26,
+    "key": "Em",
+    "durationSeconds": 333.07,
+    "grid": null
+  },
+  {
+    "id": "local:El Canal de Santash - Lil Wayne - A Milli (Official Video HD)(Audio HD)(Dirty) [w81Eci5bkXc].mp3",
+    "name": "El Canal de Santash - Lil Wayne - A Milli (Official Video HD)(Audio HD)(Dirty) [w81Eci5bkXc].mp3",
+    "size": 6137183,
+    "bpm": 75.99,
+    "key": "Abm",
+    "durationSeconds": 219.208,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.23399999737739563,
+          "bpm": 75.99069213867188
+        }
+      ],
+      "anchor": 0.23399999737739563,
+      "bpm": 75.99069213867188
+    }
+  },
+  {
+    "id": "local:El Micha - El Micha, Lenier - Pa Los Haters [vP_jAwlRRto].mp3",
+    "name": "El Micha - El Micha, Lenier - Pa Los Haters [vP_jAwlRRto].mp3",
+    "size": 6245374,
+    "bpm": 133.99,
+    "key": "Cm",
+    "durationSeconds": 190.113396,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.10864286124706268,
+          "bpm": 133.9934539794922
+        }
+      ],
+      "anchor": 0.10864286124706268,
+      "bpm": 133.9934539794922
+    }
+  },
+  {
+    "id": "local:Eminem - The Ringer [ACNgFW50EbU].mp3",
+    "name": "Eminem - The Ringer [ACNgFW50EbU].mp3",
+    "size": 10714077,
+    "bpm": 118.5,
+    "key": "Fm",
+    "durationSeconds": 337.941208,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.1365714073181152,
+          "bpm": 118.50020599365234
+        }
+      ],
+      "anchor": 1.1365714073181152,
+      "bpm": 118.50020599365234
+    }
+  },
+  {
+    "id": "local:EminemMusic - Fall [Official Audio] [jsur8561_1A].mp3",
+    "name": "EminemMusic - Fall [Official Audio] [jsur8561_1A].mp3",
+    "size": 8792643,
+    "bpm": 91.42,
+    "key": "Abm",
+    "durationSeconds": 262.506667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.07521428912878036,
+          "bpm": 91.42012786865234
+        }
+      ],
+      "anchor": 0.07521428912878036,
+      "bpm": 91.42012786865234
+    }
+  },
+  {
+    "id": "local:EminemMusic - Godzilla (feat. Juice WRLD) [Official Audio] [9XvXF1LrWgA].mp3",
+    "name": "EminemMusic - Godzilla (feat. Juice WRLD) [Official Audio] [9XvXF1LrWgA].mp3",
+    "size": 6761342,
+    "bpm": 83,
+    "key": "Ebm",
+    "durationSeconds": 210.802375,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.17967857420444489,
+          "bpm": 82.9998550415039
+        }
+      ],
+      "anchor": 0.17967857420444489,
+      "bpm": 82.9998550415039
+    }
+  },
+  {
+    "id": "local:Enrique Iglesias - Enrique Iglesias - Como Yo (Audio) [1VJWMJjesrQ].mp3",
+    "name": "Enrique Iglesias - Enrique Iglesias - Como Yo (Audio) [1VJWMJjesrQ].mp3",
+    "size": 5648828,
+    "bpm": 103,
+    "key": "Gm",
+    "durationSeconds": 174.09,
+    "grid": null
+  },
+  {
+    "id": "local:Enrique Iglesias - Enrique Iglesias - El Perdedor (Bachata) ft. Marco Antonio Solís [HalzeiAqMCs].mp3",
+    "name": "Enrique Iglesias - Enrique Iglesias - El Perdedor (Bachata) ft. Marco Antonio Solís [HalzeiAqMCs].mp3",
+    "size": 6646097,
+    "bpm": 134,
+    "key": "Abm",
+    "durationSeconds": 212.16,
+    "grid": null
+  },
+  {
+    "id": "local:Enrique Iglesias - Enrique Iglesias - PENDEJO (Official Video) [CRYixDvIKcg].mp3",
+    "name": "Enrique Iglesias - Enrique Iglesias - PENDEJO (Official Video) [CRYixDvIKcg].mp3",
+    "size": 5707446,
+    "bpm": 98,
+    "key": "C",
+    "durationSeconds": 172.53,
+    "grid": null
+  },
+  {
+    "id": "local:Enrique Iglesias - Enrique Iglesias - TE FUISTE (Official Video) ft. Myke Towers [uzPuxL43rcM].mp3",
+    "name": "Enrique Iglesias - Enrique Iglesias - TE FUISTE (Official Video) ft. Myke Towers [uzPuxL43rcM].mp3",
+    "size": 6223433,
+    "bpm": 82,
+    "key": "Am",
+    "durationSeconds": 196.208625,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5097857117652893,
+          "bpm": 82.00106048583984
+        }
+      ],
+      "anchor": 0.5097857117652893,
+      "bpm": 82.00106048583984
+    }
+  },
+  {
+    "id": "local:Enrique Iglesias - Enrique Iglesias - Tonight (I'm Lovin' You) (Explicit Lyrics) ft. Ludacris, DJ Frank E.mp3",
+    "name": "Enrique Iglesias - Enrique Iglesias - Tonight (I'm Lovin' You) (Explicit Lyrics) ft. Ludacris, DJ Frank E.mp3",
+    "size": 8262251,
+    "bpm": 125.99,
+    "key": "Cm",
+    "durationSeconds": 301.081563,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.46799999475479126,
+          "bpm": 125.99044799804688
+        }
+      ],
+      "anchor": 0.46799999475479126,
+      "bpm": 125.99044799804688
+    }
+  },
+  {
+    "id": "local:Enrique “Enrique Iglesias” Churches - Noche y De Día (feat. Yandel & Juan Magan) - Enrique Iglesias [QrcBFU2gLzY].mp3",
+    "name": "Enrique “Enrique Iglesias” Churches - Noche y De Día (feat. Yandel & Juan Magan) - Enrique Iglesias [QrcBFU2gLzY].mp3",
+    "size": 6802799,
+    "bpm": 120,
+    "key": "Cm",
+    "durationSeconds": 219.49,
+    "grid": null
+  },
+  {
+    "id": "local:Fania Records - Willie Colón & Tito Puente - Oye Cómo Va (Audio Oficial) [k3OpREqwtew].mp3",
+    "name": "Fania Records - Willie Colón & Tito Puente - Oye Cómo Va (Audio Oficial) [k3OpREqwtew].mp3",
+    "size": 9215293,
+    "bpm": 122.86,
+    "key": "Am",
+    "durationSeconds": 271.46,
+    "grid": null
+  },
+  {
+    "id": "local:Farruko - 04 Farruko, K4G - SHOFAR (Official Music Video) [CVRBON VRMOR C_DE： G_D.O.N.] [LxoELH0p14g].mp3",
+    "name": "Farruko - 04 Farruko, K4G - SHOFAR (Official Music Video) [CVRBON VRMOR C_DE： G_D.O.N.] [LxoELH0p14g].mp3",
+    "size": 8680441,
+    "bpm": 126,
+    "key": "F#m",
+    "durationSeconds": 274.320979,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.0529999732971191,
+          "bpm": 126.00499725341797
+        }
+      ],
+      "anchor": 1.0529999732971191,
+      "bpm": 126.00499725341797
+    }
+  },
+  {
+    "id": "local:Farruko - Farruko - FORMAL (Official Music Video) [R0kBGOYid_o].mp3",
+    "name": "Farruko - Farruko - FORMAL (Official Music Video) [R0kBGOYid_o].mp3",
+    "size": 5007052,
+    "bpm": 100,
+    "key": "Am",
+    "durationSeconds": 155.747854,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.7772142887115479,
+          "bpm": 100.00106048583984
+        }
+      ],
+      "anchor": 0.7772142887115479,
+      "bpm": 100.00106048583984
+    }
+  },
+  {
+    "id": "local:Farruko - Farruko - MADRID (Official Video) [6vzJ3d-GqHQ].mp3",
+    "name": "Farruko - Farruko - MADRID (Official Video) [6vzJ3d-GqHQ].mp3",
+    "size": 5944506,
+    "bpm": 121.99,
+    "key": "Fm",
+    "durationSeconds": 185.621333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.37607142329216003,
+          "bpm": 121.9933853149414
+        }
+      ],
+      "anchor": 0.37607142329216003,
+      "bpm": 121.9933853149414
+    }
+  },
+  {
+    "id": "local:Farruko - Farruko - Nadie (Official Video) [HIHahVfa2aA].mp3",
+    "name": "Farruko - Farruko - Nadie (Official Video) [HIHahVfa2aA].mp3",
+    "size": 6787128,
+    "bpm": 95,
+    "key": "Am",
+    "durationSeconds": 233.14,
+    "grid": null
+  },
+  {
+    "id": "local:Farruko - Farruko - Viaje (Official Music Video) [mkbKfOjMxDA].mp3",
+    "name": "Farruko - Farruko - Viaje (Official Music Video) [mkbKfOjMxDA].mp3",
+    "size": 9855151,
+    "bpm": 122.01,
+    "key": "Eb",
+    "durationSeconds": 300.98,
+    "grid": null
+  },
+  {
+    "id": "local:Farruko - Farruko, Austin Millz  - Turbina ｜ Cvrbon Vrmor S2 (Official Video) [17d2sD5LS14].mp3",
+    "name": "Farruko - Farruko, Austin Millz  - Turbina ｜ Cvrbon Vrmor S2 (Official Video) [17d2sD5LS14].mp3",
+    "size": 6415971,
+    "bpm": 125,
+    "key": "Gm",
+    "durationSeconds": 195.44,
+    "grid": null
+  },
+  {
+    "id": "local:Farruko - Farruko, Lenier - La Bendición (Official Video) [BD9rJ5e5V9E].mp3",
+    "name": "Farruko - Farruko, Lenier - La Bendición (Official Video) [BD9rJ5e5V9E].mp3",
+    "size": 6313295,
+    "bpm": 91.99,
+    "key": "Am",
+    "durationSeconds": 192.110313,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.4011428654193878,
+          "bpm": 91.9936752319336
+        }
+      ],
+      "anchor": 0.4011428654193878,
+      "bpm": 91.9936752319336
+    }
+  },
+  {
+    "id": "local:Farruko - Farruko, Madiel Lara - Tiempos Buenos (Official Music Video) [hTBpcpV9Ab8].mp3",
+    "name": "Farruko - Farruko, Madiel Lara - Tiempos Buenos (Official Music Video) [hTBpcpV9Ab8].mp3",
+    "size": 5465952,
+    "bpm": 115.01,
+    "key": "Ebm",
+    "durationSeconds": 189.12,
+    "grid": null
+  },
+  {
+    "id": "local:Farruko, Eddy Lover - Farruko, Eddy Lover - AY DALE (Official Music Video) [7d0Eqh0B6uM].mp3",
+    "name": "Farruko, Eddy Lover - Farruko, Eddy Lover - AY DALE (Official Music Video) [7d0Eqh0B6uM].mp3",
+    "size": 4626671,
+    "bpm": 87.01,
+    "key": "Fm",
+    "durationSeconds": 144.53,
+    "grid": null
+  },
+  {
+    "id": "local:Farruko, Greeicy, Steve Aoki - Farruko, Greeicy, Steve Aoki - YAPAQUE (Official Video) [dZzBa7jlXY0].mp3",
+    "name": "Farruko, Greeicy, Steve Aoki - Farruko, Greeicy, Steve Aoki - YAPAQUE (Official Video) [dZzBa7jlXY0].mp3",
+    "size": 7865111,
+    "bpm": 125,
+    "key": "Bm",
+    "durationSeconds": 237.621417,
+    "grid": null
+  },
+  {
+    "id": "local:Fat Joe, Remy Ma, French Montana, Infared - All The Way Up (feat. Infared) [kQaseJ2DoAw].mp3",
+    "name": "Fat Joe, Remy Ma, French Montana, Infared - All The Way Up (feat. Infared) [kQaseJ2DoAw].mp3",
+    "size": 5985293,
+    "bpm": 87.66,
+    "key": "Ebm",
+    "durationSeconds": 191.942396,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.2131071388721466,
+          "bpm": 87.66001892089844
+        }
+      ],
+      "anchor": 0.2131071388721466,
+      "bpm": 87.66001892089844
+    }
+  },
+  {
+    "id": "local:Flow La Movie - Nio Garcia - AM (Video Oficial) [N06bpHYU1ow].mp3",
+    "name": "Flow La Movie - Nio Garcia - AM (Video Oficial) [N06bpHYU1ow].mp3",
+    "size": 5633827,
+    "bpm": 86,
+    "key": "E",
+    "durationSeconds": 182.357917,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.06267856806516647,
+          "bpm": 86.00027465820312
+        }
+      ],
+      "anchor": 0.06267856806516647,
+      "bpm": 86.00027465820312
+    }
+  },
+  {
+    "id": "local:Flow La Movie - Nio Garcia x J Balvin x Bad Bunny  - AM Remix (Video Oficial) [RNzQdcPWWX4].mp3",
+    "name": "Flow La Movie - Nio Garcia x J Balvin x Bad Bunny  - AM Remix (Video Oficial) [RNzQdcPWWX4].mp3",
+    "size": 8707203,
+    "bpm": 86,
+    "key": "E",
+    "durationSeconds": 269.908771,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.08775000274181366,
+          "bpm": 85.99928283691406
+        }
+      ],
+      "anchor": 0.08775000274181366,
+      "bpm": 85.99928283691406
+    }
+  },
+  {
+    "id": "local:GENTE DE ZONA Official - GENTE DE ZONA - Soñe [4s0IxyIxZTY].mp3",
+    "name": "GENTE DE ZONA Official - GENTE DE ZONA - Soñe [4s0IxyIxZTY].mp3",
+    "size": 5388620,
+    "bpm": 97,
+    "key": "Em",
+    "durationSeconds": 257.996917,
+    "grid": {
+      "markers": [
+        {
+          "position": 2.047499895095825,
+          "bpm": 96.99825286865234
+        }
+      ],
+      "anchor": 2.047499895095825,
+      "bpm": 96.99825286865234
+    }
+  },
+  {
+    "id": "local:Gente De Zona - Ella Se Pone Seductora [sZpaeUoBFhA].mp3",
+    "name": "Gente De Zona - Ella Se Pone Seductora [sZpaeUoBFhA].mp3",
+    "size": 7020785,
+    "bpm": 89.99,
+    "key": "Am",
+    "durationSeconds": 216.973333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.31339284777641296,
+          "bpm": 89.99061584472656
+        }
+      ],
+      "anchor": 0.31339284777641296,
+      "bpm": 89.99061584472656
+    }
+  },
+  {
+    "id": "local:Gente De Zona - Gente De Zona - After Party [eESLaNBzRP8].mp3",
+    "name": "Gente De Zona - Gente De Zona - After Party [eESLaNBzRP8].mp3",
+    "size": 5114753,
+    "bpm": 124.01,
+    "key": "Fm",
+    "durationSeconds": 167.93,
+    "grid": null
+  },
+  {
+    "id": "local:Gente De Zona - Gente De Zona - Ay Martica! (Video Oficial) [yyDwLUEloyU].mp3",
+    "name": "Gente De Zona - Gente De Zona - Ay Martica! (Video Oficial) [yyDwLUEloyU].mp3",
+    "size": 5527046,
+    "bpm": 108,
+    "key": "Bbm",
+    "durationSeconds": 182.83,
+    "grid": null
+  },
+  {
+    "id": "local:Gente De Zona - Gente De Zona - Por Ahí (Video Oficial) [tfZwnTfHvvM].mp3",
+    "name": "Gente De Zona - Gente De Zona - Por Ahí (Video Oficial) [tfZwnTfHvvM].mp3",
+    "size": 4890170,
+    "bpm": 115,
+    "key": "Ebm",
+    "durationSeconds": 160.07,
+    "grid": null
+  },
+  {
+    "id": "local:Gente De Zona - Gente De Zona - Se Le Pasa [6Ixpw9bv5rs].mp3",
+    "name": "Gente De Zona - Gente De Zona - Se Le Pasa [6Ixpw9bv5rs].mp3",
+    "size": 5690594,
+    "bpm": 124.99,
+    "key": "Abm",
+    "durationSeconds": 172.25725,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.1407500505447388,
+          "bpm": 124.99182891845703
+        }
+      ],
+      "anchor": 1.1407500505447388,
+      "bpm": 124.99182891845703
+    }
+  },
+  {
+    "id": "local:Gente De Zona - Gente de Zona - Algo Contigo (Official Video) [yvhx5gMmSPs].mp3",
+    "name": "Gente De Zona - Gente de Zona - Algo Contigo (Official Video) [yvhx5gMmSPs].mp3",
+    "size": 7352238,
+    "bpm": 128.01,
+    "key": "A",
+    "durationSeconds": 223.66,
+    "grid": null
+  },
+  {
+    "id": "local:Gente De Zona - Gente de Zona - Bora Bora (Audio) [yiGkkZ3pp_E].mp3",
+    "name": "Gente De Zona - Gente de Zona - Bora Bora (Audio) [yiGkkZ3pp_E].mp3",
+    "size": 6344084,
+    "bpm": 98,
+    "key": "Cm",
+    "durationSeconds": 191.669125,
+    "grid": {
+      "markers": [
+        {
+          "position": 2.945892810821533,
+          "bpm": 98.00267791748047
+        }
+      ],
+      "anchor": 2.945892810821533,
+      "bpm": 98.00267791748047
+    }
+  },
+  {
+    "id": "local:Gente De Zona - Gente de Zona - Lo Menea Como É [dDAvPXuUxYI].mp3",
+    "name": "Gente De Zona - Gente de Zona - Lo Menea Como É [dDAvPXuUxYI].mp3",
+    "size": 5080181,
+    "bpm": 97,
+    "key": "Em",
+    "durationSeconds": 150.293333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.46799999475479126,
+          "bpm": 97.0040283203125
+        }
+      ],
+      "anchor": 0.46799999475479126,
+      "bpm": 97.0040283203125
+    }
+  },
+  {
+    "id": "local:Gente De Zona - Gente de Zona - TikTok (Audio) [p4MwFBkAEJI].mp3",
+    "name": "Gente De Zona - Gente de Zona - TikTok (Audio) [p4MwFBkAEJI].mp3",
+    "size": 6182846,
+    "bpm": 100,
+    "key": "Ebm",
+    "durationSeconds": 187.512979,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.011214256286621,
+          "bpm": 100.001708984375
+        }
+      ],
+      "anchor": 1.011214256286621,
+      "bpm": 100.001708984375
+    }
+  },
+  {
+    "id": "local:Gente De Zona - Habanero [8r0vksaPUcQ].mp3",
+    "name": "Gente De Zona - Habanero [8r0vksaPUcQ].mp3",
+    "size": 6557532,
+    "bpm": 100.01,
+    "key": "Am",
+    "durationSeconds": 205.740417,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.09610714018344879,
+          "bpm": 100.00592803955078
+        }
+      ],
+      "anchor": 0.09610714018344879,
+      "bpm": 100.00592803955078
+    }
+  },
+  {
+    "id": "local:Gente De Zona, JuanMagan - Gente de Zona, Juan Magán - Isla Viva (Video Oficial) [2pLE6N_x2fg].mp3",
+    "name": "Gente De Zona, JuanMagan - Gente de Zona, Juan Magán - Isla Viva (Video Oficial) [2pLE6N_x2fg].mp3",
+    "size": 7130942,
+    "bpm": 125,
+    "key": "Eb",
+    "durationSeconds": 205.926188,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.12535713613033295,
+          "bpm": 125.00090026855469
+        }
+      ],
+      "anchor": 0.12535713613033295,
+      "bpm": 125.00090026855469
+    }
+  },
+  {
+    "id": "local:Gente de Zona - La Fiesta No Se Ha Acabado [5S5YrJ7c9Xc].mp3",
+    "name": "Gente de Zona - La Fiesta No Se Ha Acabado [5S5YrJ7c9Xc].mp3",
+    "size": 2879843,
+    "bpm": 100,
+    "key": "Em",
+    "durationSeconds": 85.466667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.4387499988079071,
+          "bpm": 100.00072479248047
+        }
+      ],
+      "anchor": 0.4387499988079071,
+      "bpm": 100.00072479248047
+    }
+  },
+  {
+    "id": "local:Geto Boys - First Light of the Day [QJ2v3HcSMuM].mp3",
+    "name": "Geto Boys - First Light of the Day [QJ2v3HcSMuM].mp3",
+    "size": 10154169,
+    "bpm": 83,
+    "key": "Am",
+    "durationSeconds": 306.533333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.32592856884002686,
+          "bpm": 83.00105285644531
+        }
+      ],
+      "anchor": 0.32592856884002686,
+      "bpm": 83.00105285644531
+    }
+  },
+  {
+    "id": "local:Geto Boys - Geto Boys and Girls [RvGNfP5ggyk].mp3",
+    "name": "Geto Boys - Geto Boys and Girls [RvGNfP5ggyk].mp3",
+    "size": 12015985,
+    "bpm": 80,
+    "key": "F#m",
+    "durationSeconds": 359.36,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.04178571328520775,
+          "bpm": 80.0001449584961
+        }
+      ],
+      "anchor": 0.04178571328520775,
+      "bpm": 80.0001449584961
+    }
+  },
+  {
+    "id": "local:Geto Boys - It Ain't [VqWBEckAZK8].mp3",
+    "name": "Geto Boys - It Ain't [VqWBEckAZK8].mp3",
+    "size": 7774687,
+    "bpm": 80.79,
+    "key": "Abm",
+    "durationSeconds": 279.306667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.04178571328520775,
+          "bpm": 80.79447937011719
+        }
+      ],
+      "anchor": 0.04178571328520775,
+      "bpm": 80.79447937011719
+    }
+  },
+  {
+    "id": "local:Geto Boys - Scarface [pdVQOAscJOg].mp3",
+    "name": "Geto Boys - Scarface [pdVQOAscJOg].mp3",
+    "size": 10038289,
+    "bpm": 94.63,
+    "key": "Abm",
+    "durationSeconds": 305.426667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.4972499907016754,
+          "bpm": 94.63214111328125
+        }
+      ],
+      "anchor": 0.4972499907016754,
+      "bpm": 94.63214111328125
+    }
+  },
+  {
+    "id": "local:Geto Boys - Still (Instrumental).mp3",
+    "name": "Geto Boys - Still (Instrumental).mp3",
+    "size": 8929091,
+    "bpm": 88,
+    "key": "Gm",
+    "durationSeconds": 268.051167,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.4011428654193878,
+          "bpm": 88.00189208984375
+        }
+      ],
+      "anchor": 0.4011428654193878,
+      "bpm": 88.00189208984375
+    }
+  },
+  {
+    "id": "local:Geto Boys - Still - 20s Instrumental Loop.mp3",
+    "name": "Geto Boys - Still - 20s Instrumental Loop.mp3",
+    "size": 807949,
+    "bpm": 88.06,
+    "key": "Gm",
+    "durationSeconds": 20,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.04596428573131561,
+          "bpm": 88.06486511230469
+        }
+      ],
+      "anchor": 0.04596428573131561,
+      "bpm": 88.06486511230469
+    }
+  },
+  {
+    "id": "local:Geto Boys - Still [7ImsN748Wqo].mp3",
+    "name": "Geto Boys - Still [7ImsN748Wqo].mp3",
+    "size": 8003430,
+    "bpm": 88,
+    "key": "Gm",
+    "durationSeconds": 239.973333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.029249999672174454,
+          "bpm": 88.00056457519531
+        }
+      ],
+      "anchor": 0.029249999672174454,
+      "bpm": 88.00056457519531
+    }
+  },
+  {
+    "id": "local:Geto Boys - Time Taker [JkmjxOXdLsE].mp3",
+    "name": "Geto Boys - Time Taker [JkmjxOXdLsE].mp3",
+    "size": 10187158,
+    "bpm": 80,
+    "key": "Abm",
+    "durationSeconds": 312,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.2966785728931427,
+          "bpm": 79.99996185302734
+        }
+      ],
+      "anchor": 0.2966785728931427,
+      "bpm": 79.99996185302734
+    }
+  },
+  {
+    "id": "local:Geto Boys, Flaj - The World Is a Ghetto [7WnJRvpCYOg].mp3",
+    "name": "Geto Boys, Flaj - The World Is a Ghetto [7WnJRvpCYOg].mp3",
+    "size": 8284012,
+    "bpm": 84,
+    "key": "Cm",
+    "durationSeconds": 264.093333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.3301071524620056,
+          "bpm": 84.00015258789062
+        }
+      ],
+      "anchor": 0.3301071524620056,
+      "bpm": 84.00015258789062
+    }
+  },
+  {
+    "id": "local:Golden.RO.MUSIC. - J Balvin   Azul Official Video [g4A1kCIP2R0].mp3",
+    "name": "Golden.RO.MUSIC. - J Balvin   Azul Official Video [g4A1kCIP2R0].mp3",
+    "size": 6642127,
+    "bpm": 94,
+    "key": "F#m",
+    "durationSeconds": 212.961833,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.9610714316368103,
+          "bpm": 93.99830627441406
+        }
+      ],
+      "anchor": 0.9610714316368103,
+      "bpm": 93.99830627441406
+    }
+  },
+  {
+    "id": "local:HQ Music - Geto Boys - Hold It Down (Feat. Facemob) (HQ) [WRvUcpO8_5U].mp3",
+    "name": "HQ Music - Geto Boys - Hold It Down (Feat. Facemob) (HQ) [WRvUcpO8_5U].mp3",
+    "size": 11028598,
+    "bpm": 82,
+    "key": "Am",
+    "durationSeconds": 327.575521,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.36353570222854614,
+          "bpm": 82.0000991821289
+        }
+      ],
+      "anchor": 0.36353570222854614,
+      "bpm": 82.0000991821289
+    }
+  },
+  {
+    "id": "local:HVME - HVME - Goosebumps (Official Audio) [zTZOpvPI5Ro].mp3",
+    "name": "HVME - HVME - Goosebumps (Official Audio) [zTZOpvPI5Ro].mp3",
+    "size": 5365991,
+    "bpm": 125,
+    "key": "Ebm",
+    "durationSeconds": 163.050688,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.26742857694625854,
+          "bpm": 125.00349426269531
+        }
+      ],
+      "anchor": 0.26742857694625854,
+      "bpm": 125.00349426269531
+    }
+  },
+  {
+    "id": "local:Hear This Music - Me Reclama Remix ft Ozuna, Luigi 21 plus, Kevin Roldan, Pusho, Alexio [BYJ1ZocKjIA].mp3",
+    "name": "Hear This Music - Me Reclama Remix ft Ozuna, Luigi 21 plus, Kevin Roldan, Pusho, Alexio [BYJ1ZocKjIA].mp3",
+    "size": 8533934,
+    "bpm": 88,
+    "key": "Bm",
+    "durationSeconds": 273.368542,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.10446428507566452,
+          "bpm": 88.00033569335938
+        }
+      ],
+      "anchor": 0.10446428507566452,
+      "bpm": 88.00033569335938
+    }
+  },
+  {
+    "id": "local:Hear This TV - Mambo Kingz - Me Reclama ft. Ozuna, Luigi 21 Plus [Official Audio] [RuBNc54Q4hw].mp3",
+    "name": "Hear This TV - Mambo Kingz - Me Reclama ft. Ozuna, Luigi 21 Plus [Official Audio] [RuBNc54Q4hw].mp3",
+    "size": 6009519,
+    "bpm": 88,
+    "key": "E",
+    "durationSeconds": 190.693896,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.10028571635484695,
+          "bpm": 87.99547576904297
+        }
+      ],
+      "anchor": 0.10028571635484695,
+      "bpm": 87.99547576904297
+    }
+  },
+  {
+    "id": "local:Hot Cuba - Gente de Zona - Demasiado ｜ Rumba y Perreo (Video Oficial) [6cRxnx2fAuU].mp3",
+    "name": "Hot Cuba - Gente de Zona - Demasiado ｜ Rumba y Perreo (Video Oficial) [6cRxnx2fAuU].mp3",
+    "size": 4936244,
+    "bpm": 125.01,
+    "key": "Ebm",
+    "durationSeconds": 165.302857,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.23396825790405273,
+          "bpm": 125.0054702758789
+        }
+      ],
+      "anchor": 0.23396825790405273,
+      "bpm": 125.0054702758789
+    }
+  },
+  {
+    "id": "local:IAMCHINO - Enrique Iglesias x Pitbull x IAmChino - Tamo Bien (Audio Oficial) [3PSkP8Di1uo].mp3",
+    "name": "IAMCHINO - Enrique Iglesias x Pitbull x IAmChino - Tamo Bien (Audio Oficial) [3PSkP8Di1uo].mp3",
+    "size": 6004487,
+    "bpm": 126,
+    "key": "Abm",
+    "durationSeconds": 184.31,
+    "grid": null
+  },
+  {
+    "id": "local:J Balvin - J Balvin - Amarillo (Official Video) [KHAgoT4FZbc].mp3",
+    "name": "J Balvin - J Balvin - Amarillo (Official Video) [KHAgoT4FZbc].mp3",
+    "size": 5537151,
+    "bpm": 92,
+    "key": "Abm",
+    "durationSeconds": 165.546667,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.1156785488128662,
+          "bpm": 92.00211334228516
+        }
+      ],
+      "anchor": 1.1156785488128662,
+      "bpm": 92.00211334228516
+    }
+  },
+  {
+    "id": "local:J Balvin - J Balvin - Bajo y Batería (Official Visualizer) [X-txTO21vf4].mp3",
+    "name": "J Balvin - J Balvin - Bajo y Batería (Official Visualizer) [X-txTO21vf4].mp3",
+    "size": 6444502,
+    "bpm": 82,
+    "key": "Ebm",
+    "durationSeconds": 198.170708,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.9151071310043335,
+          "bpm": 82.0010757446289
+        }
+      ],
+      "anchor": 0.9151071310043335,
+      "bpm": 82.0010757446289
+    }
+  },
+  {
+    "id": "local:J Balvin - J Balvin - Dalmation (Official Video) [BkAhd02vlBo].mp3",
+    "name": "J Balvin - J Balvin - Dalmation (Official Video) [BkAhd02vlBo].mp3",
+    "size": 7027086,
+    "bpm": 100.01,
+    "key": "Em",
+    "durationSeconds": 215.99,
+    "grid": null
+  },
+  {
+    "id": "local:J Balvin - J Balvin, Jeon, Anitta - Machika (Official Video) [liczsmUSMA4].mp3",
+    "name": "J Balvin - J Balvin, Jeon, Anitta - Machika (Official Video) [liczsmUSMA4].mp3",
+    "size": 6469274,
+    "bpm": 106,
+    "key": "Em",
+    "durationSeconds": 204.382042,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5432142615318298,
+          "bpm": 105.9990463256836
+        }
+      ],
+      "anchor": 0.5432142615318298,
+      "bpm": 105.9990463256836
+    }
+  },
+  {
+    "id": "local:J Balvin - J Balvin, Khalid - Otra Noche Sin Ti (Official Video) [qrTiyVEW8gc].mp3",
+    "name": "J Balvin - J Balvin, Khalid - Otra Noche Sin Ti (Official Video) [qrTiyVEW8gc].mp3",
+    "size": 7505177,
+    "bpm": 94,
+    "key": "Cm",
+    "durationSeconds": 228.885333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.27996429800987244,
+          "bpm": 94.00084686279297
+        }
+      ],
+      "anchor": 0.27996429800987244,
+      "bpm": 94.00084686279297
+    }
+  },
+  {
+    "id": "local:J Balvin - J. Balvin, Sech - Una Nota (Official Video) [MDzhVMuU6e8].mp3",
+    "name": "J Balvin - J. Balvin, Sech - Una Nota (Official Video) [MDzhVMuU6e8].mp3",
+    "size": 5647374,
+    "bpm": 90,
+    "key": "Abm",
+    "durationSeconds": 179.223229,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.8398928642272949,
+          "bpm": 90.00140380859375
+        }
+      ],
+      "anchor": 0.8398928642272949,
+      "bpm": 90.00140380859375
+    }
+  },
+  {
+    "id": "local:JAŸ-Z - JAŸ-Z - '03 Bonnie & Clyde ft. Beyoncé Knowles [hl5t3TyP8aY].mp3",
+    "name": "JAŸ-Z - JAŸ-Z - '03 Bonnie & Clyde ft. Beyoncé Knowles [hl5t3TyP8aY].mp3",
+    "size": 8547772,
+    "bpm": 89.71,
+    "key": "Am",
+    "durationSeconds": 285.39,
+    "grid": null
+  },
+  {
+    "id": "local:JAŸ-Z - JAŸ-Z - Empire State Of Mind ft. Alicia Keys [vk6014HuxcE].mp3",
+    "name": "JAŸ-Z - JAŸ-Z - Empire State Of Mind ft. Alicia Keys [vk6014HuxcE].mp3",
+    "size": 7957405,
+    "bpm": 86.65,
+    "key": "Ebm",
+    "durationSeconds": 275.51,
+    "grid": null
+  },
+  {
+    "id": "local:JAŸ-Z - JAŸ-Z - I Just Wanna Love U (Give It 2 Me) [nG8o_9RliwU].mp3",
+    "name": "JAŸ-Z - JAŸ-Z - I Just Wanna Love U (Give It 2 Me) [nG8o_9RliwU].mp3",
+    "size": 6858279,
+    "bpm": 98.08,
+    "key": "Em",
+    "durationSeconds": 232.28,
+    "grid": null
+  },
+  {
+    "id": "local:JAŸ-Z - JAŸ-Z - Run This Town ft. Rihanna, Kanye West [ztygmWtWCjQ].mp3",
+    "name": "JAŸ-Z - JAŸ-Z - Run This Town ft. Rihanna, Kanye West [ztygmWtWCjQ].mp3",
+    "size": 9244802,
+    "bpm": 84.92,
+    "key": "Cm",
+    "durationSeconds": 311.89,
+    "grid": null
+  },
+  {
+    "id": "local:JAŸ-Z - JAŸ-Z - Song Cry [w5srnNrICJo].mp3",
+    "name": "JAŸ-Z - JAŸ-Z - Song Cry [w5srnNrICJo].mp3",
+    "size": 9508308,
+    "bpm": 85.49,
+    "key": "Cm",
+    "durationSeconds": 296.925188,
+    "grid": {
+      "markers": [
+        {
+          "position": 2.561464309692383,
+          "bpm": 85.4949722290039
+        }
+      ],
+      "anchor": 2.561464309692383,
+      "bpm": 85.4949722290039
+    }
+  },
+  {
+    "id": "local:JAŸ-Z - Takeover [P07isjVlwyU].mp3",
+    "name": "JAŸ-Z - Takeover [P07isjVlwyU].mp3",
+    "size": 8231979,
+    "bpm": 86.7,
+    "key": "Am",
+    "durationSeconds": 313.097868,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5264285802841187,
+          "bpm": 86.70445251464844
+        }
+      ],
+      "anchor": 0.5264285802841187,
+      "bpm": 86.70445251464844
+    }
+  },
+  {
+    "id": "local:JAŸ-Z - U Don't Know [jjCPc-47NmI].mp3",
+    "name": "JAŸ-Z - U Don't Know [jjCPc-47NmI].mp3",
+    "size": 6736493,
+    "bpm": 77.51,
+    "key": "Ebm",
+    "durationSeconds": 199.44,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.30085715651512146,
+          "bpm": 77.50572967529297
+        }
+      ],
+      "anchor": 0.30085715651512146,
+      "bpm": 77.50572967529297
+    }
+  },
+  {
+    "id": "local:JAŸ-Z, JD - Money Ain't A Thang [YHmLhHp0Hmc].mp3",
+    "name": "JAŸ-Z, JD - Money Ain't A Thang [YHmLhHp0Hmc].mp3",
+    "size": 8436818,
+    "bpm": 100.01,
+    "key": "Abm",
+    "durationSeconds": 253.24,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.09610714018344879,
+          "bpm": 100.01105499267578
+        }
+      ],
+      "anchor": 0.09610714018344879,
+      "bpm": 100.01105499267578
+    }
+  },
+  {
+    "id": "local:Jackson George - Feel So Close (Radio Edit) - Calvin Harris [R8egmh5dWzo].mp3",
+    "name": "Jackson George - Feel So Close (Radio Edit) - Calvin Harris [R8egmh5dWzo].mp3",
+    "size": 6457566,
+    "bpm": 128.47,
+    "key": "Em",
+    "durationSeconds": 204.36,
+    "grid": null
+  },
+  {
+    "id": "local:Jacob Forever, Alexander - Seductora (feat. Alexander) (Nando Pro Edit Remastered) [dKbfJr-Rjwk].mp3",
+    "name": "Jacob Forever, Alexander - Seductora (feat. Alexander) (Nando Pro Edit Remastered) [dKbfJr-Rjwk].mp3",
+    "size": 7155529,
+    "bpm": 90,
+    "key": "Am",
+    "durationSeconds": 216.982813,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.09192857146263123,
+          "bpm": 89.99943542480469
+        }
+      ],
+      "anchor": 0.09192857146263123,
+      "bpm": 89.99943542480469
+    }
+  },
+  {
+    "id": "local:Jadakiss - Feel Me [IuRornmzHDU].mp3",
+    "name": "Jadakiss - Feel Me [IuRornmzHDU].mp3",
+    "size": 4060686,
+    "bpm": 89.99,
+    "key": "Cm",
+    "durationSeconds": 120.883084,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.3676643967628479,
+          "bpm": 89.98649597167969
+        }
+      ],
+      "anchor": 0.3676643967628479,
+      "bpm": 89.98649597167969
+    }
+  },
+  {
+    "id": "local:Johnny Bracho - Marc Anthony - El Día de Mi Suerte [ynYX1A8T5P8].mp3",
+    "name": "Johnny Bracho - Marc Anthony - El Día de Mi Suerte [ynYX1A8T5P8].mp3",
+    "size": 10871002,
+    "bpm": 97.02,
+    "key": "Cm",
+    "durationSeconds": 320.330896,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.37189286947250366,
+          "bpm": 97.0234375
+        }
+      ],
+      "anchor": 0.37189286947250366,
+      "bpm": 97.0234375
+    }
+  },
+  {
+    "id": "local:KAROL G - KAROL G, Ovy On The Drums - Cairo (Official Video) [Z02zptUN8gI].mp3",
+    "name": "KAROL G - KAROL G, Ovy On The Drums - Cairo (Official Video) [Z02zptUN8gI].mp3",
+    "size": 6404073,
+    "bpm": 115,
+    "key": "Cm",
+    "durationSeconds": 215.33025,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.1407500505447388,
+          "bpm": 115.0049819946289
+        }
+      ],
+      "anchor": 1.1407500505447388,
+      "bpm": 115.0049819946289
+    }
+  },
+  {
+    "id": "local:KYENESOfficial - KYEN？ES？, DJ Nelson - Oye Mi Canto (Visualizer) [_TE-FKJh4z4].mp3",
+    "name": "KYENESOfficial - KYEN？ES？, DJ Nelson - Oye Mi Canto (Visualizer) [_TE-FKJh4z4].mp3",
+    "size": 6097038,
+    "bpm": 96,
+    "key": "Ebm",
+    "durationSeconds": 186.86,
+    "grid": null
+  },
+  {
+    "id": "local:KYENESOfficial - Kyen？Es？ El Carnaval De Celia： A Tribute ⧸La Vida es un Carnaval ⧸La Negra Tiene Tumbao ⧸Rie y Llora [jPuI81bHwI8].mp3",
+    "name": "KYENESOfficial - Kyen？Es？ El Carnaval De Celia： A Tribute ⧸La Vida es un Carnaval ⧸La Negra Tiene Tumbao ⧸Rie y Llora [jPuI81bHwI8].mp3",
+    "size": 5579029,
+    "bpm": 112,
+    "key": "Bm",
+    "durationSeconds": 183.93,
+    "grid": null
+  },
+  {
+    "id": "local:Kany Garcia - Kany García, Rawayana - La Culpa (Video Oficial) [pio_znWfSOc].mp3",
+    "name": "Kany Garcia - Kany García, Rawayana - La Culpa (Video Oficial) [pio_znWfSOc].mp3",
+    "size": 5234998,
+    "bpm": 119.91,
+    "key": "Am",
+    "durationSeconds": 161.506396,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.30085715651512146,
+          "bpm": 119.90792846679688
+        }
+      ],
+      "anchor": 0.30085715651512146,
+      "bpm": 119.90792846679688
+    }
+  },
+  {
+    "id": "local:Kapo - OHNANA - KAPO (Video Oficial) [lmDfmilZ4Xo].mp3",
+    "name": "Kapo - OHNANA - KAPO (Video Oficial) [lmDfmilZ4Xo].mp3",
+    "size": 5140758,
+    "bpm": 104.99,
+    "key": "C#m",
+    "durationSeconds": 156.21225,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.0710357129573822,
+          "bpm": 104.99312591552734
+        }
+      ],
+      "anchor": 0.0710357129573822,
+      "bpm": 104.99312591552734
+    }
+  },
+  {
+    "id": "local:Kapo - UWAIE - KAPO (Video Oficial) [spbagny8OjM].mp3",
+    "name": "Kapo - UWAIE - KAPO (Video Oficial) [spbagny8OjM].mp3",
+    "size": 5656877,
+    "bpm": 103,
+    "key": "G",
+    "durationSeconds": 171.502604,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.1546071469783783,
+          "bpm": 102.99940490722656
+        }
+      ],
+      "anchor": 0.1546071469783783,
+      "bpm": 102.99940490722656
+    }
+  },
+  {
+    "id": "local:King Lyrics - Enrique Iglesias - EL BAÑO REMIX ft. Bad Bunny, Natti Natasha (official audio) [f_PDzgLvdyY].mp3",
+    "name": "King Lyrics - Enrique Iglesias - EL BAÑO REMIX ft. Bad Bunny, Natti Natasha (official audio) [f_PDzgLvdyY].mp3",
+    "size": 7704238,
+    "bpm": 90,
+    "key": "F#m",
+    "durationSeconds": 238.506667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.10028571635484695,
+          "bpm": 89.99942779541016
+        }
+      ],
+      "anchor": 0.10028571635484695,
+      "bpm": 89.99942779541016
+    }
+  },
+  {
+    "id": "local:Kool G Rap, Nas - Fast Life [1cidJOiiPpw].mp3",
+    "name": "Kool G Rap, Nas - Fast Life [1cidJOiiPpw].mp3",
+    "size": 8314616,
+    "bpm": 91.17,
+    "key": "Abm",
+    "durationSeconds": 290.82,
+    "grid": null
+  },
+  {
+    "id": "local:La Misma Gente, Hector Ocampo - Tú y Yo (Original) [HHjCYxp07aY].mp3",
+    "name": "La Misma Gente, Hector Ocampo - Tú y Yo (Original) [HHjCYxp07aY].mp3",
+    "size": 8652260,
+    "bpm": 88.9,
+    "key": "Dm",
+    "durationSeconds": 282.331429,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.48464852571487427,
+          "bpm": 88.89804077148438
+        }
+      ],
+      "anchor": 0.48464852571487427,
+      "bpm": 88.89804077148438
+    }
+  },
+  {
+    "id": "local:Latino Gang - Bad Bunny - Efecto (Official Video) ｜ Un Verano Sin Ti [IxM-Repiyng].mp3",
+    "name": "Latino Gang - Bad Bunny - Efecto (Official Video) ｜ Un Verano Sin Ti [IxM-Repiyng].mp3",
+    "size": 3535321,
+    "bpm": 98,
+    "key": "Dm",
+    "durationSeconds": 115.275479,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.668571412563324,
+          "bpm": 98.00334167480469
+        }
+      ],
+      "anchor": 0.668571412563324,
+      "bpm": 98.00334167480469
+    }
+  },
+  {
+    "id": "local:Led Zeppelin - Good Times Bad Times (Remaster) [fBzPEKOlQOU].mp3",
+    "name": "Led Zeppelin - Good Times Bad Times (Remaster) [fBzPEKOlQOU].mp3",
+    "size": 5633687,
+    "bpm": 94.1,
+    "key": "Em",
+    "durationSeconds": 166.106958,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.07939285784959793,
+          "bpm": 94.10354614257812
+        }
+      ],
+      "anchor": 0.07939285784959793,
+      "bpm": 94.10354614257812
+    }
+  },
+  {
+    "id": "local:Led Zeppelin - Led Zeppelin - The Ocean (Live at Madison Square Garden 1973) [Official Video] [HD[ [6XIQR4p30Wo].mp3",
+    "name": "Led Zeppelin - Led Zeppelin - The Ocean (Live at Madison Square Garden 1973) [Official Video] [HD[ [6XIQR4p30Wo].mp3",
+    "size": 9766213,
+    "bpm": 93.84,
+    "key": "Em",
+    "durationSeconds": 281.89025,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.4875714778900146,
+          "bpm": 93.83894348144531
+        }
+      ],
+      "anchor": 1.4875714778900146,
+      "bpm": 93.83894348144531
+    }
+  },
+  {
+    "id": "local:Led Zeppelin - Stairway to Heaven (Live at MSG 1973) [Remaster] [UHa4TurvIx8].mp3",
+    "name": "Led Zeppelin - Stairway to Heaven (Live at MSG 1973) [Remaster] [UHa4TurvIx8].mp3",
+    "size": 21556031,
+    "bpm": 103.72,
+    "key": "Am",
+    "durationSeconds": 653.026667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.04596428573131561,
+          "bpm": 103.7199478149414
+        }
+      ],
+      "anchor": 0.04596428573131561,
+      "bpm": 103.7199478149414
+    }
+  },
+  {
+    "id": "local:Led Zeppelin - When the Levee Breaks (Remaster) [uwiTs60VoTM].mp3",
+    "name": "Led Zeppelin - When the Levee Breaks (Remaster) [uwiTs60VoTM].mp3",
+    "size": 15133282,
+    "bpm": 71.1,
+    "key": "Fm",
+    "durationSeconds": 427.85,
+    "grid": null
+  },
+  {
+    "id": "local:Lenier - Lenier - La Bachata (Official Video) [29YnnIGapDg].mp3",
+    "name": "Lenier - Lenier - La Bachata (Official Video) [29YnnIGapDg].mp3",
+    "size": 5634350,
+    "bpm": 70,
+    "key": "Fm",
+    "durationSeconds": 238.341229,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.9694285988807678,
+          "bpm": 70.00333404541016
+        }
+      ],
+      "anchor": 0.9694285988807678,
+      "bpm": 70.00333404541016
+    }
+  },
+  {
+    "id": "local:Lil Wayne - 3 Peat [sINGvrL61VY].mp3",
+    "name": "Lil Wayne - 3 Peat [sINGvrL61VY].mp3",
+    "size": 6545514,
+    "bpm": 76.5,
+    "key": "C#m",
+    "durationSeconds": 199.426667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.7730357050895691,
+          "bpm": 76.49793243408203
+        }
+      ],
+      "anchor": 0.7730357050895691,
+      "bpm": 76.49793243408203
+    }
+  },
+  {
+    "id": "local:Lil Wayne - Blunt Blowin [XQCXqvLRn28].mp3",
+    "name": "Lil Wayne - Blunt Blowin [XQCXqvLRn28].mp3",
+    "size": 11299413,
+    "bpm": 136.01,
+    "key": "Cm",
+    "durationSeconds": 312.96,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.07939285784959793,
+          "bpm": 136.01463317871094
+        }
+      ],
+      "anchor": 0.07939285784959793,
+      "bpm": 136.01463317871094
+    }
+  },
+  {
+    "id": "local:Lil Wayne - I Like The View [FlUnM4EiC0M].mp3",
+    "name": "Lil Wayne - I Like The View [FlUnM4EiC0M].mp3",
+    "size": 9230304,
+    "bpm": 72,
+    "key": "F#m",
+    "durationSeconds": 281.266667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.18803571164608002,
+          "bpm": 72.00081634521484
+        }
+      ],
+      "anchor": 0.18803571164608002,
+      "bpm": 72.00081634521484
+    }
+  },
+  {
+    "id": "local:Lil Wayne - Lil Wayne & Nicki Minaj - Banned From NO (Remix) [tQtNjljym_4].mp3",
+    "name": "Lil Wayne - Lil Wayne & Nicki Minaj - Banned From NO (Remix) [tQtNjljym_4].mp3",
+    "size": 6594112,
+    "bpm": 94.99,
+    "key": "C#m",
+    "durationSeconds": 203.998917,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.09610714018344879,
+          "bpm": 94.98771667480469
+        }
+      ],
+      "anchor": 0.09610714018344879,
+      "bpm": 94.98771667480469
+    }
+  },
+  {
+    "id": "local:Lil Wayne - Lil Wayne - Kobe Bryant (Official Audio) [IM7mMeUjX74].mp3",
+    "name": "Lil Wayne - Lil Wayne - Kobe Bryant (Official Audio) [IM7mMeUjX74].mp3",
+    "size": 4610985,
+    "bpm": 80,
+    "key": "Ebm",
+    "durationSeconds": 140.99,
+    "grid": null
+  },
+  {
+    "id": "local:Lil Wayne - Lil Wayne - Twist Made Me (Official Audio) [BvYebQ93nl0].mp3",
+    "name": "Lil Wayne - Lil Wayne - Twist Made Me (Official Audio) [BvYebQ93nl0].mp3",
+    "size": 5150200,
+    "bpm": 81,
+    "key": "F#m",
+    "durationSeconds": 144.93,
+    "grid": null
+  },
+  {
+    "id": "local:Linkin Park - Dirt Off Your Shoulder ⧸ Lying From You (Official Audio) - Linkin Park ⧸ JAY-Z [MG2S0ns8Dj8].mp3",
+    "name": "Linkin Park - Dirt Off Your Shoulder ⧸ Lying From You (Official Audio) - Linkin Park ⧸ JAY-Z [MG2S0ns8Dj8].mp3",
+    "size": 6927815,
+    "bpm": 80,
+    "key": "Ebm",
+    "durationSeconds": 244.691882,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.19636622071266174,
+          "bpm": 79.99622344970703
+        }
+      ],
+      "anchor": 0.19636622071266174,
+      "bpm": 79.99622344970703
+    }
+  },
+  {
+    "id": "local:Luis Fernando Flores - Pitbull - Rain Over Me (feat. Marc Anthony) (Audio) [tnEYuywDJ_A].mp3",
+    "name": "Luis Fernando Flores - Pitbull - Rain Over Me (feat. Marc Anthony) (Audio) [tnEYuywDJ_A].mp3",
+    "size": 7531104,
+    "bpm": 128.21,
+    "key": "Am",
+    "durationSeconds": 231.95,
+    "grid": null
+  },
+  {
+    "id": "local:Lynyrd Skynyrd - Lynyrd Skynyrd - Tuesday's Gone (Audio) [LJrFxnvcWhc].mp3",
+    "name": "Lynyrd Skynyrd - Lynyrd Skynyrd - Tuesday's Gone (Audio) [LJrFxnvcWhc].mp3",
+    "size": 14854129,
+    "bpm": 73.82,
+    "key": "A",
+    "durationSeconds": 449.07,
+    "grid": null
+  },
+  {
+    "id": "local:Makaveli - Me And My Girlfriend [dFuF8sWTRCY].mp3",
+    "name": "Makaveli - Me And My Girlfriend [dFuF8sWTRCY].mp3",
+    "size": 9344068,
+    "bpm": 85.86,
+    "key": "Am",
+    "durationSeconds": 308.266667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.04178571328520775,
+          "bpm": 85.8620376586914
+        }
+      ],
+      "anchor": 0.04178571328520775,
+      "bpm": 85.8620376586914
+    }
+  },
+  {
+    "id": "local:Maluma - Maluma - ADMV (Versión Urbana - Official Video) [2t9cxeo3fAI].mp3",
+    "name": "Maluma - Maluma - ADMV (Versión Urbana - Official Video) [2t9cxeo3fAI].mp3",
+    "size": 5843938,
+    "bpm": 85,
+    "key": "A",
+    "durationSeconds": 192.83,
+    "grid": null
+  },
+  {
+    "id": "local:Maluma - Maluma - Qué Chimba (Official Video) [_DHSDKM-NgU].mp3",
+    "name": "Maluma - Maluma - Qué Chimba (Official Video) [_DHSDKM-NgU].mp3",
+    "size": 6108859,
+    "bpm": 128,
+    "key": "Am",
+    "durationSeconds": 190.186667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.36353570222854614,
+          "bpm": 127.99955749511719
+        }
+      ],
+      "anchor": 0.36353570222854614,
+      "bpm": 127.99955749511719
+    }
+  },
+  {
+    "id": "local:Manny Taylor - Está Rico - Marc Anthony, Will Smith & Bad Bunny [3k8nCv6xw8A].mp3",
+    "name": "Manny Taylor - Está Rico - Marc Anthony, Will Smith & Bad Bunny [3k8nCv6xw8A].mp3",
+    "size": 6346943,
+    "bpm": 130,
+    "key": "Bm",
+    "durationSeconds": 210.094167,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.355178564786911,
+          "bpm": 129.9966278076172
+        }
+      ],
+      "anchor": 0.355178564786911,
+      "bpm": 129.9966278076172
+    }
+  },
+  {
+    "id": "local:Manuel Turizo - La Nota - MTZ Manuel Turizo x Rauw Alejandro x Myke Towers ｜ Video Oficial [IWrZpP24H8I].mp3",
+    "name": "Manuel Turizo - La Nota - MTZ Manuel Turizo x Rauw Alejandro x Myke Towers ｜ Video Oficial [IWrZpP24H8I].mp3",
+    "size": 7299635,
+    "bpm": 92,
+    "key": "Em",
+    "durationSeconds": 226.65,
+    "grid": null
+  },
+  {
+    "id": "local:Marc Anthony - Marc Anthony - Aguanile⧸Valió la Pena⧸Flor Pálida⧸Vivir Mi Vida (Premios Juventud 2026) [lq2snN0Mqz4].mp3",
+    "name": "Marc Anthony - Marc Anthony - Aguanile⧸Valió la Pena⧸Flor Pálida⧸Vivir Mi Vida (Premios Juventud 2026) [lq2snN0Mqz4].mp3",
+    "size": 14415518,
+    "bpm": null,
+    "key": "Ab",
+    "durationSeconds": 444.418333,
+    "grid": null
+  },
+  {
+    "id": "local:Marc Anthony - Marc Anthony - El Que Te Amaba (Audio) [hjpZSo0ITLQ].mp3",
+    "name": "Marc Anthony - Marc Anthony - El Que Te Amaba (Audio) [hjpZSo0ITLQ].mp3",
+    "size": 8653114,
+    "bpm": 98.34,
+    "key": "Em",
+    "durationSeconds": 247.74,
+    "grid": null
+  },
+  {
+    "id": "local:Marc Anthony - Marc Anthony - Parecen Viernes (Official Video) [AsCnKFzhFSA].mp3",
+    "name": "Marc Anthony - Marc Anthony - Parecen Viernes (Official Video) [AsCnKFzhFSA].mp3",
+    "size": 9656639,
+    "bpm": 96.51,
+    "key": "Cm",
+    "durationSeconds": 279.997833,
+    "grid": {
+      "markers": [
+        {
+          "position": 3.752357244491577,
+          "bpm": 96.50802612304688
+        }
+      ],
+      "anchor": 3.752357244491577,
+      "bpm": 96.50802612304688
+    }
+  },
+  {
+    "id": "local:Mario Alvarez - C. Rosas. Morena  de mi corazón (Canción del mariachi) para orquesta de guitarras [dMOWydjN4Yo].mp3",
+    "name": "Mario Alvarez - C. Rosas. Morena  de mi corazón (Canción del mariachi) para orquesta de guitarras [dMOWydjN4Yo].mp3",
+    "size": 4007888,
+    "bpm": 82.76,
+    "key": "B",
+    "durationSeconds": 155.537959,
+    "grid": null
+  },
+  {
+    "id": "local:Marlon Alves Music - Mar Chiquita (feat. Pedro Capó) - Ozuna ｜ Marlon Alves Dance MAs [6WfkgpsI_vc].mp3",
+    "name": "Marlon Alves Music - Mar Chiquita (feat. Pedro Capó) - Ozuna ｜ Marlon Alves Dance MAs [6WfkgpsI_vc].mp3",
+    "size": 6298233,
+    "bpm": 98,
+    "key": "Eb",
+    "durationSeconds": 201.99,
+    "grid": null
+  },
+  {
+    "id": "local:Meek Mill - Meek Mill - What's Free feat. Rick Ross & Jay Z [Official Audio] [FpNWvxE9nXY].mp3",
+    "name": "Meek Mill - Meek Mill - What's Free feat. Rick Ross & Jay Z [Official Audio] [FpNWvxE9nXY].mp3",
+    "size": 11849804,
+    "bpm": 83,
+    "key": "Em",
+    "durationSeconds": 360,
+    "grid": null
+  },
+  {
+    "id": "local:Method Man, Redman - Part II [BpBi8bv8ppM].mp3",
+    "name": "Method Man, Redman - Part II [BpBi8bv8ppM].mp3",
+    "size": 7387988,
+    "bpm": 96,
+    "key": "Bbm",
+    "durationSeconds": 241.812608,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.2548582851886749,
+          "bpm": 96.00196838378906
+        }
+      ],
+      "anchor": 0.2548582851886749,
+      "bpm": 96.00196838378906
+    }
+  },
+  {
+    "id": "local:Mr. 305 Records  - Pitbull - Hoy Se Bebe ft. Farruko [Official Audio] [jYJYM4_dOKE].mp3",
+    "name": "Mr. 305 Records  - Pitbull - Hoy Se Bebe ft. Farruko [Official Audio] [jYJYM4_dOKE].mp3",
+    "size": 7337254,
+    "bpm": 128,
+    "key": "E",
+    "durationSeconds": 217.088,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.31339284777641296,
+          "bpm": 128.0043487548828
+        }
+      ],
+      "anchor": 0.31339284777641296,
+      "bpm": 128.0043487548828
+    }
+  },
+  {
+    "id": "local:Mr.UrbanSongs - BAD BUNNY, OMAR COURTZ, DEI V  - VeLDÁ (Audio Oficial) ｜ DeBÍ TiRAR MáS FOToS [lhYPz6HjJro].mp3",
+    "name": "Mr.UrbanSongs - BAD BUNNY, OMAR COURTZ, DEI V  - VeLDÁ (Audio Oficial) ｜ DeBÍ TiRAR MáS FOToS [lhYPz6HjJro].mp3",
+    "size": 7868372,
+    "bpm": 91,
+    "key": "Gm",
+    "durationSeconds": 235.009167,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.0835714265704155,
+          "bpm": 90.99816131591797
+        }
+      ],
+      "anchor": 0.0835714265704155,
+      "bpm": 90.99816131591797
+    }
+  },
+  {
+    "id": "local:NWA - N.W.A. - Straight Outta Compton (Official Music Video) [TMZi25Pq3T8].mp3",
+    "name": "NWA - N.W.A. - Straight Outta Compton (Official Music Video) [TMZi25Pq3T8].mp3",
+    "size": 8738819,
+    "bpm": 101.78,
+    "key": "Gm",
+    "durationSeconds": 260.969083,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.0738928318023682,
+          "bpm": 101.77881622314453
+        }
+      ],
+      "anchor": 1.0738928318023682,
+      "bpm": 101.77881622314453
+    }
+  },
+  {
+    "id": "local:NaciónUrbanaTV - Karol G x Cris Mj x Ryan Castro - Una Noche En Medellin Remix (Official Video) + Bonus Track [6t3xPF8Dh5A].mp3",
+    "name": "NaciónUrbanaTV - Karol G x Cris Mj x Ryan Castro - Una Noche En Medellin Remix (Official Video) + Bonus Track [6t3xPF8Dh5A].mp3",
+    "size": 12322133,
+    "bpm": 95.75,
+    "key": "Fm",
+    "durationSeconds": 369.336979,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.15042857825756073,
+          "bpm": 95.74871063232422
+        }
+      ],
+      "anchor": 0.15042857825756073,
+      "bpm": 95.74871063232422
+    }
+  },
+  {
+    "id": "local:Nas - Ether [zfyQ8muKLdc].mp3",
+    "name": "Nas - Ether [zfyQ8muKLdc].mp3",
+    "size": 8981733,
+    "bpm": 81.11,
+    "key": "Em",
+    "durationSeconds": 277.706667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.05849999934434891,
+          "bpm": 81.10896301269531
+        }
+      ],
+      "anchor": 0.05849999934434891,
+      "bpm": 81.10896301269531
+    }
+  },
+  {
+    "id": "local:Nas - Get Down [HGcWhJiIv1c].mp3",
+    "name": "Nas - Get Down [HGcWhJiIv1c].mp3",
+    "size": 8029126,
+    "bpm": 94.32,
+    "key": "Bbm",
+    "durationSeconds": 244.253333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5599285960197449,
+          "bpm": 94.3247299194336
+        }
+      ],
+      "anchor": 0.5599285960197449,
+      "bpm": 94.3247299194336
+    }
+  },
+  {
+    "id": "local:Naughty By Nature - Feel Me Flow [Qnu4V2J61tY].mp3",
+    "name": "Naughty By Nature - Feel Me Flow [Qnu4V2J61tY].mp3",
+    "size": 6955278,
+    "bpm": 90.19,
+    "key": "Ebm",
+    "durationSeconds": 212.56,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.11699999868869781,
+          "bpm": 90.19497680664062
+        }
+      ],
+      "anchor": 0.11699999868869781,
+      "bpm": 90.19497680664062
+    }
+  },
+  {
+    "id": "local:Nicki Minaj - Nicki Minaj, Drake, Lil Wayne - Seeing Green (Official Audio) [_Q7rcUm0Dro].mp3",
+    "name": "Nicki Minaj - Nicki Minaj, Drake, Lil Wayne - Seeing Green (Official Audio) [_Q7rcUm0Dro].mp3",
+    "size": 10613241,
+    "bpm": 75,
+    "key": "Ebm",
+    "durationSeconds": 336.37,
+    "grid": null
+  },
+  {
+    "id": "local:Onyx - Onyx - Throw Ya Gunz [mQmfzGf9904].mp3",
+    "name": "Onyx - Onyx - Throw Ya Gunz [mQmfzGf9904].mp3",
+    "size": 5886400,
+    "bpm": 93.99,
+    "key": "Abm",
+    "durationSeconds": 196.22,
+    "grid": null
+  },
+  {
+    "id": "local:Oohbaby Yeahbaby Jr. - Marc Anthony ＂ Celos ＂ . [oWaCQrDGtUg].mp3",
+    "name": "Oohbaby Yeahbaby Jr. - Marc Anthony ＂ Celos ＂ . [oWaCQrDGtUg].mp3",
+    "size": 9094189,
+    "bpm": 97.34,
+    "key": "Am",
+    "durationSeconds": 289.007167,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5557500123977661,
+          "bpm": 97.33918762207031
+        }
+      ],
+      "anchor": 0.5557500123977661,
+      "bpm": 97.33918762207031
+    }
+  },
+  {
+    "id": "local:Outkast - Outkast - ATliens (Official HD Video) [ktc9hsSfUck].mp3",
+    "name": "Outkast - Outkast - ATliens (Official HD Video) [ktc9hsSfUck].mp3",
+    "size": 6925221,
+    "bpm": 97.02,
+    "key": "F#m",
+    "durationSeconds": 229.622132,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.6628458499908447,
+          "bpm": 97.02082061767578
+        }
+      ],
+      "anchor": 1.6628458499908447,
+      "bpm": 97.02082061767578
+    }
+  },
+  {
+    "id": "local:Outkast - Outkast - B.O.B. (Bombs Over Baghdad) (Official HD Video) [lVehcuJXe6I].mp3",
+    "name": "Outkast - Outkast - B.O.B. (Bombs Over Baghdad) (Official HD Video) [lVehcuJXe6I].mp3",
+    "size": 8494259,
+    "bpm": 76.92,
+    "key": "C#m",
+    "durationSeconds": 264.266313,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.42203572392463684,
+          "bpm": 76.91736602783203
+        }
+      ],
+      "anchor": 0.42203572392463684,
+      "bpm": 76.91736602783203
+    }
+  },
+  {
+    "id": "local:Outkast - Outkast - Jazzy Belle (Official HD Video) [8p8CWpoOOdE].mp3",
+    "name": "Outkast - Outkast - Jazzy Belle (Official HD Video) [8p8CWpoOOdE].mp3",
+    "size": 8220624,
+    "bpm": 92.15,
+    "key": "Bm",
+    "durationSeconds": 242.45,
+    "grid": null
+  },
+  {
+    "id": "local:Outkast - Outkast - Player's Ball (Official HD Video) [vFofKGKlWo4].mp3",
+    "name": "Outkast - Outkast - Player's Ball (Official HD Video) [vFofKGKlWo4].mp3",
+    "size": 7331594,
+    "bpm": 92.9,
+    "key": "Fm",
+    "durationSeconds": 236.52,
+    "grid": null
+  },
+  {
+    "id": "local:Outkast - Outkast - Rosa Parks (Official Audio) [qrOKZeCdaRM].mp3",
+    "name": "Outkast - Outkast - Rosa Parks (Official Audio) [qrOKZeCdaRM].mp3",
+    "size": 10899890,
+    "bpm": 103.92,
+    "key": "Abm",
+    "durationSeconds": 325.802667,
+    "grid": {
+      "markers": [
+        {
+          "position": 4.0699286460876465,
+          "bpm": 103.92111206054688
+        }
+      ],
+      "anchor": 4.0699286460876465,
+      "bpm": 103.92111206054688
+    }
+  },
+  {
+    "id": "local:Ozuna - Ozuna - Ibiza (Feat. Romeo Santos) (Audio Oficial) [3jyy-1v-GgM].mp3",
+    "name": "Ozuna - Ozuna - Ibiza (Feat. Romeo Santos) (Audio Oficial) [3jyy-1v-GgM].mp3",
+    "size": 6084657,
+    "bpm": 96,
+    "key": "Cm",
+    "durationSeconds": 201.084813,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.25489285588264465,
+          "bpm": 96.00220489501953
+        }
+      ],
+      "anchor": 0.25489285588264465,
+      "bpm": 96.00220489501953
+    }
+  },
+  {
+    "id": "local:Ozuna - Ozuna - Quiero Más (Wisin & Yandel) (Audio Oficial) [0ym1ISjb7sw].mp3",
+    "name": "Ozuna - Ozuna - Quiero Más (Wisin & Yandel) (Audio Oficial) [0ym1ISjb7sw].mp3",
+    "size": 7825126,
+    "bpm": 94,
+    "key": "Am",
+    "durationSeconds": 242.13,
+    "grid": null
+  },
+  {
+    "id": "local:Ozuna - Ozuna - Un Get (Audio Oficial) [aCUqy-DmXkM].mp3",
+    "name": "Ozuna - Ozuna - Un Get (Audio Oficial) [aCUqy-DmXkM].mp3",
+    "size": 6734434,
+    "bpm": 80.01,
+    "key": "Bbm",
+    "durationSeconds": 211.557021,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.19221428036689758,
+          "bpm": 80.00543975830078
+        }
+      ],
+      "anchor": 0.19221428036689758,
+      "bpm": 80.00543975830078
+    }
+  },
+  {
+    "id": "local:Ozuna - Ozuna - Una Aventura (Video Oficial) [AhSEA30GSOw].mp3",
+    "name": "Ozuna - Ozuna - Una Aventura (Video Oficial) [AhSEA30GSOw].mp3",
+    "size": 5958187,
+    "bpm": 87,
+    "key": "Cm",
+    "durationSeconds": 189.695438,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.15878571569919586,
+          "bpm": 87.00212097167969
+        }
+      ],
+      "anchor": 0.15878571569919586,
+      "bpm": 87.00212097167969
+    }
+  },
+  {
+    "id": "local:Ozuna - Vaina Loca - Ozuna x Manuel Turizo (Video Oficial) [bx-fuY7LpSU].mp3",
+    "name": "Ozuna - Vaina Loca - Ozuna x Manuel Turizo (Video Oficial) [bx-fuY7LpSU].mp3",
+    "size": 8015510,
+    "bpm": 94,
+    "key": "Ebm",
+    "durationSeconds": 238.074208,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.1546071469783783,
+          "bpm": 94.00311279296875
+        }
+      ],
+      "anchor": 0.1546071469783783,
+      "bpm": 94.00311279296875
+    }
+  },
+  {
+    "id": "local:Ozunafiltradas  - Ozuna - BACCARAT Video Oficial [EkXDdJbQoZI].mp3",
+    "name": "Ozunafiltradas  - Ozuna - BACCARAT Video Oficial [EkXDdJbQoZI].mp3",
+    "size": 6277653,
+    "bpm": 89,
+    "key": "Fm",
+    "durationSeconds": 194.58322,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.15876416862010956,
+          "bpm": 88.99983978271484
+        }
+      ],
+      "anchor": 0.15876416862010956,
+      "bpm": 88.99983978271484
+    }
+  },
+  {
+    "id": "local:PMM Eventos - Gente de Zona  -  Por ti. PMM [oC5xgoTatUA].mp3",
+    "name": "PMM Eventos - Gente de Zona  -  Por ti. PMM [oC5xgoTatUA].mp3",
+    "size": 6822867,
+    "bpm": 122,
+    "key": "Bb",
+    "durationSeconds": 209.978063,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.33846428990364075,
+          "bpm": 122.0041275024414
+        }
+      ],
+      "anchor": 0.33846428990364075,
+      "bpm": 122.0041275024414
+    }
+  },
+  {
+    "id": "local:PPK - Reload (Robots Outro) [2IKkyfc9FgI].mp3",
+    "name": "PPK - Reload (Robots Outro) [2IKkyfc9FgI].mp3",
+    "size": 3966727,
+    "bpm": 139,
+    "key": "Am",
+    "durationSeconds": 124.322,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.05432143062353134,
+          "bpm": 139.00267028808594
+        }
+      ],
+      "anchor": 0.05432143062353134,
+      "bpm": 139.00267028808594
+    }
+  },
+  {
+    "id": "local:Piso 21 - Piso 21, Marc Anthony y Beéle - Volver (Video Oficial) [yTLWGt4e6Hw].mp3",
+    "name": "Piso 21 - Piso 21, Marc Anthony y Beéle - Volver (Video Oficial) [yTLWGt4e6Hw].mp3",
+    "size": 6581421,
+    "bpm": 92,
+    "key": "B",
+    "durationSeconds": 234.382222,
+    "grid": {
+      "markers": [
+        {
+          "position": 2.222698450088501,
+          "bpm": 91.99942016601562
+        }
+      ],
+      "anchor": 2.222698450088501,
+      "bpm": 91.99942016601562
+    }
+  },
+  {
+    "id": "local:Pitbull - Pitbull ft. Lenier - Cantare (Audio Oficial) [O7wGx94_6d4].mp3",
+    "name": "Pitbull - Pitbull ft. Lenier - Cantare (Audio Oficial) [O7wGx94_6d4].mp3",
+    "size": 5493606,
+    "bpm": 110.7,
+    "key": "Fm",
+    "durationSeconds": 185.016599,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.2882823050022125,
+          "bpm": 110.69570922851562
+        }
+      ],
+      "anchor": 0.2882823050022125,
+      "bpm": 110.69570922851562
+    }
+  },
+  {
+    "id": "local:Pitbull - Pitbull x Farruko x IAmChino x El Alfa x Omar Courtz - Ten Cuidado (Official Audio) [AqG2fAFSJAo].mp3",
+    "name": "Pitbull - Pitbull x Farruko x IAmChino x El Alfa x Omar Courtz - Ten Cuidado (Official Audio) [AqG2fAFSJAo].mp3",
+    "size": 6966018,
+    "bpm": 105.01,
+    "key": "Cm",
+    "durationSeconds": 213.525333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.6058928370475769,
+          "bpm": 105.01444244384766
+        }
+      ],
+      "anchor": 0.6058928370475769,
+      "bpm": 105.01444244384766
+    }
+  },
+  {
+    "id": "local:Pitbull - Pitbull- Muévelo Loca Boom Boom (Official Audio ) [HjceWfLiJJY].mp3",
+    "name": "Pitbull - Pitbull- Muévelo Loca Boom Boom (Official Audio ) [HjceWfLiJJY].mp3",
+    "size": 5969794,
+    "bpm": 106,
+    "key": "Fm",
+    "durationSeconds": 195.906757,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.2841043174266815,
+          "bpm": 106.00498962402344
+        }
+      ],
+      "anchor": 0.2841043174266815,
+      "bpm": 106.00498962402344
+    }
+  },
+  {
+    "id": "local:Play-N-Skillz - Play N Skillz, Gente De Zona, Dale Pututi - Somos Latinos (Audio Oficial) [h4Xb1d3i3z8].mp3",
+    "name": "Play-N-Skillz - Play N Skillz, Gente De Zona, Dale Pututi - Somos Latinos (Audio Oficial) [h4Xb1d3i3z8].mp3",
+    "size": 5171455,
+    "bpm": 128,
+    "key": "Cm",
+    "durationSeconds": 158.52,
+    "grid": null
+  },
+  {
+    "id": "local:ROSALÍA - ROSALÍA, Ozuna - Yo x Ti, Tu x Mi (Official Video) [2j3x0VYnehg].mp3",
+    "name": "ROSALÍA - ROSALÍA, Ozuna - Yo x Ti, Tu x Mi (Official Video) [2j3x0VYnehg].mp3",
+    "size": 6431665,
+    "bpm": 92.01,
+    "key": "Ebm",
+    "durationSeconds": 199.62,
+    "grid": null
+  },
+  {
+    "id": "local:ROSALÍA - ROSALÍA, Rauw Alejandro - BESO (Official Video) [QXQQAsIhHMw].mp3",
+    "name": "ROSALÍA - ROSALÍA, Rauw Alejandro - BESO (Official Video) [QXQQAsIhHMw].mp3",
+    "size": 5941692,
+    "bpm": 95,
+    "key": "Bbm",
+    "durationSeconds": 201.607271,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5682857036590576,
+          "bpm": 95.00406646728516
+        }
+      ],
+      "anchor": 0.5682857036590576,
+      "bpm": 95.00406646728516
+    }
+  },
+  {
+    "id": "local:RadioInnocence Music - Maluma - Hangover (feat. Prince Royce) (Audio) [PRgLHMoCndg].mp3",
+    "name": "RadioInnocence Music - Maluma - Hangover (feat. Prince Royce) (Audio) [PRgLHMoCndg].mp3",
+    "size": 7339374,
+    "bpm": 98,
+    "key": "Fm",
+    "durationSeconds": 239.51,
+    "grid": null
+  },
+  {
+    "id": "local:Rapperyoungjd - Lil Wayne - Steady Mobbin (Feat. Gucci Mane) (Official Video) (Dirty Version) (720p HD) [6V6A86WpEGE].mp3",
+    "name": "Rapperyoungjd - Lil Wayne - Steady Mobbin (Feat. Gucci Mane) (Official Video) (Dirty Version) (720p HD) [6V6A86WpEGE].mp3",
+    "size": 10439586,
+    "bpm": 77.89,
+    "key": "Fm",
+    "durationSeconds": 328.12,
+    "grid": null
+  },
+  {
+    "id": "local:Raymix - Raymix, Juanes - Oye Mujer [7YzXE4xCvsw].mp3",
+    "name": "Raymix - Raymix, Juanes - Oye Mujer [7YzXE4xCvsw].mp3",
+    "size": 7563715,
+    "bpm": 91,
+    "key": "Em",
+    "durationSeconds": 246.805333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5432142615318298,
+          "bpm": 91.00225067138672
+        }
+      ],
+      "anchor": 0.5432142615318298,
+      "bpm": 91.00225067138672
+    }
+  },
+  {
+    "id": "local:Ready Peru - Daddy Yankee - Una Vida (Video Oficial) [YX2yJqT2xLE].mp3",
+    "name": "Ready Peru - Daddy Yankee - Una Vida (Video Oficial) [YX2yJqT2xLE].mp3",
+    "size": 6012236,
+    "bpm": 92.01,
+    "key": "Fm",
+    "durationSeconds": 200.852625,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.6003928184509277,
+          "bpm": 92.01366424560547
+        }
+      ],
+      "anchor": 1.6003928184509277,
+      "bpm": 92.01366424560547
+    }
+  },
+  {
+    "id": "local:Red Hot Chili Peppers - Red Hot Chili Peppers - Scar Tissue [Official Music Video] [HD UPGRADE] [mzJj5-lubeM].mp3",
+    "name": "Red Hot Chili Peppers - Red Hot Chili Peppers - Scar Tissue [Official Music Video] [HD UPGRADE] [mzJj5-lubeM].mp3",
+    "size": 6611416,
+    "bpm": 88.97,
+    "key": "Dm",
+    "durationSeconds": 217.54,
+    "grid": null
+  },
+  {
+    "id": "local:Red Hot Chili Peppers - Red Hot Chili Peppers - Soul To Squeeze [Official Music Video] [0XcN12uVHeQ].mp3",
+    "name": "Red Hot Chili Peppers - Red Hot Chili Peppers - Soul To Squeeze [Official Music Video] [0XcN12uVHeQ].mp3",
+    "size": 9403129,
+    "bpm": 88.43,
+    "key": "F",
+    "durationSeconds": 292.629479,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.1449285745620728,
+          "bpm": 88.4285888671875
+        }
+      ],
+      "anchor": 1.1449285745620728,
+      "bpm": 88.4285888671875
+    }
+  },
+  {
+    "id": "local:Residente - Residente, Bad Bunny - Bellacoso (Official Video) [46rJ4y2kdow].mp3",
+    "name": "Residente - Residente, Bad Bunny - Bellacoso (Official Video) [46rJ4y2kdow].mp3",
+    "size": 8315695,
+    "bpm": 90,
+    "key": "C#m",
+    "durationSeconds": 255.222146,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.6017143130302429,
+          "bpm": 89.99942016601562
+        }
+      ],
+      "anchor": 0.6017143130302429,
+      "bpm": 89.99942016601562
+    }
+  },
+  {
+    "id": "local:Romeo Santos - Romeo Santos - 7 Días (Audio) [MkcXU_kn8dw].mp3",
+    "name": "Romeo Santos - Romeo Santos - 7 Días (Audio) [MkcXU_kn8dw].mp3",
+    "size": 8580309,
+    "bpm": 125,
+    "key": "Ebm",
+    "durationSeconds": 253.887,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5264999866485596,
+          "bpm": 124.99650573730469
+        }
+      ],
+      "anchor": 0.5264999866485596,
+      "bpm": 124.99650573730469
+    }
+  },
+  {
+    "id": "local:Romeo Santos - Romeo Santos - Boomerang (Official Video) [Bs7oESFZYNo].mp3",
+    "name": "Romeo Santos - Romeo Santos - Boomerang (Official Video) [Bs7oESFZYNo].mp3",
+    "size": 7901334,
+    "bpm": 130,
+    "key": "Eb",
+    "durationSeconds": 246.46,
+    "grid": null
+  },
+  {
+    "id": "local:Romeo Santos - Romeo Santos - La Diabla⧸Mi Santa (Official Video) ft. Tomatito [Hz9lhqxl_gQ].mp3",
+    "name": "Romeo Santos - Romeo Santos - La Diabla⧸Mi Santa (Official Video) ft. Tomatito [Hz9lhqxl_gQ].mp3",
+    "size": 11597952,
+    "bpm": 125.9,
+    "key": "Fm",
+    "durationSeconds": 346.96,
+    "grid": null
+  },
+  {
+    "id": "local:Romeo Santos - Romeo Santos - Sobredosis (Official Video) ft. Ozuna [JNkTNAknE4I].mp3",
+    "name": "Romeo Santos - Romeo Santos - Sobredosis (Official Video) ft. Ozuna [JNkTNAknE4I].mp3",
+    "size": 10159005,
+    "bpm": 128,
+    "key": "Am",
+    "durationSeconds": 313.46,
+    "grid": null
+  },
+  {
+    "id": "local:Romeo Santos - Romeo Santos - Solo Conmigo (Official Video) [69ppp5Ipook].mp3",
+    "name": "Romeo Santos - Romeo Santos - Solo Conmigo (Official Video) [69ppp5Ipook].mp3",
+    "size": 8536185,
+    "bpm": 123,
+    "key": "Em",
+    "durationSeconds": 257.25,
+    "grid": null
+  },
+  {
+    "id": "local:Romeo Santos - Romeo Santos, Daddy Yankee, Nicky Jam - Bella y Sensual (Official Video) [RSRzIrOqaN4].mp3",
+    "name": "Romeo Santos - Romeo Santos, Daddy Yankee, Nicky Jam - Bella y Sensual (Official Video) [RSRzIrOqaN4].mp3",
+    "size": 8899517,
+    "bpm": 89.99,
+    "key": "F#m",
+    "durationSeconds": 290.01,
+    "grid": null
+  },
+  {
+    "id": "local:Romeo Santos - Su Veneno (Live - The King Stays King Version) [PhLuyBT9zpg].mp3",
+    "name": "Romeo Santos - Su Veneno (Live - The King Stays King Version) [PhLuyBT9zpg].mp3",
+    "size": 8144618,
+    "bpm": 126.34,
+    "key": "Am",
+    "durationSeconds": 232.8,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.04178571328520775,
+          "bpm": 126.33819580078125
+        }
+      ],
+      "anchor": 0.04178571328520775,
+      "bpm": 126.33819580078125
+    }
+  },
+  {
+    "id": "local:Romeo Santos Fans 🅥 - Romeo Santos - Mar (Official Audio) [FUxHcaKOtSc].mp3",
+    "name": "Romeo Santos Fans 🅥 - Romeo Santos - Mar (Official Audio) [FUxHcaKOtSc].mp3",
+    "size": 6338779,
+    "bpm": 131.98,
+    "key": "Em",
+    "durationSeconds": 201.084813,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.3872857093811035,
+          "bpm": 131.9828338623047
+        }
+      ],
+      "anchor": 1.3872857093811035,
+      "bpm": 131.9828338623047
+    }
+  },
+  {
+    "id": "local:Scorpio Music - Deorro Ft. Pitbull & Elvis Crespo - Bailar (Official Audio) [uf5hY2as8Oo].mp3",
+    "name": "Scorpio Music - Deorro Ft. Pitbull & Elvis Crespo - Bailar (Official Audio) [uf5hY2as8Oo].mp3",
+    "size": 5741370,
+    "bpm": 128,
+    "key": "Am",
+    "durationSeconds": 160.322188,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5849999785423279,
+          "bpm": 127.9990463256836
+        }
+      ],
+      "anchor": 0.5849999785423279,
+      "bpm": 127.9990463256836
+    }
+  },
+  {
+    "id": "local:Sean Paul - 09 Sean Paul - No Lie Ft. Dua Lipa [Official Audio] [W3Cky5s5E94].mp3",
+    "name": "Sean Paul - 09 Sean Paul - No Lie Ft. Dua Lipa [Official Audio] [W3Cky5s5E94].mp3",
+    "size": 7384396,
+    "bpm": 102,
+    "key": "Am",
+    "durationSeconds": 221.344229,
+    "grid": {
+      "markers": [
+        {
+          "position": 2.4737143516540527,
+          "bpm": 102.00248718261719
+        }
+      ],
+      "anchor": 2.4737143516540527,
+      "bpm": 102.00248718261719
+    }
+  },
+  {
+    "id": "local:Sech - Sech - Otro Trago (Remix) ft. Darell, Nicky Jam, Ozuna, Anuel AA (Audio Oficial) [MaCnp-yB-Yc].mp3",
+    "name": "Sech - Sech - Otro Trago (Remix) ft. Darell, Nicky Jam, Ozuna, Anuel AA (Audio Oficial) [MaCnp-yB-Yc].mp3",
+    "size": 8413405,
+    "bpm": 88,
+    "key": "Dm",
+    "durationSeconds": 287.764898,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.23396825790405273,
+          "bpm": 88.00367736816406
+        }
+      ],
+      "anchor": 0.23396825790405273,
+      "bpm": 88.00367736816406
+    }
+  },
+  {
+    "id": "local:Seven Digital Media - Oscar D'León - Llorarás - Live in Miami [vFCDey96qEI].mp3",
+    "name": "Seven Digital Media - Oscar D'León - Llorarás - Live in Miami [vFCDey96qEI].mp3",
+    "size": 4832290,
+    "bpm": 97.68,
+    "key": "Am",
+    "durationSeconds": 231.804813,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.07521428912878036,
+          "bpm": 97.67771911621094
+        }
+      ],
+      "anchor": 0.07521428912878036,
+      "bpm": 97.67771911621094
+    }
+  },
+  {
+    "id": "local:Shakira - Shakira, Ozuna - Monotonía (Official Video) [j5y6xLpRwx4].mp3",
+    "name": "Shakira - Shakira, Ozuna - Monotonía (Official Video) [j5y6xLpRwx4].mp3",
+    "size": 5878169,
+    "bpm": 132.01,
+    "key": "Fm",
+    "durationSeconds": 184.203917,
+    "grid": {
+      "markers": [
+        {
+          "position": 2.3776071071624756,
+          "bpm": 132.0105438232422
+        }
+      ],
+      "anchor": 2.3776071071624756,
+      "bpm": 132.0105438232422
+    }
+  },
+  {
+    "id": "local:Shakira, Burna Boy, FIFA - Shakira, Burna Boy - Dai Dai (Official Video) [fcnDmrtj6Sk].mp3",
+    "name": "Shakira, Burna Boy, FIFA - Shakira, Burna Boy - Dai Dai (Official Video) [fcnDmrtj6Sk].mp3",
+    "size": 7295691,
+    "bpm": 116,
+    "key": "C#m",
+    "durationSeconds": 237.49,
+    "grid": null
+  },
+  {
+    "id": "local:Sikdope - Sandstorm (Mixed) [P5bU38Ir1ZA].mp3",
+    "name": "Sikdope - Sandstorm (Mixed) [P5bU38Ir1ZA].mp3",
+    "size": 4411943,
+    "bpm": 75,
+    "key": "Em",
+    "durationSeconds": 127.999854,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.03760714456439018,
+          "bpm": 75.00042724609375
+        }
+      ],
+      "anchor": 0.03760714456439018,
+      "bpm": 75.00042724609375
+    }
+  },
+  {
+    "id": "local:SonySoundtracksVEVO - Antonio Banderas, Los Lobos - Canción del Mariachi (Ilia Topuria ＂El Matador＂ Anthem) [uuYFRFnMyJQ].mp3",
+    "name": "SonySoundtracksVEVO - Antonio Banderas, Los Lobos - Canción del Mariachi (Ilia Topuria ＂El Matador＂ Anthem) [uuYFRFnMyJQ].mp3",
+    "size": 4234528,
+    "bpm": 94.78,
+    "key": "Em",
+    "durationSeconds": 124.61,
+    "grid": null
+  },
+  {
+    "id": "local:Sorry4TheWait - Lil Wayne - Sure Thing (Sorry 4 The Wait) [iyWGodSQVMU].mp3",
+    "name": "Sorry4TheWait - Lil Wayne - Sure Thing (Sorry 4 The Wait) [iyWGodSQVMU].mp3",
+    "size": 4926734,
+    "bpm": 81,
+    "key": "F#m",
+    "durationSeconds": 144.93,
+    "grid": null
+  },
+  {
+    "id": "local:Souls Of Mischief - Make Your Mind Up [VVZUK9Y5FJA].mp3",
+    "name": "Souls Of Mischief - Make Your Mind Up [VVZUK9Y5FJA].mp3",
+    "size": 6598794,
+    "bpm": 93.61,
+    "key": "Cm",
+    "durationSeconds": 230.773333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.30503571033477783,
+          "bpm": 93.60942840576172
+        }
+      ],
+      "anchor": 0.30503571033477783,
+      "bpm": 93.60942840576172
+    }
+  },
+  {
+    "id": "local:The Notorious B.I.G. - Things Done Changed (2005 Remaster) [-eyUOxwyzg0].mp3",
+    "name": "The Notorious B.I.G. - Things Done Changed (2005 Remaster) [-eyUOxwyzg0].mp3",
+    "size": 8119476,
+    "bpm": 91.02,
+    "key": "Abm",
+    "durationSeconds": 235.81,
+    "grid": null
+  },
+  {
+    "id": "local:The Real G Music TV - Dr. Dre - Stranded On Death Row (feat. Bushwick Bill, RBX, The Lady of Rage, Kurupt & Snoop Dogg) [EEEDSh12jec].mp3",
+    "name": "The Real G Music TV - Dr. Dre - Stranded On Death Row (feat. Bushwick Bill, RBX, The Lady of Rage, Kurupt & Snoop Dogg) [EEEDSh12jec].mp3",
+    "size": 9894550,
+    "bpm": 91.34,
+    "key": "Ebm",
+    "durationSeconds": 287.338667,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.826035737991333,
+          "bpm": 91.3408432006836
+        }
+      ],
+      "anchor": 1.826035737991333,
+      "bpm": 91.3408432006836
+    }
+  },
+  {
+    "id": "local:The Real G Music TV - Eminem - No Love (feat. Lil Wayne) [dyz1oO5DAIk].mp3",
+    "name": "The Real G Music TV - Eminem - No Love (feat. Lil Wayne) [dyz1oO5DAIk].mp3",
+    "size": 9535906,
+    "bpm": 129.61,
+    "key": "Ebm",
+    "durationSeconds": 299.850896,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.10028571635484695,
+          "bpm": 129.6054229736328
+        }
+      ],
+      "anchor": 0.10028571635484695,
+      "bpm": 129.6054229736328
+    }
+  },
+  {
+    "id": "local:The Rolling Stones - Can't You Hear Me Knocking (2009 Mix) [nkQ0LhcTNsY].mp3",
+    "name": "The Rolling Stones - Can't You Hear Me Knocking (2009 Mix) [nkQ0LhcTNsY].mp3",
+    "size": 15178324,
+    "bpm": 75.88,
+    "key": "Dm",
+    "durationSeconds": 436,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5390357375144958,
+          "bpm": 75.8753890991211
+        }
+      ],
+      "anchor": 0.5390357375144958,
+      "bpm": 75.8753890991211
+    }
+  },
+  {
+    "id": "local:TheEditLab - Jhayco x Bad Bunny - CÓMO SE SIENTE (Remix) (Clean Radio Edit) [Gxca-_iBkN8].mp3",
+    "name": "TheEditLab - Jhayco x Bad Bunny - CÓMO SE SIENTE (Remix) (Clean Radio Edit) [Gxca-_iBkN8].mp3",
+    "size": 5590378,
+    "bpm": 93.01,
+    "key": "Abm",
+    "durationSeconds": 187.338604,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5557500123977661,
+          "bpm": 93.00809478759766
+        }
+      ],
+      "anchor": 0.5557500123977661,
+      "bpm": 93.00809478759766
+    }
+  },
+  {
+    "id": "local:Tito ＂El Bambino＂, Farruko - Tito ＂El Bambino＂ ❌ Farruko - Temporal (Official Video) [8MM9ahylZSI].mp3",
+    "name": "Tito ＂El Bambino＂, Farruko - Tito ＂El Bambino＂ ❌ Farruko - Temporal (Official Video) [8MM9ahylZSI].mp3",
+    "size": 10576568,
+    "bpm": 127.99,
+    "key": "Em",
+    "durationSeconds": 323.13,
+    "grid": null
+  },
+  {
+    "id": "local:To Mainstream - Lil Wayne - 6 Foot 7 Foot (feat. Cory Gunz) [w-7eS-4r2Q4].mp3",
+    "name": "To Mainstream - Lil Wayne - 6 Foot 7 Foot (feat. Cory Gunz) [w-7eS-4r2Q4].mp3",
+    "size": 6793445,
+    "bpm": 84,
+    "key": "Am",
+    "durationSeconds": 248.08,
+    "grid": null
+  },
+  {
+    "id": "local:Tommy Muzo - Dayvi, Víctor Cárdenas - Baila Conmigo (feat. Kelly Ruiz) (Letra) [hUoKsM8aV74].mp3",
+    "name": "Tommy Muzo - Dayvi, Víctor Cárdenas - Baila Conmigo (feat. Kelly Ruiz) (Letra) [hUoKsM8aV74].mp3",
+    "size": 6059991,
+    "bpm": 128,
+    "key": "Cm",
+    "durationSeconds": 189.962458,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.13789285719394684,
+          "bpm": 127.99822998046875
+        }
+      ],
+      "anchor": 0.13789285719394684,
+      "bpm": 127.99822998046875
+    }
+  },
+  {
+    "id": "local:Travis Scott - Travis Scott, HVME - Goosebumps (Remix - Official Audio) [XULMZ907ios].mp3",
+    "name": "Travis Scott - Travis Scott, HVME - Goosebumps (Remix - Official Audio) [XULMZ907ios].mp3",
+    "size": 5741468,
+    "bpm": 125,
+    "key": "Ebm",
+    "durationSeconds": 164.309333,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.7939285635948181,
+          "bpm": 124.9988021850586
+        }
+      ],
+      "anchor": 0.7939285635948181,
+      "bpm": 124.9988021850586
+    }
+  },
+  {
+    "id": "local:Tribal Seeds - Tribal Seeds - In Your Eyes (Official Audio) [YOrThAYngYk].mp3",
+    "name": "Tribal Seeds - Tribal Seeds - In Your Eyes (Official Audio) [YOrThAYngYk].mp3",
+    "size": 9656881,
+    "bpm": 70.51,
+    "key": "Ebm",
+    "durationSeconds": 301.79,
+    "grid": null
+  },
+  {
+    "id": "local:VP Records - Sean Paul - Gimme The Light (Official Video) [8MmW_GOFS8I].mp3",
+    "name": "VP Records - Sean Paul - Gimme The Light (Official Video) [8MmW_GOFS8I].mp3",
+    "size": 6584563,
+    "bpm": 107.21,
+    "key": "Dm",
+    "durationSeconds": 200.63,
+    "grid": null
+  },
+  {
+    "id": "local:VP Records - Sean Paul - She Doesn't Mind (Official Video) [SbUBMklQSVU].mp3",
+    "name": "VP Records - Sean Paul - She Doesn't Mind (Official Video) [SbUBMklQSVU].mp3",
+    "size": 7230896,
+    "bpm": 120,
+    "key": "Gm",
+    "durationSeconds": 233.99,
+    "grid": null
+  },
+  {
+    "id": "local:Vim Music - Victor Valverde x JR Torres - El Mayor de Los Ranas (Video Oficial) [4Ez2wJnlwag].mp3",
+    "name": "Vim Music - Victor Valverde x JR Torres - El Mayor de Los Ranas (Video Oficial) [4Ez2wJnlwag].mp3",
+    "size": 5728693,
+    "bpm": 90.91,
+    "key": "Ebm",
+    "durationSeconds": 171.5,
+    "grid": null
+  },
+  {
+    "id": "local:Viva La Musica Tropical - Oscar de Leon - Llorarás En Vivo en México [uW88yBw4ewQ].mp3",
+    "name": "Viva La Musica Tropical - Oscar de Leon - Llorarás En Vivo en México [uW88yBw4ewQ].mp3",
+    "size": 7408095,
+    "bpm": 97.34,
+    "key": "Am",
+    "durationSeconds": 244.540958,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.38442856073379517,
+          "bpm": 97.33866119384766
+        }
+      ],
+      "anchor": 0.38442856073379517,
+      "bpm": 97.33866119384766
+    }
+  },
+  {
+    "id": "local:Voodoo & Serano - Blood Is Pumpin' (Edit) [rnmq1mrY4Wg].mp3",
+    "name": "Voodoo & Serano - Blood Is Pumpin' (Edit) [rnmq1mrY4Wg].mp3",
+    "size": 6668721,
+    "bpm": 137,
+    "key": "Gm",
+    "durationSeconds": 206.769229,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.0529999732971191,
+          "bpm": 136.9967803955078
+        }
+      ],
+      "anchor": 1.0529999732971191,
+      "bpm": 136.9967803955078
+    }
+  },
+  {
+    "id": "local:WY Records - Wisin & Yandel - Tu Olor [Official Audio] [qKsuRw8kNp4].mp3",
+    "name": "WY Records - Wisin & Yandel - Tu Olor [Official Audio] [qKsuRw8kNp4].mp3",
+    "size": 8254372,
+    "bpm": 115,
+    "key": "C#m",
+    "durationSeconds": 243.98,
+    "grid": null
+  },
+  {
+    "id": "local:Warner Music México - Maná - Te llevare al cielo  (Video Oficial) [zpM144k_JZs].mp3",
+    "name": "Warner Music México - Maná - Te llevare al cielo  (Video Oficial) [zpM144k_JZs].mp3",
+    "size": 9532859,
+    "bpm": 93.92,
+    "key": "Em",
+    "durationSeconds": 312.389667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.7563214302062988,
+          "bpm": 93.92062377929688
+        }
+      ],
+      "anchor": 0.7563214302062988,
+      "bpm": 93.92062377929688
+    }
+  },
+  {
+    "id": "local:Willie Colón, Héctor Lavoe - La Murga [bRqCirlG5W4].mp3",
+    "name": "Willie Colón, Héctor Lavoe - La Murga [bRqCirlG5W4].mp3",
+    "size": 8545820,
+    "bpm": 88.48,
+    "key": "Am",
+    "durationSeconds": 247.32,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.4178571403026581,
+          "bpm": 88.48139953613281
+        }
+      ],
+      "anchor": 0.4178571403026581,
+      "bpm": 88.48139953613281
+    }
+  },
+  {
+    "id": "local:Win Pagan - Live： Bad Bunny Halftime Super Bowl LX Benito Bowl Full Complete show from Row 18 [OMZhaXkFnpw].mp3",
+    "name": "Win Pagan - Live： Bad Bunny Halftime Super Bowl LX Benito Bowl Full Complete show from Row 18 [OMZhaXkFnpw].mp3",
+    "size": 25399205,
+    "bpm": 99.9,
+    "key": "Em",
+    "durationSeconds": 728.340938,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.12117857486009598,
+          "bpm": 99.90464782714844
+        }
+      ],
+      "anchor": 0.12117857486009598,
+      "bpm": 99.90464782714844
+    }
+  },
+  {
+    "id": "local:Wisin & Yandel Fans - Chyno Miranda - Quédate Conmigo (feat. Wisin & Gente de Zona) [Fm1YM4Y2Edo].mp3",
+    "name": "Wisin & Yandel Fans - Chyno Miranda - Quédate Conmigo (feat. Wisin & Gente de Zona) [Fm1YM4Y2Edo].mp3",
+    "size": 7191869,
+    "bpm": 98,
+    "key": "Am",
+    "durationSeconds": 223.004458,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.17132142186164856,
+          "bpm": 98.00450897216797
+        }
+      ],
+      "anchor": 0.17132142186164856,
+      "bpm": 98.00450897216797
+    }
+  },
+  {
+    "id": "local:Wisin - Wisin - Vacaciones (Official Video) [ULoXlXJOZOo].mp3",
+    "name": "Wisin - Wisin - Vacaciones (Official Video) [ULoXlXJOZOo].mp3",
+    "size": 8790835,
+    "bpm": 96,
+    "key": "C#m",
+    "durationSeconds": 267.435833,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.36353570222854614,
+          "bpm": 96.00162506103516
+        }
+      ],
+      "anchor": 0.36353570222854614,
+      "bpm": 96.00162506103516
+    }
+  },
+  {
+    "id": "local:Wisin - Wisin - Vacaciones (Remix)[Audio] ft. Don Omar, Zion & Lennox, Tito El Bambino [Yl2-ZAM9irw].mp3",
+    "name": "Wisin - Wisin - Vacaciones (Remix)[Audio] ft. Don Omar, Zion & Lennox, Tito El Bambino [Yl2-ZAM9irw].mp3",
+    "size": 7946696,
+    "bpm": 96,
+    "key": "C#m",
+    "durationSeconds": 256.7,
+    "grid": null
+  },
+  {
+    "id": "local:Wu-Tang Clan - Reunited (Edit) [JkXrK58gV-g].mp3",
+    "name": "Wu-Tang Clan - Reunited (Edit) [JkXrK58gV-g].mp3",
+    "size": 6799509,
+    "bpm": 90.1,
+    "key": "Bbm",
+    "durationSeconds": 241.28,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.643500030040741,
+          "bpm": 90.09905242919922
+        }
+      ],
+      "anchor": 0.643500030040741,
+      "bpm": 90.09905242919922
+    }
+  },
+  {
+    "id": "local:Wu-Tang Clan - Wu-Tang Clan - Hollow Bones (Official Audio) ft. Raekwon, Inspectah Deck, Ghostface Killah [TjDwZUlhqBg].mp3",
+    "name": "Wu-Tang Clan - Wu-Tang Clan - Hollow Bones (Official Audio) ft. Raekwon, Inspectah Deck, Ghostface Killah [TjDwZUlhqBg].mp3",
+    "size": 6611405,
+    "bpm": 77.34,
+    "key": "Bbm",
+    "durationSeconds": 218.432,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.5975357294082642,
+          "bpm": 77.33671569824219
+        }
+      ],
+      "anchor": 0.5975357294082642,
+      "bpm": 77.33671569824219
+    }
+  },
+  {
+    "id": "local:Wu-Tang Clan - Wu-Tang Clan - Ya'll Been Warned ft. Method Man, RZA, Inspectah Deck, Raekwon, Masta Killa [bD9HhiQ_gN0].mp3",
+    "name": "Wu-Tang Clan - Wu-Tang Clan - Ya'll Been Warned ft. Method Man, RZA, Inspectah Deck, Raekwon, Masta Killa [bD9HhiQ_gN0].mp3",
+    "size": 6495023,
+    "bpm": 95.58,
+    "key": "Gm",
+    "durationSeconds": 256.09288,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.46793651580810547,
+          "bpm": 95.58216857910156
+        }
+      ],
+      "anchor": 0.46793651580810547,
+      "bpm": 95.58216857910156
+    }
+  },
+  {
+    "id": "local:YNST Music - 25⧸8 - Bad Bunny (Audio Oficial) ｜ YHLQMDLG [mGmwKDHr2C4].mp3",
+    "name": "YNST Music - 25⧸8 - Bad Bunny (Audio Oficial) ｜ YHLQMDLG [mGmwKDHr2C4].mp3",
+    "size": 7641151,
+    "bpm": 75.99,
+    "key": "Em",
+    "durationSeconds": 243.333521,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.28832143545150757,
+          "bpm": 75.99494934082031
+        }
+      ],
+      "anchor": 0.28832143545150757,
+      "bpm": 75.99494934082031
+    }
+  },
+  {
+    "id": "local:YNST Music - A Tu Merced - Bad Bunny (Audio Oficial) ｜ YHLQMDLG [X4Mqm0sBGYE].mp3",
+    "name": "YNST Music - A Tu Merced - Bad Bunny (Audio Oficial) ｜ YHLQMDLG [X4Mqm0sBGYE].mp3",
+    "size": 5673590,
+    "bpm": 92,
+    "key": "Am",
+    "durationSeconds": 175.972438,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.24235714972019196,
+          "bpm": 92.0047836303711
+        }
+      ],
+      "anchor": 0.24235714972019196,
+      "bpm": 92.0047836303711
+    }
+  },
+  {
+    "id": "local:chillhopper - AZ feat. Miss Jones - Sugar Hill [Official Video] HQ [eVSxeFiBaQw].mp3",
+    "name": "chillhopper - AZ feat. Miss Jones - Sugar Hill [Official Video] HQ [eVSxeFiBaQw].mp3",
+    "size": 7208244,
+    "bpm": 90.98,
+    "key": "Fm",
+    "durationSeconds": 245.249167,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.12535713613033295,
+          "bpm": 90.9845962524414
+        }
+      ],
+      "anchor": 0.12535713613033295,
+      "bpm": 90.9845962524414
+    }
+  },
+  {
+    "id": "local:julio alberto hernandez robles - Lambada FT Don Omar - Taboo ⧸ Kaoma Video Oficial 2012 [Q92V3wfOF38].mp3",
+    "name": "julio alberto hernandez robles - Lambada FT Don Omar - Taboo ⧸ Kaoma Video Oficial 2012 [Q92V3wfOF38].mp3",
+    "size": 5225313,
+    "bpm": 119.13,
+    "key": "Dm",
+    "durationSeconds": 197.416063,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.24653571844100952,
+          "bpm": 119.1319580078125
+        }
+      ],
+      "anchor": 0.24653571844100952,
+      "bpm": 119.1319580078125
+    }
+  },
+  {
+    "id": "local:miusiks - Lil Wayne - Drop The World (Feat. Eminem) [Usoudv_d5No].mp3",
+    "name": "miusiks - Lil Wayne - Drop The World (Feat. Eminem) [Usoudv_d5No].mp3",
+    "size": 7840637,
+    "bpm": 72.5,
+    "key": "Ebm",
+    "durationSeconds": 229.285458,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.6351428627967834,
+          "bpm": 72.49940490722656
+        }
+      ],
+      "anchor": 0.6351428627967834,
+      "bpm": 72.49940490722656
+    }
+  },
+  {
+    "id": "local:nostalgia lyrics. - Romeo Santos, Carlos Santana - Necio (Letra⧸Lyrics) [YI6ALhUXygM].mp3",
+    "name": "nostalgia lyrics. - Romeo Santos, Carlos Santana - Necio (Letra⧸Lyrics) [YI6ALhUXygM].mp3",
+    "size": 8422555,
+    "bpm": 115,
+    "key": "Ebm",
+    "durationSeconds": 263.035667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.20892857015132904,
+          "bpm": 114.998291015625
+        }
+      ],
+      "anchor": 0.20892857015132904,
+      "bpm": 114.998291015625
+    }
+  },
+  {
+    "id": "local:pixel vevo music - J. Balvin X Bad Bunny - Cómo Un Bebé  (Video Oficial) ｜ Oasis [X5brY1LNIL0].mp3",
+    "name": "pixel vevo music - J. Balvin X Bad Bunny - Cómo Un Bebé  (Video Oficial) ｜ Oasis [X5brY1LNIL0].mp3",
+    "size": 7649070,
+    "bpm": 103,
+    "key": "Ebm",
+    "durationSeconds": 257.985313,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.689464271068573,
+          "bpm": 102.99883270263672
+        }
+      ],
+      "anchor": 0.689464271068573,
+      "bpm": 102.99883270263672
+    }
+  },
+  {
+    "id": "local:realhouseson - Deuces Remix - (Dirty Version) Chris Brown, Drake, Kanye West and Andre 3000 [p1AaWyyPrCQ].mp3",
+    "name": "realhouseson - Deuces Remix - (Dirty Version) Chris Brown, Drake, Kanye West and Andre 3000 [p1AaWyyPrCQ].mp3",
+    "size": 10763487,
+    "bpm": 74,
+    "key": "Bbm",
+    "durationSeconds": 339.150667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.31339284777641296,
+          "bpm": 73.99961853027344
+        }
+      ],
+      "anchor": 0.31339284777641296,
+      "bpm": 73.99961853027344
+    }
+  },
+  {
+    "id": "local:sandwhichwithacolds - Lil Wayne - Right Above It feat. Drake (Official Music Video) [-BDiIOglboY].mp3",
+    "name": "sandwhichwithacolds - Lil Wayne - Right Above It feat. Drake (Official Music Video) [-BDiIOglboY].mp3",
+    "size": 8336681,
+    "bpm": 76,
+    "key": "Ebm",
+    "durationSeconds": 273.02,
+    "grid": null
+  },
+  {
+    "id": "local:wu4ever90 - Raekwon- Verbal Intercourse (Ft Ghostface Killah & Nas) [cGeI10EyPAc].mp3",
+    "name": "wu4ever90 - Raekwon- Verbal Intercourse (Ft Ghostface Killah & Nas) [cGeI10EyPAc].mp3",
+    "size": 4674307,
+    "bpm": 92.98,
+    "key": "Fm",
+    "durationSeconds": 211.824979,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.49307143688201904,
+          "bpm": 92.98239135742188
+        }
+      ],
+      "anchor": 0.49307143688201904,
+      "bpm": 92.98239135742188
+    }
+  },
+  {
+    "id": "local:ÉXODO STUDIO - DADDY YANKEE- BAILANDO EN LA LLUVIA (VIDEO OFICIAL) [xu1YFllRSK8].mp3",
+    "name": "ÉXODO STUDIO - DADDY YANKEE- BAILANDO EN LA LLUVIA (VIDEO OFICIAL) [xu1YFllRSK8].mp3",
+    "size": 6192386,
+    "bpm": 120.01,
+    "key": "Cm",
+    "durationSeconds": 200.875833,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.09610714018344879,
+          "bpm": 120.00579071044922
+        }
+      ],
+      "anchor": 0.09610714018344879,
+      "bpm": 120.00579071044922
+    }
+  },
+  {
+    "id": "local:𝟣³𝟥³DøฬИ-𝟤-đเєƐ³Ɛ¹ - Geto Boys - Till Death Do Us Part - Straight Gangstaism (Ft. Mr 3-2) [7pV7m0XWXAw].mp3",
+    "name": "𝟣³𝟥³DøฬИ-𝟤-đเєƐ³Ɛ¹ - Geto Boys - Till Death Do Us Part - Straight Gangstaism (Ft. Mr 3-2) [7pV7m0XWXAw].mp3",
+    "size": 6745334,
+    "bpm": 82.96,
+    "key": "Fm",
+    "durationSeconds": 266.657959,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.46793651580810547,
+          "bpm": 82.95911407470703
+        }
+      ],
+      "anchor": 0.46793651580810547,
+      "bpm": 82.95911407470703
+    }
+  }
+]

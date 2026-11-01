@@ -7,6 +7,7 @@
 // a frozen system prompt is load-bearing for caching), and (b) state+crate
 // serialization is correct (round-trips through JSON, right shape, note
 // passthrough). Plain asserts, no test framework, mirrors check-command.mjs.
+import { spawnSync } from "node:child_process";
 import {
   SYSTEM_PROMPT,
   buildSystemBlocks,
@@ -31,10 +32,17 @@ function assertOk(name, condition) {
 
 assertOk("SYSTEM_PROMPT: is a non-empty string", typeof SYSTEM_PROMPT === "string" && SYSTEM_PROMPT.length > 0);
 assertOk("SYSTEM_PROMPT: identical across repeated reads (byte-stable)", SYSTEM_PROMPT === SYSTEM_PROMPT);
-assertOk(
-  "SYSTEM_PROMPT: no interpolated timestamp/date marker",
-  !/\d{4}-\d{2}-\d{2}/.test(SYSTEM_PROMPT) && !SYSTEM_PROMPT.includes("Date.now")
-);
+// Historical owner-ruling dates are static text, not volatile timestamps. Load
+// the actual module under two different clocks/random seeds to test caching.
+const promptAt = (clock, random) => {
+  const url = new URL('../src/lib/brain.ts', import.meta.url).href;
+  const code = `const RealDate=Date; globalThis.Date=class extends RealDate { constructor(...args) { super(...(args.length ? args : [${clock}])); } static now(){return ${clock};} }; Math.random=()=>${random}; const m=await import(${JSON.stringify(url)}); process.stdout.write(m.SYSTEM_PROMPT);`;
+  const result = spawnSync(process.execPath, ['--experimental-strip-types','--no-warnings','--input-type=module','-e',code], {encoding:'utf8',timeout:10000});
+  if (result.status !== 0) throw new Error(result.stderr || 'Prompt stability subprocess failed');
+  return result.stdout;
+};
+assertOk("SYSTEM_PROMPT: stable across different clocks and random seeds", promptAt(0,0.1) === SYSTEM_PROMPT && promptAt(4102444800000,0.9) === SYSTEM_PROMPT);
+
 assertOk("SYSTEM_PROMPT: mentions the one-command contract", SYSTEM_PROMPT.toLowerCase().includes("one json command"));
 assertOk("SYSTEM_PROMPT: mentions BPM guidance", SYSTEM_PROMPT.includes("8%"));
 assertOk(
@@ -512,9 +520,20 @@ assertOk(
 );
 assertOk(
   "SYSTEM_PROMPT: residency guidance present (~90-180s filler, followUpSeconds to schedule the exit)",
-  SYSTEM_PROMPT.includes("Residency (the anthem-vs-filler tension, resolved):") &&
+  SYSTEM_PROMPT.includes("Residency (the anthem-vs-filler tension, resolved") &&
     SYSTEM_PROMPT.includes("roughly 90-180 seconds") &&
     SYSTEM_PROMPT.includes("This does not apply to salsa/bachata")
+);
+// M7 blocker fix: an EXPLICIT owner residency instruction has to beat the
+// standing window, the anthem exception, AND salsa/bachata's full-length
+// rule — the 2026-07-29 failure ("you are going way longer than 30 seconds")
+// was the standing 90-180s guidance quietly winning over what Jason asked
+// for. The 90-180s rule must also now be scoped to "no explicit request".
+assertOk(
+  "SYSTEM_PROMPT: an explicit requestedResidencySeconds overrides the standing residency window",
+  SYSTEM_PROMPT.includes("Residency OVERRIDE") &&
+    SYSTEM_PROMPT.includes("state.requestedResidencySeconds") &&
+    SYSTEM_PROMPT.includes("applies only when state.requestedResidencySeconds is null")
 );
 assertOk(
   "SYSTEM_PROMPT: manual-fx-as-demonstration/ledger rule present (per-track owner notes = highest authority, 👎+note = near-prohibition)",
@@ -614,11 +633,14 @@ assertOk(
 // --- audio engine v2 (this pass): rolls, loop-blend, echo-out realness, dry/wet cap, filter-sweep usage ---
 
 assertOk(
-  "SYSTEM_PROMPT: beat-roll usage pinned (tension in the last 1-2 bars before a drop/transition, never salsa/bachata, counts toward the fx cooldown)",
+  "SYSTEM_PROMPT: beat-roll usage pinned (tension in the last 1-2 bars before a drop/transition, never salsa/bachata, on the PERFORMANCE budget)",
   SYSTEM_PROMPT.includes("roll_eighth / roll_quarter / roll_half") &&
     SYSTEM_PROMPT.includes("tension-building tools for the last 1-2 bars before a drop or a queued transition") &&
     SYSTEM_PROMPT.includes("NEVER during salsa/bachata") &&
-    SYSTEM_PROMPT.includes("Counts toward the fx frequency cap exactly like any stinger")
+    // M7 Phase 3: rolls moved OFF the rare-stinger cap and onto the
+    // performance budget. Lumping them together is what silenced them —
+    // a roll used to cost the same 120s cooldown as an airhorn.
+    SYSTEM_PROMPT.includes("Counts toward the PERFORMANCE cadence budget, not the rare-stinger cap")
 );
 assertOk(
   "SYSTEM_PROMPT: loop-blend suspension rule pinned (loop_blend, phrase-snapped capture, ducks/fades/exits on the 1)",
@@ -633,14 +655,21 @@ assertOk(
     SYSTEM_PROMPT.includes("prefer \"echo_out\" instead")
 );
 assertOk(
-  "SYSTEM_PROMPT: loop-blend salsa/bachata exclusion pinned explicitly (not just implied by 'no blends')",
-  SYSTEM_PROMPT.includes("NEVER in salsa/bachata") &&
+  "SYSTEM_PROMPT: partner-dance default remains, with explicit owner loop/blend override",
+  SYSTEM_PROMPT.includes("In salsa/bachata, use only when the owner explicitly requests loops or blending") &&
     SYSTEM_PROMPT.includes("no loop_blend either") &&
     SYSTEM_PROMPT.includes("this lane's clean-ending rule has no blend exceptions")
 );
 assertOk(
   "SYSTEM_PROMPT: loop-blend no-grid engine fallback disclosed (falls back to bass_swap/cut on its own)",
   SYSTEM_PROMPT.includes("the engine falls back to \"bass_swap\" or \"cut\" on its own")
+);
+assertOk(
+  "SYSTEM_PROMPT: sample_mix routine pinned (sample a beat/melody and mix next track under it)",
+  SYSTEM_PROMPT.includes('action "routine", routine "sample_mix"') &&
+    SYSTEM_PROMPT.includes("grab a beat or melody from the live track") &&
+    SYSTEM_PROMPT.includes("loop it alone, mix the next track underneath it") &&
+    SYSTEM_PROMPT.includes('"routine":"sample_mix"')
 );
 assertOk(
   "SYSTEM_PROMPT: echo_out realness pinned (a real ringing delay tail, not a fade)",

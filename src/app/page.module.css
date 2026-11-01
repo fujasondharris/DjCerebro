@@ -275,6 +275,19 @@
   overflow-y: auto;
 }
 
+.crateControls, .brainModelRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.crateControls .chatInput { min-width: 12rem; }
+.modelLabel { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.modelTestLabel { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; }
+.modelLabel select { max-width: 100%; }
+.genreEditor { display: flex; gap: 0.5rem; align-items: center; font-size: 0.75rem; padding: 0.2rem 0.85rem; }
+.genreEditor input { max-width: 16rem; min-width: 0; width: 100%; font: inherit; padding: 0.4rem; border: 1px solid #777; border-radius: 0.3rem; }
+
 .crateItemButton {
   width: 100%;
   text-align: left;
@@ -890,4 +903,118 @@
   .hostSection {
     border-color: #444;
   }
+
+  .visualizerPanel {
+    border-color: #334155;
+    background: #0b1120;
+  }
+
+  .visualizerPill {
+    background: #1a2234;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+}
+
+.visualizerPanel {
+  position: relative;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  background: #0f172a;
+  color: #f8fafc;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(2, 6, 23, 0.35);
+}
+
+.visualizerStage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 6.5;
+  min-height: 150px;
+  max-height: 230px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: #020617;
+}
+
+.visualizerVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.visualizerOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  background: linear-gradient(180deg, rgba(2, 6, 23, 0.62) 0%, rgba(2, 6, 23, 0.08) 45%, rgba(2, 6, 23, 0.78) 100%);
+  pointer-events: none;
+}
+
+.visualizerTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #38bdf8;
+}
+
+.visualizerBottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: #f1f5f9;
+}
+
+.visualizerControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.visualizerPill {
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid #334155;
+  background: #1e293b;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.visualizerPillActive {
+  background: linear-gradient(135deg, #0284c7, #eab308);
+  border-color: #fde047;
+  color: #020617;
+  font-weight: 700;
+}
+
+.ambientVideoBg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  opacity: 0.14;
+  pointer-events: none;
+  z-index: -1;
+  filter: saturate(1.2) contrast(1.08);
 }

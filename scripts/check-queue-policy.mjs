@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {queueForResidency,residencyHandoffDelay} from '../src/lib/queue-policy.ts';
+const gap={action:'queue',trackId:'3',transition:'gap',durationBars:8,startAt:'beginning'};
+assert.equal(queueForResidency(gap,null,98,1,98),gap);
+assert.equal(queueForResidency(gap,30,98,1,98).transition,'bass_swap');
+assert.equal(queueForResidency(gap,30,98,1,130).transition,'echo_out');
+assert.equal(queueForResidency(gap,30,null,1,98).transition,'cut');
+assert.equal(queueForResidency({...gap,transition:'cut'},30,98,1,98).transition,'cut');
+assert.equal(gap.transition,'gap','do not mutate the catalog');
+assert.equal(residencyHandoffDelay(30,15,'cut',4,120,[1,9,17]),17);
+assert.equal(residencyHandoffDelay(30,15,'cut',4,120,[1,9,20]),15);
+assert.equal(residencyHandoffDelay(30,15,'bass_swap',4,120,[1,8,17]),8);
+assert.equal(residencyHandoffDelay(30,40,'cut',4,120,[]),0);
+console.log('PASS: standing residency overrides full-song waits, retains tempo safety and targets the requested handoff time');

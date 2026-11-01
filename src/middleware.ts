@@ -56,8 +56,9 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const cookie = request.cookies.get(COOKIE_NAME)?.value ?? null;
   const passParam = request.nextUrl.searchParams.get("pass");
+  const passHeader = request.headers.get("x-dj-passcode");
 
-  const decision = decideGate(required, cookie, passParam, pathname);
+  const decision = decideGate(required, cookie, passParam, passHeader, pathname);
 
   if (decision.action === "allow") {
     if (decision.injectPasscodeHeader) {
@@ -74,7 +75,7 @@ export function middleware(request: NextRequest) {
     const response = NextResponse.redirect(redirectUrl);
     response.cookies.set(COOKIE_NAME, required as string, {
       httpOnly: true,
-      secure: true,
+      secure: request.nextUrl.protocol === "https:",
       sameSite: "lax",
       maxAge: COOKIE_MAX_AGE_SECONDS,
       path: "/",

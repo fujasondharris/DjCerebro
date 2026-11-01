@@ -30,12 +30,18 @@ export function decideGate(
   required: string | undefined | null,
   cookie: string | null,
   passParam: string | null,
+  passHeader: string | null,
   pathname: string
 ): GateDecision {
   if (!required) return { action: "allow", injectPasscodeHeader: false };
+  const isApi = pathname.startsWith("/api");
 
   if (checkPasscode(required, cookie).ok) {
-    return { action: "allow", injectPasscodeHeader: pathname.startsWith("/api") };
+    return { action: "allow", injectPasscodeHeader: isApi };
+  }
+
+  if (isApi && checkPasscode(required, passHeader).ok) {
+    return { action: "allow", injectPasscodeHeader: false };
   }
 
   if (checkPasscode(required, passParam).ok) {

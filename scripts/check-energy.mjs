@@ -6,7 +6,7 @@
 // low-confidence case, grid-vs-no-grid phrase-boundary snapping, the 60s
 // mixIn clamp), and applyMixInCueOverride's precedence. Plain asserts, no
 // test framework, mirrors scripts/check-beatclock.mjs.
-import { computeRmsPerSecond, findMixPoints, applyMixInCueOverride } from "../src/lib/energy.ts";
+import { computeRmsPerSecond, findMixPoints, applyMixInCueOverride, avoidEarlyVocalIntro } from "../src/lib/energy.ts";
 
 let failures = 0;
 
@@ -214,6 +214,36 @@ function buildRms(spec, length) {
   const cues = [{ label: "mix in", atSeconds: 170 }]; // duration 200 - 30 = exactly 170
   const result = applyMixInCueOverride(points, cues, 200);
   assertOk("cue exactly at the upper bound is still accepted (inclusive)", result.mixInSeconds === 170 && result.confidence === "high");
+}
+
+// --- avoidEarlyVocalIntro: energetic talking/vocals at the start should not
+// fool the RMS mix-in detector into starting a YouTube rip at 0. ---
+{
+  const points = { mixInSeconds: 0, mixOutSeconds: 180, confidence: "high" };
+  const grid = { anchor: 0, bpm: 120 }; // phrase interval = 8s
+  const result = avoidEarlyVocalIntro(points, [[0, 13], [30, 38]], grid, 200);
+  assertOk("early vocal/talking block: mixIn moves to the phrase after the block", result.mixInSeconds === 16);
+  assertOk("early vocal/talking block: confidence is lowered because this is a defensive auto skip", result.confidence === "low");
+}
+{
+  const points = { mixInSeconds: 0, mixOutSeconds: 180, confidence: "high" };
+  const result = avoidEarlyVocalIntro(points, [[20, 35]], null, 200);
+  assertOk("later vocal block: mixIn is unchanged", result.mixInSeconds === 0);
+}
+{
+  const points = { mixInSeconds: 22, mixOutSeconds: 180, confidence: "high" };
+  const result = avoidEarlyVocalIntro(points, [[0, 13]], null, 200);
+  assertOk("already-skipped intro: early vocal block does not move mixIn again", result.mixInSeconds === 22);
+}
+{
+  const points = { mixInSeconds: 0, mixOutSeconds: 180, confidence: "high" };
+  const result = avoidEarlyVocalIntro(points, [[0, 13]], null, 200);
+  assertOk("single legitimate opening vocal: mixIn is unchanged", result.mixInSeconds === 0);
+}
+{
+  const points = { mixInSeconds: 0, mixOutSeconds: 180, confidence: "high" };
+  const result = avoidEarlyVocalIntro(points, [[0, 120]], null, 200);
+  assertOk("very long opening vocal: mixIn is unchanged rather than skipping half the song", result.mixInSeconds === 0);
 }
 
 if (failures > 0) {

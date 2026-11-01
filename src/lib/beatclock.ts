@@ -15,9 +15,13 @@ export interface BeatGridLike {
  * BPM.
  */
 export function beatPhase(sourceTimeSec: number, anchorSec: number, bpm: number): number {
+  if (!Number.isFinite(bpm) || bpm <= 0 || !Number.isFinite(sourceTimeSec) || !Number.isFinite(anchorSec)) {
+    return 0;
+  }
   const beatInterval = 60 / bpm; // seconds-per-beat, in SOURCE time
   const beatsSinceAnchor = (sourceTimeSec - anchorSec) / beatInterval;
-  return beatsSinceAnchor - Math.floor(beatsSinceAnchor); // always in [0, 1)
+  const phase = beatsSinceAnchor - Math.floor(beatsSinceAnchor);
+  return phase >= 1 || phase < 0 ? 0 : phase; // strictly in [0, 1) even under IEEE-754 sub-epsilon rounding
 }
 
 /**
@@ -49,6 +53,20 @@ export function phaseAlignOffset(
   gridB: BeatGridLike,
   tempoB: number
 ): number {
+  if (
+    !gridA ||
+    !gridB ||
+    !Number.isFinite(gridA.bpm) ||
+    gridA.bpm <= 0 ||
+    !Number.isFinite(gridB.bpm) ||
+    gridB.bpm <= 0 ||
+    !Number.isFinite(tempoA) ||
+    tempoA <= 0 ||
+    !Number.isFinite(tempoB) ||
+    tempoB <= 0
+  ) {
+    return 0;
+  }
   const phaseA = beatPhase(sourceA, gridA.anchor, gridA.bpm);
   const phaseB = beatPhase(sourceB, gridB.anchor, gridB.bpm);
 

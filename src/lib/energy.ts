@@ -28,6 +28,9 @@ const ENERGY_PERCENTILE = 0.6; // the track's 60th-percentile RMS
 const THRESHOLD_FRACTION = 0.5; // "≥ ~50% of" that percentile
 const MIX_IN_CLAMP_SECONDS = 60; // "never skip more than a minute"
 const MIN_RESIDENCY_SECONDS = 30; // "mixOut ≥ mixIn + 30s else fall back to full duration"
+const EARLY_VOCAL_START_SECONDS = 4;
+const EARLY_VOCAL_MIN_SECONDS = 8;
+const EARLY_VOCAL_MAX_SKIP_SECONDS = 90;
 const PHRASE_BEATS = 16; // "phrase boundary = anchor + n*16 beats" (CLAUDE_STATE.md FACTS)
 // A track that's uniformly at/near digital silence has no real "energy
 // build" for the heuristic to find — treated as a distinct low-confidence
@@ -82,14 +85,32 @@ function nearestPhraseBoundary(seconds: number, grid: BeatGridLike | null): numb
   if (!hasRealGrid(grid)) return Math.round(seconds);
   const phraseIntervalSeconds = (60 / grid.bpm) * PHRASE_BEATS;
   const n = Math.round((seconds - grid.anchor) / phraseIntervalSeconds);
-  return grid.anchor + n * phraseIntervalSeconds;
+  const raw = grid.anchor + n * phraseIntervalSeconds;
+  if (raw < 0) {
+    const minN = Math.ceil(-grid.anchor / phraseIntervalSeconds);
+    return grid.anchor + minN * phraseIntervalSeconds;
+  }
+  return raw;
 }
 
-/** Phrase boundary at-or-before `seconds` (floor); whole second (floor) when no real grid. Used for mixOut (always "snap down") and for the mixIn 60s hard clamp (must never round UP past the clamp). */
+/** Phrase boundary at-or-before `seconds` (floor); whole second (floor) when no real grid. Used for mixOut (always "snap down") and for the mixIn 60s hard clamp (must never round UP past the clamp). If `seconds` is earlier than the first non-negative phrase boundary, snaps forward to the first non-negative phrase boundary (same C8 rule as loop-blend.ts). */
 function phraseBoundaryAtOrBefore(seconds: number, grid: BeatGridLike | null): number {
   if (!hasRealGrid(grid)) return Math.floor(seconds);
   const phraseIntervalSeconds = (60 / grid.bpm) * PHRASE_BEATS;
   const n = Math.floor((seconds - grid.anchor) / phraseIntervalSeconds);
+  const raw = grid.anchor + n * phraseIntervalSeconds;
+  if (raw < 0) {
+    const minN = Math.ceil(-grid.anchor / phraseIntervalSeconds);
+    return grid.anchor + minN * phraseIntervalSeconds;
+  }
+  return raw;
+}
+
+/** Phrase boundary at-or-after `seconds` (ceil); whole second (ceil) when no real grid. Used when escaping known spoken/vocal material, where snapping backward could leave speech in the intro. */
+function phraseBoundaryAtOrAfter(seconds: number, grid: BeatGridLike | null): number {
+  if (!hasRealGrid(grid)) return Math.ceil(seconds);
+  const phraseIntervalSeconds = (60 / grid.bpm) * PHRASE_BEATS;
+  const n = Math.ceil((seconds - grid.anchor) / phraseIntervalSeconds);
   return grid.anchor + n * phraseIntervalSeconds;
 }
 
@@ -221,4 +242,36 @@ export function applyMixInCueOverride(points: MixPoints, cues: MixInCueLike[], d
   const upperBound = Math.max(0, Math.min(durationSeconds - MIN_RESIDENCY_SECONDS, points.mixOutSeconds));
   if (match.atSeconds < 0 || match.atSeconds > upperBound) return points;
   return { ...points, mixInSeconds: match.atSeconds, confidence: "high" };
+}
+
+/**
+ * Energy alone cannot distinguish a real beat from talking over a YouTube
+ * intro bed. If auto-entry would start at/near zero and the vocal map says a
+ * vocal/spoken block begins immediately, move the mix-in to the first phrase
+ * after that early block when the map also shows a real gap before the next
+ * vocal. This is deliberately skipped for later vocals, continuous opening
+ * vocals, and long/unknown intros so normal lyric-starting songs do not get
+ * gutted.
+ */
+export function avoidEarlyVocalIntro(
+  points: MixPoints,
+  vocalIntervals: [number, number][],
+  grid: BeatGridLike | null,
+  durationSeconds: number
+): MixPoints {
+  if (points.mixInSeconds > EARLY_VOCAL_START_SECONDS) return points;
+  const sorted = [...vocalIntervals].sort((a, b) => a[0] - b[0]);
+  const earlyIndex = sorted.findIndex(([start, end]) => {
+    const length = end - start;
+    return start <= EARLY_VOCAL_START_SECONDS && length >= EARLY_VOCAL_MIN_SECONDS && end <= EARLY_VOCAL_MAX_SKIP_SECONDS;
+  });
+  if (earlyIndex < 0) return points;
+  const early = sorted[earlyIndex];
+  const next = sorted[earlyIndex + 1];
+  if (!next || next[0] - early[1] < EARLY_VOCAL_MIN_SECONDS) return points;
+
+  const upperBound = Math.max(0, Math.min(durationSeconds - MIN_RESIDENCY_SECONDS, points.mixOutSeconds));
+  const escaped = phraseBoundaryAtOrAfter(early[1], grid);
+  if (escaped <= points.mixInSeconds || escaped > upperBound) return points;
+  return { ...points, mixInSeconds: escaped, confidence: "low" };
 }

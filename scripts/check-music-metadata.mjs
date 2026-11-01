@@ -1,0 +1,68 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { resolveMusicMetadata, musicLabel, cleanMusicName } from "../src/lib/music-metadata.ts";
+import { describeStems, usableStemEntry } from "../src/lib/stem-catalog.ts";
+import { parseGenreRequest, genreAllowed, requestsPerformanceMix, isPartnerDanceTrack, recipeGapNeedsBlend, genreRecoveryTrack } from "../src/lib/genre-policy.ts";
+import { parseGenreOverride } from "../src/lib/crate-metadata-sync.ts";
+import { buildCrateWindow } from "../src/lib/brain.ts";
+const read = file => JSON.parse(readFileSync(new URL(`../src/data/${file}.json`, import.meta.url)));
+const crate = read("crate-manifest"), stems = read("stem-manifest");
+const original = JSON.stringify(crate);
+let stemCount = 0, tagged = 0, review = 0;
+const entries = crate.map((t, n) => {
+  const metadata = resolveMusicMetadata(t), label = musicLabel(t);
+  assert.ok(metadata.title);
+  assert.ok(!/\[[\w-]{11}\]|\.mp3$|official video|video oficial/i.test(label), label);
+  assert.deepEqual(resolveMusicMetadata({ ...t, ...metadata }), metadata, "hydration must be idempotent");
+  const descriptions = describeStems(t, stems[t.id]);
+  assert.ok(descriptions.length > 0, `${n} missing stems`);
+  for (const stem of descriptions) {
+    assert.equal(stem.genre, metadata.genre);
+    assert.equal(stem.title, metadata.title);
+    assert.equal(stem.id, stems[t.id].stems[stem.role]);
+  }
+  stemCount += descriptions.length;
+  if (metadata.genre) tagged++;
+  if (["artist-estimate", "unknown"].includes(metadata.genreSource)) review++;
+  return { n, t: label, genre: metadata.genre, bpm: t.bpm };
+});
+assert.equal(JSON.stringify(crate), original, "no audio IDs, filenames, sizes or grids changed");
+assert.equal(cleanMusicName(crate[0].name).artist, "Bad Bunny");
+assert.equal(cleanMusicName(crate[138].name).artist, "Romeo Santos");
+assert.match(musicLabel(crate[303]), /Real Guerrero \(Remix - Live\)/);
+assert.equal(resolveMusicMetadata(crate[50]).genre, "Reggaeton", "Romeo collaboration is NOT bachata");
+assert.equal(resolveMusicMetadata(crate[415]).genre, "Salsa", "Bad Bunny salsa exception");
+assert.equal(resolveMusicMetadata(crate[532]).genre, "Bachata", "Marc Anthony bachata exception");
+assert.equal(isPartnerDanceTrack(crate[21]), false, "Cubaton is not automatically salsa");
+assert.equal(recipeGapNeedsBlend(crate[21], crate[495], false), true, "old artist-only recipe cannot impose a salsa gap on cubaton/reggaeton");
+assert.equal(recipeGapNeedsBlend(crate[350], crate[225], false), false);
+assert.equal(recipeGapNeedsBlend(crate[350], crate[225], true), true, "explicit blend overrides partner-dance defaults");
+const owner = { ...crate[0], genre: "Salsa", genreSource: "owner" };
+assert.equal(describeStems(owner, stems[owner.id])[0].genre, "Salsa");
+assert.equal(resolveMusicMetadata({ ...owner, genre: "" }).genre, "", "explicit clear stays cleared");
+assert.equal(usableStemEntry({ stems: { drums: "./drums.mp3" } }), null);
+assert.equal(usableStemEntry({ stems: {} }), null);
+const request = parseGenreRequest("30 seconds per track, salsa and bachata, blend without breaks");
+assert.deepEqual(request, { include: ["salsa", "bachata"], exclude: [] });
+assert.equal(genreAllowed("Cubaton", request), false);
+assert.equal(genreAllowed("Bachata / Reggaeton", request), true);
+assert.equal(genreAllowed("", request), false);
+assert.equal(genreAllowed("", { include: [], exclude: ["salsa"] }), false);
+const recovered = genreRecoveryTrack(crate, crate[415].id, new Set([crate[416].id]), request, 90);
+assert.ok(recovered && genreAllowed(resolveMusicMetadata(recovered).genre, request));
+assert.equal(genreRecoveryTrack([crate[21], crate[495]], "missing", new Set(), request, 90), null);
+assert.deepEqual(parseGenreRequest("no salsa or bachata"), { include: [], exclude: ["salsa", "bachata"] });
+assert.equal(parseGenreRequest("why is he playing salsa?"), null);
+for (const bpm of [null, 92, 128]) {
+  const window = buildCrateWindow({ entries, liveEffectiveBpm: bpm, vibeNoteText: null, genreRequest: request, random: () => .5 });
+  assert.ok(window.entries.length > 20);
+  assert.ok(window.entries.every(e => genreAllowed(e.genre, request)));
+  assert.ok(window.entries.every(e => entries[e.n] === e), "stable full-crate indices");
+}
+assert.equal(requestsPerformanceMix("salsa with stems and loops"), true);
+assert.equal(requestsPerformanceMix("salsa without stems"), false);
+const ids = new Set(crate.map(t => t.id));
+assert.deepEqual(parseGenreOverride({ id: crate[0].id, genre: " Salsa " }, ids), { id: crate[0].id, genre: "Salsa" });
+assert.equal(parseGenreOverride({ id: "../../lesson-ledger", genre: "Salsa" }, ids), null);
+assert.equal(parseGenreOverride({ id: crate[0].id, genre: "x".repeat(81) }, ids), null);
+console.log(JSON.stringify({ result: "PASS", tracks: crate.length, stems: stemCount, tagged, needsReview: review }));
