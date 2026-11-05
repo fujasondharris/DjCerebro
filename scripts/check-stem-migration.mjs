@@ -8,7 +8,7 @@
 //
 // Usage: npm run check:stem-migration
 import {
-  planStemMigration, hasContinuousBass, roleGainAt, findBareRuns, STEM_ROLE,
+  planStemMigration, planFullSongMashup, hasContinuousBass, roleGainAt, findBareRuns, STEM_ROLE,
 } from "../src/lib/stem-migration.ts";
 
 let failures = 0;
@@ -109,6 +109,20 @@ for (const plan of [p, inv, sparse]) {
   assertOk("every incoming stem ends at full", plan.ramps.filter(r => r.deck === "in").every(r => r.toGain === 1));
   assertOk("bass swap never doubles the bass gain", Array.from({length:641}, (_,i) => roleGainAt(plan.ramps, "bass", plan.totalBars*i/640)).every(g => Math.abs(g-1)<1e-6));
 }
+
+// --- 10. Full-Song Mashup planner (64-bar / 32-bar extended 2-track mashups) ---
+const fullMash = planFullSongMashup({ outgoingStems: FULL6, incomingStems: FULL6, bpm: 128, totalBars: 64 });
+assertOk("planFullSongMashup keeps continuous bass across all 64 bars",
+  hasContinuousBass(fullMash.ramps, fullMash.totalBars));
+const mashOutVocals = fullMash.ramps.find(r => r.deck === "out" && r.role === "vocals");
+const mashInVocals = fullMash.ramps.find(r => r.deck === "in" && r.role === "vocals");
+const mashOutBass = fullMash.ramps.find(r => r.deck === "out" && r.role === "bass");
+assertOk("planFullSongMashup exits outgoing vocals by bar 2 so incoming vocals own the track",
+  mashOutVocals && mashOutVocals.toBar <= 2 && mashOutVocals.toGain === 0);
+assertOk("planFullSongMashup brings incoming vocals to full by bar 3.5 (early full-song entry)",
+  mashInVocals && mashInVocals.toBar <= 3.5 && mashInVocals.toGain === 1);
+assertOk("planFullSongMashup holds outgoing bass+drums pocket until the final 8-bar handover (bar 56)",
+  mashOutBass && mashOutBass.fromBar === 56 && mashOutBass.toBar === 63.5);
 
 if (failures > 0) {
   console.error(`\n${failures} check(s) failed — the migration planner violates a craft rule.`);

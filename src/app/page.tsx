@@ -191,7 +191,7 @@ import {
   type LoopPointsFile,
 } from "@/lib/loop-points";
 import LOOP_POINTS from "@/data/loop-points.json";
-import { planStemMigration } from "@/lib/stem-migration";
+import { planStemMigration, planFullSongMashup } from "@/lib/stem-migration";
 import { abortable, stemClock, planTranceBreakdown, STEM_PREPARE_SECONDS, STEM_TAIL_SECONDS, STEM_MEMORY_BYTES, STEM_HANDOFF_SECONDS } from "@/lib/stem-performance";
 import {
   loadStemSet, loadStemLoopMixBuffer, startStemSet, disposeStemSet, scheduleMigration,
@@ -2521,6 +2521,78 @@ interface BrainLogEntry {
   say: string;
 }
 
+const GOLD_STANDARD_MASHUP_PRESETS: Array<{
+  id: string;
+  badge: string;
+  title: string;
+  subtitle: string;
+  beatTrackId: string;
+  vocalTrackId: string;
+  bars: 16 | 32 | 64;
+  accent: string;
+}> = [
+  {
+    id: "gym_calvin_te_extrano",
+    badge: "🏋️ YOUR GYM DISCOVERY (Cross-Genre)",
+    title: "Calvin Harris · Feel So Close × Te Extraño",
+    subtitle: "128.5 → 130 BPM (1.2% stretch) · 8-Bar Synth/House Groove × Full Bachata Vocals",
+    beatTrackId: "1lZFsJSa_o6M83ZQlpqOncX_QnY8dnmju",
+    vocalTrackId: "1W2ac_DeE9OzHaQVzNtXy3xX-p-Ydzt1B",
+    bars: 64,
+    accent: "linear-gradient(135deg, #f97316, #ec4899)",
+  },
+  {
+    id: "blame_bad_bunny_5a",
+    badge: "🔥 CROSS-GENRE 5A TONIC LOCK",
+    title: "Calvin Harris · Blame × Bad Bunny · NI BIEN NI MAL",
+    subtitle: "128 BPM (0.0% stretch · 5A Cm Lock) · Festival House Beat × Full Bad Bunny Hook & Verse",
+    beatTrackId: "1zl2bmgRSzcBQxNvsmr_BKAD6VGDf3YTb",
+    vocalTrackId: "1g3CtbD9xVzEzRdDTs_BLIAW6hxd5RTbi",
+    bars: 64,
+    accent: "linear-gradient(135deg, #8b5cf6, #ec4899)",
+  },
+  {
+    id: "blame_romeo_drake_5a_5b",
+    badge: "🔥 CROSS-GENRE 5A↔5B RELATIVE LOCK",
+    title: "Calvin Harris · Blame × Romeo Santos & Drake · Odio",
+    subtitle: "128 BPM (0.0% stretch · 5A↔5B) · House Groove Pocket × Romeo & Drake Full Vocals",
+    beatTrackId: "1zl2bmgRSzcBQxNvsmr_BKAD6VGDf3YTb",
+    vocalTrackId: "1GoQFQNamjEeaM-85fJOQPA_uoWIM6A5B",
+    bars: 64,
+    accent: "linear-gradient(135deg, #6366f1, #a855f7)",
+  },
+  {
+    id: "reggaeton_98_8a",
+    badge: "🔥 SAME-GENRE REGGAETON 8A LOCK",
+    title: "Chyno, Wisin & Gente de Zona × Farruko · Nervios de Acero",
+    subtitle: "98 BPM (0.0% stretch · 8A Am Lock) · Quédate Conmigo Dembow × Farruko Full Hook",
+    beatTrackId: "10_fjwTNV20k4N-0NlY8UaNp2je2SuFCS",
+    vocalTrackId: "1rhKtFEWOVtkYkaPfl5TVBdiMxRbsWz8H",
+    bars: 64,
+    accent: "linear-gradient(135deg, #10b981, #059669)",
+  },
+  {
+    id: "reggaeton_92_8a",
+    badge: "🔥 SAME-GENRE REGGAETON 8A LOCK",
+    title: "Bad Bunny · A Tu Merced × Farruko & Lenier · La Bendición",
+    subtitle: "92 BPM (0.01% stretch · 8A Am Lock) · YHLQMDLG Dembow Pocket × La Bendición Coro",
+    beatTrackId: "1EHbX5zhcEzo22JWoAdC73P6pNcuaUeGO",
+    vocalTrackId: "1rAom4FxzA10KMjitHBWvGyqBYGd72HXh",
+    bars: 64,
+    accent: "linear-gradient(135deg, #0ea5e9, #2563eb)",
+  },
+  {
+    id: "bachata_124_aventura",
+    badge: "🔥 SAME-GENRE BACHATA ANTHEMS",
+    title: "Aventura · Inmortal × Aventura · Dile Al Amor",
+    subtitle: "124 BPM (0.01% stretch · 12A↔1B) · Inmortal Bongo/Bass Pocket × Dile Al Amor Hook",
+    beatTrackId: "1VwQdmKx4MnyvsQl4he1PhMF87_mKdEGI",
+    vocalTrackId: "1BCRa3h9w2Ngm6zWF0kSQ-fg1AaNEetaQ",
+    bars: 64,
+    accent: "linear-gradient(135deg, #eab308, #ca8a04)",
+  },
+];
+
 function BrainPanel({
   autopilot,
   onToggleAutopilot,
@@ -2546,6 +2618,8 @@ function BrainPanel({
   showcaseRemaining,
   onSkipNext,
   onTriggerLiveMashup,
+  onStartPairMashup,
+  crate,
   onSeekLive,
   onJumpToBeatLive,
   hasLiveTrack,
@@ -2575,13 +2649,43 @@ function BrainPanel({
   onStartReggaetonShowcase: () => void;
   showcaseRemaining: number;
   onSkipNext: (instantCut: boolean) => void;
-  onTriggerLiveMashup: () => void;
+  onTriggerLiveMashup: (fullSong?: boolean) => void;
+  onStartPairMashup: (beatTrackId: string, vocalTrackId: string, bars: 16 | 32 | 64) => void;
+  crate: CrateTrack[];
   onSeekLive: (deltaSeconds: number) => void;
   onJumpToBeatLive: () => void;
   hasLiveTrack: boolean;
   onSoloActiveDeck: () => void;
   onStopAllAudio: () => void;
 }) {
+  const [showMashupStudio, setShowMashupStudio] = useState(false);
+  const [customBeatId, setCustomBeatId] = useState<string>("1lZFsJSa_o6M83ZQlpqOncX_QnY8dnmju");
+  const [customVocalId, setCustomVocalId] = useState<string>("1W2ac_DeE9OzHaQVzNtXy3xX-p-Ydzt1B");
+  const [customBars, setCustomBars] = useState<16 | 32 | 64>(64);
+
+  const stemReadyTracks = useMemo(() => {
+    const base = crate.length > 0 ? crate : (crateManifestJson as CrateManifestEntry[]);
+    return base
+      .filter((t) => usableStemEntry((STEM_MANIFEST as Record<string, StemManifestEntry>)[t.id]) !== null && (t.bpm ?? 0) >= 70)
+      .map((t) => ({
+        id: t.id,
+        label: `${musicLabel(t)} (${Math.round(t.bpm ?? 0)} BPM · ${toCamelot(t.key ?? null) ?? t.key ?? "—"})`,
+        bpm: t.bpm ?? 100,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [crate]);
+
+  const selectedBeatBpm = useMemo(() => {
+    return stemReadyTracks.find((t) => t.id === customBeatId)?.bpm ?? 128;
+  }, [stemReadyTracks, customBeatId]);
+
+  const compatibleVocalTracks = useMemo(() => {
+    const close = stemReadyTracks.filter(
+      (t) => t.id !== customBeatId && Math.abs(selectedBeatBpm / t.bpm - 1) <= 0.06
+    );
+    return close.length > 0 ? close : stemReadyTracks.filter((t) => t.id !== customBeatId);
+  }, [stemReadyTracks, customBeatId, selectedBeatBpm]);
+
   return (
     <section className={styles.brainPanel}>
       <div className={styles.deckHeader} style={{ flexWrap: "wrap", gap: 8 }}>
@@ -2630,7 +2734,7 @@ function BrainPanel({
         <button
           type="button"
           className={styles.syncButton}
-          onClick={onTriggerLiveMashup}
+          onClick={() => onTriggerLiveMashup(false)}
           title="Execute a 16-bar Live Stem Mashup (holds an 8-bar drum+bass groove pocket on the active song while layering the next song's Chorus/Hook vocal & guitar before swapping the bass)"
           style={{
             fontWeight: 800,
@@ -2639,7 +2743,35 @@ function BrainPanel({
             borderColor: "#a855f7",
           }}
         >
-          🧬 Live Mashup Now
+          🧬 16-Bar Mashup Now
+        </button>
+        <button
+          type="button"
+          className={styles.syncButton}
+          onClick={() => onTriggerLiveMashup(true)}
+          title="Mash the ENTIRE song (64 bars / ~2.5 min): loops the outgoing track's 8-bar drum+bass groove pocket underneath while bringing in the incoming song's full vocals & melody from Bar 2!"
+          style={{
+            fontWeight: 800,
+            background: "linear-gradient(135deg, #f97316, #db2777)",
+            color: "#fff",
+            borderColor: "#f97316",
+          }}
+        >
+          🔥 Full-Song Mashup (64 Bars)
+        </button>
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={() => setShowMashupStudio((prev) => !prev)}
+          title="Open the 2-Song Full Mashup Studio & Gym Discovery Presets"
+          style={{
+            fontWeight: 800,
+            background: showMashupStudio ? "rgba(168, 85, 247, 0.28)" : "rgba(168, 85, 247, 0.14)",
+            color: "#e9d5ff",
+            borderColor: "#a855f7",
+          }}
+        >
+          {showMashupStudio ? "🎛️ Hide Mashup Studio ▲" : "🎛️ 2-Song Mashup Studio ▼"}
         </button>
         <button
           type="button"
@@ -2725,6 +2857,144 @@ function BrainPanel({
           🔥 Skip Intro / Drop
         </button>
       </div>
+
+      {showMashupStudio && (
+        <div
+          style={{
+            marginTop: 6,
+            marginBottom: 12,
+            padding: 12,
+            borderRadius: 12,
+            background: "rgba(15, 23, 42, 0.88)",
+            border: "1px solid rgba(168, 85, 247, 0.4)",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
+            <div>
+              <strong style={{ color: "#f3e8ff", fontSize: 13 }}>
+                🧬 FULL-SONG 2-TRACK MASHUP STUDIO (8-Bar Groove Anchor × Full Song Vocals)
+              </strong>
+              <p className={styles.hint} style={{ margin: "2px 0 0 0" }}>
+                Locks Track A&apos;s 8-bar drum + bass groove pocket underneath for up to 64 bars (~2.5 min) while layering Track B&apos;s full vocals &amp; harmony right from Bar 2.
+              </p>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+              gap: 8,
+              marginBottom: 12,
+            }}
+          >
+            {GOLD_STANDARD_MASHUP_PRESETS.map((preset) => (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() => onStartPairMashup(preset.beatTrackId, preset.vocalTrackId, preset.bars)}
+                style={{
+                  textAlign: "left",
+                  padding: "9px 11px",
+                  borderRadius: 10,
+                  border: "1px solid rgba(255,255,255,0.16)",
+                  background: preset.accent,
+                  color: "#fff",
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.04em", opacity: 0.92 }}>
+                  {preset.badge}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 800, marginTop: 2 }}>{preset.title}</div>
+                <div style={{ fontSize: 11, opacity: 0.9, marginTop: 2 }}>{preset.subtitle}</div>
+              </button>
+            ))}
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 8,
+              alignItems: "center",
+              paddingTop: 8,
+              borderTop: "1px solid rgba(148, 163, 184, 0.2)",
+            }}
+          >
+            <label style={{ display: "flex", flexDirection: "column", gap: 3, flex: "1 1 220px", fontSize: 11, color: "#cbd5e1" }}>
+              <span>🥁 Track A (8-Bar Beat &amp; Bass Groove Anchor):</span>
+              <select
+                className={styles.cueSelect}
+                value={customBeatId}
+                onChange={(e) => {
+                  const nextBeat = e.target.value;
+                  setCustomBeatId(nextBeat);
+                }}
+              >
+                {stemReadyTracks.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label style={{ display: "flex", flexDirection: "column", gap: 3, flex: "1 1 220px", fontSize: 11, color: "#cbd5e1" }}>
+              <span>🎤 Track B (Full Vocals &amp; Melodic Hook Partner):</span>
+              <select
+                className={styles.cueSelect}
+                value={
+                  compatibleVocalTracks.some((t) => t.id === customVocalId)
+                    ? customVocalId
+                    : (compatibleVocalTracks[0]?.id ?? customVocalId)
+                }
+                onChange={(e) => setCustomVocalId(e.target.value)}
+              >
+                {compatibleVocalTracks.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label style={{ display: "flex", flexDirection: "column", gap: 3, fontSize: 11, color: "#cbd5e1" }}>
+              <span>⏱️ Mashup Length:</span>
+              <select
+                className={styles.cueSelect}
+                value={String(customBars)}
+                onChange={(e) => setCustomBars(Number(e.target.value) as 16 | 32 | 64)}
+              >
+                <option value="64">64 Bars (~2.5 min Full Song)</option>
+                <option value="32">32 Bars (~1.2 min Extended)</option>
+                <option value="16">16 Bars (~35s Transition)</option>
+              </select>
+            </label>
+
+            <button
+              type="button"
+              className={styles.syncButton}
+              onClick={() => {
+                const vocalId = compatibleVocalTracks.some((t) => t.id === customVocalId)
+                  ? customVocalId
+                  : (compatibleVocalTracks[0]?.id ?? customVocalId);
+                onStartPairMashup(customBeatId, vocalId, customBars);
+              }}
+              style={{
+                fontWeight: 800,
+                background: "linear-gradient(135deg, #f97316, #db2777)",
+                color: "#fff",
+                borderColor: "#f97316",
+                alignSelf: "flex-end",
+                padding: "8px 14px",
+              }}
+            >
+              🔥 Mash These 2 Songs ({customBars} Bars)
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className={styles.brainModelRow}>
         <label className={styles.modelLabel}>Cerebro model
@@ -5351,15 +5621,15 @@ export default function Home() {
     });
   }
 
-  function mashupEntryFor(item: CrateTrack, migrationBars: 8 | 16 | 32 = 16): { seconds: number; reason: string } | null {
+  function mashupEntryFor(item: CrateTrack, migrationBars = 16): { seconds: number; reason: string } | null {
     const loopEntry = getLoopPoints(
       CURRENT_LOOP_POINTS,
       cueTrackKey({ source: item.source, id: item.id, name: item.name, size: item.size })
     );
     return selectMashupEntryPoint(loopEntry, {
       migrationBars,
-      minEntrySeconds: 28,
-      maxEntrySeconds: 110,
+      minEntrySeconds: migrationBars >= 32 ? 14 : 28,
+      maxEntrySeconds: migrationBars >= 32 ? 56 : 110,
       beatInSeconds: beatInFor(item.id),
     });
   }
@@ -5512,17 +5782,37 @@ export default function Home() {
     try {
       const knownInDuration = loopEntry?.durationSeconds ?? (crateManifestJson as CrateManifestEntry[]).find(t => t.id === item.id)?.durationSeconds ?? null;
       let migBars = command.bars;
-      let stemBeatIn = mashupEntryFor(item, migBars as 8 | 16 | 32)?.seconds ?? midTrackEntryFor(item, 95, 32)?.seconds ?? beatInFor(item.id) ?? 0;
+      let stemBeatIn = mashupEntryFor(item, migBars)?.seconds ?? midTrackEntryFor(item, migBars >= 32 ? 55 : 95, 32)?.seconds ?? beatInFor(item.id) ?? 0;
       if (knownInDuration && !breakdown) {
+        if (migBars >= 32 && stemBeatIn + ((migBars * 240 / effectiveBpm) + 2) * incomingRate >= knownInDuration) {
+          // For a Full-Song Mashup (32–64 bars), prefer moving the incoming entry earlier (to beatIn or 12s) BEFORE shrinking bars!
+          const earlyCue = Math.max(8, Math.min(beatInFor(item.id) ?? 12, knownInDuration - ((migBars * 240 / effectiveBpm) + 4) * incomingRate));
+          if (earlyCue + ((migBars * 240 / effectiveBpm) + 2) * incomingRate < knownInDuration) {
+            stemBeatIn = earlyCue;
+          }
+        }
         while (migBars > 8 && stemBeatIn + ((migBars * 240 / effectiveBpm) + 2) * incomingRate >= knownInDuration) {
-          migBars = migBars === 32 ? 16 : 8;
+          migBars = migBars > 48 ? 48 : migBars > 32 ? 32 : migBars > 24 ? 24 : migBars > 16 ? 16 : 8;
         }
         if (stemBeatIn + ((migBars * 240 / effectiveBpm) + 2) * incomingRate >= knownInDuration) {
           stemBeatIn = Math.max(0, Math.min(beatInFor(item.id) ?? 0, knownInDuration - ((migBars * 240 / effectiveBpm) + 4) * incomingRate));
         }
       }
-      const initial = stemClock({ now: ctx.currentTime, delay: 0, outgoingPosition: liveCtrl.deck.positionSeconds, outgoingRate: rate, outgoingBpm: liveGrid.bpm, incomingBpm: inGrid.bpm, incomingAnchor: inGrid.anchor, beatIn: stemBeatIn, bars: migBars, ...(breakdown ? { dropSeconds: command.dropSeconds } : {}) });
-      pushBrainLog(action, `preparing full track and stem windows for "${item.name}"…`);
+      const anchorLoopBars = migBars >= 16 ? 8 : 4;
+      const isOutLoopingMashup = !breakdown && command.anchor === "out";
+      const outLoopSpanSource = anchorLoopBars * (240 / liveGrid.bpm);
+      // When outgoing drums/bass/harmony loop over 8 bars, we only need 10 bars of outgoing audio after the phrase start!
+      const outActiveBars = isOutLoopingMashup ? Math.min(migBars, migBars >= 32 ? 10 : Math.max(10, Math.ceil(migBars * 0.35))) : migBars;
+      const outActiveDuration = outActiveBars * (240 / effectiveBpm);
+      let outBasePos = liveCtrl.deck.positionSeconds;
+      const knownOutDuration = liveCtrl.deck.duration > 0 ? liveCtrl.deck.duration : ((crateManifestJson as CrateManifestEntry[]).find(t => t.id === outgoingId)?.durationSeconds ?? 180);
+      if (isOutLoopingMashup && outBasePos + (STEM_PREPARE_SECONDS + outActiveDuration + 4) * rate >= knownOutDuration && outLoopSpanSource > 1) {
+        const shortfall = outBasePos + (STEM_PREPARE_SECONDS + outActiveDuration + 4) * rate - Math.max(40, knownOutDuration - 8);
+        const shiftLoops = Math.max(1, Math.ceil(shortfall / outLoopSpanSource));
+        outBasePos = Math.max(liveGrid.anchor, outBasePos - shiftLoops * outLoopSpanSource);
+      }
+      const initial = stemClock({ now: ctx.currentTime, delay: 0, outgoingPosition: outBasePos, outgoingRate: rate, outgoingBpm: liveGrid.bpm, incomingBpm: inGrid.bpm, incomingAnchor: inGrid.anchor, beatIn: stemBeatIn, bars: migBars, ...(breakdown ? { dropSeconds: command.dropSeconds } : {}) });
+      pushBrainLog(action, `preparing ${migBars >= 32 ? `Full-Song Mashup (${migBars} bars)` : `${migBars}-bar stem mashup`} for "${item.name}"…`);
       const fetchBytes = async (id: string) => {
         const stemBlob = await getTrackBlob(id, async () => {
           const asset = resolveAudioAssetUrl(id);
@@ -5543,17 +5833,24 @@ export default function Home() {
       if (!await abortable(idleCtrl.decodeIfNeeded(aborter.signal), aborter.signal)) throw new Error("incoming full-track decode failed");
       check();
       idleCtrl.setTempoDirectly(incomingRate);
-      const windowStart = liveCtrl.deck.positionSeconds;
-      outSet = await abortable(loadStemSet(core, outgoingId!, outEntry, fetchBytes, { signal: aborter.signal, fromSeconds: windowStart, toSeconds: windowStart + (STEM_PREPARE_SECONDS + initial.duration + 2) * rate, maxDecodedBytes: STEM_MEMORY_BYTES }), aborter.signal);
+      const windowStart = Math.min(outBasePos, liveCtrl.deck.positionSeconds);
+      outSet = await abortable(loadStemSet(core, outgoingId!, outEntry, fetchBytes, { signal: aborter.signal, fromSeconds: windowStart, toSeconds: windowStart + (STEM_PREPARE_SECONDS + outActiveDuration + 2) * rate, maxDecodedBytes: STEM_MEMORY_BYTES }), aborter.signal);
       check();
       inSet = await abortable(loadStemSet(core, item.id, inEntry, fetchBytes, { signal: aborter.signal, fromSeconds: initial.incomingOffset, toSeconds: initial.incomingOffset + (initial.duration + STEM_TAIL_SECONDS) * incomingRate, maxDecodedBytes: STEM_MEMORY_BYTES - outSet.decodedBytes }), aborter.signal);
       check();
       if (deckByLabel(idleLabel).trackId !== item.id) throw new Error("incoming deck changed during preparation");
       const delay = nextPhraseBoundaries(liveGrid, liveCtrl.deck.positionSeconds, rate, 3).find(d => d >= 0.5);
       if (delay === undefined || delay > PHRASE_CANDIDATE_CAP_SECONDS) throw new Error("no nearby phrase boundary");
-      const clock = stemClock({ now: ctx.currentTime, delay, outgoingPosition: liveCtrl.deck.positionSeconds, outgoingRate: rate, outgoingBpm: liveGrid.bpm, incomingBpm: inGrid.bpm, incomingAnchor: inGrid.anchor, beatIn: stemBeatIn, bars: migBars, ...(breakdown ? { dropSeconds: command.dropSeconds } : {}) });
+      let livePosForClock = liveCtrl.deck.positionSeconds;
+      if (isOutLoopingMashup && livePosForClock + (delay + outActiveDuration + 1) * rate > windowStart + Array.from(outSet.stems.values())[0]!.buffer.duration && outLoopSpanSource > 1) {
+        const excess = livePosForClock + (delay + outActiveDuration + 1) * rate - (windowStart + Array.from(outSet.stems.values())[0]!.buffer.duration - 1);
+        const shiftLoops = Math.max(1, Math.ceil(excess / outLoopSpanSource));
+        livePosForClock = Math.max(windowStart, livePosForClock - shiftLoops * outLoopSpanSource);
+      }
+      const clock = stemClock({ now: ctx.currentTime, delay, outgoingPosition: livePosForClock, outgoingRate: rate, outgoingBpm: liveGrid.bpm, incomingBpm: inGrid.bpm, incomingAnchor: inGrid.anchor, beatIn: stemBeatIn, bars: migBars, ...(breakdown ? { dropSeconds: command.dropSeconds } : {}) });
       const covers = (set: StemSet, offset: number, length: number) => offset >= set.bufferOffset && Array.from(set.stems.values()).every(st => offset + length <= set.bufferOffset + st.buffer.duration);
-      if (!covers(outSet, clock.outgoingOffset, (clock.duration + 0.2) * rate) || !covers(inSet, clock.incomingOffset, (clock.duration + 0.2) * incomingRate) || clock.incomingOffset + (clock.duration + 2) * incomingRate >= idleCtrl.deck.duration) throw new Error("not enough prepared audio for this many bars");
+      const outCheckLen = (outActiveDuration + 0.2) * rate;
+      if (!covers(outSet, clock.outgoingOffset, outCheckLen) || !covers(inSet, clock.incomingOffset, (clock.duration + 0.2) * incomingRate) || clock.incomingOffset + (clock.duration + 2) * incomingRate >= idleCtrl.deck.duration) throw new Error("not enough prepared audio for this many bars");
       if (breakdown) {
         // An intentional bass gap must retain audible melodic material. Check the
         // retained incoming harmony in one-second windows; unknown/quiet is refused.
@@ -5569,7 +5866,11 @@ export default function Home() {
           if (!audible) throw new Error("incoming breakdown has an unverified melodic gap");
         }
       }
-      const plan = breakdown ? planTranceBreakdown(Object.keys(outEntry.stems), Object.keys(inEntry.stems), effectiveBpm, migBars) : planStemMigration({ outgoingStems: Object.keys(outEntry.stems), incomingStems: Object.keys(inEntry.stems), bpm: effectiveBpm, totalBars: migBars as 8 | 16 | 32, anchor: command.anchor });
+      const plan = breakdown
+        ? planTranceBreakdown(Object.keys(outEntry.stems), Object.keys(inEntry.stems), effectiveBpm, migBars)
+        : migBars >= 32
+          ? planFullSongMashup({ outgoingStems: Object.keys(outEntry.stems), incomingStems: Object.keys(inEntry.stems), bpm: effectiveBpm, totalBars: migBars, anchor: command.anchor })
+          : planStemMigration({ outgoingStems: Object.keys(outEntry.stems), incomingStems: Object.keys(inEntry.stems), bpm: effectiveBpm, totalBars: migBars as 8 | 16 | 32, anchor: command.anchor });
       if (plan.warnings.some(w => w.includes("BASS DROPS TO ZERO"))) throw new Error("no continuous bass carrier for this migration");
       for (const warning of plan.warnings) pushBrainLog(action, warning);
       const outgoing = outSet, incoming = inSet;
@@ -5582,7 +5883,6 @@ export default function Home() {
       idleCtrl.deck.setGain(0);
       // Reserve the full-mix return FIRST. Failure cannot mute the live track.
       idleCtrl.deck.scheduleBufferPlayback(clock.endsAt, clock.incomingOffset + clock.duration * incomingRate, incomingRate);
-      const anchorLoopBars = migBars >= 16 ? 8 : 4;
       startStemSet(core, outgoing, {
         when: clock.startTime,
         offsetSeconds: clock.outgoingOffset,
@@ -7837,32 +8137,145 @@ export default function Home() {
     );
   }
 
-  function handleTriggerLiveMashupNow() {
+  function ensureTrackInCrate(trackId: string): { track: CrateTrack; index: number } | null {
+    const existingIdx = crateIndexForTrackId(trackId);
+    if (existingIdx !== null) {
+      return { track: crateRef.current[existingIdx], index: existingIdx };
+    }
+    const manifestEntry = (crateManifestJson as CrateManifestEntry[]).find((m) => m.id === trackId);
+    if (!manifestEntry) return null;
+    const added: CrateTrack = {
+      id: manifestEntry.id,
+      name: manifestEntry.name,
+      ...resolveMusicMetadata(manifestEntry),
+      size: manifestEntry.size ?? null,
+      bpm: manifestEntry.bpm ?? null,
+      key: manifestEntry.key ?? null,
+      grid: manifestEntry.grid ?? null,
+      source: "drive",
+    };
+    const nextCrate = [...crateRef.current, added];
+    crateRef.current = nextCrate;
+    setCrate(nextCrate);
+    return { track: added, index: nextCrate.length - 1 };
+  }
+
+  function handleStartPairMashup(beatTrackId: string, vocalTrackId: string, bars: 16 | 32 | 64 = 64) {
     coreRef.current?.ensureContext();
     stopStemMixerRef.current?.();
     performanceMixRef.current = true;
-    const crate = crateRef.current;
-    if (crate.length === 0) {
-      pushBrainLog("error", "mashup: crate is empty — load crate from Drive first");
+
+    const beatResolved = ensureTrackInCrate(beatTrackId);
+    const vocalResolved = ensureTrackInCrate(vocalTrackId);
+    if (!beatResolved || !vocalResolved) {
+      pushBrainLog("error", "mashup: could not resolve selected tracks in crate manifest");
       return;
     }
+
+    const liveLabel = getLiveDeckLabel();
+    const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
+    if (liveLabel && liveCtrl && liveCtrl.trackId === beatResolved.track.id && liveCtrl.deck.playing) {
+      pushBrainLog(
+        "stem_migrate",
+        `🔥 Launching ${bars}-Bar Mashup: "${musicLabel(beatResolved.track)}" (8-bar beat pocket) × "${musicLabel(vocalResolved.track)}" (Full Vocals & Hook)`
+      );
+      executeCommand(
+        {
+          action: "stem_migrate",
+          trackId: String(vocalResolved.index),
+          bars,
+          anchor: "out",
+          say: `🔥 ${bars}-bar mashup: ${musicLabel(beatResolved.track)} × ${musicLabel(vocalResolved.track)}`,
+        },
+        "user_chat"
+      );
+      return;
+    }
+
+    // Otherwise, cleanly load & start beatTrack on Deck A at its groove pocket, then fire stem_migrate into vocalTrack:
+    performanceControlVersionRef.current += 1;
+    queuePreparationRef.current?.abort(new Error("Starting 2-song mashup"));
+    queuePreparationRef.current = null;
+    pendingGapRef.current = null;
+    cancelPendingTransitionStart();
+    teardownMigration();
+    cleanupHeldLoopAndRoutine("starting 2-song mashup");
+    clearPendingMaskFxRelease();
+    transitionEngineRef.current.cancel();
+    setTransitionRunning(false);
+    queueInFlightRef.current = false;
+    purgeMasterBus();
+
+    for (const ctrl of [deckARef.current, deckBRef.current]) {
+      if (ctrl.deck.playing) ctrl.deck.pause();
+      ctrl.markPaused();
+      ctrl.deck.allNeutral();
+      ctrl.deck.clearAllDucks();
+    }
+
+    const anchorCtrl = deckARef.current;
+    pushBrainLog(
+      "stem_migrate",
+      `🔥 Preparing ${bars}-Bar Full-Song Mashup: loading Beat Anchor "${musicLabel(beatResolved.track)}" → layering "${musicLabel(vocalResolved.track)}"…`
+    );
+
+    void (async () => {
+      try {
+        const blob = await getTrackForPlayback(beatResolved.track);
+        await anchorCtrl.loadFile(blob, beatResolved.track.name, beatResolved.track.id, beatResolved.track.source);
+        if (!(await anchorCtrl.decodeIfNeeded())) throw new Error("decode failed");
+        anchorCtrl.deck.ensureContext();
+        const midEntry = midTrackEntryFor(beatResolved.track, 75, 16);
+        const beatIn = beatInFor(beatResolved.track.id);
+        const seekTo = midEntry?.seconds ?? beatIn ?? 24;
+        if (seekTo > 0) anchorCtrl.deck.seekTo(seekTo);
+        anchorCtrl.deck.setGain(1);
+        setCrossfade(0);
+        anchorCtrl.deck.play();
+        anchorCtrl.markPlaying();
+        appendHistory({ trackId: beatResolved.track.id, name: beatResolved.track.name });
+
+        const latestVocalIdx = crateIndexForTrackId(vocalResolved.track.id) ?? vocalResolved.index;
+        setTimeout(() => {
+          executeCommand(
+            {
+              action: "stem_migrate",
+              trackId: String(latestVocalIdx),
+              bars,
+              anchor: "out",
+              say: `🔥 ${bars}-bar mashup: ${musicLabel(beatResolved.track)} × ${musicLabel(vocalResolved.track)}`,
+            },
+            "user_chat"
+          );
+        }, 350);
+      } catch (err) {
+        pushBrainLog(
+          "error",
+          `mashup: could not start anchor "${beatResolved.track.name}" (${err instanceof Error ? err.message : "load error"})`
+        );
+      }
+    })();
+  }
+
+  function handleTriggerLiveMashupNow(fullSong = false) {
+    coreRef.current?.ensureContext();
+    stopStemMixerRef.current?.();
+    performanceMixRef.current = true;
+    const targetBars: 16 | 64 = fullSong ? 64 : 16;
+    const crate = crateRef.current;
     const liveLabel = getLiveDeckLabel();
     const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
     const liveId = liveCtrl?.trackId ?? null;
 
     if (!liveLabel || !liveCtrl || !liveId) {
-      // No song playing yet: load a gold-standard stem-ready opener (Calvin Harris - Blame or Chyno Miranda - Quedate Conmigo)
-      const opener =
-        crate.find((t) => /calvin harris.*blame/i.test(t.name) && stemEntryFor(t.id) !== null) ??
-        crate.find((t) => /qu[eé]date conmigo/i.test(t.name) && stemEntryFor(t.id) !== null) ??
-        crate.find((t) => stemEntryFor(t.id) !== null && t.grid !== null && (t.bpm ?? 0) >= 90) ??
-        crate[0];
-      if (!opener) return;
-      pushBrainLog(
-        "stem_migrate",
-        `🧬 Starting Mashup Anchor "${musicLabel(opener)}" — tap 🧬 Live Mashup Now again once playing to layer the incoming Chorus/Hook!`
-      );
-      handleCrateTap(opener);
+      // No song playing yet: immediately launch the Gym Discovery (if fullSong) or Blame × Bad Bunny preset!
+      const defaultPreset = fullSong ? GOLD_STANDARD_MASHUP_PRESETS[0] : GOLD_STANDARD_MASHUP_PRESETS[1];
+      handleStartPairMashup(defaultPreset.beatTrackId, defaultPreset.vocalTrackId, targetBars);
+      return;
+    }
+
+    if (crate.length === 0) {
+      pushBrainLog("error", "mashup: crate is empty — load crate from Drive first");
       return;
     }
 
@@ -7912,15 +8325,17 @@ export default function Home() {
 
     pushBrainLog(
       "stem_migrate",
-      `🧬 Live 16-Bar Stem Mashup: holding 8-bar pocket on "${musicLabel({ name: liveCtrl.trackName ?? "" })}" × layering Chorus/Hook of "${musicLabel(best)}" (${best.bpm ?? "—"} BPM · ${toCamelot(best.key) ?? "—"})`
+      fullSong
+        ? `🔥 Full-Song 64-Bar Stem Mashup: holding 8-bar groove pocket on "${musicLabel({ name: liveCtrl.trackName ?? "" })}" × layering FULL SONG vocals & hook of "${musicLabel(best)}" (${best.bpm ?? "—"} BPM · ${toCamelot(best.key) ?? "—"})`
+        : `🧬 Live 16-Bar Stem Mashup: holding 8-bar pocket on "${musicLabel({ name: liveCtrl.trackName ?? "" })}" × layering Chorus/Hook of "${musicLabel(best)}" (${best.bpm ?? "—"} BPM · ${toCamelot(best.key) ?? "—"})`
     );
     executeCommand(
       {
         action: "stem_migrate",
         trackId: String(idx),
-        bars: 16,
+        bars: targetBars,
         anchor: "out",
-        say: `🧬 Live 16-bar stem mashup into ${musicLabel(best)} (${ranked[0]?.harmonic.headline ?? "harmonic lock"})`,
+        say: `${fullSong ? "🔥 Full-Song 64-bar" : "🧬 Live 16-bar"} stem mashup into ${musicLabel(best)} (${ranked[0]?.harmonic.headline ?? "harmonic lock"})`,
       },
       "user_chat"
     );
@@ -8410,11 +8825,20 @@ export default function Home() {
           <button
             type="button"
             className={styles.quickBtnNext}
-            onClick={handleTriggerLiveMashupNow}
+            onClick={() => handleTriggerLiveMashupNow(false)}
             title="Execute a 16-bar Live Stem Mashup into the #1 harmonic match"
             style={{ background: "linear-gradient(135deg, #8b5cf6, #ec4899)" }}
           >
             🧬 Mashup
+          </button>
+          <button
+            type="button"
+            className={styles.quickBtnNext}
+            onClick={() => handleTriggerLiveMashupNow(true)}
+            title="Mash the ENTIRE song (64 bars / ~2.5 min) over an 8-bar drum+bass groove pocket"
+            style={{ background: "linear-gradient(135deg, #f97316, #db2777)" }}
+          >
+            🔥 Full Mash
           </button>
           <button
             type="button"
@@ -8523,6 +8947,8 @@ export default function Home() {
             showcaseRemaining={showcaseRemaining}
             onSkipNext={handleSkipToNextSong}
             onTriggerLiveMashup={handleTriggerLiveMashupNow}
+            onStartPairMashup={handleStartPairMashup}
+            crate={crate}
             onSeekLive={handleSeekLive}
             onJumpToBeatLive={() => handleJumpToBeat()}
             hasLiveTrack={anyPlaying || Boolean(deckA.trackName || deckB.trackName)}

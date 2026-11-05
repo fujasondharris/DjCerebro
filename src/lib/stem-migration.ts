@@ -185,6 +185,117 @@ export function planStemMigration(input: MigrationInput): MigrationPlan {
   return { totalBars, barSeconds, ramps, bareRuns, warnings };
 }
 
+/**
+ * Full-Song Mashup planner (`planFullSongMashup`):
+ * Unlike a standard transition (where incoming vocals wait until the second half),
+ * a Full-Song Mashup ("Calvin Harris beat at the gym × Aventura Te Extraño vocals +
+ * requinto guitar on top for the entire song") clears outgoing vocals in 2 bars,
+ * brings incoming guitar/harmony + vocals to 100% by Bar 3.5, and locks the outgoing
+ * 8-bar drum+bass groove pocket underneath for the entire song (`totalBars - 8`),
+ * handing over the bassline cleanly in the final 8 bars.
+ */
+export function planFullSongMashup(input: MigrationInput): MigrationPlan {
+  const { outgoingStems, incomingStems, bpm, totalBars } = input;
+  if (!Number.isFinite(bpm) || bpm <= 0 || !Number.isFinite(totalBars) || totalBars < 16) {
+    return planStemMigration(input);
+  }
+  const anchor: Deck = input.anchor ?? "out";
+  const barSeconds = (60 / bpm) * 4;
+  const ramps: StemRamp[] = [];
+  const warnings: string[] = [];
+
+  const outRoles = rolesOf(outgoingStems);
+  const inRoles = rolesOf(incomingStems);
+  const handoverStart = anchor === "in" ? 0 : Math.max(8, round2(totalBars - 8));
+  const handoverEnd = anchor === "in" ? 2 : round2(totalBars - 0.5);
+
+  // 1. Outgoing vocals exit immediately (Bars 0..2) so they never clash with the full-song incoming vocal.
+  for (const stem of outRoles.get("vocals") ?? []) {
+    ramps.push({
+      deck: "out",
+      stem,
+      role: "vocals",
+      fromBar: 0,
+      toBar: 2,
+      fromGain: 1,
+      toGain: 0,
+    });
+  }
+
+  // 2. Outgoing harmony sits tucked underneath as a glue bed (0.38 -> 0 by handoverStart).
+  for (const stem of outRoles.get("harmony") ?? []) {
+    ramps.push({
+      deck: "out",
+      stem,
+      role: "harmony",
+      fromBar: 0,
+      toBar: Math.max(4, handoverStart),
+      fromGain: 0.38,
+      toGain: 0,
+    });
+  }
+
+  // 3. Incoming harmony (requinto guitar / synth hook) enters immediately (Bars 0.5..2.5) and rides at 1.0 all song.
+  for (const stem of inRoles.get("harmony") ?? []) {
+    ramps.push({
+      deck: "in",
+      stem,
+      role: "harmony",
+      fromBar: 0.5,
+      toBar: 2.5,
+      fromGain: 0,
+      toGain: 1,
+    });
+  }
+
+  // 4. Incoming vocals enter right on Bar 1.5..3.5 and ride at full 1.0 over the beat pocket all song.
+  for (const stem of inRoles.get("vocals") ?? []) {
+    ramps.push({
+      deck: "in",
+      stem,
+      role: "vocals",
+      fromBar: 1.5,
+      toBar: 3.5,
+      fromGain: 0,
+      toGain: 1,
+    });
+  }
+
+  // 5. Continuous complementary bass + rhythm anchor for the entire song, handing over in the final 8 bars.
+  const anchorRoles: StemRole[] = ["rhythm", "bass"];
+  for (const role of anchorRoles) {
+    for (const stem of outRoles.get(role) ?? []) {
+      ramps.push({
+        deck: "out",
+        stem,
+        role,
+        fromBar: handoverStart,
+        toBar: handoverEnd,
+        fromGain: anchor === "in" ? 0 : 1,
+        toGain: 0,
+      });
+    }
+    for (const stem of inRoles.get(role) ?? []) {
+      ramps.push({
+        deck: "in",
+        stem,
+        role,
+        fromBar: handoverStart,
+        toBar: handoverEnd,
+        fromGain: anchor === "in" ? 1 : 0,
+        toGain: 1,
+      });
+    }
+  }
+
+  const bareRuns = findBareRuns(ramps, totalBars);
+  if (!hasContinuousBass(ramps, totalBars)) {
+    warnings.push("BASS DROPS TO ZERO — this violates the one hard rule and must not be played");
+  }
+
+  return { totalBars, barSeconds, ramps, bareRuns, warnings };
+}
+
 function round2(n: number): number {
   return Math.round(n * 100) / 100;
 }

@@ -633,11 +633,11 @@ export function selectMidTrackEntryPoint(
 }
 
 export interface MashupEntryOptions {
-  /** Number of bars in the stem migration (8, 16, or 32). Default 16. */
-  migrationBars?: 8 | 16 | 32;
-  /** Minimum seconds into the incoming track to start (default 28s so intros/verses are skipped in favor of Chorus/Hook). */
+  /** Number of bars in the stem migration (8, 16, 32, or 64). Default 16. */
+  migrationBars?: number;
+  /** Minimum seconds into the incoming track to start (default 28s for 16-bar transitions, 14s for >=32-bar extended/full-song mashups). */
   minEntrySeconds?: number;
-  /** Maximum seconds into the incoming track to start (default 110s). */
+  /** Maximum seconds into the incoming track to start (default 110s for 16-bar transitions, 56s for >=32-bar extended/full-song mashups). */
   maxEntrySeconds?: number;
   /** Known drums-stem beat-in point (from beat-in.json), if available. */
   beatInSeconds?: number | null;
@@ -667,9 +667,11 @@ export function selectMashupEntryPoint(
   const migrationBars = options.migrationBars ?? 16;
   const beatIn = options.beatInSeconds ?? null;
   const dur = entry && Number.isFinite(entry.durationSeconds) && entry.durationSeconds > 0 ? entry.durationSeconds : null;
-  const rawMin = dur !== null && dur < 60 ? 12 : (options.minEntrySeconds ?? 28);
-  const rawMax = options.maxEntrySeconds ?? 110;
-  const maxEntry = dur !== null && dur > 45 ? Math.min(rawMax, Math.max(rawMin, dur - (migrationBars * 2.5 + 18))) : rawMax;
+  const defaultMin = migrationBars >= 32 ? 14 : 28;
+  const defaultMax = migrationBars >= 32 ? 56 : 110;
+  const rawMin = dur !== null && dur < 60 ? 12 : (options.minEntrySeconds ?? defaultMin);
+  const rawMax = options.maxEntrySeconds ?? defaultMax;
+  const maxEntry = dur !== null && dur > 45 ? Math.min(rawMax, Math.max(rawMin, dur - (migrationBars * 2.1 + 14))) : rawMax;
   const minEntry = Math.min(maxEntry, Math.max(rawMin, beatIn ?? 0));
 
   if (entry && entry.bpm > 0) {
