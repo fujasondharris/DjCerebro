@@ -31,8 +31,8 @@ export function isPartnerDanceTrack(track: MetadataTrack): boolean {
   return /\b(salsa|bachata|merengue)\b/.test(musicKey(resolveMusicMetadata(track).genre));
 }
 export function requestsPerformanceMix(text: string | null | undefined): boolean {
-  if (!text || /\b(no|without|avoid|stop)\s+(?:stems?|loops?|mixing|blending)\b/i.test(text)) return false;
-  return /\b(stems?|loops?|sampling|sample|blend|mixing|no gaps|without breaks|nonstop|skills?|efx|fx|effects?|lead[\s-]?ins?|demo|showcase)\b/i.test(text);
+  if (!text || /\b(no|without|avoid|stop)\s+(?:stems?|loops?|mixing|blending|mashups?)\b/i.test(text)) return false;
+  return /\b(stems?|loops?|sampling|sample|blend|mixing|mashups?|mash|no gaps|without breaks|nonstop|skills?|efx|fx|effects?|lead[\s-]?ins?|demo|showcase)\b/i.test(text);
 }
 export function recipeGapNeedsBlend(live: MetadataTrack, incoming: MetadataTrack, explicitMix: boolean): boolean {
   return explicitMix || (!isPartnerDanceTrack(live) && !isPartnerDanceTrack(incoming));

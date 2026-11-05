@@ -185,6 +185,7 @@ import {
 import {
   getLoopPoints,
   pickLoopCandidate,
+  selectMashupEntryPoint,
   selectMidTrackEntryPoint,
   selectMidTrackExitPoint,
   type LoopPointsFile,
@@ -2544,6 +2545,7 @@ function BrainPanel({
   onStartReggaetonShowcase,
   showcaseRemaining,
   onSkipNext,
+  onTriggerLiveMashup,
   onSeekLive,
   onJumpToBeatLive,
   hasLiveTrack,
@@ -2573,6 +2575,7 @@ function BrainPanel({
   onStartReggaetonShowcase: () => void;
   showcaseRemaining: number;
   onSkipNext: (instantCut: boolean) => void;
+  onTriggerLiveMashup: () => void;
   onSeekLive: (deltaSeconds: number) => void;
   onJumpToBeatLive: () => void;
   hasLiveTrack: boolean;
@@ -2624,6 +2627,20 @@ function BrainPanel({
       </div>
 
       <div className={styles.fxRow} style={{ marginTop: 8, marginBottom: 8, flexWrap: "wrap", gap: 6 }}>
+        <button
+          type="button"
+          className={styles.syncButton}
+          onClick={onTriggerLiveMashup}
+          title="Execute a 16-bar Live Stem Mashup (holds an 8-bar drum+bass groove pocket on the active song while layering the next song's Chorus/Hook vocal & guitar before swapping the bass)"
+          style={{
+            fontWeight: 800,
+            background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
+            color: "#fff",
+            borderColor: "#a855f7",
+          }}
+        >
+          🧬 Live Mashup Now
+        </button>
         <button
           type="button"
           className={styles.syncButton}
@@ -5334,6 +5351,19 @@ export default function Home() {
     });
   }
 
+  function mashupEntryFor(item: CrateTrack, migrationBars: 8 | 16 | 32 = 16): { seconds: number; reason: string } | null {
+    const loopEntry = getLoopPoints(
+      CURRENT_LOOP_POINTS,
+      cueTrackKey({ source: item.source, id: item.id, name: item.name, size: item.size })
+    );
+    return selectMashupEntryPoint(loopEntry, {
+      migrationBars,
+      minEntrySeconds: 28,
+      maxEntrySeconds: 110,
+      beatInSeconds: beatInFor(item.id),
+    });
+  }
+
   function teardownMigration() {
     migrationPreparingRef.current?.abort();
     const m = migrationRef.current;
@@ -5482,7 +5512,7 @@ export default function Home() {
     try {
       const knownInDuration = loopEntry?.durationSeconds ?? (crateManifestJson as CrateManifestEntry[]).find(t => t.id === item.id)?.durationSeconds ?? null;
       let migBars = command.bars;
-      let stemBeatIn = midTrackEntryFor(item, 80, 16)?.seconds ?? beatInFor(item.id) ?? 0;
+      let stemBeatIn = mashupEntryFor(item, migBars as 8 | 16 | 32)?.seconds ?? midTrackEntryFor(item, 95, 32)?.seconds ?? beatInFor(item.id) ?? 0;
       if (knownInDuration && !breakdown) {
         while (migBars > 8 && stemBeatIn + ((migBars * 240 / effectiveBpm) + 2) * incomingRate >= knownInDuration) {
           migBars = migBars === 32 ? 16 : 8;
@@ -5552,7 +5582,7 @@ export default function Home() {
       idleCtrl.deck.setGain(0);
       // Reserve the full-mix return FIRST. Failure cannot mute the live track.
       idleCtrl.deck.scheduleBufferPlayback(clock.endsAt, clock.incomingOffset + clock.duration * incomingRate, incomingRate);
-      const anchorLoopBars = 4;
+      const anchorLoopBars = migBars >= 16 ? 8 : 4;
       startStemSet(core, outgoing, {
         when: clock.startTime,
         offsetSeconds: clock.outgoingOffset,
@@ -7759,13 +7789,39 @@ export default function Home() {
       }
       return;
     }
-    const isSocial = isPartnerDanceTrack(target);
+    const liveCtrl = deckByLabel(liveLabel);
+    const liveGrid = effectiveGrid(liveCtrl.tags, liveCtrl.grid);
+    const inGrid = (crateManifestJson as CrateManifestEntry[]).find((t) => t.id === target.id)?.grid ?? target.grid;
+    const isSocial = isPartnerDanceTrack(target) && !performanceMixRef.current;
+    const canMashup =
+      !isSocial &&
+      stemEntryFor(liveCtrl.trackId) !== null &&
+      stemEntryFor(target.id) !== null &&
+      liveGrid !== null &&
+      !liveGrid.estimated &&
+      inGrid !== null &&
+      Math.abs(liveCtrl.deck.tempo - 1) <= 0.06 &&
+      Math.abs((liveGrid.bpm * liveCtrl.deck.tempo) / inGrid.bpm - 1) <= 0.05;
+
     pushBrainLog(
       "plan",
-      `🧠 Music Theory Master queuing #1 harmonic match "${musicLabel(target)}" (${target.bpm ?? "—"} BPM · ${toCamelot(target.key) ?? "—"})`
+      `🧠 Music Theory Master queuing #1 harmonic match "${musicLabel(target)}" (${target.bpm ?? "—"} BPM · ${toCamelot(target.key) ?? "—"})${canMashup ? " via 16-bar Live Stem Mashup" : ""}`
     );
-    if (autoTurntablistFxRef.current && !isSocial) {
+    if (autoTurntablistFxRef.current && !isSocial && !canMashup) {
       handleFireTurntablistCombo(comboId);
+    }
+    if (canMashup) {
+      executeCommand(
+        {
+          action: "stem_migrate",
+          trackId: String(idx),
+          bars: 16,
+          anchor: "out",
+          say: `Music Theory Master: 16-bar live stem mashup into ${musicLabel(target)}`,
+        },
+        "user_chat"
+      );
+      return;
     }
     executeCommand(
       {
@@ -7776,6 +7832,95 @@ export default function Home() {
         startAt: isSocial ? "beginning" : "auto",
         ...(isSocial ? {} : { maskFx: "subdrop" }),
         say: `Music Theory Master: mixing into ${musicLabel(target)}`,
+      },
+      "user_chat"
+    );
+  }
+
+  function handleTriggerLiveMashupNow() {
+    coreRef.current?.ensureContext();
+    stopStemMixerRef.current?.();
+    performanceMixRef.current = true;
+    const crate = crateRef.current;
+    if (crate.length === 0) {
+      pushBrainLog("error", "mashup: crate is empty — load crate from Drive first");
+      return;
+    }
+    const liveLabel = getLiveDeckLabel();
+    const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
+    const liveId = liveCtrl?.trackId ?? null;
+
+    if (!liveLabel || !liveCtrl || !liveId) {
+      // No song playing yet: load a gold-standard stem-ready opener (Calvin Harris - Blame or Chyno Miranda - Quedate Conmigo)
+      const opener =
+        crate.find((t) => /calvin harris.*blame/i.test(t.name) && stemEntryFor(t.id) !== null) ??
+        crate.find((t) => /qu[eé]date conmigo/i.test(t.name) && stemEntryFor(t.id) !== null) ??
+        crate.find((t) => stemEntryFor(t.id) !== null && t.grid !== null && (t.bpm ?? 0) >= 90) ??
+        crate[0];
+      if (!opener) return;
+      pushBrainLog(
+        "stem_migrate",
+        `🧬 Starting Mashup Anchor "${musicLabel(opener)}" — tap 🧬 Live Mashup Now again once playing to layer the incoming Chorus/Hook!`
+      );
+      handleCrateTap(opener);
+      return;
+    }
+
+    const liveGrid = effectiveGrid(liveCtrl.tags, liveCtrl.grid);
+    const liveBpm = liveGrid ? liveGrid.bpm * liveCtrl.deck.tempo : (liveCtrl.tags.bpm ?? 100) * liveCtrl.deck.tempo;
+    const liveKey = liveCtrl.tags.key ?? crate.find((t) => t.id === liveId)?.key ?? null;
+    const recentIds = new Set(historyRef.current.slice(-6).map((r) => r.trackId));
+    recentIds.add(liveId);
+
+    const eligible = crate.filter((t) => {
+      if (t.id === liveId || recentIds.has(t.id)) return false;
+      if (!stemEntryFor(t.id)) return false;
+      const inGrid = (crateManifestJson as CrateManifestEntry[]).find((m) => m.id === t.id)?.grid ?? t.grid;
+      if (!inGrid || !inGrid.bpm) return false;
+      const ratio = liveBpm / inGrid.bpm;
+      return Math.abs(ratio - 1) <= 0.05;
+    });
+
+    const ranked = rankCandidatesByMusicTheory(
+      {
+        id: liveId,
+        name: liveCtrl.trackName ?? "",
+        bpm: liveBpm,
+        key: liveKey,
+        hasStems: stemEntryFor(liveId) !== null,
+        hasRealGrid: Boolean(liveGrid && !liveGrid.estimated),
+      },
+      eligible.map((t) => ({
+        id: t.id,
+        name: t.name,
+        bpm: t.bpm,
+        key: t.key,
+        genre: resolveMusicMetadata(t).genre,
+        hasStems: true,
+        hasRealGrid: true,
+      }))
+    );
+
+    const best = ranked[0]?.track ? crate.find((t) => t.id === ranked[0].track.id) : eligible[0];
+    if (!best) {
+      pushBrainLog("stem_migrate", "🧬 No close-BPM stem-ready partner found within ±5% BPM — using Next Song mix");
+      handleSkipToNextSong(false);
+      return;
+    }
+    const idx = crateIndexForTrackId(best.id);
+    if (idx === null) return;
+
+    pushBrainLog(
+      "stem_migrate",
+      `🧬 Live 16-Bar Stem Mashup: holding 8-bar pocket on "${musicLabel({ name: liveCtrl.trackName ?? "" })}" × layering Chorus/Hook of "${musicLabel(best)}" (${best.bpm ?? "—"} BPM · ${toCamelot(best.key) ?? "—"})`
+    );
+    executeCommand(
+      {
+        action: "stem_migrate",
+        trackId: String(idx),
+        bars: 16,
+        anchor: "out",
+        say: `🧬 Live 16-bar stem mashup into ${musicLabel(best)} (${ranked[0]?.harmonic.headline ?? "harmonic lock"})`,
       },
       "user_chat"
     );
@@ -8265,6 +8410,15 @@ export default function Home() {
           <button
             type="button"
             className={styles.quickBtnNext}
+            onClick={handleTriggerLiveMashupNow}
+            title="Execute a 16-bar Live Stem Mashup into the #1 harmonic match"
+            style={{ background: "linear-gradient(135deg, #8b5cf6, #ec4899)" }}
+          >
+            🧬 Mashup
+          </button>
+          <button
+            type="button"
+            className={styles.quickBtnNext}
             onClick={() => handleSkipToNextSong(false)}
             title="Mix into the next song right now"
           >
@@ -8368,6 +8522,7 @@ export default function Home() {
             onStartReggaetonShowcase={handleStartReggaetonShowcase}
             showcaseRemaining={showcaseRemaining}
             onSkipNext={handleSkipToNextSong}
+            onTriggerLiveMashup={handleTriggerLiveMashupNow}
             onSeekLive={handleSeekLive}
             onJumpToBeatLive={() => handleJumpToBeat()}
             hasLiveTrack={anyPlaying || Boolean(deckA.trackName || deckB.trackName)}

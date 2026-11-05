@@ -369,6 +369,24 @@ function buildRecipe(from: RecipeTrack, to: RecipeTrack, loopPoints: LoopPointsF
     };
   }
 
+  if (bothGridded && cleanTempo && harmonic && Math.abs(sync.tempo - 1) <= 0.035) {
+    const command: RecipeCommand = {
+      action: "stem_migrate",
+      bars: 16,
+      anchor: "out",
+    };
+    return {
+      fromId: from.id,
+      toId: to.id,
+      score: roundScore(0.52 + (incomingDrop ? 0.12 : 0) + (fromKey && fromKey === toKey ? 0.08 : 0.04)),
+      reason: `16-bar live stem mashup (${fromKey && toKey ? `${fromKey}↔${toKey}` : "harmonic lock"}, ΔBPM ${(Math.abs(sync.tempo - 1) * 100).toFixed(1)}%)`,
+      subBassPhaseCoherence,
+      pitchShiftSemitones,
+      eqSwapStrategy: computeEqSwapStrategy(command, subBassPhaseCoherence, harmonic),
+      command,
+    };
+  }
+
   const transition: RecipeTransition = cleanTempo ? (harmonic ? "bass_swap" : "beatmatch_crossfade") : "echo_out";
   const maskFx = !cleanTempo || (!harmonic && cleanTempo) ? "space_sweep" : undefined;
   const command: RecipeCommand = {

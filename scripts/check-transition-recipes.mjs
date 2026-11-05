@@ -10,6 +10,7 @@ import {
   isPartnerDanceTrackName,
   selectTransitionRecipe,
 } from "../src/lib/transition-recipes.ts";
+import { selectMashupEntryPoint } from "../src/lib/loop-points.ts";
 import recipes from "../src/data/transition-recipes.json" with { type: "json" };
 import manifest from "../src/data/crate-manifest.json" with { type: "json" };
 
@@ -152,6 +153,55 @@ assertOk(
   assertOk(
     "data: known Gente de Zona/Gilberto Santa Rosa source gets partner-dance-safe gap recipes",
     !!locoEntry && locoEntry[1].every((recipe) => recipe.command.action === "queue" && recipe.command.transition === "gap" && recipe.command.startAt === "beginning")
+  );
+
+  // Mashup entry back-timing & chorus hook selection tests:
+  const mashupDropEntry = selectMashupEntryPoint(
+    {
+      bpm: 120,
+      anchor: 0,
+      durationSeconds: 180,
+      vocalChecked: true,
+      loops: [],
+      // Drop at 60s (bar 30 at 120 BPM, 2s/bar). For 16-bar migration, swapBars = 12 -> 60 - 24 = 36s (>= 28s).
+      drops: [{ atSeconds: 60, barIndex: 30, strength: 1.8, entry16Seconds: 52, entry32Seconds: 44 }],
+    },
+    { migrationBars: 16, minEntrySeconds: 28, maxEntrySeconds: 110 }
+  );
+  assertOk(
+    "mashup: selectMashupEntryPoint back-times strong drop to the 12-bar bass handover",
+    mashupDropEntry?.reason === "mashup-drop-handover" && Math.abs(mashupDropEntry.seconds - 36) < 1e-6
+  );
+
+  const mashupChorusEntry = selectMashupEntryPoint(
+    {
+      bpm: 96,
+      anchor: 0,
+      durationSeconds: 180,
+      vocalChecked: true,
+      loops: [
+        {
+          startBar: 16,
+          lengthBars: 8,
+          startSeconds: 40,
+          endSeconds: 60,
+          repeats: 3,
+          similarity: 0.9,
+          stability: 0.85,
+          loudness: 0.78,
+          isolation: "melody",
+          vocalFree: false,
+          beatPresent: true,
+          score: 0.92,
+        },
+      ],
+      drops: [],
+    },
+    { migrationBars: 16, minEntrySeconds: 28, maxEntrySeconds: 110 }
+  );
+  assertOk(
+    "mashup: selectMashupEntryPoint selects vocal-active Chorus/Hook loop >= 28s when no drop back-times",
+    mashupChorusEntry?.reason === "mashup-chorus-hook" && Math.abs(mashupChorusEntry.seconds - 40) < 1e-6
   );
 }
 

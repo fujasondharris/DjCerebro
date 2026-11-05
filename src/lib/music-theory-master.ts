@@ -612,7 +612,7 @@ export function analyzeGrooveInterlock(
   if (fromGroove.socialDanceProtected || toGroove.socialDanceProtected) {
     recommendedTransition = "gap";
     recommendedBars = 8;
-  } else if (fromTrack.hasStems && toTrack.hasStems && !sync.clamped && Math.abs(1 - sync.tempo) <= 0.025 && harmonic.compatibleForMelodicBlend) {
+  } else if (fromTrack.hasStems && toTrack.hasStems && !sync.clamped && Math.abs(1 - sync.tempo) <= 0.035 && harmonic.compatibleForMelodicBlend) {
     recommendedTransition = "stem_migrate";
     recommendedBars = 16;
   } else if (sync.clamped) {

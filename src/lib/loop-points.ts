@@ -632,6 +632,86 @@ export function selectMidTrackEntryPoint(
   return beatIn !== null && beatIn >= 0 ? { seconds: Math.min(beatIn, maxEntry), reason: "beat-in" } : null;
 }
 
+export interface MashupEntryOptions {
+  /** Number of bars in the stem migration (8, 16, or 32). Default 16. */
+  migrationBars?: 8 | 16 | 32;
+  /** Minimum seconds into the incoming track to start (default 28s so intros/verses are skipped in favor of Chorus/Hook). */
+  minEntrySeconds?: number;
+  /** Maximum seconds into the incoming track to start (default 110s). */
+  maxEntrySeconds?: number;
+  /** Known drums-stem beat-in point (from beat-in.json), if available. */
+  beatInSeconds?: number | null;
+}
+
+/**
+ * Selects a Chorus/Hook-aligned incoming entry point specifically for live stem
+ * mashups (`stem_migrate`).
+ *
+ * In `planStemMigration` (`anchor: "out"`), the incoming vocals + harmony ride
+ * over the outgoing 8-bar drum+bass pocket during `[0.25 * bars, 0.75 * bars]`,
+ * and the bass + rhythm handoff occurs at `swapBar = 0.75 * bars` through `bars`.
+ * Therefore:
+ *  1. If the incoming track has a strong analyzed drop (`atSeconds >= 36s`),
+ *     back-time by `swapBar` bars (or `8` bars) from that drop so the build/hook
+ *     plays over the outgoing beat and the drop lands right on the bass handover.
+ *  2. Otherwise, pick the earliest repeating high-energy Chorus/Hook phrase
+ *     (`vocalFree === false && beatPresent === true && loudness >= 0.62`) starting
+ *     at `>= 28s` so the mashup immediately features the incoming vocal hook.
+ *  3. Fall back to `selectMidTrackEntryPoint` with `minEntrySeconds = 28` and
+ *     `preferBeats = 32`.
+ */
+export function selectMashupEntryPoint(
+  entry: TrackLoopPoints | null,
+  options: MashupEntryOptions = {}
+): { seconds: number; reason: "mashup-drop-handover" | "mashup-chorus-hook" | "drop-approach" | "mid-groove-loop" | "beat-loop" | "beat-in" | "phrase-hot" } | null {
+  const migrationBars = options.migrationBars ?? 16;
+  const beatIn = options.beatInSeconds ?? null;
+  const dur = entry && Number.isFinite(entry.durationSeconds) && entry.durationSeconds > 0 ? entry.durationSeconds : null;
+  const rawMin = dur !== null && dur < 60 ? 12 : (options.minEntrySeconds ?? 28);
+  const rawMax = options.maxEntrySeconds ?? 110;
+  const maxEntry = dur !== null && dur > 45 ? Math.min(rawMax, Math.max(rawMin, dur - (migrationBars * 2.5 + 18))) : rawMax;
+  const minEntry = Math.min(maxEntry, Math.max(rawMin, beatIn ?? 0));
+
+  if (entry && entry.bpm > 0) {
+    const barSeconds = (60 / entry.bpm) * BEATS_PER_BAR;
+    const swapBars = Math.max(8, Math.round(migrationBars * 0.75));
+    const rankedDrops = [...entry.drops].sort((a, b) => b.strength - a.strength);
+
+    // 1. Back-time from a strong drop so the drop downbeat lands right on the
+    //    stem migration's bass/rhythm handover bar (swapBars or 8 bars).
+    for (const d of rankedDrops) {
+      for (const leadBars of [swapBars, 8, migrationBars]) {
+        const candidate = Number((d.atSeconds - leadBars * barSeconds).toFixed(3));
+        if (candidate >= minEntry && candidate <= maxEntry) {
+          return { seconds: candidate, reason: "mashup-drop-handover" };
+        }
+      }
+    }
+
+    // 2. Earliest high-energy Chorus/Hook repeating phrase (vocals active + drums active) in [minEntry, maxEntry].
+    const chorusHooks = entry.loops
+      .filter(
+        (c) =>
+          c.beatPresent === true &&
+          c.vocalFree === false &&
+          c.loudness >= 0.62 &&
+          c.startSeconds >= minEntry &&
+          c.startSeconds <= maxEntry
+      )
+      .sort((a, b) => b.score - a.score || a.startSeconds - b.startSeconds);
+    if (chorusHooks.length > 0) {
+      return { seconds: chorusHooks[0].startSeconds, reason: "mashup-chorus-hook" };
+    }
+  }
+
+  return selectMidTrackEntryPoint(entry, {
+    minEntrySeconds: minEntry,
+    maxEntrySeconds: maxEntry,
+    preferBeats: 32,
+    beatInSeconds: beatIn,
+  });
+}
+
 /**
  * Tightens a track's mixOutSeconds to the end of its last active beat/groove
  * phrase so the DJ exits while the beat is still rolling, before untrimmed
