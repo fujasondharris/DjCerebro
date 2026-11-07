@@ -6726,6 +6726,100 @@
     ],
     "drops": []
   },
+  "drive:15SmdmpEfLU6gJryTwrIKOGaCHsRSX7Vq": {
+    "bpm": 132,
+    "anchor": 0.736,
+    "durationSeconds": 231.851,
+    "vocalChecked": true,
+    "loops": [
+      {
+        "startBar": 52,
+        "lengthBars": 8,
+        "startSeconds": 95.282,
+        "endSeconds": 109.827,
+        "repeats": 8,
+        "similarity": 0.8905,
+        "stability": 0.9366,
+        "loudness": 0.6915,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.9213,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -19.3,
+        "drumsDb": -18
+      },
+      {
+        "startBar": 44,
+        "lengthBars": 8,
+        "startSeconds": 80.736,
+        "endSeconds": 95.282,
+        "repeats": 8,
+        "similarity": 0.8819,
+        "stability": 0.9184,
+        "loudness": 0.6834,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.9148,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -19,
+        "drumsDb": -17.7
+      },
+      {
+        "startBar": 60,
+        "lengthBars": 4,
+        "startSeconds": 109.827,
+        "endSeconds": 117.1,
+        "repeats": 22,
+        "similarity": 0.8708,
+        "stability": 0.9488,
+        "loudness": 0.7931,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.8597,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -18,
+        "drumsDb": -18
+      },
+      {
+        "startBar": 40,
+        "lengthBars": 4,
+        "startSeconds": 73.464,
+        "endSeconds": 80.736,
+        "repeats": 9,
+        "similarity": 0.871,
+        "stability": 0.8688,
+        "loudness": 0.736,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.8421,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -26.5,
+        "drumsDb": -18
+      },
+      {
+        "startBar": 92,
+        "lengthBars": 4,
+        "startSeconds": 168.009,
+        "endSeconds": 175.282,
+        "repeats": 5,
+        "similarity": 0.8254,
+        "stability": 0.8792,
+        "loudness": 0.5698,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.8111,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -18.5,
+        "drumsDb": -20.5
+      }
+    ],
+    "drops": []
+  },
   "drive:15ciF0P9x9IpTbApmQ2w6vtwNtoZaIqA8": {
     "bpm": 92.0137,
     "anchor": 1.6,
@@ -26779,6 +26873,115 @@
     ],
     "drops": []
   },
+  "drive:1RVY0vmpDh2OUPPWbXCnKqeaB40DbTHAt": {
+    "bpm": 135.04,
+    "anchor": 0.147,
+    "durationSeconds": 188,
+    "vocalChecked": true,
+    "loops": [
+      {
+        "startBar": 84,
+        "lengthBars": 8,
+        "startSeconds": 149.436,
+        "endSeconds": 163.654,
+        "repeats": 7,
+        "similarity": 0.8606,
+        "stability": 0.9424,
+        "loudness": 0.8786,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.9304,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -19.7,
+        "drumsDb": -13.5
+      },
+      {
+        "startBar": 4,
+        "lengthBars": 8,
+        "startSeconds": 7.256,
+        "endSeconds": 21.474,
+        "repeats": 4,
+        "similarity": 0.8261,
+        "stability": 0.9583,
+        "loudness": 0.6319,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.8961,
+        "lyricVocalFree": true,
+        "beatPresent": true,
+        "vocalsDb": -60.9,
+        "drumsDb": -13.4
+      },
+      {
+        "startBar": 52,
+        "lengthBars": 4,
+        "startSeconds": 92.564,
+        "endSeconds": 99.673,
+        "repeats": 7,
+        "similarity": 0.8462,
+        "stability": 0.972,
+        "loudness": 0.8074,
+        "isolation": "melody",
+        "vocalFree": true,
+        "score": 0.856,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -18.9,
+        "drumsDb": -20.9
+      },
+      {
+        "startBar": 24,
+        "lengthBars": 4,
+        "startSeconds": 42.801,
+        "endSeconds": 49.91,
+        "repeats": 5,
+        "similarity": 0.8434,
+        "stability": 0.9391,
+        "loudness": 0.7959,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.849,
+        "lyricVocalFree": true,
+        "beatPresent": true,
+        "vocalsDb": -19.2,
+        "drumsDb": -12.7
+      },
+      {
+        "startBar": 16,
+        "lengthBars": 4,
+        "startSeconds": 28.583,
+        "endSeconds": 35.692,
+        "repeats": 5,
+        "similarity": 0.8465,
+        "stability": 0.8856,
+        "loudness": 0.5032,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.8128,
+        "lyricVocalFree": true,
+        "beatPresent": true,
+        "vocalsDb": -19.2,
+        "drumsDb": -16.1
+      }
+    ],
+    "drops": [
+      {
+        "atSeconds": 35.692,
+        "barIndex": 20,
+        "strength": 1.576,
+        "entry16Seconds": 28.583,
+        "entry32Seconds": 21.474
+      },
+      {
+        "atSeconds": 113.891,
+        "barIndex": 64,
+        "strength": 1.538,
+        "entry16Seconds": 106.782,
+        "entry32Seconds": 99.673
+      }
+    ]
+  },
   "drive:1RfBKUwGT9uiuS7tKIMLoONHIbf77xQWq": {
     "bpm": 98,
     "anchor": 0.138,
@@ -38827,6 +39030,115 @@
       }
     ]
   },
+  "drive:1bz3u0jLha0KLNv4yoUH_9FLJXTx5um99": {
+    "bpm": 136.94,
+    "anchor": 1.341,
+    "durationSeconds": 190.933,
+    "vocalChecked": true,
+    "loops": [
+      {
+        "startBar": 56,
+        "lengthBars": 8,
+        "startSeconds": 99.486,
+        "endSeconds": 113.507,
+        "repeats": 5,
+        "similarity": 0.8428,
+        "stability": 0.9764,
+        "loudness": 0.7195,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.9134,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -37.6,
+        "drumsDb": -11.8
+      },
+      {
+        "startBar": 100,
+        "lengthBars": 4,
+        "startSeconds": 176.6,
+        "endSeconds": 183.61,
+        "repeats": 15,
+        "similarity": 0.8969,
+        "stability": 0.9408,
+        "loudness": 0.8596,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.8743,
+        "lyricVocalFree": true,
+        "beatPresent": true,
+        "vocalsDb": -19.1,
+        "drumsDb": -11.8
+      },
+      {
+        "startBar": 92,
+        "lengthBars": 4,
+        "startSeconds": 162.579,
+        "endSeconds": 169.59,
+        "repeats": 16,
+        "similarity": 0.8949,
+        "stability": 0.9307,
+        "loudness": 0.8323,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.8694,
+        "lyricVocalFree": true,
+        "beatPresent": true,
+        "vocalsDb": -19.4,
+        "drumsDb": -11.9
+      },
+      {
+        "startBar": 64,
+        "lengthBars": 4,
+        "startSeconds": 113.507,
+        "endSeconds": 120.517,
+        "repeats": 6,
+        "similarity": 0.8843,
+        "stability": 0.9499,
+        "loudness": 0.6886,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.8542,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -28.4,
+        "drumsDb": -12.1
+      },
+      {
+        "startBar": 44,
+        "lengthBars": 4,
+        "startSeconds": 78.455,
+        "endSeconds": 85.465,
+        "repeats": 15,
+        "similarity": 0.8569,
+        "stability": 0.9061,
+        "loudness": 0.8288,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.852,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -19.2,
+        "drumsDb": -11.8
+      }
+    ],
+    "drops": [
+      {
+        "atSeconds": 43.403,
+        "barIndex": 24,
+        "strength": 1.561,
+        "entry16Seconds": 36.393,
+        "entry32Seconds": 29.382
+      },
+      {
+        "atSeconds": 127.527,
+        "barIndex": 72,
+        "strength": 1.412,
+        "entry16Seconds": 120.517,
+        "entry32Seconds": 113.507
+      }
+    ]
+  },
   "drive:1c2P-Hl0ZduHSFT1tvm7mHNG8pNO2rR1G": {
     "bpm": 126.0015,
     "anchor": 14.546,
@@ -47965,6 +48277,129 @@
         "strength": 1.577,
         "entry16Seconds": 81.296,
         "entry32Seconds": 71.167
+      }
+    ]
+  },
+  "drive:1krV0YfJUO7-HgDYpr4V-CSJDW8kIFMwn": {
+    "bpm": 150,
+    "anchor": 0.916,
+    "durationSeconds": 291.643,
+    "vocalChecked": true,
+    "loops": [
+      {
+        "startBar": 76,
+        "lengthBars": 8,
+        "startSeconds": 122.516,
+        "endSeconds": 135.316,
+        "repeats": 7,
+        "similarity": 0.8988,
+        "stability": 0.982,
+        "loudness": 0.9436,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.9562,
+        "lyricVocalFree": true,
+        "beatPresent": true,
+        "vocalsDb": -74.4,
+        "drumsDb": -6.7
+      },
+      {
+        "startBar": 128,
+        "lengthBars": 8,
+        "startSeconds": 205.716,
+        "endSeconds": 218.516,
+        "repeats": 7,
+        "similarity": 0.8699,
+        "stability": 0.9706,
+        "loudness": 1,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.9501,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -21.3,
+        "drumsDb": -6.8
+      },
+      {
+        "startBar": 156,
+        "lengthBars": 8,
+        "startSeconds": 250.516,
+        "endSeconds": 263.316,
+        "repeats": 8,
+        "similarity": 0.8955,
+        "stability": 0.8615,
+        "loudness": 0.9128,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.9339,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -24,
+        "drumsDb": -7.2
+      },
+      {
+        "startBar": 148,
+        "lengthBars": 8,
+        "startSeconds": 237.716,
+        "endSeconds": 250.516,
+        "repeats": 7,
+        "similarity": 0.8955,
+        "stability": 0.8398,
+        "loudness": 0.8697,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.9264,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -24.2,
+        "drumsDb": -7.3
+      },
+      {
+        "startBar": 164,
+        "lengthBars": 8,
+        "startSeconds": 263.316,
+        "endSeconds": 276.116,
+        "repeats": 5,
+        "similarity": 0.8625,
+        "stability": 0.9158,
+        "loudness": 0.7247,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.9117,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -26.3,
+        "drumsDb": -8.1
+      }
+    ],
+    "drops": [
+      {
+        "atSeconds": 13.716,
+        "barIndex": 8,
+        "strength": 2.074,
+        "entry16Seconds": 7.316,
+        "entry32Seconds": 0.916
+      },
+      {
+        "atSeconds": 116.116,
+        "barIndex": 72,
+        "strength": 3.583,
+        "entry16Seconds": 109.716,
+        "entry32Seconds": 103.316
+      },
+      {
+        "atSeconds": 199.316,
+        "barIndex": 124,
+        "strength": 1.689,
+        "entry16Seconds": 192.916,
+        "entry32Seconds": 186.516
+      },
+      {
+        "atSeconds": 237.716,
+        "barIndex": 148,
+        "strength": 2.009,
+        "entry16Seconds": 231.316,
+        "entry32Seconds": 224.916
       }
     ]
   },
@@ -57440,6 +57875,108 @@
         "strength": 1.383,
         "entry16Seconds": 162.47,
         "entry32Seconds": 154.402
+      }
+    ]
+  },
+  "drive:1t3C4j2BmS1A9Hww6GgDcwdWUOlB23CCG": {
+    "bpm": 129.98,
+    "anchor": 1.419,
+    "durationSeconds": 205.729,
+    "vocalChecked": true,
+    "loops": [
+      {
+        "startBar": 100,
+        "lengthBars": 8,
+        "startSeconds": 186.063,
+        "endSeconds": 200.835,
+        "repeats": 11,
+        "similarity": 0.8583,
+        "stability": 0.9736,
+        "loudness": 0.8628,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.9327,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -23.4,
+        "drumsDb": -7.8
+      },
+      {
+        "startBar": 40,
+        "lengthBars": 8,
+        "startSeconds": 75.277,
+        "endSeconds": 90.048,
+        "repeats": 11,
+        "similarity": 0.8471,
+        "stability": 0.9634,
+        "loudness": 0.8403,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.925,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -30.5,
+        "drumsDb": -7.4
+      },
+      {
+        "startBar": 92,
+        "lengthBars": 4,
+        "startSeconds": 171.292,
+        "endSeconds": 178.677,
+        "repeats": 13,
+        "similarity": 0.914,
+        "stability": 0.9764,
+        "loudness": 0.9006,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.8898,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -20.8,
+        "drumsDb": -8.6
+      },
+      {
+        "startBar": 52,
+        "lengthBars": 4,
+        "startSeconds": 97.434,
+        "endSeconds": 104.82,
+        "repeats": 15,
+        "similarity": 0.9007,
+        "stability": 0.9801,
+        "loudness": 0.849,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.8805,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -21.1,
+        "drumsDb": -8.1
+      },
+      {
+        "startBar": 60,
+        "lengthBars": 4,
+        "startSeconds": 112.206,
+        "endSeconds": 119.591,
+        "repeats": 13,
+        "similarity": 0.8985,
+        "stability": 0.8836,
+        "loudness": 0.8437,
+        "isolation": "beat",
+        "vocalFree": true,
+        "score": 0.8647,
+        "lyricVocalFree": false,
+        "beatPresent": true,
+        "vocalsDb": -20.4,
+        "drumsDb": -9.3
+      }
+    ],
+    "drops": [
+      {
+        "atSeconds": 163.906,
+        "barIndex": 88,
+        "strength": 1.358,
+        "entry16Seconds": 156.52,
+        "entry32Seconds": 149.134
       }
     ]
   },

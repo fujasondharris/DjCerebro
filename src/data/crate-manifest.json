@@ -14012,5 +14012,115 @@
     "title": "The Riddle",
     "genre": "Dance",
     "genreSource": "song"
+  },
+  {
+    "id": "1RVY0vmpDh2OUPPWbXCnKqeaB40DbTHAt",
+    "name": "Armada Music TV, Armin van Buuren - Armin van Buuren feat. Sharon den Adel - In And Out Of Love (Official Music Video).mp3",
+    "size": 5407383,
+    "bpm": 135.04,
+    "key": "Fm",
+    "durationSeconds": 188.000375,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.14659999310970306,
+          "bpm": 135.0399932861328
+        }
+      ],
+      "anchor": 0.14659999310970306,
+      "bpm": 135.0399932861328
+    },
+    "artist": "Armin van Buuren feat. Sharon den Adel",
+    "title": "In And Out Of Love",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "15SmdmpEfLU6gJryTwrIKOGaCHsRSX7Vq",
+    "name": "PaulOakenfoldVEVO - Paul Oakenfold - Southern Sun (Official Video) ft. Carla Werner.mp3",
+    "size": 7494035,
+    "bpm": 132,
+    "key": "Em",
+    "durationSeconds": 231.85125,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.7364000082015991,
+          "bpm": 132
+        }
+      ],
+      "anchor": 0.7364000082015991,
+      "bpm": 132
+    },
+    "artist": "Paul Oakenfold",
+    "title": "Southern Sun ft. Carla Werner",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1bz3u0jLha0KLNv4yoUH_9FLJXTx5um99",
+    "name": "Pop Unlimited - Planet Perfecto - Bullet In The Gun.mp3",
+    "size": 5745049,
+    "bpm": 136.94,
+    "key": "A#m",
+    "durationSeconds": 190.933333,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.3407000303268433,
+          "bpm": 136.94000244140625
+        }
+      ],
+      "anchor": 1.3407000303268433,
+      "bpm": 136.94000244140625
+    },
+    "artist": "Planet Perfecto",
+    "title": "Bullet In The Gun",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1krV0YfJUO7-HgDYpr4V-CSJDW8kIFMwn",
+    "name": "Tiësto - Dimitri Vegas & Like Mike & Tiësto & Dido & W&W – Thank You (Not So Bad) [Extended] (Lyric Video).mp3",
+    "size": 8987625,
+    "bpm": 150,
+    "key": "G#m",
+    "durationSeconds": 291.64263,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.9160000085830688,
+          "bpm": 150
+        }
+      ],
+      "anchor": 0.9160000085830688,
+      "bpm": 150
+    },
+    "artist": "Dimitri Vegas & Like Mike & Tiësto & Dido & W&W",
+    "title": "Thank You (Not So Bad) [Extended]",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1t3C4j2BmS1A9Hww6GgDcwdWUOlB23CCG",
+    "name": "Top Dance Mix - Fragma - Toca's Miracle (Inpetto 2008 Radio Edit) Official Video.mp3",
+    "size": 6676140,
+    "bpm": 129.98,
+    "key": "G",
+    "durationSeconds": 205.728979,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.4193999767303467,
+          "bpm": 129.97999572753906
+        }
+      ],
+      "anchor": 1.4193999767303467,
+      "bpm": 129.97999572753906
+    },
+    "artist": "Fragma",
+    "title": "Toca's Miracle (Inpetto 2008 Radio Edit)",
+    "genre": "Trance",
+    "genreSource": "song"
   }
 ]

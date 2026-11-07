@@ -25559,7 +25559,7 @@
         "silentPct": 0.02
       },
       "other": {
-        "meanDb": -34.0,
+        "meanDb": -34,
         "silentPct": 0.15
       },
       "vocals": {
@@ -25583,7 +25583,7 @@
     },
     "loudness": {
       "bass": {
-        "meanDb": -21.0,
+        "meanDb": -21,
         "silentPct": 0.05
       },
       "drums": {
@@ -25659,7 +25659,7 @@
         "silentPct": 0.08
       },
       "vocals": {
-        "meanDb": -24.0,
+        "meanDb": -24,
         "silentPct": 0.25
       }
     },
@@ -26595,6 +26595,144 @@
       "piano": {
         "meanDb": -69.5,
         "silentPct": 0.991
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1RVY0vmpDh2OUPPWbXCnKqeaB40DbTHAt": {
+    "name": "Armada Music TV, Armin van Buuren - Armin van Buuren feat. Sharon den Adel - In And Out Of Love (Official Music Video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T20:00:28.050Z",
+    "stems": {
+      "bass": "1ZTyxS0hVFjJNA6zuW5uU0O4em5WrFeH_",
+      "drums": "1dSja4Q147wSleE3oD-0PQsM728TC28pD",
+      "other": "12Fj7XQegmTSJDAhaP-OeSgNFw37-33Un",
+      "vocals": "1_nlHUAtMoPs_MGhMcP62XniBeGp5noPj"
+    },
+    "dropped": [
+      "guitar",
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -54.6,
+        "silentPct": 0.962
+      },
+      "piano": {
+        "meanDb": -34.7,
+        "silentPct": 0.867
+      }
+    },
+    "compingLayer": []
+  },
+  "15SmdmpEfLU6gJryTwrIKOGaCHsRSX7Vq": {
+    "name": "PaulOakenfoldVEVO - Paul Oakenfold - Southern Sun (Official Video) ft. Carla Werner.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T20:00:28.483Z",
+    "stems": {
+      "bass": "1GxaMfok2rmJvrF16JZ_sBIfruMFPjKrt",
+      "drums": "1cXQJ17YBoplgPVENT9p0kamOwB9bOun5",
+      "guitar": "1rVNS04EIPhmUqhAwwx2cy2oTJOfHlezu",
+      "other": "1oWNfp8QDgOi0dX4A8BM5fqoEfNHV4g_k",
+      "vocals": "1Iyv-3CeDXO_6pEP63PH-lF-QFVM-CGVP"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -27.6,
+        "silentPct": 0.506
+      },
+      "piano": {
+        "meanDb": -47,
+        "silentPct": 0.814
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1bz3u0jLha0KLNv4yoUH_9FLJXTx5um99": {
+    "name": "Pop Unlimited - Planet Perfecto - Bullet In The Gun.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T20:00:28.912Z",
+    "stems": {
+      "bass": "1CLLS1PU0VqOnMJqwMv1h4KGQxpUgVbJd",
+      "drums": "1YrGcUubmmGEaPorp89CYFlQ1AAN4RUCp",
+      "guitar": "1AnWlku4St2_wRpcDtbE9GGsjqtB6uVk9",
+      "other": "1N9AFnDHaVkUCJwsvt4Yt5zCwbQw13cVS",
+      "vocals": "1FxfcpVTmjbxRWFdSUvtIv5jHXBeL7RW9"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -41.7,
+        "silentPct": 0.788
+      },
+      "piano": {
+        "meanDb": -73.1,
+        "silentPct": 1
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1krV0YfJUO7-HgDYpr4V-CSJDW8kIFMwn": {
+    "name": "Tiësto - Dimitri Vegas & Like Mike & Tiësto & Dido & W&W – Thank You (Not So Bad) [Extended] (Lyric Video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T20:00:29.282Z",
+    "stems": {
+      "bass": "1Qgb4OIie_VG2Rpno9fq06BCT7gN_9Sol",
+      "drums": "1w_iQ9RqtZ5XuEcbHR-NWPj8A3gsdVTmw",
+      "guitar": "1g0Y_CggewmB58Umpql31WM1FolMfE89X",
+      "other": "1zULiSlGO0nKncA-lVEsoot8neGJkrIUQ",
+      "vocals": "1bee3zWJgngGT6FgaTXHwvJKKZoHJEPci"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -35.9,
+        "silentPct": 0.792
+      },
+      "piano": {
+        "meanDb": -47.2,
+        "silentPct": 0.951
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1t3C4j2BmS1A9Hww6GgDcwdWUOlB23CCG": {
+    "name": "Top Dance Mix - Fragma - Toca's Miracle (Inpetto 2008 Radio Edit) Official Video.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T20:00:29.740Z",
+    "stems": {
+      "bass": "1WjroaPHdS1uaYouEevccNu8kVxNfZkE8",
+      "drums": "1FOuyfgzsObDe2rfQK3eKWHSLtPIc5jnx",
+      "guitar": "18dC6zLEqYCYhAC8a8KcXTYzTgaE2I8FP",
+      "other": "1y-1NGjSiT8jFfp1R3XIX1cDWuN3F8bge",
+      "vocals": "1ivkR3uA_Z9UsRIYbTfmTS1PSGIJUB9fO"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -28.1,
+        "silentPct": 0.424
+      },
+      "piano": {
+        "meanDb": -74.1,
+        "silentPct": 1
       }
     },
     "compingLayer": [

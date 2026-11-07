@@ -217,9 +217,9 @@ const SONG_GENRES: [RegExp, RegExp, string][] = [
   [/^(kapo|rema)/, /^(calm down|ohnana|uwaie)$/, "Afrobeats"],
   [/^(darude|ppk|voodoo|paul van dyk|paul oakenfold|yahel|ferry corsten)/, /^(blood is pumpin|feel the beat|reload|sandstorm)\b/, "Trance"],
   // Why: these are the 1998–2004 popular trance singles. A title like "silence" or "heaven" is only trance with its artist. Tiësto's House profile must not catch Adagio or Flight 643.
-  [/^(alice deejay|atb|binary finary|cascada|chicane|delerium|dj sakin|dj sammy|energy 52|4 strings|iio|lasgo|paul van dyk|ppk|push|rank 1|robert miles|system f|three drives|veracocha|yahel)/, /^(9pm\b|1998\b|airwave\b|better off alone\b|cafe del mar\b|carte blanche\b|children\b|devotion\b|energy 52\b|everytime we touch\b|for an angel\b|greece 2000\b|heaven\b|out of the blue\b|protect your mind\b|rapture\b|resurection\b|resurrection\b|saltwater\b|silence\b|something\b|take me away\b|universal nation\b|voyage\b)/, "Trance"],
+  [/^(alice deejay|armin van buuren|atb|binary finary|cascada|chicane|delerium|dimitri vegas|dj sakin|dj sammy|energy 52|4 strings|fragma|iio|lasgo|paul oakenfold|paul van dyk|planet perfecto|ppk|push|rank 1|robert miles|system f|three drives|veracocha|yahel)/, /^(9pm\b|1998\b|airwave\b|better off alone\b|bullet in the gun\b|cafe del mar\b|carte blanche\b|children\b|devotion\b|energy 52\b|everytime we touch\b|for an angel\b|greece 2000\b|heaven\b|in and out of love\b|out of the blue\b|protect your mind\b|rapture\b|resurection\b|resurrection\b|saltwater\b|silence\b|something\b|southern sun\b|take me away\b|thank you\b|toca s miracle\b|universal nation\b|voyage\b)/, "Trance"],
   [/^(gouryella|ferry corsten)/, /^gouryella\b/, "Trance"],
-  [/^tiesto\b/, /^(adagio for strings|flight 643)\b/, "Trance"],
+  [/^tiesto\b/, /^(adagio for strings|flight 643|thank you)\b/, "Trance"],
   [/^anyma/, /^atmosphere$/, "Melodic Techno"],
   [/^(tiesto|calvin harris|david guetta|edward maya|hvme|daft punk)/, /^(blame|don t be shy|feel so close|get lucky|goosebumps|i m good|miracle|mockingbird|stereo love|the business|yesterday)\b/, "House"],
   // Why: later festival records in the same grab are progressive or pop house, not the trance anthems above.

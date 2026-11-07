@@ -1703,6 +1703,34 @@
       }
     ]
   },
+  "drive:15SmdmpEfLU6gJryTwrIKOGaCHsRSX7Vq": {
+    "name": "PaulOakenfoldVEVO - Paul Oakenfold - Southern Sun (Official Video) ft. Carla Werner.mp3",
+    "matchedTitle": "Southern Sun (Ft. Carla Werner)",
+    "matchedArtist": "Paul Oakenfold",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 29.83,
+        "label": "Piece by piece, I release"
+      },
+      {
+        "atSeconds": 80.59,
+        "label": "Than to face another night in southern s"
+      },
+      {
+        "atSeconds": 132.09,
+        "label": "And went down like a southern sun"
+      },
+      {
+        "atSeconds": 182.71,
+        "label": "(Set me free)"
+      },
+      {
+        "atSeconds": 284.55,
+        "label": "'Cause it's easier to fly"
+      }
+    ]
+  },
   "drive:15ciF0P9x9IpTbApmQ2w6vtwNtoZaIqA8": {
     "name": "Ready Peru - Daddy Yankee - Una Vida (Video Oficial) [YX2yJqT2xLE].mp3",
     "matchedTitle": "Ready Peru - Daddy Yankee - Una Vida (Video Oficial) [YX2yJqT2xLE]",
@@ -6947,6 +6975,26 @@
       }
     ]
   },
+  "drive:1RVY0vmpDh2OUPPWbXCnKqeaB40DbTHAt": {
+    "name": "Armada Music TV, Armin van Buuren - Armin van Buuren feat. Sharon den Adel - In And Out Of Love (Official Music Video).mp3",
+    "matchedTitle": "In And Out Of Love",
+    "matchedArtist": "Armin Van Buuren/Sharon Den Adel",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 86.62,
+        "label": "Oooooh"
+      },
+      {
+        "atSeconds": 141.82,
+        "label": "In love, in love, in love"
+      },
+      {
+        "atSeconds": 321.29,
+        "label": "Keep keep running"
+      }
+    ]
+  },
   "drive:1RfBKUwGT9uiuS7tKIMLoONHIbf77xQWq": {
     "name": "Marlon Alves Music - Mar Chiquita (feat. Pedro Capó) - Ozuna ｜ Marlon Alves Dance MAs [6WfkgpsI_vc].mp3",
     "matchedTitle": "Marlon Alves Music - Mar Chiquita (feat. Pedro Capó) - Ozuna ｜ Marlon Alves Dance MAs [6WfkgpsI_vc]",
@@ -10039,6 +10087,30 @@
       }
     ]
   },
+  "drive:1bz3u0jLha0KLNv4yoUH_9FLJXTx5um99": {
+    "name": "Pop Unlimited - Planet Perfecto - Bullet In The Gun.mp3",
+    "matchedTitle": "Bullet In The Gun",
+    "matchedArtist": "Planet Perfecto",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 61.72,
+        "label": "There's a bullet in the gun"
+      },
+      {
+        "atSeconds": 104.36,
+        "label": "Fight fire"
+      },
+      {
+        "atSeconds": 201.27,
+        "label": "There's a bullet in the gun"
+      },
+      {
+        "atSeconds": 315.03,
+        "label": "Fight fire"
+      }
+    ]
+  },
   "drive:1c2P-Hl0ZduHSFT1tvm7mHNG8pNO2rR1G": {
     "name": "Romeo Santos - Romeo Santos - Imitadora (Official Lyric Video).mp3",
     "matchedTitle": "Imitadora",
@@ -12308,6 +12380,30 @@
       {
         "atSeconds": 91.42,
         "label": "(Drop)"
+      }
+    ]
+  },
+  "drive:1krV0YfJUO7-HgDYpr4V-CSJDW8kIFMwn": {
+    "name": "Tiësto - Dimitri Vegas & Like Mike & Tiësto & Dido & W&W – Thank You (Not So Bad) [Extended] (Lyric Video).mp3",
+    "matchedTitle": "Thank You (Not So Bad) [Extended]",
+    "matchedArtist": "Dimitri Vegas & Like Mike, Tiësto, Dido & W&W",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 29.97,
+        "label": "(Ta-ra-ra-ra-ra-ra)"
+      },
+      {
+        "atSeconds": 166.06,
+        "label": "But your picture on my wall"
+      },
+      {
+        "atSeconds": 197.94,
+        "label": "It's not so bad"
+      },
+      {
+        "atSeconds": 249.72,
+        "label": "It's not so bad"
       }
     ]
   },

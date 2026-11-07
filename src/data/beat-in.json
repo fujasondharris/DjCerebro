@@ -3796,5 +3796,35 @@
     "beatInSeconds": 0,
     "detectedSeconds": 0,
     "snapped": false
+  },
+  "1RVY0vmpDh2OUPPWbXCnKqeaB40DbTHAt": {
+    "name": "Armada Music TV, Armin van Buuren - Armin van Buuren feat. Sharon den Adel - In And Out Of Love (Official Music Video).mp3",
+    "beatInSeconds": 0,
+    "detectedSeconds": 0,
+    "snapped": false
+  },
+  "15SmdmpEfLU6gJryTwrIKOGaCHsRSX7Vq": {
+    "name": "PaulOakenfoldVEVO - Paul Oakenfold - Southern Sun (Official Video) ft. Carla Werner.mp3",
+    "beatInSeconds": 0,
+    "detectedSeconds": 0,
+    "snapped": false
+  },
+  "1bz3u0jLha0KLNv4yoUH_9FLJXTx5um99": {
+    "name": "Pop Unlimited - Planet Perfecto - Bullet In The Gun.mp3",
+    "beatInSeconds": 0.5,
+    "detectedSeconds": 0.5,
+    "snapped": false
+  },
+  "1krV0YfJUO7-HgDYpr4V-CSJDW8kIFMwn": {
+    "name": "Tiësto - Dimitri Vegas & Like Mike & Tiësto & Dido & W&W – Thank You (Not So Bad) [Extended] (Lyric Video).mp3",
+    "beatInSeconds": 0,
+    "detectedSeconds": 0,
+    "snapped": false
+  },
+  "1t3C4j2BmS1A9Hww6GgDcwdWUOlB23CCG": {
+    "name": "Top Dance Mix - Fragma - Toca's Miracle (Inpetto 2008 Radio Edit) Official Video.mp3",
+    "beatInSeconds": 69.738,
+    "detectedSeconds": 71.5,
+    "snapped": true
   }
 }
