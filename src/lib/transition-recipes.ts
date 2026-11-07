@@ -145,7 +145,9 @@ export function isPartnerDanceTrackName(name: string): boolean {
 }
 
 export function isTranceTrackName(name: string): boolean {
-  return /\b(trance|paul van dyk|paul oakenfold|yahel|ferry corsten|above.{0,3}beyond)\b/i.test(name) && !isPartnerDanceTrackName(name);
+  if (isPartnerDanceTrackName(name)) return false;
+  if (resolveMusicMetadata({ name }).genre.toLowerCase() === "trance") return true;
+  return /\b(trance|paul van dyk|paul oakenfold|yahel|ferry corsten|above.{0,3}beyond|ti[eë]sto.*(adagio|flight 643|silence)|gouryella|veracocha|system f|binary finary|energy 52|delerium|chicane|rank 1|push.*universal nation|robert miles.*children|three drives.*greece 2000|alice deejay|atb.*9\s*pm|4 strings|lasgo|iio.*rapture|dj sakin|dj sammy|cascada)\b/i.test(name);
 }
 
 /** Current audio identity plus matching timeline; never relabel old trim cues by title. */

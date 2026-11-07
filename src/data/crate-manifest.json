@@ -13264,5 +13264,753 @@
     "title": "Costa Dorada — Bachata Sensual (VIP Dub)",
     "genre": "Bachata",
     "genreSource": "song"
+  },
+  {
+    "id": "1ibLjeg3N2Znx6bi-7WY1I6dqIE45SDlZ",
+    "name": "7clouds - Jonas Blue - Fast Car (Lyrics) ft. Dakota.mp3",
+    "size": 7015252,
+    "bpm": 113.73,
+    "key": "A",
+    "durationSeconds": 212.474208,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.9624699354171753,
+          "bpm": 113.7342300415039
+        }
+      ],
+      "anchor": 1.9624699354171753,
+      "bpm": 113.7342300415039
+    },
+    "artist": "Jonas Blue",
+    "title": "Fast Car ft. Dakota",
+    "genre": "House",
+    "genreSource": "song"
+  },
+  {
+    "id": "1pZipB7IzLrNt-LWWKkqkZPt4WFwt_4ne",
+    "name": "ATB - 9Pm (Till I Come).mp3",
+    "size": 6046155,
+    "bpm": 129.86,
+    "key": "Am",
+    "durationSeconds": 193.88,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.9194527864456177,
+          "bpm": 129.85984802246094
+        }
+      ],
+      "anchor": 0.9194527864456177,
+      "bpm": 129.85984802246094
+    },
+    "artist": "ATB",
+    "title": "9Pm (Till I Come)",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "151mwqieGK77oS-iNRTqaZ9i68ts7WGW8",
+    "name": "Alice Deejay - Alice Deejay - Better Off Alone (Official Video).mp3",
+    "size": 5604889,
+    "bpm": 136.67,
+    "key": "G#m",
+    "durationSeconds": 175.008979,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.37316784262657166,
+          "bpm": 136.667724609375
+        }
+      ],
+      "anchor": 0.37316784262657166,
+      "bpm": 136.667724609375
+    },
+    "artist": "Alice Deejay",
+    "title": "Better Off Alone",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1Bl0_w4m7qrdrEqzd474uQy8y_Gn3YAj1",
+    "name": "Armada Music TV - Chicane feat. Moya Brennan - Saltwater.mp3",
+    "size": 6854975,
+    "bpm": 130.59,
+    "key": "Fm",
+    "durationSeconds": 210.593396,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.08270155638456345,
+          "bpm": 130.5900421142578
+        }
+      ],
+      "anchor": 0.08270155638456345,
+      "bpm": 130.5900421142578
+    },
+    "artist": "Chicane feat. Moya Brennan",
+    "title": "Saltwater",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1rJwoecUTHNhYStnAuvkcKsdm475QGJmt",
+    "name": "Armada Music TV - Veracocha - Carte Blanche (Official Music Video).mp3",
+    "size": 6732374,
+    "bpm": 139.57,
+    "key": "A#m",
+    "durationSeconds": 235.647729,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.1048121452331543,
+          "bpm": 139.57122802734375
+        }
+      ],
+      "anchor": 1.1048121452331543,
+      "bpm": 139.57122802734375
+    },
+    "artist": "Veracocha",
+    "title": "Carte Blanche",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1ICHLICkALOTRsoDNPvu5ui5JyE9aRsWb",
+    "name": "Armin van Buuren - Yahel - Devotion (Armin van Buuren Remix).mp3",
+    "size": 7007827,
+    "bpm": 139.89,
+    "key": "Em",
+    "durationSeconds": 256.812698,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.12009498476982117,
+          "bpm": 139.88926696777344
+        }
+      ],
+      "anchor": 0.12009498476982117,
+      "bpm": 139.88926696777344
+    },
+    "artist": "Yahel",
+    "title": "Devotion (Armin van Buuren Remix)",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1YAtBMewkKB0j1CqjuuJeUmLeNjIYYNgB",
+    "name": "Avicii - Avicii - Levels.mp3",
+    "size": 6261702,
+    "bpm": 125.72,
+    "key": "E",
+    "durationSeconds": 198.356479,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.35316982865333557,
+          "bpm": 125.71855163574219
+        }
+      ],
+      "anchor": 0.35316982865333557,
+      "bpm": 125.71855163574219
+    },
+    "artist": "Avicii",
+    "title": "Levels",
+    "genre": "House",
+    "genreSource": "song"
+  },
+  {
+    "id": "1gtO1xn8ZCO8BVoQuNVcuuTu130Gle7cR",
+    "name": "Back Catalogue - Three Drives - Greece 2000.mp3",
+    "size": 4877454,
+    "bpm": 131.94,
+    "key": "G#m",
+    "durationSeconds": 205.032979,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.0550624132156372,
+          "bpm": 131.93531799316406
+        }
+      ],
+      "anchor": 1.0550624132156372,
+      "bpm": 131.93531799316406
+    },
+    "artist": "Three Drives",
+    "title": "Greece 2000",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1B1BI1PdE0DRFUCLAvg0mMtpcBiSZBBIr",
+    "name": "Be Yourself Music, Rank 1 - Rank 1 - Airwave (Official Music Video) [HQ].mp3",
+    "size": 5219026,
+    "bpm": 135.75,
+    "key": "F",
+    "durationSeconds": 181.046,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.2950137853622437,
+          "bpm": 135.75144958496094
+        }
+      ],
+      "anchor": 1.2950137853622437,
+      "bpm": 135.75144958496094
+    },
+    "artist": "Rank 1",
+    "title": "Airwave",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1C5403GEeb5kvHWjJl91F7XLISdmD1BN1",
+    "name": "Black Hole Recordings - Yahel & Eyal Barkan - Voyage.mp3",
+    "size": 11653781,
+    "bpm": 139.47,
+    "key": "A#m",
+    "durationSeconds": 384.801088,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.4067367315292358,
+          "bpm": 139.4717254638672
+        }
+      ],
+      "anchor": 1.4067367315292358,
+      "bpm": 139.4717254638672
+    },
+    "artist": "Yahel & Eyal Barkan",
+    "title": "Voyage",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "15-57IiF_Vv9P31C7sxjNZPkCJtXMEgJd",
+    "name": "CASCADA - Cascada - Everytime We Touch (Official video).mp3",
+    "size": 3992821,
+    "bpm": 141.54,
+    "key": "G#",
+    "durationSeconds": 201.526,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.5133905410766602,
+          "bpm": 141.5364990234375
+        }
+      ],
+      "anchor": 1.5133905410766602,
+      "bpm": 141.5364990234375
+    },
+    "artist": "Cascada",
+    "title": "Everytime We Touch",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1FWHkNJWp-8ks6b8WtGaiF1IcNL6WBPbs",
+    "name": "Calvin Harris - Calvin Harris, Ellie Goulding - Miracle (Official Video).mp3",
+    "size": 5908957,
+    "bpm": 142.68,
+    "key": "C#m",
+    "durationSeconds": 185.167542,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.8620921969413757,
+          "bpm": 142.6761474609375
+        }
+      ],
+      "anchor": 0.8620921969413757,
+      "bpm": 142.6761474609375
+    },
+    "artist": "Calvin Harris, Ellie Goulding",
+    "title": "Miracle",
+    "genre": "House",
+    "genreSource": "song"
+  },
+  {
+    "id": "1RP1iGgxIHMrwAw1N_HOe9yTFxC2jK3q1",
+    "name": "DJ Sammy - DJ Sammy feat. Yanou & Do - Heaven (Official Video).mp3",
+    "size": 7482695,
+    "bpm": 137.61,
+    "key": "D#",
+    "durationSeconds": 234.776979,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.3821606636047363,
+          "bpm": 137.61062622070312
+        }
+      ],
+      "anchor": 1.3821606636047363,
+      "bpm": 137.61062622070312
+    },
+    "artist": "DJ Sammy feat. Yanou & Do",
+    "title": "Heaven",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1tfFOsXa_0fi91TpQ6lBMmfQUCDq98pXm",
+    "name": "DarkSLF2 - Gouryella (Ferry Corsten & DJ Tiesto) - Gouryella HQ.mp3",
+    "size": 7043757,
+    "bpm": 137.62,
+    "key": "Em",
+    "durationSeconds": 216.630583,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.7177783250808716,
+          "bpm": 137.61961364746094
+        }
+      ],
+      "anchor": 1.7177783250808716,
+      "bpm": 137.61961364746094
+    },
+    "artist": "Ferry Corsten & Tiësto",
+    "title": "Gouryella",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1dx1S3us848lU0k0PMl9bL6aqY3CFSOks",
+    "name": "DeskCanSaw - Binary Finary - 1998 (Original Mix).mp3",
+    "size": 14664872,
+    "bpm": 150.7,
+    "key": "Gm",
+    "durationSeconds": 473.303958,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.641015887260437,
+          "bpm": 150.6982879638672
+        }
+      ],
+      "anchor": 0.641015887260437,
+      "bpm": 150.6982879638672
+    },
+    "artist": "Binary Finary",
+    "title": "1998 (Original Mix)",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1lkQGgPMKg9luD29NOUJJEJCEOJSXDXvj",
+    "name": "Embassy One - iiO - Rapture (Official Video).mp3",
+    "size": 5952713,
+    "bpm": 125.32,
+    "key": "A#m",
+    "durationSeconds": 216.084917,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.59844571352005,
+          "bpm": 125.32465362548828
+        }
+      ],
+      "anchor": 0.59844571352005,
+      "bpm": 125.32465362548828
+    },
+    "artist": "iiO",
+    "title": "Rapture",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1YS12BHPDj1Jyz-BC2hJRFW5JsLdEPuv3",
+    "name": "Energy 52 - Energy 52： Café Del Mar (Three 'n One Radio Remix) (official video).mp3",
+    "size": 7831455,
+    "bpm": 131.5,
+    "key": "Fm",
+    "durationSeconds": 229.448,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.9581844210624695,
+          "bpm": 131.49868774414062
+        }
+      ],
+      "anchor": 0.9581844210624695,
+      "bpm": 131.49868774414062
+    },
+    "artist": "Energy 52",
+    "title": "Café del Mar (Three 'n One Radio Remix)",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1yQl4iS1vm5znQb04SnLabyKRlgMfHcb8",
+    "name": "Euphoria Lyrics - PPK - Resurection.mp3",
+    "size": 8993219,
+    "bpm": 139.59,
+    "key": "Dm",
+    "durationSeconds": 301.418231,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.20631399750709534,
+          "bpm": 139.59304809570312
+        }
+      ],
+      "anchor": 0.20631399750709534,
+      "bpm": 139.59304809570312
+    },
+    "artist": "PPK",
+    "title": "Resurrection",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1_EsoFIqJCcJUO4zz9_o9lvmbKqInIABo",
+    "name": "Ferry Corsten - System F - Out Of The Blue (Official Video).mp3",
+    "size": 4434910,
+    "bpm": 139.63,
+    "key": "G",
+    "durationSeconds": 248.836646,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.4610381126403809,
+          "bpm": 139.6267547607422
+        }
+      ],
+      "anchor": 1.4610381126403809,
+      "bpm": 139.6267547607422
+    },
+    "artist": "System F",
+    "title": "Out Of The Blue",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1hDiv5G5KezgcK6DaaSdWwKHyKw9PTWPJ",
+    "name": "Loventus - DJ Sakin - Protect Your Mind (Braveheart).mp3",
+    "size": 6815526,
+    "bpm": 135.62,
+    "key": "Am",
+    "durationSeconds": 215.365083,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.6192095279693604,
+          "bpm": 135.62173461914062
+        }
+      ],
+      "anchor": 1.6192095279693604,
+      "bpm": 135.62173461914062
+    },
+    "artist": "DJ Sakin",
+    "title": "Protect Your Mind (Braveheart)",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1mr2JgeYyxQj66rYDciLuHAYeI1SRWa0b",
+    "name": "Ministry of Sound - Eric Prydz – Call On Me (Official Music Video) ｜ Ministry of Sound.mp3",
+    "size": 5105868,
+    "bpm": 126.01,
+    "key": "A#",
+    "durationSeconds": 173.9639,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.6856698393821716,
+          "bpm": 126.00817108154297
+        }
+      ],
+      "anchor": 0.6856698393821716,
+      "bpm": 126.00817108154297
+    },
+    "artist": "Eric Prydz",
+    "title": "Call On Me",
+    "genre": "House",
+    "genreSource": "song"
+  },
+  {
+    "id": "1wPaLWHzizMzYR81fQMec-mFImo8u3xvX",
+    "name": "Paul van Dyk - Paul van Dyk - For An Angel (1998).mp3",
+    "size": 7223669,
+    "bpm": 138.04,
+    "key": "Am",
+    "durationSeconds": 231.026958,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.24341104924678802,
+          "bpm": 138.03810119628906
+        }
+      ],
+      "anchor": 0.24341104924678802,
+      "bpm": 138.03810119628906
+    },
+    "artist": "Paul van Dyk",
+    "title": "For An Angel (1998)",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1gd5UD9n1t1UuN7fWI7Y0NclYu4Aq7kF-",
+    "name": "Push - Push - Universal Nation.mp3",
+    "size": 7126857,
+    "bpm": 137.7,
+    "key": "D#",
+    "durationSeconds": 226.963458,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.05664545297622681,
+          "bpm": 137.6986083984375
+        }
+      ],
+      "anchor": 0.05664545297622681,
+      "bpm": 137.6986083984375
+    },
+    "artist": "Push",
+    "title": "Universal Nation",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1sc-GZx0C0dvvoK6DL-DfoTHNto78kkAj",
+    "name": "Robert Miles - Robert Miles - Children (Official Video).mp3",
+    "size": 7536864,
+    "bpm": 136.65,
+    "key": "Fm",
+    "durationSeconds": 243.647,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.0965985357761383,
+          "bpm": 136.6480255126953
+        }
+      ],
+      "anchor": 0.0965985357761383,
+      "bpm": 136.6480255126953
+    },
+    "artist": "Robert Miles",
+    "title": "Children",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1Yq_-5exojMKxKOKDl0NwSbwhwOMdXSBz",
+    "name": "Steve Aoki - Gabry Ponte, Steve Aoki, KEL - He's A Pirate (Save Me) [Official Visualizer].mp3",
+    "size": 5182438,
+    "bpm": 143.67,
+    "key": "Dm",
+    "durationSeconds": 153.100792,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.4449864625930786,
+          "bpm": 143.66915893554688
+        }
+      ],
+      "anchor": 1.4449864625930786,
+      "bpm": 143.66915893554688
+    },
+    "artist": "Gabry Ponte, Steve Aoki, KEL",
+    "title": "He's A Pirate (Save Me)",
+    "genre": "House",
+    "genreSource": "song"
+  },
+  {
+    "id": "1J6fAANmBJw15mtYY-E0CAFOmO5InDm1d",
+    "name": "Steve Aoki - Pursuit of Happiness (Steve Aoki Remix) - Kid Cudi AUDIO.mp3",
+    "size": 11738367,
+    "bpm": 127.71,
+    "key": "Em",
+    "durationSeconds": 383.146667,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.1315511167049408,
+          "bpm": 127.70701599121094
+        }
+      ],
+      "anchor": 0.1315511167049408,
+      "bpm": 127.70701599121094
+    },
+    "artist": "Steve Aoki & Kid Cudi",
+    "title": "Pursuit of Happiness (Steve Aoki Remix)",
+    "genre": "House",
+    "genreSource": "song"
+  },
+  {
+    "id": "1JxwIyeRT2Tu_3LNDJUzoyT51TnHHYCdT",
+    "name": "Swedish House Mafia - Swedish House Mafia ft. John Martin - Don't You Worry Child (Official Video).mp3",
+    "size": 10628470,
+    "bpm": 128.8,
+    "key": "D",
+    "durationSeconds": 334.913021,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.3602466583251953,
+          "bpm": 128.8001708984375
+        }
+      ],
+      "anchor": 1.3602466583251953,
+      "bpm": 128.8001708984375
+    },
+    "artist": "Swedish House Mafia & John Martin",
+    "title": "Don't You Worry Child",
+    "genre": "House",
+    "genreSource": "song"
+  },
+  {
+    "id": "1Lo2rN_Ix7bntbMACAdPwEgX3puIeMB4o",
+    "name": "Tiësto - Tiësto, Dimitri Vegas & Like Mike, Gabry Ponte - Mockingbird (Official Lyric Video).mp3",
+    "size": 5257964,
+    "bpm": 154.65,
+    "key": "F#m",
+    "durationSeconds": 154.842271,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.3385019302368164,
+          "bpm": 154.65049743652344
+        }
+      ],
+      "anchor": 1.3385019302368164,
+      "bpm": 154.65049743652344
+    },
+    "artist": "Tiësto, Dimitri Vegas & Like Mike, Gabry Ponte",
+    "title": "Mockingbird",
+    "genre": "House",
+    "genreSource": "song"
+  },
+  {
+    "id": "1gUrGYear5BtiZneteSLlv548wrvsUxRk",
+    "name": "Tiësto - Tiësto - Adagio For Strings.mp3",
+    "size": 6572090,
+    "bpm": 141.34,
+    "key": "A#m",
+    "durationSeconds": 205.798458,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.6282528638839722,
+          "bpm": 141.3443603515625
+        }
+      ],
+      "anchor": 0.6282528638839722,
+      "bpm": 141.3443603515625
+    },
+    "artist": "Tiësto",
+    "title": "Adagio For Strings",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1cygggxDS3B6c3Xs-kAjWiaHzg8nrqd51",
+    "name": "Tiësto - Tiësto - Flight 643.mp3",
+    "size": 5137646,
+    "bpm": 136.7,
+    "key": "Cm",
+    "durationSeconds": 172.094708,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.7725196480751038,
+          "bpm": 136.69554138183594
+        }
+      ],
+      "anchor": 0.7725196480751038,
+      "bpm": 136.69554138183594
+    },
+    "artist": "Tiësto",
+    "title": "Flight 643",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1DUfEUgIzhnCUTNFygllhLiWwUxW85UHi",
+    "name": "Ultra Records - 4 Strings - Take Me Away.mp3",
+    "size": 6096913,
+    "bpm": 137.73,
+    "key": "D#m",
+    "durationSeconds": 191.8665,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.8102927803993225,
+          "bpm": 137.72799682617188
+        }
+      ],
+      "anchor": 0.8102927803993225,
+      "bpm": 137.72799682617188
+    },
+    "artist": "4 Strings",
+    "title": "Take Me Away",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1YzlVJ_vcU6WK_OahHDYlZFUG7xfgWZkM",
+    "name": "lasgoofficial - Lasgo - Something   (OFFICIAL VIDEO).mp3",
+    "size": 6823833,
+    "bpm": 139.72,
+    "key": "Dm",
+    "durationSeconds": 242.927166,
+    "grid": {
+      "markers": [
+        {
+          "position": 1.236749529838562,
+          "bpm": 139.72108459472656
+        }
+      ],
+      "anchor": 1.236749529838562,
+      "bpm": 139.72108459472656
+    },
+    "artist": "Lasgo",
+    "title": "Something",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1jI8MNxmId1SKecdEmWV7W29lQMqugfNY",
+    "name": "protectorofillinois3 - Delerium feat. Sarah McLachlan - Silence (Tiesto's In Search of Sunrise Remix) [HD].mp3",
+    "size": 22420948,
+    "bpm": 137.66,
+    "key": "Am",
+    "durationSeconds": 694.044458,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.6624998450279236,
+          "bpm": 137.660400390625
+        }
+      ],
+      "anchor": 0.6624998450279236,
+      "bpm": 137.660400390625
+    },
+    "artist": "Delerium feat. Sarah McLachlan",
+    "title": "Silence (Tiesto's In Search of Sunrise Remix)",
+    "genre": "Trance",
+    "genreSource": "song"
+  },
+  {
+    "id": "1e2h1R8_nqBAJlgh3VPyo8hvsiT3Dmxew",
+    "name": "zyxdance - Gigi D'Agostino - The Riddle.mp3",
+    "size": 6564029,
+    "bpm": 126.74,
+    "key": "F#m",
+    "durationSeconds": 206.483458,
+    "grid": {
+      "markers": [
+        {
+          "position": 0.7290719747543335,
+          "bpm": 126.73645782470703
+        }
+      ],
+      "anchor": 0.7290719747543335,
+      "bpm": 126.73645782470703
+    },
+    "artist": "Gigi D'Agostino",
+    "title": "The Riddle",
+    "genre": "Dance",
+    "genreSource": "song"
   }
 ]

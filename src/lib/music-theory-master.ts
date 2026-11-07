@@ -450,6 +450,17 @@ export function classifyRhythmicGroove(track: {
     };
   }
 
+  if (resolvedGenre === "trance" || /\b(trance|paul van dyk|oakenfold|ferry corsten|above|eurodance|gouryella|veracocha|binary finary|energy 52|delerium|chicane|rank 1|robert miles|three drives|alice deejay|atb|4 strings|lasgo)\b/.test(resolvedGenre + " " + lowerName)) {
+    return {
+      family: "trance_progressive_4x4",
+      label: "Trance / Progressive 4x4 Rolling Bass",
+      clavePattern: "4x4 Kick + 16th-Note Rolling Offbeat Arpeggio",
+      kickAccentBeats: "Four-on-the-Floor (1-2-3-4)",
+      subBassCharacter: "Sustained Saw/Sub Rolling Bassline (40–90Hz)",
+      socialDanceProtected: false,
+    };
+  }
+
   if (/\b(guaracha|tribal|aleteo|tech house|house|latin house)\b/.test(resolvedGenre + " " + lowerName) || (bpm >= 122 && bpm <= 134 && /medianoche|zapateo|club/i.test(lowerName))) {
     return {
       family: "guaracha_tribal_4x4",
@@ -457,17 +468,6 @@ export function classifyRhythmicGroove(track: {
       clavePattern: "4x4 Club Kick + Syncopated Offbeat Brass/Zapateo",
       kickAccentBeats: "Four-on-the-Floor (1-2-3-4) + Offbeat High-Perc",
       subBassCharacter: "Tight Sidechained Sub-Bass (45–95Hz)",
-      socialDanceProtected: false,
-    };
-  }
-
-  if (/\b(trance|paul van dyk|oakenfold|tiesto|ferry corsten|above|eurodance)\b/.test(resolvedGenre + " " + lowerName)) {
-    return {
-      family: "trance_progressive_4x4",
-      label: "Trance / Progressive 4x4 Rolling Bass",
-      clavePattern: "4x4 Kick + 16th-Note Rolling Offbeat Arpeggio",
-      kickAccentBeats: "Four-on-the-Floor (1-2-3-4)",
-      subBassCharacter: "Sustained Saw/Sub Rolling Bassline (40–90Hz)",
       socialDanceProtected: false,
     };
   }
@@ -537,13 +537,13 @@ const GROOVE_COMPATIBILITY_MATRIX: Record<GrooveFamilyId, Record<GrooveFamilyId,
   },
   trance_progressive_4x4: {
     trance_progressive_4x4: 1.0,
-    guaracha_tribal_4x4: 0.9,
-    dembow_tresillo: 0.68,
-    cubaton_timba: 0.68,
-    hiphop_boom_trap: 0.64,
-    merengue_marcha: 0.65,
-    salsa_son_clave: 0.45,
-    bachata_derecho_majao: 0.45,
+    guaracha_tribal_4x4: 0.92,
+    dembow_tresillo: 0.78,
+    cubaton_timba: 0.76,
+    hiphop_boom_trap: 0.7,
+    merengue_marcha: 0.74,
+    salsa_son_clave: 0.62,
+    bachata_derecho_majao: 0.72,
   },
   hiphop_boom_trap: {
     hiphop_boom_trap: 1.0,

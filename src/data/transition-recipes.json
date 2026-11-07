@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-05T16:05:36.774Z",
-  "tracks": 603,
+  "generatedAt": "2026-11-07T15:21:56.880Z",
+  "tracks": 637,
   "recipes": {
     "1EHbX5zhcEzo22JWoAdC73P6pNcuaUeGO": [
       {
@@ -7971,11 +7971,11 @@
       },
       {
         "fromId": "1hthRWDC4j8nLAhJ1X941mOeRN2QjsWjd",
-        "toId": "1Mhx1X34SiFB_LyyxbWlGdOvakJqqgr2o",
-        "score": 0.9067,
+        "toId": "1Lo2rN_Ix7bntbMACAdPwEgX3puIeMB4o",
+        "score": 0.9867,
         "reason": "melody sample loop into drop-entry with seam sweep",
-        "subBassPhaseCoherence": 0.9538,
-        "pitchShiftSemitones": 0,
+        "subBassPhaseCoherence": 0.972,
+        "pitchShiftSemitones": -0.803,
         "eqSwapStrategy": "instant-bass-swap",
         "command": {
           "action": "routine",
@@ -7984,8 +7984,8 @@
             "isolation": "melody",
             "captureBars": 4,
             "holdSeconds": 22,
-            "halvings": 1,
-            "sweepToBpm": 128
+            "halvings": 0,
+            "sweepToBpm": 154.65
           },
           "queue": {
             "transition": "bass_swap",
@@ -35591,6 +35591,58 @@
     "1CRqxvwHSFGYiY0Xh772_aZ9tldtPa1qg": [
       {
         "fromId": "1CRqxvwHSFGYiY0Xh772_aZ9tldtPa1qg",
+        "toId": "15-57IiF_Vv9P31C7sxjNZPkCJtXMEgJd",
+        "score": 0.9865,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9646,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 141.54
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1CRqxvwHSFGYiY0Xh772_aZ9tldtPa1qg",
+        "toId": "1gd5UD9n1t1UuN7fWI7Y0NclYu4Aq7kF-",
+        "score": 0.9865,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9471,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 137.7
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1CRqxvwHSFGYiY0Xh772_aZ9tldtPa1qg",
         "toId": "1lu5p21oXoU7wiygDirLRulKCDvTmLnx9",
         "score": 0.9065,
         "reason": "beat sample loop into drop-entry with seam sweep",
@@ -35632,58 +35684,6 @@
             "holdSeconds": 22,
             "halvings": 1,
             "sweepToBpm": 125.99
-          },
-          "queue": {
-            "transition": "bass_swap",
-            "durationBars": 4,
-            "startAt": "auto",
-            "maskFx": "space_sweep"
-          }
-        }
-      },
-      {
-        "fromId": "1CRqxvwHSFGYiY0Xh772_aZ9tldtPa1qg",
-        "toId": "1xQsinAptEWUdjSW5xcMa-6UpM-x1t2Bi",
-        "score": 0.9065,
-        "reason": "beat sample loop into drop-entry with seam sweep",
-        "subBassPhaseCoherence": 0.9468,
-        "pitchShiftSemitones": 1.332,
-        "eqSwapStrategy": "stem-bass-cut-bar-4",
-        "command": {
-          "action": "routine",
-          "routine": "sample_mix",
-          "sample": {
-            "isolation": "beat",
-            "captureBars": 4,
-            "holdSeconds": 22,
-            "halvings": 1,
-            "sweepToBpm": 133.99
-          },
-          "queue": {
-            "transition": "bass_swap",
-            "durationBars": 4,
-            "startAt": "auto",
-            "maskFx": "space_sweep"
-          }
-        }
-      },
-      {
-        "fromId": "1CRqxvwHSFGYiY0Xh772_aZ9tldtPa1qg",
-        "toId": "1n9x6gl8hdbZcfvIm7BIrVGqWh0Mld-h7",
-        "score": 0.9065,
-        "reason": "beat sample loop into drop-entry with seam sweep",
-        "subBassPhaseCoherence": 0.947,
-        "pitchShiftSemitones": 1.332,
-        "eqSwapStrategy": "stem-bass-cut-bar-4",
-        "command": {
-          "action": "routine",
-          "routine": "sample_mix",
-          "sample": {
-            "isolation": "beat",
-            "captureBars": 4,
-            "holdSeconds": 22,
-            "halvings": 1,
-            "sweepToBpm": 128
           },
           "queue": {
             "transition": "bass_swap",
@@ -70323,6 +70323,4120 @@
             "startAt": "auto",
             "maskFx": "space_sweep"
           }
+        }
+      }
+    ],
+    "1ibLjeg3N2Znx6bi-7WY1I6dqIE45SDlZ": [
+      {
+        "fromId": "1ibLjeg3N2Znx6bi-7WY1I6dqIE45SDlZ",
+        "toId": "1ghyDl7MGeakRDIpFBV__Sw5_gSF_8nfC",
+        "score": 0.9902,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.982,
+        "pitchShiftSemitones": -0.041,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 114
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1ibLjeg3N2Znx6bi-7WY1I6dqIE45SDlZ",
+        "toId": "1znxkac9enx7E0RgN-XFKLHV_RljPBaT4",
+        "score": 0.9902,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.958,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 120.02
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1ibLjeg3N2Znx6bi-7WY1I6dqIE45SDlZ",
+        "toId": "14fo609oGYNGE3tlv7qD5qHBzISE8LGiE",
+        "score": 0.9902,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9808,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 112.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1ibLjeg3N2Znx6bi-7WY1I6dqIE45SDlZ",
+        "toId": "1_lRyq0IXJ1oIzQTWOnMIIcYnvRASAmrR",
+        "score": 0.9902,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9789,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 112.57
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1ibLjeg3N2Znx6bi-7WY1I6dqIE45SDlZ",
+        "toId": "1TxW6QbF3s5K_FnS-8Em0mGWsY5MA_Eev",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9227,
+        "pitchShiftSemitones": -1.355,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1pZipB7IzLrNt-LWWKkqkZPt4WFwt_4ne": [
+      {
+        "fromId": "1pZipB7IzLrNt-LWWKkqkZPt4WFwt_4ne",
+        "toId": "1nZUDRNgEZmt-W_ZhpMlS9F1PD5IbyXJC",
+        "score": 0.9911,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9863,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 127.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1pZipB7IzLrNt-LWWKkqkZPt4WFwt_4ne",
+        "toId": "1odmzc2OkdF67bGWFFunb032MsrKIqztY",
+        "score": 0.9911,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9855,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.21
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1pZipB7IzLrNt-LWWKkqkZPt4WFwt_4ne",
+        "toId": "1lZFsJSa_o6M83ZQlpqOncX_QnY8dnmju",
+        "score": 0.9911,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9898,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.47
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1pZipB7IzLrNt-LWWKkqkZPt4WFwt_4ne",
+        "toId": "12fu57qvxWcz1vDKIUg0cHExufZlfkawP",
+        "score": 0.9911,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9802,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1pZipB7IzLrNt-LWWKkqkZPt4WFwt_4ne",
+        "toId": "1HsMfxyZm9fsHTUsCdg8QllV3csK1AH_Y",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9313,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "151mwqieGK77oS-iNRTqaZ9i68ts7WGW8": [
+      {
+        "fromId": "151mwqieGK77oS-iNRTqaZ9i68ts7WGW8",
+        "toId": "1sXpsTcFPRS2owvBDru5LBNHw-ayoPUzp",
+        "score": 0.9889,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9818,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 137.85
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "151mwqieGK77oS-iNRTqaZ9i68ts7WGW8",
+        "toId": "1zVaS3FQnutx92uibVOy61Sx4Zaf6nkyd",
+        "score": 0.9889,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9925,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 136.36
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "151mwqieGK77oS-iNRTqaZ9i68ts7WGW8",
+        "toId": "1WfCyNzl_uI7y_KGcVGtRMg7B5hXgVp-T",
+        "score": 0.9889,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9501,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 127.04
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "151mwqieGK77oS-iNRTqaZ9i68ts7WGW8",
+        "toId": "1X1-59gyJbG4KHoHLVo_9Ow-0AAXzK5Sf",
+        "score": 0.9889,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9628,
+        "pitchShiftSemitones": 0.873,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 129.95
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "151mwqieGK77oS-iNRTqaZ9i68ts7WGW8",
+        "toId": "1tfi5OTOeFT9NPQuETC2CIpaFLVUC8Ad3",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9431,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1Bl0_w4m7qrdrEqzd474uQy8y_Gn3YAj1": [
+      {
+        "fromId": "1Bl0_w4m7qrdrEqzd474uQy8y_Gn3YAj1",
+        "toId": "1dWJIgK47vpBz8aDNg4gn1w8hCRHLmUxo",
+        "score": 0.9821,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9524,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 121.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1Bl0_w4m7qrdrEqzd474uQy8y_Gn3YAj1",
+        "toId": "11Wpw8AXcX5Bxf1MY3BGZW7FIl9wL-z59",
+        "score": 0.9821,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9737,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 125.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1Bl0_w4m7qrdrEqzd474uQy8y_Gn3YAj1",
+        "toId": "1xQsinAptEWUdjSW5xcMa-6UpM-x1t2Bi",
+        "score": 0.9821,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9819,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 133.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1Bl0_w4m7qrdrEqzd474uQy8y_Gn3YAj1",
+        "toId": "1n9x6gl8hdbZcfvIm7BIrVGqWh0Mld-h7",
+        "score": 0.9821,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9838,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1Bl0_w4m7qrdrEqzd474uQy8y_Gn3YAj1",
+        "toId": "12Le2G1axMqJY1yP30Ic5EalnKLbGnAgC",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9696,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1rJwoecUTHNhYStnAuvkcKsdm475QGJmt": [
+      {
+        "fromId": "1rJwoecUTHNhYStnAuvkcKsdm475QGJmt",
+        "toId": "16LgggTQTo4aTV1l3viJq3ieluw4yZZ_g",
+        "score": 0.9905,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9541,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 75
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1rJwoecUTHNhYStnAuvkcKsdm475QGJmt",
+        "toId": "1Rqk60AbPmTBBRzcRtj6xm7IDBg53u6fn",
+        "score": 0.9905,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9646,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 74
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1rJwoecUTHNhYStnAuvkcKsdm475QGJmt",
+        "toId": "1H3WLopXVI40KLQfdQQeXpm8ibtYz7Zac",
+        "score": 0.9905,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9681,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 132.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1rJwoecUTHNhYStnAuvkcKsdm475QGJmt",
+        "toId": "1sXpsTcFPRS2owvBDru5LBNHw-ayoPUzp",
+        "score": 0.9905,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9772,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 137.85
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1rJwoecUTHNhYStnAuvkcKsdm475QGJmt",
+        "toId": "12Le2G1axMqJY1yP30Ic5EalnKLbGnAgC",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9475,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1ICHLICkALOTRsoDNPvu5ui5JyE9aRsWb": [
+      {
+        "fromId": "1ICHLICkALOTRsoDNPvu5ui5JyE9aRsWb",
+        "toId": "1rt4i0LGDT-QRpODaFFn3rTanJZGq4wwx",
+        "score": 0.993,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9474,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 75.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1ICHLICkALOTRsoDNPvu5ui5JyE9aRsWb",
+        "toId": "1m_EI5B1t7F8TBa1CRcK_ka-dDMmXMu2u",
+        "score": 0.993,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9589,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 75
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1ICHLICkALOTRsoDNPvu5ui5JyE9aRsWb",
+        "toId": "16htH2VFHEjLtfNqrpKwqCQCdgVL8_eEG",
+        "score": 0.993,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9472,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 130
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1ICHLICkALOTRsoDNPvu5ui5JyE9aRsWb",
+        "toId": "1nWisrpd9O18_2yFm96oEFTu9qj-DFd7Z",
+        "score": 0.993,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9755,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 71.34
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1ICHLICkALOTRsoDNPvu5ui5JyE9aRsWb",
+        "toId": "1HsMfxyZm9fsHTUsCdg8QllV3csK1AH_Y",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9137,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1YAtBMewkKB0j1CqjuuJeUmLeNjIYYNgB": [
+      {
+        "fromId": "1YAtBMewkKB0j1CqjuuJeUmLeNjIYYNgB",
+        "toId": "1Mhx1X34SiFB_LyyxbWlGdOvakJqqgr2o",
+        "score": 0.9894,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9845,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1YAtBMewkKB0j1CqjuuJeUmLeNjIYYNgB",
+        "toId": "1KGlwLCz5JV7iI63uPGQrmplgLn3wGqbT",
+        "score": 0.9894,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9789,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1YAtBMewkKB0j1CqjuuJeUmLeNjIYYNgB",
+        "toId": "1X1-59gyJbG4KHoHLVo_9Ow-0AAXzK5Sf",
+        "score": 0.9894,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9685,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 129.95
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1YAtBMewkKB0j1CqjuuJeUmLeNjIYYNgB",
+        "toId": "1znxkac9enx7E0RgN-XFKLHV_RljPBaT4",
+        "score": 0.9894,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9603,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 120.02
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1YAtBMewkKB0j1CqjuuJeUmLeNjIYYNgB",
+        "toId": "1VwQdmKx4MnyvsQl4he1PhMF87_mKdEGI",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9459,
+        "pitchShiftSemitones": 0.241,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1gtO1xn8ZCO8BVoQuNVcuuTu130Gle7cR": [
+      {
+        "fromId": "1gtO1xn8ZCO8BVoQuNVcuuTu130Gle7cR",
+        "toId": "11uZOGwdmxbKaDKwv3rL-diXYN9cADbOR",
+        "score": 0.9935,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9735,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 126
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1gtO1xn8ZCO8BVoQuNVcuuTu130Gle7cR",
+        "toId": "18w0FvEh3pozCtoUKzkSVX2_GYCQDUon_",
+        "score": 0.9935,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9572,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 125
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1gtO1xn8ZCO8BVoQuNVcuuTu130Gle7cR",
+        "toId": "1V_xlV_hJKSVeDQfAqkLdXdeQ010y3WfH",
+        "score": 0.9935,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.962,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 125
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1gtO1xn8ZCO8BVoQuNVcuuTu130Gle7cR",
+        "toId": "1sXpsTcFPRS2owvBDru5LBNHw-ayoPUzp",
+        "score": 0.9935,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9708,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 137.85
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1gtO1xn8ZCO8BVoQuNVcuuTu130Gle7cR",
+        "toId": "1tfi5OTOeFT9NPQuETC2CIpaFLVUC8Ad3",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9457,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1B1BI1PdE0DRFUCLAvg0mMtpcBiSZBBIr": [
+      {
+        "fromId": "1B1BI1PdE0DRFUCLAvg0mMtpcBiSZBBIr",
+        "toId": "1ZQqM0RBFJUoHgb2FN2gQ5XEMCz1N9FPX",
+        "score": 0.9897,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9669,
+        "pitchShiftSemitones": 0.755,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 129.96
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1B1BI1PdE0DRFUCLAvg0mMtpcBiSZBBIr",
+        "toId": "107wf2fC04-z5jUCsMkoh23-5_CTZ2IPh",
+        "score": 0.9897,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9644,
+        "pitchShiftSemitones": 0.796,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 129.65
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1B1BI1PdE0DRFUCLAvg0mMtpcBiSZBBIr",
+        "toId": "1mr2JgeYyxQj66rYDciLuHAYeI1SRWa0b",
+        "score": 0.9897,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9489,
+        "pitchShiftSemitones": 1.289,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 126.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1B1BI1PdE0DRFUCLAvg0mMtpcBiSZBBIr",
+        "toId": "1Yq_-5exojMKxKOKDl0NwSbwhwOMdXSBz",
+        "score": 0.9897,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.96,
+        "pitchShiftSemitones": -0.982,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 143.67
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1B1BI1PdE0DRFUCLAvg0mMtpcBiSZBBIr",
+        "toId": "1jcvwD5xjP1dkDOZlvbCLTwMG7jRya798",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9097,
+        "pitchShiftSemitones": 1.332,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1C5403GEeb5kvHWjJl91F7XLISdmD1BN1": [
+      {
+        "fromId": "1C5403GEeb5kvHWjJl91F7XLISdmD1BN1",
+        "toId": "16LgggTQTo4aTV1l3viJq3ieluw4yZZ_g",
+        "score": 0.9885,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9628,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 75
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1C5403GEeb5kvHWjJl91F7XLISdmD1BN1",
+        "toId": "1Rqk60AbPmTBBRzcRtj6xm7IDBg53u6fn",
+        "score": 0.9885,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9553,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 74
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1C5403GEeb5kvHWjJl91F7XLISdmD1BN1",
+        "toId": "1H3WLopXVI40KLQfdQQeXpm8ibtYz7Zac",
+        "score": 0.9885,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9619,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 132.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1C5403GEeb5kvHWjJl91F7XLISdmD1BN1",
+        "toId": "1sXpsTcFPRS2owvBDru5LBNHw-ayoPUzp",
+        "score": 0.9885,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9866,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 137.85
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1C5403GEeb5kvHWjJl91F7XLISdmD1BN1",
+        "toId": "12Le2G1axMqJY1yP30Ic5EalnKLbGnAgC",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9495,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "15-57IiF_Vv9P31C7sxjNZPkCJtXMEgJd": [
+      {
+        "fromId": "15-57IiF_Vv9P31C7sxjNZPkCJtXMEgJd",
+        "toId": "1H3WLopXVI40KLQfdQQeXpm8ibtYz7Zac",
+        "score": 0.9887,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9614,
+        "pitchShiftSemitones": 1.207,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 132.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "15-57IiF_Vv9P31C7sxjNZPkCJtXMEgJd",
+        "toId": "1CRqxvwHSFGYiY0Xh772_aZ9tldtPa1qg",
+        "score": 0.9887,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9614,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 74.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "15-57IiF_Vv9P31C7sxjNZPkCJtXMEgJd",
+        "toId": "1HSy2DsNwROSuJ99mpiAmjQZetcL_Tu8j",
+        "score": 0.9887,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9555,
+        "pitchShiftSemitones": -1.005,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 75
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "15-57IiF_Vv9P31C7sxjNZPkCJtXMEgJd",
+        "toId": "1gd5UD9n1t1UuN7fWI7Y0NclYu4Aq7kF-",
+        "score": 0.9887,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9694,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 137.7
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "15-57IiF_Vv9P31C7sxjNZPkCJtXMEgJd",
+        "toId": "12Le2G1axMqJY1yP30Ic5EalnKLbGnAgC",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9471,
+        "pitchShiftSemitones": 1.332,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1FWHkNJWp-8ks6b8WtGaiF1IcNL6WBPbs": [
+      {
+        "fromId": "1FWHkNJWp-8ks6b8WtGaiF1IcNL6WBPbs",
+        "toId": "1h9ehdYjGRgDqXNHecOM3dPSVMhPoGKtc",
+        "score": 0.9793,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.961,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 76.92
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1FWHkNJWp-8ks6b8WtGaiF1IcNL6WBPbs",
+        "toId": "10lM9nOMHhHlmvD8n4up34smTa6QTRUIU",
+        "score": 0.9793,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.979,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 72
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1FWHkNJWp-8ks6b8WtGaiF1IcNL6WBPbs",
+        "toId": "11vMDLGM_izR8I7u7At9qIPAOuWl-6bSY",
+        "score": 0.9793,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9527,
+        "pitchShiftSemitones": -1.093,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 75.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1FWHkNJWp-8ks6b8WtGaiF1IcNL6WBPbs",
+        "toId": "1Zv0NGE4hz5bU0vPkwfO1Vs08XVtfB5Wf",
+        "score": 0.9793,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.957,
+        "pitchShiftSemitones": 1.085,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 134.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1FWHkNJWp-8ks6b8WtGaiF1IcNL6WBPbs",
+        "toId": "1tfi5OTOeFT9NPQuETC2CIpaFLVUC8Ad3",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9177,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1RP1iGgxIHMrwAw1N_HOe9yTFxC2jK3q1": [
+      {
+        "fromId": "1RP1iGgxIHMrwAw1N_HOe9yTFxC2jK3q1",
+        "toId": "1xQsinAptEWUdjSW5xcMa-6UpM-x1t2Bi",
+        "score": 0.9856,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9805,
+        "pitchShiftSemitones": 0.462,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 133.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1RP1iGgxIHMrwAw1N_HOe9yTFxC2jK3q1",
+        "toId": "1n9x6gl8hdbZcfvIm7BIrVGqWh0Mld-h7",
+        "score": 0.9856,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9584,
+        "pitchShiftSemitones": 1.253,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1RP1iGgxIHMrwAw1N_HOe9yTFxC2jK3q1",
+        "toId": "1zl2bmgRSzcBQxNvsmr_BKAD6VGDf3YTb",
+        "score": 0.9856,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9583,
+        "pitchShiftSemitones": 1.253,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1RP1iGgxIHMrwAw1N_HOe9yTFxC2jK3q1",
+        "toId": "1LAMbSocstSut1kKzwSR0umEf7qvB0IEp",
+        "score": 0.9856,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9568,
+        "pitchShiftSemitones": 1.253,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1RP1iGgxIHMrwAw1N_HOe9yTFxC2jK3q1",
+        "toId": "1RFBAQWTkDnU9B4DZP1u4r0SPiEIlCRaK",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9324,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1tfFOsXa_0fi91TpQ6lBMmfQUCDq98pXm": [
+      {
+        "fromId": "1tfFOsXa_0fi91TpQ6lBMmfQUCDq98pXm",
+        "toId": "1nZUDRNgEZmt-W_ZhpMlS9F1PD5IbyXJC",
+        "score": 0.9934,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9574,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 127.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1tfFOsXa_0fi91TpQ6lBMmfQUCDq98pXm",
+        "toId": "1odmzc2OkdF67bGWFFunb032MsrKIqztY",
+        "score": 0.9934,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9613,
+        "pitchShiftSemitones": 1.226,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.21
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1tfFOsXa_0fi91TpQ6lBMmfQUCDq98pXm",
+        "toId": "1lZFsJSa_o6M83ZQlpqOncX_QnY8dnmju",
+        "score": 0.9934,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9593,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.47
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1tfFOsXa_0fi91TpQ6lBMmfQUCDq98pXm",
+        "toId": "12fu57qvxWcz1vDKIUg0cHExufZlfkawP",
+        "score": 0.9934,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9491,
+        "pitchShiftSemitones": 1.255,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1tfFOsXa_0fi91TpQ6lBMmfQUCDq98pXm",
+        "toId": "1HsMfxyZm9fsHTUsCdg8QllV3csK1AH_Y",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9235,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1dx1S3us848lU0k0PMl9bL6aqY3CFSOks": [
+      {
+        "fromId": "1dx1S3us848lU0k0PMl9bL6aqY3CFSOks",
+        "toId": "1F-FrPjvkjg4GIFfVNn0p4iIr6DKLwV4y",
+        "score": 0.9873,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9578,
+        "pitchShiftSemitones": -1.035,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 79.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1dx1S3us848lU0k0PMl9bL6aqY3CFSOks",
+        "toId": "1lKHwalZEVxadt6KXcN0AczA7hhDg-ZYu",
+        "score": 0.9873,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9607,
+        "pitchShiftSemitones": -1.035,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 79.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1dx1S3us848lU0k0PMl9bL6aqY3CFSOks",
+        "toId": "1Yq_-5exojMKxKOKDl0NwSbwhwOMdXSBz",
+        "score": 0.9873,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9724,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 143.67
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1dx1S3us848lU0k0PMl9bL6aqY3CFSOks",
+        "toId": "1YzlVJ_vcU6WK_OahHDYlZFUG7xfgWZkM",
+        "score": 0.9873,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9447,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 139.72
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1dx1S3us848lU0k0PMl9bL6aqY3CFSOks",
+        "toId": "1nqh3sTAW9W_6IxJNzn91R5RLjBLHRJ4w",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9534,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1lkQGgPMKg9luD29NOUJJEJCEOJSXDXvj": [
+      {
+        "fromId": "1lkQGgPMKg9luD29NOUJJEJCEOJSXDXvj",
+        "toId": "1dWJIgK47vpBz8aDNg4gn1w8hCRHLmUxo",
+        "score": 0.9879,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9688,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 121.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1lkQGgPMKg9luD29NOUJJEJCEOJSXDXvj",
+        "toId": "18LLK7eNroyuz_VOiyAcaHvXsPTSAsN6X",
+        "score": 0.9879,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9767,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 124.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1lkQGgPMKg9luD29NOUJJEJCEOJSXDXvj",
+        "toId": "18w0FvEh3pozCtoUKzkSVX2_GYCQDUon_",
+        "score": 0.9879,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9816,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 125
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1lkQGgPMKg9luD29NOUJJEJCEOJSXDXvj",
+        "toId": "1H3WLopXVI40KLQfdQQeXpm8ibtYz7Zac",
+        "score": 0.9879,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9637,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 132.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1lkQGgPMKg9luD29NOUJJEJCEOJSXDXvj",
+        "toId": "12Le2G1axMqJY1yP30Ic5EalnKLbGnAgC",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9811,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1YS12BHPDj1Jyz-BC2hJRFW5JsLdEPuv3": [
+      {
+        "fromId": "1YS12BHPDj1Jyz-BC2hJRFW5JsLdEPuv3",
+        "toId": "1dWJIgK47vpBz8aDNg4gn1w8hCRHLmUxo",
+        "score": 0.9947,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9516,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 121.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1YS12BHPDj1Jyz-BC2hJRFW5JsLdEPuv3",
+        "toId": "11Wpw8AXcX5Bxf1MY3BGZW7FIl9wL-z59",
+        "score": 0.9947,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9731,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 125.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1YS12BHPDj1Jyz-BC2hJRFW5JsLdEPuv3",
+        "toId": "1xQsinAptEWUdjSW5xcMa-6UpM-x1t2Bi",
+        "score": 0.9947,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9825,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 133.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1YS12BHPDj1Jyz-BC2hJRFW5JsLdEPuv3",
+        "toId": "1n9x6gl8hdbZcfvIm7BIrVGqWh0Mld-h7",
+        "score": 0.9947,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9781,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1YS12BHPDj1Jyz-BC2hJRFW5JsLdEPuv3",
+        "toId": "12Le2G1axMqJY1yP30Ic5EalnKLbGnAgC",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9689,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1yQl4iS1vm5znQb04SnLabyKRlgMfHcb8": [
+      {
+        "fromId": "1yQl4iS1vm5znQb04SnLabyKRlgMfHcb8",
+        "toId": "1vJ6uJO-oRLDzdHONAIB8G-P6d5kLP85q",
+        "score": 0.9909,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9856,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 137
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1yQl4iS1vm5znQb04SnLabyKRlgMfHcb8",
+        "toId": "1AWVeio7m4nSTA4PHjEoJDqP90iab7iVm",
+        "score": 0.9909,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9599,
+        "pitchShiftSemitones": 1.232,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 130
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1yQl4iS1vm5znQb04SnLabyKRlgMfHcb8",
+        "toId": "1WNFdmRUlU0p_ARobUUvepP4kQoSaWwqR",
+        "score": 0.9909,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9727,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 72
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1yQl4iS1vm5znQb04SnLabyKRlgMfHcb8",
+        "toId": "1g6ZswSnJzHThTcLY82H8fiOr5nnwMkYj",
+        "score": 0.9909,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9812,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 136
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1yQl4iS1vm5znQb04SnLabyKRlgMfHcb8",
+        "toId": "11YuGx1UdRV1rsDfCO0ha_5OvjhOL1Uax",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9125,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1_EsoFIqJCcJUO4zz9_o9lvmbKqInIABo": [
+      {
+        "fromId": "1_EsoFIqJCcJUO4zz9_o9lvmbKqInIABo",
+        "toId": "1m_EI5B1t7F8TBa1CRcK_ka-dDMmXMu2u",
+        "score": 0.9922,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9545,
+        "pitchShiftSemitones": -1.24,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 75
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1_EsoFIqJCcJUO4zz9_o9lvmbKqInIABo",
+        "toId": "1nWisrpd9O18_2yFm96oEFTu9qj-DFd7Z",
+        "score": 0.9922,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9784,
+        "pitchShiftSemitones": -0.374,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 71.34
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1_EsoFIqJCcJUO4zz9_o9lvmbKqInIABo",
+        "toId": "1FIErisijT9-GU0AnoK0wrRSLBEhRuNxd",
+        "score": 0.9922,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9594,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 130
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1_EsoFIqJCcJUO4zz9_o9lvmbKqInIABo",
+        "toId": "1x2g296apNCvP89d6vjqzCWd_nsliU3Mi",
+        "score": 0.9922,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9471,
+        "pitchShiftSemitones": 1.237,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 130
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1_EsoFIqJCcJUO4zz9_o9lvmbKqInIABo",
+        "toId": "1HsMfxyZm9fsHTUsCdg8QllV3csK1AH_Y",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9101,
+        "pitchShiftSemitones": 1.332,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1hDiv5G5KezgcK6DaaSdWwKHyKw9PTWPJ": [
+      {
+        "fromId": "1hDiv5G5KezgcK6DaaSdWwKHyKw9PTWPJ",
+        "toId": "1nZUDRNgEZmt-W_ZhpMlS9F1PD5IbyXJC",
+        "score": 0.9901,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9561,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 127.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1hDiv5G5KezgcK6DaaSdWwKHyKw9PTWPJ",
+        "toId": "1odmzc2OkdF67bGWFFunb032MsrKIqztY",
+        "score": 0.9901,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9617,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.21
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1hDiv5G5KezgcK6DaaSdWwKHyKw9PTWPJ",
+        "toId": "1lZFsJSa_o6M83ZQlpqOncX_QnY8dnmju",
+        "score": 0.9901,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9584,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.47
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1hDiv5G5KezgcK6DaaSdWwKHyKw9PTWPJ",
+        "toId": "12fu57qvxWcz1vDKIUg0cHExufZlfkawP",
+        "score": 0.9901,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9581,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1hDiv5G5KezgcK6DaaSdWwKHyKw9PTWPJ",
+        "toId": "1HsMfxyZm9fsHTUsCdg8QllV3csK1AH_Y",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9165,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1mr2JgeYyxQj66rYDciLuHAYeI1SRWa0b": [
+      {
+        "fromId": "1mr2JgeYyxQj66rYDciLuHAYeI1SRWa0b",
+        "toId": "1rshhxyP6TQdA7kjmAnj0wfVgIowlVDM9",
+        "score": 0.9702,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.986,
+        "pitchShiftSemitones": 0.139,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 125
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1mr2JgeYyxQj66rYDciLuHAYeI1SRWa0b",
+        "toId": "1eAXKuhfAu8On-zma_EaVVVbvC93xhXkC",
+        "score": 0.9702,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9773,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 122.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1mr2JgeYyxQj66rYDciLuHAYeI1SRWa0b",
+        "toId": "1n4UYSNFDqCkhkkcI208a0f8XubqVEeXz",
+        "score": 0.9702,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9861,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 125
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1mr2JgeYyxQj66rYDciLuHAYeI1SRWa0b",
+        "toId": "1AWVeio7m4nSTA4PHjEoJDqP90iab7iVm",
+        "score": 0.9702,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9793,
+        "pitchShiftSemitones": -0.54,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 130
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1mr2JgeYyxQj66rYDciLuHAYeI1SRWa0b",
+        "toId": "1RFBAQWTkDnU9B4DZP1u4r0SPiEIlCRaK",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9388,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1wPaLWHzizMzYR81fQMec-mFImo8u3xvX": [
+      {
+        "fromId": "1wPaLWHzizMzYR81fQMec-mFImo8u3xvX",
+        "toId": "1nZUDRNgEZmt-W_ZhpMlS9F1PD5IbyXJC",
+        "score": 0.9922,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9448,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 127.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1wPaLWHzizMzYR81fQMec-mFImo8u3xvX",
+        "toId": "1odmzc2OkdF67bGWFFunb032MsrKIqztY",
+        "score": 0.9922,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9497,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.21
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1wPaLWHzizMzYR81fQMec-mFImo8u3xvX",
+        "toId": "1lZFsJSa_o6M83ZQlpqOncX_QnY8dnmju",
+        "score": 0.9922,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9466,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.47
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1wPaLWHzizMzYR81fQMec-mFImo8u3xvX",
+        "toId": "1m_EI5B1t7F8TBa1CRcK_ka-dDMmXMu2u",
+        "score": 0.9922,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9449,
+        "pitchShiftSemitones": -1.439,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 75
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1wPaLWHzizMzYR81fQMec-mFImo8u3xvX",
+        "toId": "1HsMfxyZm9fsHTUsCdg8QllV3csK1AH_Y",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.913,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1gd5UD9n1t1UuN7fWI7Y0NclYu4Aq7kF-": [
+      {
+        "fromId": "1gd5UD9n1t1UuN7fWI7Y0NclYu4Aq7kF-",
+        "toId": "1xQsinAptEWUdjSW5xcMa-6UpM-x1t2Bi",
+        "score": 0.9931,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.979,
+        "pitchShiftSemitones": 0.473,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 133.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1gd5UD9n1t1UuN7fWI7Y0NclYu4Aq7kF-",
+        "toId": "1n9x6gl8hdbZcfvIm7BIrVGqWh0Mld-h7",
+        "score": 0.9931,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9569,
+        "pitchShiftSemitones": 1.265,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1gd5UD9n1t1UuN7fWI7Y0NclYu4Aq7kF-",
+        "toId": "1zl2bmgRSzcBQxNvsmr_BKAD6VGDf3YTb",
+        "score": 0.9931,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9567,
+        "pitchShiftSemitones": 1.265,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1gd5UD9n1t1UuN7fWI7Y0NclYu4Aq7kF-",
+        "toId": "1LAMbSocstSut1kKzwSR0umEf7qvB0IEp",
+        "score": 0.9931,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9553,
+        "pitchShiftSemitones": 1.265,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1gd5UD9n1t1UuN7fWI7Y0NclYu4Aq7kF-",
+        "toId": "1RFBAQWTkDnU9B4DZP1u4r0SPiEIlCRaK",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9309,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1sc-GZx0C0dvvoK6DL-DfoTHNto78kkAj": [
+      {
+        "fromId": "1sc-GZx0C0dvvoK6DL-DfoTHNto78kkAj",
+        "toId": "1xQsinAptEWUdjSW5xcMa-6UpM-x1t2Bi",
+        "score": 0.9902,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9852,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 133.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1sc-GZx0C0dvvoK6DL-DfoTHNto78kkAj",
+        "toId": "1n9x6gl8hdbZcfvIm7BIrVGqWh0Mld-h7",
+        "score": 0.9902,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9633,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1sc-GZx0C0dvvoK6DL-DfoTHNto78kkAj",
+        "toId": "1zl2bmgRSzcBQxNvsmr_BKAD6VGDf3YTb",
+        "score": 0.9902,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9632,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1sc-GZx0C0dvvoK6DL-DfoTHNto78kkAj",
+        "toId": "1Rqk60AbPmTBBRzcRtj6xm7IDBg53u6fn",
+        "score": 0.9902,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9457,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 74
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1sc-GZx0C0dvvoK6DL-DfoTHNto78kkAj",
+        "toId": "12Le2G1axMqJY1yP30Ic5EalnKLbGnAgC",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9504,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1Yq_-5exojMKxKOKDl0NwSbwhwOMdXSBz": [
+      {
+        "fromId": "1Yq_-5exojMKxKOKDl0NwSbwhwOMdXSBz",
+        "toId": "1vJ6uJO-oRLDzdHONAIB8G-P6d5kLP85q",
+        "score": 0.99,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9712,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 137
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1Yq_-5exojMKxKOKDl0NwSbwhwOMdXSBz",
+        "toId": "1WNFdmRUlU0p_ARobUUvepP4kQoSaWwqR",
+        "score": 0.99,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9862,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 72
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1Yq_-5exojMKxKOKDl0NwSbwhwOMdXSBz",
+        "toId": "1g6ZswSnJzHThTcLY82H8fiOr5nnwMkYj",
+        "score": 0.99,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9666,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 136
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1Yq_-5exojMKxKOKDl0NwSbwhwOMdXSBz",
+        "toId": "1ev6bMiJUBwVY5Ht2l-7XO7Xfi0VOk9vy",
+        "score": 0.99,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9646,
+        "pitchShiftSemitones": 1.078,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 135
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1Yq_-5exojMKxKOKDl0NwSbwhwOMdXSBz",
+        "toId": "11YuGx1UdRV1rsDfCO0ha_5OvjhOL1Uax",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9132,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1J6fAANmBJw15mtYY-E0CAFOmO5InDm1d": [
+      {
+        "fromId": "1J6fAANmBJw15mtYY-E0CAFOmO5InDm1d",
+        "toId": "1H9Eha-_7TbexupDeXrM17yRVc_umBiPA",
+        "score": 0.9901,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9549,
+        "pitchShiftSemitones": 1.091,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 119.91
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1J6fAANmBJw15mtYY-E0CAFOmO5InDm1d",
+        "toId": "1nZUDRNgEZmt-W_ZhpMlS9F1PD5IbyXJC",
+        "score": 0.9901,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9874,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 127.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1J6fAANmBJw15mtYY-E0CAFOmO5InDm1d",
+        "toId": "1odmzc2OkdF67bGWFFunb032MsrKIqztY",
+        "score": 0.9901,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9804,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.21
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1J6fAANmBJw15mtYY-E0CAFOmO5InDm1d",
+        "toId": "1lZFsJSa_o6M83ZQlpqOncX_QnY8dnmju",
+        "score": 0.9901,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9835,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.47
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1J6fAANmBJw15mtYY-E0CAFOmO5InDm1d",
+        "toId": "1HsMfxyZm9fsHTUsCdg8QllV3csK1AH_Y",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9301,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1JxwIyeRT2Tu_3LNDJUzoyT51TnHHYCdT": [
+      {
+        "fromId": "1JxwIyeRT2Tu_3LNDJUzoyT51TnHHYCdT",
+        "toId": "1KGlwLCz5JV7iI63uPGQrmplgLn3wGqbT",
+        "score": 0.9906,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9791,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1JxwIyeRT2Tu_3LNDJUzoyT51TnHHYCdT",
+        "toId": "16htH2VFHEjLtfNqrpKwqCQCdgVL8_eEG",
+        "score": 0.9906,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9861,
+        "pitchShiftSemitones": -0.161,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 130
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1JxwIyeRT2Tu_3LNDJUzoyT51TnHHYCdT",
+        "toId": "1UgyTxMZWyb7qDwoPp_zHElvBydjdNKp0",
+        "score": 0.9906,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9735,
+        "pitchShiftSemitones": 0.518,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 125
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1JxwIyeRT2Tu_3LNDJUzoyT51TnHHYCdT",
+        "toId": "121a_u5ljOeK4pLOPhvl9wZfhlo_BwoTZ",
+        "score": 0.9906,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9544,
+        "pitchShiftSemitones": -1.321,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 139.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1JxwIyeRT2Tu_3LNDJUzoyT51TnHHYCdT",
+        "toId": "1axaiPD-6ATBcLkNGul62eXRbkG-Cy8lD",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9488,
+        "pitchShiftSemitones": 1.332,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1Lo2rN_Ix7bntbMACAdPwEgX3puIeMB4o": [
+      {
+        "fromId": "1Lo2rN_Ix7bntbMACAdPwEgX3puIeMB4o",
+        "toId": "1Q1FvUxPkr7uXF3Z8xyMRnxOQut1ZbLV5",
+        "score": 0.9884,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9665,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 81
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1Lo2rN_Ix7bntbMACAdPwEgX3puIeMB4o",
+        "toId": "1P9OxFFN7PWtQMAqiCbOGe_3l7uJ2_bQh",
+        "score": 0.9884,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.966,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 81
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1Lo2rN_Ix7bntbMACAdPwEgX3puIeMB4o",
+        "toId": "1h9ehdYjGRgDqXNHecOM3dPSVMhPoGKtc",
+        "score": 0.9884,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9818,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 76.92
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1Lo2rN_Ix7bntbMACAdPwEgX3puIeMB4o",
+        "toId": "10lM9nOMHhHlmvD8n4up34smTa6QTRUIU",
+        "score": 0.9884,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9607,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 72
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1Lo2rN_Ix7bntbMACAdPwEgX3puIeMB4o",
+        "toId": "1TxW6QbF3s5K_FnS-8Em0mGWsY5MA_Eev",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9169,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1gUrGYear5BtiZneteSLlv548wrvsUxRk": [
+      {
+        "fromId": "1gUrGYear5BtiZneteSLlv548wrvsUxRk",
+        "toId": "175oDnC-YI0W7e7O11wiXfqLvH1_NbUVd",
+        "score": 0.9911,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9608,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 76
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1gUrGYear5BtiZneteSLlv548wrvsUxRk",
+        "toId": "16LgggTQTo4aTV1l3viJq3ieluw4yZZ_g",
+        "score": 0.9911,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9623,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 75
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1gUrGYear5BtiZneteSLlv548wrvsUxRk",
+        "toId": "1Rqk60AbPmTBBRzcRtj6xm7IDBg53u6fn",
+        "score": 0.9911,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.967,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 74
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1gUrGYear5BtiZneteSLlv548wrvsUxRk",
+        "toId": "1H3WLopXVI40KLQfdQQeXpm8ibtYz7Zac",
+        "score": 0.9911,
+        "reason": "melody sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9596,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "instant-bass-swap",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "melody",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 132.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1gUrGYear5BtiZneteSLlv548wrvsUxRk",
+        "toId": "12Le2G1axMqJY1yP30Ic5EalnKLbGnAgC",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9444,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1cygggxDS3B6c3Xs-kAjWiaHzg8nrqd51": [
+      {
+        "fromId": "1cygggxDS3B6c3Xs-kAjWiaHzg8nrqd51",
+        "toId": "1xQsinAptEWUdjSW5xcMa-6UpM-x1t2Bi",
+        "score": 0.9874,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9713,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 133.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1cygggxDS3B6c3Xs-kAjWiaHzg8nrqd51",
+        "toId": "1n9x6gl8hdbZcfvIm7BIrVGqWh0Mld-h7",
+        "score": 0.9874,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9495,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1cygggxDS3B6c3Xs-kAjWiaHzg8nrqd51",
+        "toId": "1zl2bmgRSzcBQxNvsmr_BKAD6VGDf3YTb",
+        "score": 0.9874,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9496,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1cygggxDS3B6c3Xs-kAjWiaHzg8nrqd51",
+        "toId": "1vJ6uJO-oRLDzdHONAIB8G-P6d5kLP85q",
+        "score": 0.9874,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9832,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 137
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1cygggxDS3B6c3Xs-kAjWiaHzg8nrqd51",
+        "toId": "12Le2G1axMqJY1yP30Ic5EalnKLbGnAgC",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9538,
+        "pitchShiftSemitones": 1.332,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1DUfEUgIzhnCUTNFygllhLiWwUxW85UHi": [
+      {
+        "fromId": "1DUfEUgIzhnCUTNFygllhLiWwUxW85UHi",
+        "toId": "1Rqk60AbPmTBBRzcRtj6xm7IDBg53u6fn",
+        "score": 0.9875,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9596,
+        "pitchShiftSemitones": -1.245,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 74
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1DUfEUgIzhnCUTNFygllhLiWwUxW85UHi",
+        "toId": "1sXpsTcFPRS2owvBDru5LBNHw-ayoPUzp",
+        "score": 0.9875,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9855,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 137.85
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1DUfEUgIzhnCUTNFygllhLiWwUxW85UHi",
+        "toId": "1zVaS3FQnutx92uibVOy61Sx4Zaf6nkyd",
+        "score": 0.9875,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9889,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 136.36
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1DUfEUgIzhnCUTNFygllhLiWwUxW85UHi",
+        "toId": "1l8721sTGLk54yMHSowrKqyrH90KiLvUS",
+        "score": 0.9875,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9632,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 132
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1DUfEUgIzhnCUTNFygllhLiWwUxW85UHi",
+        "toId": "1tfi5OTOeFT9NPQuETC2CIpaFLVUC8Ad3",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9394,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1YzlVJ_vcU6WK_OahHDYlZFUG7xfgWZkM": [
+      {
+        "fromId": "1YzlVJ_vcU6WK_OahHDYlZFUG7xfgWZkM",
+        "toId": "1vJ6uJO-oRLDzdHONAIB8G-P6d5kLP85q",
+        "score": 0.985,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9732,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 137
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1YzlVJ_vcU6WK_OahHDYlZFUG7xfgWZkM",
+        "toId": "1AWVeio7m4nSTA4PHjEoJDqP90iab7iVm",
+        "score": 0.985,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9475,
+        "pitchShiftSemitones": 1.248,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 130
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1YzlVJ_vcU6WK_OahHDYlZFUG7xfgWZkM",
+        "toId": "1WNFdmRUlU0p_ARobUUvepP4kQoSaWwqR",
+        "score": 0.985,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9722,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 72
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1YzlVJ_vcU6WK_OahHDYlZFUG7xfgWZkM",
+        "toId": "1g6ZswSnJzHThTcLY82H8fiOr5nnwMkYj",
+        "score": 0.985,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9726,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 136
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1YzlVJ_vcU6WK_OahHDYlZFUG7xfgWZkM",
+        "toId": "11YuGx1UdRV1rsDfCO0ha_5OvjhOL1Uax",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9175,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1jI8MNxmId1SKecdEmWV7W29lQMqugfNY": [
+      {
+        "fromId": "1jI8MNxmId1SKecdEmWV7W29lQMqugfNY",
+        "toId": "1nZUDRNgEZmt-W_ZhpMlS9F1PD5IbyXJC",
+        "score": 0.9924,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9473,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 127.99
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1jI8MNxmId1SKecdEmWV7W29lQMqugfNY",
+        "toId": "1odmzc2OkdF67bGWFFunb032MsrKIqztY",
+        "score": 0.9924,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9499,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.21
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1jI8MNxmId1SKecdEmWV7W29lQMqugfNY",
+        "toId": "1lZFsJSa_o6M83ZQlpqOncX_QnY8dnmju",
+        "score": 0.9924,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.949,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.47
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1jI8MNxmId1SKecdEmWV7W29lQMqugfNY",
+        "toId": "12fu57qvxWcz1vDKIUg0cHExufZlfkawP",
+        "score": 0.9924,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9557,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1jI8MNxmId1SKecdEmWV7W29lQMqugfNY",
+        "toId": "1HsMfxyZm9fsHTUsCdg8QllV3csK1AH_Y",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9119,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
+        }
+      }
+    ],
+    "1e2h1R8_nqBAJlgh3VPyo8hvsiT3Dmxew": [
+      {
+        "fromId": "1e2h1R8_nqBAJlgh3VPyo8hvsiT3Dmxew",
+        "toId": "1KGlwLCz5JV7iI63uPGQrmplgLn3wGqbT",
+        "score": 0.9872,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9886,
+        "pitchShiftSemitones": -0.173,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 128.01
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1e2h1R8_nqBAJlgh3VPyo8hvsiT3Dmxew",
+        "toId": "16htH2VFHEjLtfNqrpKwqCQCdgVL8_eEG",
+        "score": 0.9872,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9774,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 130
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1e2h1R8_nqBAJlgh3VPyo8hvsiT3Dmxew",
+        "toId": "1UgyTxMZWyb7qDwoPp_zHElvBydjdNKp0",
+        "score": 0.9872,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9855,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 125
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1e2h1R8_nqBAJlgh3VPyo8hvsiT3Dmxew",
+        "toId": "1R-QLFdWSZtOSx2bUZcf6d5zSznG3pW3h",
+        "score": 0.9872,
+        "reason": "beat sample loop into drop-entry with seam sweep",
+        "subBassPhaseCoherence": 0.9829,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "stem-bass-cut-bar-4",
+        "command": {
+          "action": "routine",
+          "routine": "sample_mix",
+          "sample": {
+            "isolation": "beat",
+            "captureBars": 4,
+            "holdSeconds": 22,
+            "halvings": 0,
+            "sweepToBpm": 126
+          },
+          "queue": {
+            "transition": "bass_swap",
+            "durationBars": 4,
+            "startAt": "auto",
+            "maskFx": "space_sweep"
+          }
+        }
+      },
+      {
+        "fromId": "1e2h1R8_nqBAJlgh3VPyo8hvsiT3Dmxew",
+        "toId": "1TxW6QbF3s5K_FnS-8Em0mGWsY5MA_Eev",
+        "score": 0.35,
+        "reason": "partner-dance-safe full-song handoff",
+        "subBassPhaseCoherence": 0.9382,
+        "pitchShiftSemitones": 0,
+        "eqSwapStrategy": "gradual-low-shelf",
+        "command": {
+          "action": "queue",
+          "transition": "gap",
+          "durationBars": 8,
+          "startAt": "beginning"
         }
       }
     ]

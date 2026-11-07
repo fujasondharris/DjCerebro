@@ -25666,5 +25666,939 @@
     "compingLayer": [
       "other"
     ]
+  },
+  "1ibLjeg3N2Znx6bi-7WY1I6dqIE45SDlZ": {
+    "name": "7clouds - Jonas Blue - Fast Car (Lyrics) ft. Dakota.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.174Z",
+    "stems": {
+      "bass": "1XfvTWv8jh-c8oqDZUdeTf_0kNB4y5ZD2",
+      "drums": "1Be0JiDJuFMNFal1_DAZB7SbO_i8A69Bg",
+      "other": "1Rg2pj6UNSAZtxMXTUKH4hzjWPZD7S7Gp",
+      "piano": "1rGf9f96Aavq_YQlTBWIKv575UBQLlSWJ",
+      "vocals": "1CMBAp4bzJ0Vz_ct0nnUIC6AMpCNKMZWS"
+    },
+    "dropped": [
+      "guitar"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -41.6,
+        "silentPct": 0.924
+      },
+      "piano": {
+        "meanDb": -26.7,
+        "silentPct": 0.672
+      }
+    },
+    "compingLayer": [
+      "piano"
+    ]
+  },
+  "1pZipB7IzLrNt-LWWKkqkZPt4WFwt_4ne": {
+    "name": "ATB - 9Pm (Till I Come).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.197Z",
+    "stems": {
+      "bass": "1TAnydVYY0HHJ_MJDR5hDwbRgChKrWpdx",
+      "drums": "19mp5n78LskPJ8LKJWlr1hBQv0T79TOfn",
+      "guitar": "1EwtgxtRt396hZh3UHXr9eaP48gpgSBSX",
+      "other": "1fZN4bzPxql9-H2XE_AHwRzSV6Rrw_Gd_",
+      "vocals": "12ku-m0j1oggPPxHOO-X2cqHPudwPnMrc"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -21.3,
+        "silentPct": 0.279
+      },
+      "piano": {
+        "meanDb": -76.3,
+        "silentPct": 1
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "151mwqieGK77oS-iNRTqaZ9i68ts7WGW8": {
+    "name": "Alice Deejay - Alice Deejay - Better Off Alone (Official Video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.217Z",
+    "stems": {
+      "bass": "15p1eRoVUMowjnSWQ5B3dqBwgfnmplvdf",
+      "drums": "1S7vwVXKHU86HUxQwtkehpUdmbZqEc9Vp",
+      "guitar": "1bE0qKtiZCGh7meEqzyqk_ztKtZjHzHOb",
+      "other": "1tGVgHnDYnt_P5y_m-nI07dN3BlqKwJD-",
+      "vocals": "1184QNrIV4c3F54FcFlnQOlRZrdb5Sq0g"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -26.5,
+        "silentPct": 0.286
+      },
+      "piano": {
+        "meanDb": -45.6,
+        "silentPct": 0.954
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1Bl0_w4m7qrdrEqzd474uQy8y_Gn3YAj1": {
+    "name": "Armada Music TV - Chicane feat. Moya Brennan - Saltwater.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.235Z",
+    "stems": {
+      "bass": "1UHHaq8Pn7ce4RBfIuSH50tCxeCDx_ms0",
+      "drums": "1t8VDhrVIgQkvRJvyoWDbnbcjN5rD-a6M",
+      "guitar": "1TDGd2MP40ibXXhAUNgxtvwUHVFAMX4U5",
+      "other": "17uy3eL8EgcXhIj-mywZwtdfBMh-IcseC",
+      "vocals": "1caC-E4zwBUPMYwlFi24CDddA9IutJg8_"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -38.7,
+        "silentPct": 0.684
+      },
+      "piano": {
+        "meanDb": -72.8,
+        "silentPct": 0.995
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1rJwoecUTHNhYStnAuvkcKsdm475QGJmt": {
+    "name": "Armada Music TV - Veracocha - Carte Blanche (Official Music Video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.252Z",
+    "stems": {
+      "bass": "1RpXgS6Bc8XrsJWl3S8V7qCoV9m1XMBC6",
+      "drums": "1INJPRQ5-UR6Gji8O6QqSFsmd1CmiwWIh",
+      "other": "14sADwnEztSubXQIFMw7cwHPmoc95LAvM",
+      "vocals": "1kas-eWs2gFcDp_hNvM2RjIEqvZ_htmn0"
+    },
+    "dropped": [
+      "guitar",
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -44.4,
+        "silentPct": 0.832
+      },
+      "piano": {
+        "meanDb": -45.6,
+        "silentPct": 0.92
+      }
+    },
+    "compingLayer": []
+  },
+  "1ICHLICkALOTRsoDNPvu5ui5JyE9aRsWb": {
+    "name": "Armin van Buuren - Yahel - Devotion (Armin van Buuren Remix).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.270Z",
+    "stems": {
+      "bass": "1OuwHz6y57_eYRaLPezTHvuFjGK9-JiDP",
+      "drums": "1_06IC9NMcEOtXhVGXchn4KuWEXVdeNRR",
+      "guitar": "19uJ57dJGI3elQJnY8ddfgCoLUl44N58b",
+      "other": "1dcChQbU7tPzLhSVoVRmGyg4_WLia29KX",
+      "piano": "1VUPBWd1ngolvNabGRvdD2Sbly6bN92Jh",
+      "vocals": "1V5Tq12P_zylcDHT_-L9bLHsRnzNIHYMA"
+    },
+    "dropped": [],
+    "loudness": {
+      "guitar": {
+        "meanDb": -35.3,
+        "silentPct": 0.716
+      },
+      "piano": {
+        "meanDb": -30.9,
+        "silentPct": 0.79
+      }
+    },
+    "compingLayer": [
+      "guitar",
+      "piano"
+    ]
+  },
+  "1YAtBMewkKB0j1CqjuuJeUmLeNjIYYNgB": {
+    "name": "Avicii - Avicii - Levels.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.286Z",
+    "stems": {
+      "bass": "18Hv1EDSuFQ8tjROrmAmEqPE7qnNNcaPQ",
+      "drums": "1uaVYaBtXG54zqb-PPn0xW1N74L8IxT6Q",
+      "guitar": "19D6OLxv5EXfBZO0O0O3bqijPHLppOYHs",
+      "other": "1fwwzy3_DT4rZMDFatJ8xcYSjn2ieyS9m",
+      "piano": "18lSIh0Wt8u3YlPw2KCCY7iq4jQcV5Tjo",
+      "vocals": "1s4zFJ7mQNGiphYfnu9TWtVmgYf0lNvzP"
+    },
+    "dropped": [],
+    "loudness": {
+      "guitar": {
+        "meanDb": -36.8,
+        "silentPct": 0.731
+      },
+      "piano": {
+        "meanDb": -22.9,
+        "silentPct": 0.267
+      }
+    },
+    "compingLayer": [
+      "guitar",
+      "piano"
+    ]
+  },
+  "1gtO1xn8ZCO8BVoQuNVcuuTu130Gle7cR": {
+    "name": "Back Catalogue - Three Drives - Greece 2000.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.301Z",
+    "stems": {
+      "bass": "1hQ2zTV8xnjCESEuEt22wLeShcx7D1Vf1",
+      "drums": "1WeJfR-n0j0LVpHjfJadJwd7yRVrtXW-K",
+      "guitar": "16jfzQuLBbyaff7SVVhvNQjXzGqtjbkvO",
+      "other": "1YudrAAXVVOOuy9Do9Cg7HASFJeKv-ttm",
+      "vocals": "1awS4YZC5jHT0Fb-mDpTuGoV1CxSuicJq"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -33.6,
+        "silentPct": 0.143
+      },
+      "piano": {
+        "meanDb": -56.4,
+        "silentPct": 0.937
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1B1BI1PdE0DRFUCLAvg0mMtpcBiSZBBIr": {
+    "name": "Be Yourself Music, Rank 1 - Rank 1 - Airwave (Official Music Video) [HQ].mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.317Z",
+    "stems": {
+      "bass": "1UgexDRN_IY3hVrwdTiewVGbjA9u8qh_Y",
+      "drums": "17533tWKNqLtaPIky3y6TSpYq9fjiv98X",
+      "other": "1kCEqgXLYWDC_C-6A3XA2MOfJkFMptIs2",
+      "vocals": "1QbWkyJ1WBLTQEtfiQQgiVyiipuiDBS3S"
+    },
+    "dropped": [
+      "guitar",
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -55,
+        "silentPct": 0.925
+      },
+      "piano": {
+        "meanDb": -81.3,
+        "silentPct": 0.998
+      }
+    },
+    "compingLayer": []
+  },
+  "1C5403GEeb5kvHWjJl91F7XLISdmD1BN1": {
+    "name": "Black Hole Recordings - Yahel & Eyal Barkan - Voyage.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.335Z",
+    "stems": {
+      "bass": "1XlSX5P4v0CNAhFCUV4XIGN1kU2RN6fqR",
+      "drums": "18fZbYRmYSUKQGwp45z4s5PcdUS2iWOuM",
+      "guitar": "1DPnvMGbStWWCgmyXvGNQMA-CpSbMLnBE",
+      "other": "1NsNXFd-JI6YIrGlBeY198m_zRMSf2zzy",
+      "vocals": "1n-DArYYAFNTHxeYFnp0Nze0fojmuMxRr"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -37.2,
+        "silentPct": 0.634
+      },
+      "piano": {
+        "meanDb": -51.3,
+        "silentPct": 0.961
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "15-57IiF_Vv9P31C7sxjNZPkCJtXMEgJd": {
+    "name": "CASCADA - Cascada - Everytime We Touch (Official video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.350Z",
+    "stems": {
+      "bass": "1DobN2vtSBprNENdW6LAaRZuf8_yQ4VFO",
+      "drums": "17906-aiY-IYK4s0rvzomviZs_v7mfV_V",
+      "guitar": "10lRpA6jKv0RDPGd0tdzlSeA2PJE9amgW",
+      "other": "1wu6TtAQYDjv73tcgTDKZgBog7naSakxH",
+      "vocals": "1G-ZFsx7JjePpNQZar03Z4iQHWm2ACJZb"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -40.4,
+        "silentPct": 0.764
+      },
+      "piano": {
+        "meanDb": -84.3,
+        "silentPct": 1
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1FWHkNJWp-8ks6b8WtGaiF1IcNL6WBPbs": {
+    "name": "Calvin Harris - Calvin Harris, Ellie Goulding - Miracle (Official Video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.366Z",
+    "stems": {
+      "bass": "1DlTg9kzKQjQrtMKh6Y2klxz4yDTfKz4L",
+      "drums": "1TNx_BAhkUPS1HrltjjyOhOBH0GQCYW3o",
+      "other": "1R2IvN8wp1-klxYLBIhXKul6YEJakNMYT",
+      "piano": "1tbQY8iV1CKnN30D8_QHfx6dVV9UOfk83",
+      "vocals": "1V4H60A899OuL1rWa7hj0ZNa-AK6N56BR"
+    },
+    "dropped": [
+      "guitar"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -42.7,
+        "silentPct": 0.88
+      },
+      "piano": {
+        "meanDb": -26.7,
+        "silentPct": 0.628
+      }
+    },
+    "compingLayer": [
+      "piano"
+    ]
+  },
+  "1RP1iGgxIHMrwAw1N_HOe9yTFxC2jK3q1": {
+    "name": "DJ Sammy - DJ Sammy feat. Yanou & Do - Heaven (Official Video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.383Z",
+    "stems": {
+      "bass": "1qbK2ZEZ0OsOFw5byu8loy_CZAtUWUu1A",
+      "drums": "17JvF6ZP_NeMkO9VbDMncURTlxYYKoEKQ",
+      "guitar": "1x947-j-j8xKq6yd663o8KaSduthr0njq",
+      "other": "1xE0657E07c3DMkJiR4Iy_rX7bb6CNLBh",
+      "vocals": "1xjQIsWIFHWdwh9eFK9tQU0PUouDJZDL6"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -35.7,
+        "silentPct": 0.208
+      },
+      "piano": {
+        "meanDb": -58.8,
+        "silentPct": 0.972
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1tfFOsXa_0fi91TpQ6lBMmfQUCDq98pXm": {
+    "name": "DarkSLF2 - Gouryella (Ferry Corsten & DJ Tiesto) - Gouryella HQ.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.399Z",
+    "stems": {
+      "bass": "1qcOEM3_MN6CfAtuNdXKpd7fIf_6cUC7P",
+      "drums": "1OngGP6UVgGkvZKMEhENT7RT1NNomrLLC",
+      "other": "1qyjNrUlyeblzQgGPkJ4-6XCpLPBL0DFF",
+      "vocals": "1zVK7Dl-qohAD6hEsTa_QIwa2_IMbIXoA"
+    },
+    "dropped": [
+      "guitar",
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -31.9,
+        "silentPct": 0.811
+      },
+      "piano": {
+        "meanDb": -69.4,
+        "silentPct": 0.993
+      }
+    },
+    "compingLayer": []
+  },
+  "1dx1S3us848lU0k0PMl9bL6aqY3CFSOks": {
+    "name": "DeskCanSaw - Binary Finary - 1998 (Original Mix).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.417Z",
+    "stems": {
+      "bass": "1hh7hTMm3ubmAdaMHf9jTn05mrLvqEuVU",
+      "drums": "1Qs-Sy3edWVXcrbDh_oecnJEL7exAqgQ9",
+      "guitar": "1blBcokf7HJWDF1FeazPXQuSqQEZblkED",
+      "other": "1_gNvQxnFKi1f3wXa6QIP7fn_xUcjUFxB",
+      "vocals": "1S8mN9ZfbzxLvKXoC_RrkgDTmNsvruoDu"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -27.2,
+        "silentPct": 0.323
+      },
+      "piano": {
+        "meanDb": -48.4,
+        "silentPct": 0.977
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1lkQGgPMKg9luD29NOUJJEJCEOJSXDXvj": {
+    "name": "Embassy One - iiO - Rapture (Official Video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.432Z",
+    "stems": {
+      "bass": "1sc8PexPtXXohC3vGf9DVLXtV9dsoGuv9",
+      "drums": "1deStABB7AxcdyjnluT8CbCxCAbKz6kaI",
+      "guitar": "1Rlah9LEJ_RVBYEyxghs0DjKfO_QcIqOh",
+      "other": "14BHqM2htqbhBsx9vWhM-9QORzmpcpMhx",
+      "vocals": "18YRwNDB2gNul5M0k0RvuEMeg-oqzj6QA"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -35.7,
+        "silentPct": 0.352
+      },
+      "piano": {
+        "meanDb": -49.9,
+        "silentPct": 0.955
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1YS12BHPDj1Jyz-BC2hJRFW5JsLdEPuv3": {
+    "name": "Energy 52 - Energy 52： Café Del Mar (Three 'n One Radio Remix) (official video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.451Z",
+    "stems": {
+      "bass": "1LNyMdDUYjGjmcZty4dYqR8mpQuasucnp",
+      "drums": "1mu2P6dXUr00ipEmzwc-7Cpnji1LXIxTm",
+      "guitar": "17g0WKsV6C5n5rstHt106wyO7Qfhlfuav",
+      "other": "1WIPG-j9Y1Zu07W5NWG-brtdAZ6QQIzl-",
+      "vocals": "1CafSb9HNdgGBoh2Fg_Z7dLIF9cNe_Mkr"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -37.2,
+        "silentPct": 0.611
+      },
+      "piano": {
+        "meanDb": -75.8,
+        "silentPct": 1
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1yQl4iS1vm5znQb04SnLabyKRlgMfHcb8": {
+    "name": "Euphoria Lyrics - PPK - Resurection.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.467Z",
+    "stems": {
+      "bass": "1_3evDl0sX-vyh288x-yVvomIoCW8rIg3",
+      "drums": "1ERunQsInalHhVOeYNwv8PhzZ_MammTVw",
+      "guitar": "1cU2NmwD9XEFzHceTLsD-TCsuoNCGMwpH",
+      "other": "1faetyBLZPk5p3F1oFUgqS1uWqRoaTORE",
+      "piano": "11NjqDnI4t42AMFlEalczajFryLqJYaD3",
+      "vocals": "1_sQmfYxaQuIMX2tMWXPsHIv8_v1RXEtX"
+    },
+    "dropped": [],
+    "loudness": {
+      "guitar": {
+        "meanDb": -27.9,
+        "silentPct": 0.208
+      },
+      "piano": {
+        "meanDb": -33.8,
+        "silentPct": 0.095
+      }
+    },
+    "compingLayer": [
+      "guitar",
+      "piano"
+    ]
+  },
+  "1_EsoFIqJCcJUO4zz9_o9lvmbKqInIABo": {
+    "name": "Ferry Corsten - System F - Out Of The Blue (Official Video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.483Z",
+    "stems": {
+      "bass": "1jzjICcgwzy0jq8MfIn2kJxKepgRAL0bf",
+      "drums": "1qGENIJ-DpiedJU67wjC-zMIAnEnTI2E1",
+      "guitar": "1qfYYt6IaquLR-sLYHbJusd9GEG6o58Wo",
+      "other": "1sq9bjmUhFz8MnrmvQg0Rswt-vrDBDErR",
+      "vocals": "1q7q2scXpElQe4Nh2Y1RUuqsblDVmo0Ff"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -42.1,
+        "silentPct": 0.698
+      },
+      "piano": {
+        "meanDb": -85.5,
+        "silentPct": 1
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1hDiv5G5KezgcK6DaaSdWwKHyKw9PTWPJ": {
+    "name": "Loventus - DJ Sakin - Protect Your Mind (Braveheart).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.498Z",
+    "stems": {
+      "bass": "1IKrZun__xRr9ojBG5BBHmX7DEmbO4gG7",
+      "drums": "1OalgmezHMGyLLz1yQb6ZFENK3Av4Udg_",
+      "other": "1lbL-0ZLIZr0WbQLSyR2f0uefFyR18LqH",
+      "vocals": "19ilwV_Iih2fOjsELVXqDPHb1TXKpPanA"
+    },
+    "dropped": [
+      "guitar",
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -33.3,
+        "silentPct": 0.845
+      },
+      "piano": {
+        "meanDb": -64.3,
+        "silentPct": 0.988
+      }
+    },
+    "compingLayer": []
+  },
+  "1mr2JgeYyxQj66rYDciLuHAYeI1SRWa0b": {
+    "name": "Ministry of Sound - Eric Prydz – Call On Me (Official Music Video) ｜ Ministry of Sound.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.515Z",
+    "stems": {
+      "bass": "1aUmT6SdZfDbJ0KIw88DUF_FPTw-Tcoh4",
+      "drums": "111l4XKGtvoFl9wNHf9ohAowCyEtf5bCG",
+      "guitar": "1fwMDQT0KumNn_LxxT3JmsK6xWe-VPr4_",
+      "other": "1jNGqkpJ7-0fsuJQUwYOtHXuFbK0Pr1EJ",
+      "vocals": "1oXmAj-Yn-lotESeOzNGFNPSPBgbbzgDg"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -27,
+        "silentPct": 0.186
+      },
+      "piano": {
+        "meanDb": -47.3,
+        "silentPct": 0.888
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1wPaLWHzizMzYR81fQMec-mFImo8u3xvX": {
+    "name": "Paul van Dyk - Paul van Dyk - For An Angel (1998).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.531Z",
+    "stems": {
+      "bass": "17R8P0VOQqiA4TPk3ZzqXIFE-MMe84S4Q",
+      "drums": "10q8Q9wL7L0h9qUd83VFrWxF6hNN6P1Jb",
+      "guitar": "1YF_tJZmuEB7tI2_ZJ5StSTY3W8-s8sGZ",
+      "other": "1wCh5mnbJvBsNECd4UkBI8tkwANxmnJVn",
+      "vocals": "1xbdGv1bDKL_mEqC4GhKDf6YWMFdhpehg"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -44.4,
+        "silentPct": 0.792
+      },
+      "piano": {
+        "meanDb": -41.3,
+        "silentPct": 0.831
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1gd5UD9n1t1UuN7fWI7Y0NclYu4Aq7kF-": {
+    "name": "Push - Push - Universal Nation.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.547Z",
+    "stems": {
+      "bass": "1YEn8aSDNvwAwoza1jMAQD3iq2CTUsqkc",
+      "drums": "1mtR5Bez_lDiChvbCIeIoY6DUoalWv_L8",
+      "other": "1GzVtHXUjEcIMdv1ZgQSq8yOJ3e-hNSW9",
+      "vocals": "1csYr0CoMQ64EcZA6ieHUojiOCHoBF5Dn"
+    },
+    "dropped": [
+      "guitar",
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -59.2,
+        "silentPct": 0.968
+      },
+      "piano": {
+        "meanDb": -87.3,
+        "silentPct": 1
+      }
+    },
+    "compingLayer": []
+  },
+  "1sc-GZx0C0dvvoK6DL-DfoTHNto78kkAj": {
+    "name": "Robert Miles - Robert Miles - Children (Official Video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.563Z",
+    "stems": {
+      "bass": "1msDClvGUjzRx9l-iSq_fw5b1hJn97rOX",
+      "drums": "1rlMvrSt4EGRcM2STD0JnbJazXK1ga7CU",
+      "other": "1_sgJkbl9hdjNd9UtNRoywiWD8-adySOh",
+      "vocals": "1333O4KvOCcAmf4h_qauEF96Wy9gFs8nX"
+    },
+    "dropped": [
+      "guitar",
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -46.4,
+        "silentPct": 0.844
+      },
+      "piano": {
+        "meanDb": -46.4,
+        "silentPct": 0.806
+      }
+    },
+    "compingLayer": []
+  },
+  "1Yq_-5exojMKxKOKDl0NwSbwhwOMdXSBz": {
+    "name": "Steve Aoki - Gabry Ponte, Steve Aoki, KEL - He's A Pirate (Save Me) [Official Visualizer].mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.578Z",
+    "stems": {
+      "bass": "1f2Cz3ophgSl2PXMezFwK4zilBjhhw3Ia",
+      "drums": "1YO7FhtyfOwRca80L_Taslx_aaSCZamqr",
+      "other": "1j5b-Ra7MNvTSHqnBqpD5fQNsrIa2mbGh",
+      "vocals": "1zElEOxKl2jDWV8N0N99u0WNUdAWubNKg"
+    },
+    "dropped": [
+      "guitar",
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -45.4,
+        "silentPct": 0.809
+      },
+      "piano": {
+        "meanDb": -65.7,
+        "silentPct": 0.985
+      }
+    },
+    "compingLayer": []
+  },
+  "1J6fAANmBJw15mtYY-E0CAFOmO5InDm1d": {
+    "name": "Steve Aoki - Pursuit of Happiness (Steve Aoki Remix) - Kid Cudi AUDIO.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.595Z",
+    "stems": {
+      "bass": "1lPit5i-tmLvx1g6LuWUGip84LUka0j4d",
+      "drums": "1GZM9hJsSpqsw2Nu9H0KGWlI-kw4wm0RU",
+      "guitar": "1KVfsxMwG4A0VEP7-6cLSIogNuSXpnb8j",
+      "other": "1QUnZOLzXABP3jPEVWR3bSBgT5SRnIxD4",
+      "piano": "1QPJBbkDw78itVZkaEH5hw3KDDgQj4dJ4",
+      "vocals": "1FpM6lBunmI6h-K-u-G6SwqOQjJ-V1Vz8"
+    },
+    "dropped": [],
+    "loudness": {
+      "guitar": {
+        "meanDb": -35.3,
+        "silentPct": 0.643
+      },
+      "piano": {
+        "meanDb": -35.7,
+        "silentPct": 0.712
+      }
+    },
+    "compingLayer": [
+      "guitar",
+      "piano"
+    ]
+  },
+  "1JxwIyeRT2Tu_3LNDJUzoyT51TnHHYCdT": {
+    "name": "Swedish House Mafia - Swedish House Mafia ft. John Martin - Don't You Worry Child (Official Video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.613Z",
+    "stems": {
+      "bass": "18jUpc4ea7uy6L97ttFjfUijTEpTsRZto",
+      "drums": "1gQukQL80dqkVKwkLuun6MiFCxObdP5Q2",
+      "guitar": "1_SJhEEyOECKKQXCijbPweRH8ihN5Wag_",
+      "other": "1dIsUAMoCxM_STEIvLbfzPF2kCY4MiV1g",
+      "vocals": "1IzUhQYTQwnW7KOCi8xrN6aIP9sGtMIz5"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -30.1,
+        "silentPct": 0.557
+      },
+      "piano": {
+        "meanDb": -43.5,
+        "silentPct": 0.924
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1Lo2rN_Ix7bntbMACAdPwEgX3puIeMB4o": {
+    "name": "Tiësto - Tiësto, Dimitri Vegas & Like Mike, Gabry Ponte - Mockingbird (Official Lyric Video).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.631Z",
+    "stems": {
+      "bass": "1uAv9vabvlrCy9vS8qg1zT9awyfI_0BHl",
+      "drums": "1albVzsJ1CnAQH7HM_xSzW-CoIRXIkM1y",
+      "other": "1mQwJzQe3Sp5bKzXSiiuzXj1OUUgjpiCv",
+      "vocals": "1DRwsLuQ8R8bPlqp9y5PkIpfSIrN7Y_Dz"
+    },
+    "dropped": [
+      "guitar",
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -50.6,
+        "silentPct": 0.915
+      },
+      "piano": {
+        "meanDb": -44,
+        "silentPct": 0.934
+      }
+    },
+    "compingLayer": []
+  },
+  "1gUrGYear5BtiZneteSLlv548wrvsUxRk": {
+    "name": "Tiësto - Tiësto - Adagio For Strings.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.648Z",
+    "stems": {
+      "bass": "1eB-nrh46oUP4CJ-hXvYsy4_ESsKSrSzm",
+      "drums": "1T98NJYFi24zrLZSmVHMWUDnXndwh3A57",
+      "guitar": "1VMRts7OPWxjAtLc-O9v8Dj9fiiXLx1uY",
+      "other": "1iLVGYDYP4pDE793lQb0laktFFGOdeznp",
+      "vocals": "1Ls43UbSyIZoKdvWBUJRZHeveqhvjQpvy"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -28,
+        "silentPct": 0.116
+      },
+      "piano": {
+        "meanDb": -46.5,
+        "silentPct": 0.946
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1cygggxDS3B6c3Xs-kAjWiaHzg8nrqd51": {
+    "name": "Tiësto - Tiësto - Flight 643.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.664Z",
+    "stems": {
+      "bass": "1Ag7p0WpK92_qpigHWapPrtz5IZhjDDE0",
+      "drums": "1meE4Nm4IuSkaZ0YqSWhX4EnI9Beexm7l",
+      "guitar": "13M01ejrRcTJsI84uBnZBLvyOn9iOu3Vv",
+      "other": "1rJOzniQuCsM6b-A-a7hV63BsX9XR2kWv",
+      "vocals": "1xkfOO09k0pWpQGnrJtcmTLN1O0JAwOT0"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -39.9,
+        "silentPct": 0.473
+      },
+      "piano": {
+        "meanDb": -45.6,
+        "silentPct": 0.841
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1DUfEUgIzhnCUTNFygllhLiWwUxW85UHi": {
+    "name": "Ultra Records - 4 Strings - Take Me Away.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.679Z",
+    "stems": {
+      "bass": "1FN-WyvXr6HxTrAkBnYklzJff2f8mz4o7",
+      "drums": "1Fl8yJg5o5O6Txkc5jTvOm-zktibPRqsH",
+      "guitar": "1uYPHXkj-5A6S9PFubatBu5K9mVctLLS8",
+      "other": "1RI75RnHKKf4yCxt7NN2ybOUo8qkbg9GU",
+      "vocals": "1i6fwilHEl9z7vRoH-Nxacfe5FgiYSWLe"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -37.7,
+        "silentPct": 0.56
+      },
+      "piano": {
+        "meanDb": -51.1,
+        "silentPct": 0.945
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1YzlVJ_vcU6WK_OahHDYlZFUG7xfgWZkM": {
+    "name": "lasgoofficial - Lasgo - Something   (OFFICIAL VIDEO).mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.695Z",
+    "stems": {
+      "bass": "1zWji-rSKX5shwAkV2166fpCCeifLRqPh",
+      "drums": "15eHLlx9UueMpRbYYHE7xF0dIYuiXx66u",
+      "other": "1mpExFrQ3nZR8AnxJ-u9UeIArJ5BxTZMe",
+      "vocals": "1hKuRvAmNWOVu5ADK1Y-ynLmqmO_Z_O_d"
+    },
+    "dropped": [
+      "guitar",
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -37.4,
+        "silentPct": 0.937
+      },
+      "piano": {
+        "meanDb": -71.7,
+        "silentPct": 0.999
+      }
+    },
+    "compingLayer": []
+  },
+  "1jI8MNxmId1SKecdEmWV7W29lQMqugfNY": {
+    "name": "protectorofillinois3 - Delerium feat. Sarah McLachlan - Silence (Tiesto's In Search of Sunrise Remix) [HD].mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.714Z",
+    "stems": {
+      "bass": "1DR-7EAkqP9hrVzIIf8DgZYu5vrJO-dSL",
+      "drums": "1LqnK_HnYUZphZD9QMddc52Entbtgt_yj",
+      "guitar": "1cZVTwIsnUC8bbYGF17yqpX-8Bmg5dvuW",
+      "other": "1ljQMkUZT7ty72zvAS2zbt_0r6bgpo1cd",
+      "vocals": "1yYcEqcRUpZW5AAzjgPXAEReNF3Zx2J2W"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -34.8,
+        "silentPct": 0.755
+      },
+      "piano": {
+        "meanDb": -32.3,
+        "silentPct": 0.874
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
+  },
+  "1e2h1R8_nqBAJlgh3VPyo8hvsiT3Dmxew": {
+    "name": "zyxdance - Gigi D'Agostino - The Riddle.mp3",
+    "model": "htdemucs_6s",
+    "generatedAt": "2026-11-07T08:46:41.729Z",
+    "stems": {
+      "bass": "1GrPbvgiRBtQJAXwe-M7M0IOfIV6jFUwX",
+      "drums": "1YA8_fb1jkMSbwWEM6aEZe0WSsMjoImTk",
+      "guitar": "1TPhjYt2szazSROSGACeFQ9zhwDcusW53",
+      "other": "18p3Y4Tb4-E0AUb_OSSqGlc3B98E6U8D0",
+      "vocals": "1Dt4krTOyb3idlnN_TnA7QUCY_5K1CO--"
+    },
+    "dropped": [
+      "piano"
+    ],
+    "loudness": {
+      "guitar": {
+        "meanDb": -35.2,
+        "silentPct": 0.611
+      },
+      "piano": {
+        "meanDb": -69.5,
+        "silentPct": 0.991
+      }
+    },
+    "compingLayer": [
+      "guitar"
+    ]
   }
 }

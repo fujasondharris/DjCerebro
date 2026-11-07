@@ -95,6 +95,11 @@ const NAMES: Record<string, [string, string]> = {
   "supermercado_salsa_brava.mp3": ["Orquesta Supermercado", "Supermercado Salsa Brava (Descarga en Vivo)"],
   "medianoche_tech_guaracha.mp3": ["DJ Supermercado", "Medianoche Tech Guaracha (Aleteo Club Tool)"],
   "costa_dorada_bachata_vip.mp3": ["DJ Supermercado", "Costa Dorada — Bachata Sensual (VIP Dub)"],
+  // YouTube titles that split the song away from the artist. Identity only; genre is the song rule below.
+  "Steve Aoki - Pursuit of Happiness (Steve Aoki Remix) - Kid Cudi AUDIO.mp3": ["Steve Aoki & Kid Cudi", "Pursuit of Happiness (Steve Aoki Remix)"],
+  "Energy 52 - Energy 52： Café Del Mar (Three 'n One Radio Remix) (official video).mp3": ["Energy 52", "Café del Mar (Three 'n One Radio Remix)"],
+  "DarkSLF2 - Gouryella (Ferry Corsten & DJ Tiesto) - Gouryella HQ.mp3": ["Ferry Corsten & Tiësto", "Gouryella"],
+  "Euphoria Lyrics - PPK - Resurection.mp3": ["PPK", "Resurrection"],
 };
 const BUNNY_TITLES = new Set(["BAILE INoLVIDABLE", "CAFé CON RON", "DtMF", "EoO", "LO QUE LE PASÓ A HAWAii", "LA MuDANZA", "Me Porto Bonito", "NUEVAYoL", "PIToRRO DE COCO", "WELTiTA", "VOY A LLeVARTE PA PR", "Tití Me Preguntó", "El Apagón", "Después de la Playa"].map(musicKey));
 const WRITER_CREDITS = /^(?:Benito|Austin Santos|Roberto Jos[eé]|Marco Daniel|Luis Amed|Marcos Efra[ií]n|Flor Morales|Jay Anthony|Ricardo Garc[ií]a|Francis Rivera|Miguel A|Juan Ivan|Llandel Veguilla|Tegui Calder[oó]n|Joel Mu[nñ]oz|Randy Ortiz|Edwin Rosa|Raymond Ayala|Gonzalo Juli[aá]n|Villana Santiago|Santiago Alvarado|Ni Garcia)\b/i;
@@ -211,8 +216,15 @@ const SONG_GENRES: [RegExp, RegExp, string][] = [
   [/^sean paul/, /^(gimme the light|no lie|she doesn t mind|we be burnin)\b/, "Dancehall"],
   [/^(kapo|rema)/, /^(calm down|ohnana|uwaie)$/, "Afrobeats"],
   [/^(darude|ppk|voodoo|paul van dyk|paul oakenfold|yahel|ferry corsten)/, /^(blood is pumpin|feel the beat|reload|sandstorm)\b/, "Trance"],
+  // Why: these are the 1998–2004 popular trance singles. A title like "silence" or "heaven" is only trance with its artist. Tiësto's House profile must not catch Adagio or Flight 643.
+  [/^(alice deejay|atb|binary finary|cascada|chicane|delerium|dj sakin|dj sammy|energy 52|4 strings|iio|lasgo|paul van dyk|ppk|push|rank 1|robert miles|system f|three drives|veracocha|yahel)/, /^(9pm\b|1998\b|airwave\b|better off alone\b|cafe del mar\b|carte blanche\b|children\b|devotion\b|energy 52\b|everytime we touch\b|for an angel\b|greece 2000\b|heaven\b|out of the blue\b|protect your mind\b|rapture\b|resurection\b|resurrection\b|saltwater\b|silence\b|something\b|take me away\b|universal nation\b|voyage\b)/, "Trance"],
+  [/^(gouryella|ferry corsten)/, /^gouryella\b/, "Trance"],
+  [/^tiesto\b/, /^(adagio for strings|flight 643)\b/, "Trance"],
   [/^anyma/, /^atmosphere$/, "Melodic Techno"],
-  [/^(tiesto|calvin harris|david guetta|edward maya|hvme|daft punk)/, /^(blame|don t be shy|feel so close|get lucky|goosebumps|i m good|stereo love|the business|yesterday)\b/, "House"],
+  [/^(tiesto|calvin harris|david guetta|edward maya|hvme|daft punk)/, /^(blame|don t be shy|feel so close|get lucky|goosebumps|i m good|miracle|mockingbird|stereo love|the business|yesterday)\b/, "House"],
+  // Why: later festival records in the same grab are progressive or pop house, not the trance anthems above.
+  [/^(avicii|eric prydz|gabry ponte|jonas blue|steve aoki|swedish house mafia)/, /^(call on me|don t you worry child|fast car|he s a pirate|levels|pursuit of happiness)\b/, "House"],
+  [/^gigi d agostino/, /^the riddle\b/, "Dance"],
   [/^(dayvi|deorro)/, /^(baila conmigo|bailar)\b/, "Guaracha"],
   [/^carlos vives/, /^la gota fria\b/, "Vallenato"],
   [/^(ed sheeran|bruno mars)/, /^(just the way you are|perfect duet)\b/, "Pop"],

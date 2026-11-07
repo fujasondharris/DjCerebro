@@ -1515,6 +1515,30 @@
       }
     ]
   },
+  "drive:15-57IiF_Vv9P31C7sxjNZPkCJtXMEgJd": {
+    "name": "CASCADA - Cascada - Everytime We Touch (Official video).mp3",
+    "matchedTitle": "Everytime We Touch",
+    "matchedArtist": "Cascada",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 28.86,
+        "label": "'Cause every time we touch, I get this f"
+      },
+      {
+        "atSeconds": 124.88,
+        "label": "'Cause every time we touch, I get this f"
+      },
+      {
+        "atSeconds": 138.77,
+        "label": "'Cause every time we touch, I feel the s"
+      },
+      {
+        "atSeconds": 179.7,
+        "label": "'Cause every time we touch, I get this f"
+      }
+    ]
+  },
   "drive:15-FcGNr1rD3kuX7Z2BuO03D-PPHQdkRW": {
     "name": "Piso 21 - Piso 21, Marc Anthony y Beéle - Volver (Video Oficial) [yTLWGt4e6Hw].mp3",
     "matchedTitle": "Piso 21 - Piso 21, Marc Anthony y Beéle - Volver (Video Oficial) [yTLWGt4e6Hw]",
@@ -1536,6 +1560,34 @@
       {
         "atSeconds": 190.05,
         "label": "(Hook / Coro)"
+      }
+    ]
+  },
+  "drive:151mwqieGK77oS-iNRTqaZ9i68ts7WGW8": {
+    "name": "Alice Deejay - Alice Deejay - Better Off Alone (Official Video).mp3",
+    "matchedTitle": "Better Off Alone",
+    "matchedArtist": "Alice Deejay",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 72.09,
+        "label": "Do you think you're better off alone?"
+      },
+      {
+        "atSeconds": 113.64,
+        "label": "Talk to me, ooh, talk to me"
+      },
+      {
+        "atSeconds": 120.74,
+        "label": "Talk to me, ooh, talk to me"
+      },
+      {
+        "atSeconds": 170.28,
+        "label": "Do you think you're better off alone?"
+      },
+      {
+        "atSeconds": 184.24,
+        "label": "Do you think you're better off alone?"
       }
     ]
   },
@@ -3539,6 +3591,34 @@
       }
     ]
   },
+  "drive:1DUfEUgIzhnCUTNFygllhLiWwUxW85UHi": {
+    "name": "Ultra Records - 4 Strings - Take Me Away.mp3",
+    "matchedTitle": "Take Me Away",
+    "matchedArtist": "4 Strings",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 28.25,
+        "label": "Take me away"
+      },
+      {
+        "atSeconds": 55.21,
+        "label": "Take me away"
+      },
+      {
+        "atSeconds": 111.69,
+        "label": "Take me away"
+      },
+      {
+        "atSeconds": 132.44,
+        "label": "Take me away"
+      },
+      {
+        "atSeconds": 160.19,
+        "label": "A million miles away from here"
+      }
+    ]
+  },
   "drive:1DVqo9iFOeKGllfn_UhoeLhoOqQtHXXFv": {
     "name": "Gente De Zona - Gente de Zona - Te Duele (Official Video).mp3",
     "matchedTitle": "Te Duele",
@@ -3932,6 +4012,38 @@
       {
         "atSeconds": 74.16,
         "label": "I just called to say I love you"
+      }
+    ]
+  },
+  "drive:1FWHkNJWp-8ks6b8WtGaiF1IcNL6WBPbs": {
+    "name": "Calvin Harris - Calvin Harris, Ellie Goulding - Miracle (Official Video).mp3",
+    "matchedTitle": "Miracle",
+    "matchedArtist": "Calvin Harris & Ellie Goulding",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 13.09,
+        "label": "When you touch me"
+      },
+      {
+        "atSeconds": 43.52,
+        "label": "To believe in a miracle?"
+      },
+      {
+        "atSeconds": 80.95,
+        "label": "When you hold me"
+      },
+      {
+        "atSeconds": 97.54,
+        "label": "I get vulnerable"
+      },
+      {
+        "atSeconds": 124.54,
+        "label": "To believe in a miracle?"
+      },
+      {
+        "atSeconds": 160.35,
+        "label": "To believe in a miracle, ah-ah-ah (to be"
       }
     ]
   },
@@ -4887,6 +4999,38 @@
       }
     ]
   },
+  "drive:1JxwIyeRT2Tu_3LNDJUzoyT51TnHHYCdT": {
+    "name": "Swedish House Mafia - Swedish House Mafia ft. John Martin - Don't You Worry Child (Official Video).mp3",
+    "matchedTitle": "Don't You Worry Child",
+    "matchedArtist": "Swedish House Mafia & John Martin",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 38.26,
+        "label": "Up on a hill across the blue lake"
+      },
+      {
+        "atSeconds": 82.94,
+        "label": "Don't you worry, don't you worry now"
+      },
+      {
+        "atSeconds": 94.89,
+        "label": "Yeah"
+      },
+      {
+        "atSeconds": 131.91,
+        "label": "Up on a hill across the blue lake"
+      },
+      {
+        "atSeconds": 151.09,
+        "label": "See heaven's got a plan for you"
+      },
+      {
+        "atSeconds": 175.72,
+        "label": "See heaven's got a plan for you"
+      }
+    ]
+  },
   "drive:1K-CT2qW9kIm45mfCtNGJjvy_vh6OO0QX": {
     "name": "Ozuna - Unica.mp3",
     "matchedTitle": "Única",
@@ -5312,6 +5456,38 @@
       {
         "atSeconds": 186.12,
         "label": "Esta noche me toca a mí"
+      }
+    ]
+  },
+  "drive:1Lo2rN_Ix7bntbMACAdPwEgX3puIeMB4o": {
+    "name": "Tiësto - Tiësto, Dimitri Vegas & Like Mike, Gabry Ponte - Mockingbird (Official Lyric Video).mp3",
+    "matchedTitle": "Mockingbird",
+    "matchedArtist": "Tiësto, Dimitri Vegas, Like Mike, Gabry Ponte",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 12.81,
+        "label": "Now hush, little baby, don't you cry"
+      },
+      {
+        "atSeconds": 34.02,
+        "label": "But I promise Mama's gon' be alright"
+      },
+      {
+        "atSeconds": 53.59,
+        "label": "We fear how we feel inside"
+      },
+      {
+        "atSeconds": 80.26,
+        "label": "It may seem a little crazy, pretty baby"
+      },
+      {
+        "atSeconds": 96.67,
+        "label": "Daddy's here to hold ya through the nigh"
+      },
+      {
+        "atSeconds": 124.6,
+        "label": "Now hush, little baby, don't you cry"
       }
     ]
   },
@@ -6704,6 +6880,38 @@
       {
         "atSeconds": 183.37,
         "label": "(Drop)"
+      }
+    ]
+  },
+  "drive:1RP1iGgxIHMrwAw1N_HOe9yTFxC2jK3q1": {
+    "name": "DJ Sammy - DJ Sammy feat. Yanou & Do - Heaven (Official Video).mp3",
+    "matchedTitle": "Heaven",
+    "matchedArtist": "Dj. Sammy & Yanou & Do",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 10.96,
+        "label": "We're in heaven"
+      },
+      {
+        "atSeconds": 77.67,
+        "label": "Baby, you're all that I want"
+      },
+      {
+        "atSeconds": 84.29,
+        "label": "I'm finding it hard to believe"
+      },
+      {
+        "atSeconds": 140.04,
+        "label": "Baby, you're all that I want"
+      },
+      {
+        "atSeconds": 157.17,
+        "label": "And I found it there in your heart"
+      },
+      {
+        "atSeconds": 199.42,
+        "label": "And love is all that I need"
       }
     ]
   },
@@ -8587,6 +8795,38 @@
       }
     ]
   },
+  "drive:1YAtBMewkKB0j1CqjuuJeUmLeNjIYYNgB": {
+    "name": "Avicii - Avicii - Levels.mp3",
+    "matchedTitle": "Levels",
+    "matchedArtist": "Avicii",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 84.08,
+        "label": "Oh, sometimes"
+      },
+      {
+        "atSeconds": 91.88,
+        "label": "Get a feeling that I never, never"
+      },
+      {
+        "atSeconds": 96.75,
+        "label": "I get a good feeling, yeah"
+      },
+      {
+        "atSeconds": 99.34,
+        "label": "Oh, sometimes"
+      },
+      {
+        "atSeconds": 107.34,
+        "label": "Get a feeling that I never, never"
+      },
+      {
+        "atSeconds": 112.19,
+        "label": "I get a good feeling, yeah"
+      }
+    ]
+  },
   "drive:1YLq2Qp43znWP6YBPlGXO_uYue369FbL4": {
     "name": "Bad Bunny, Benito A Martinez - Soy Peor.mp3",
     "matchedTitle": "Soy Peor",
@@ -8768,6 +9008,62 @@
       {
         "atSeconds": 173.86,
         "label": "Me va tan fatal"
+      }
+    ]
+  },
+  "drive:1Yq_-5exojMKxKOKDl0NwSbwhwOMdXSBz": {
+    "name": "Steve Aoki - Gabry Ponte, Steve Aoki, KEL - He's A Pirate (Save Me) [Official Visualizer].mp3",
+    "matchedTitle": "He’s a Pirate (Save Me)",
+    "matchedArtist": "Gabry Ponte, Steve Aoki & Kel",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 11.61,
+        "label": "And that we'll stay together"
+      },
+      {
+        "atSeconds": 80.89,
+        "label": "Save me and take me away"
+      },
+      {
+        "atSeconds": 97.6,
+        "label": "Save me and take me away"
+      },
+      {
+        "atSeconds": 124.13,
+        "label": "And that we'll stay together"
+      }
+    ]
+  },
+  "drive:1YzlVJ_vcU6WK_OahHDYlZFUG7xfgWZkM": {
+    "name": "lasgoofficial - Lasgo - Something   (OFFICIAL VIDEO).mp3",
+    "matchedTitle": "Something",
+    "matchedArtist": "Lasgo",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 29,
+        "label": "I don't wanna say I'm sorry"
+      },
+      {
+        "atSeconds": 62.35,
+        "label": "Hold me in your arms"
+      },
+      {
+        "atSeconds": 91.79,
+        "label": "There is something"
+      },
+      {
+        "atSeconds": 132.38,
+        "label": "I don't wanna say I'm sorry"
+      },
+      {
+        "atSeconds": 153.05,
+        "label": "'Cause my feelings for you are still str"
+      },
+      {
+        "atSeconds": 185.56,
+        "label": "'Cause I need you so"
       }
     ]
   },
@@ -10139,6 +10435,30 @@
       }
     ]
   },
+  "drive:1e2h1R8_nqBAJlgh3VPyo8hvsiT3Dmxew": {
+    "name": "zyxdance - Gigi D'Agostino - The Riddle.mp3",
+    "matchedTitle": "The riddle",
+    "matchedArtist": "Gigi D'Agostino",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 58.78,
+        "label": "Near a tree by a river"
+      },
+      {
+        "atSeconds": 77.6,
+        "label": "Where an old man of Aran"
+      },
+      {
+        "atSeconds": 93.52,
+        "label": "There's a wrong and a right"
+      },
+      {
+        "atSeconds": 147.27,
+        "label": "Near a tree by a river"
+      }
+    ]
+  },
   "drive:1eAXKuhfAu8On-zma_EaVVVbvC93xhXkC": {
     "name": "Farruko - Farruko - Viaje (Official Music Video) [mkbKfOjMxDA].mp3",
     "matchedTitle": "Farruko - Farruko - Viaje (Official Music Video) [mkbKfOjMxDA]",
@@ -10731,6 +11051,34 @@
       }
     ]
   },
+  "drive:1gUrGYear5BtiZneteSLlv548wrvsUxRk": {
+    "name": "Tiësto - Tiësto - Adagio For Strings.mp3",
+    "matchedTitle": "Adagio For Strings",
+    "matchedArtist": "Axel Johansson",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 23.26,
+        "label": "In the depths of night"
+      },
+      {
+        "atSeconds": 56.86,
+        "label": "I may be young in the night"
+      },
+      {
+        "atSeconds": 63.6,
+        "label": "I may be young in the night"
+      },
+      {
+        "atSeconds": 78.78,
+        "label": "In the depths of night"
+      },
+      {
+        "atSeconds": 115.88,
+        "label": "In the depths of night"
+      }
+    ]
+  },
   "drive:1gWm_XjWOQiA4G7X-L9zYUTmQDdzL3DlI": {
     "name": "Jacob Forever, Alexander - Seductora (feat. Alexander) (Nando Pro Edit Remastered) [dKbfJr-Rjwk].mp3",
     "matchedTitle": "Jacob Forever, Alexander - Seductora (feat. Alexander) (Nando Pro Edit Remastered) [dKbfJr-Rjwk]",
@@ -10811,6 +11159,30 @@
       }
     ]
   },
+  "drive:1gd5UD9n1t1UuN7fWI7Y0NclYu4Aq7kF-": {
+    "name": "Push - Push - Universal Nation.mp3",
+    "matchedTitle": "Universal Nation (extended mix)",
+    "matchedArtist": "Push",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 266,
+        "label": "Proceed with visual attack formation"
+      },
+      {
+        "atSeconds": 291.42,
+        "label": "(Uh!)"
+      },
+      {
+        "atSeconds": 347.33,
+        "label": "(Uh!)"
+      },
+      {
+        "atSeconds": 402.9,
+        "label": "(Uh!)"
+      }
+    ]
+  },
   "drive:1ghyDl7MGeakRDIpFBV__Sw5_gSF_8nfC": {
     "name": "Bad Bunny, Mambo Kingz, Dj Luian, Arcangel, Almighty, Bryant Myers, Noriel, Baby Rasta, Brytiago - Me Mata.mp3",
     "matchedTitle": "Me Mata",
@@ -10876,6 +11248,30 @@
       {
         "atSeconds": 200.12,
         "label": "(Break / Beat)"
+      }
+    ]
+  },
+  "drive:1hDiv5G5KezgcK6DaaSdWwKHyKw9PTWPJ": {
+    "name": "Loventus - DJ Sakin - Protect Your Mind (Braveheart).mp3",
+    "matchedTitle": "Protect Your Mind (Braveheart)",
+    "matchedArtist": "DJ Sakin",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 50.03,
+        "label": "Braveheart, you are my braveheart"
+      },
+      {
+        "atSeconds": 61.5,
+        "label": "Take me in your arms, you are my bravehe"
+      },
+      {
+        "atSeconds": 74.87,
+        "label": "Braveheart, you are my braveheart"
+      },
+      {
+        "atSeconds": 86.35,
+        "label": "Take me in your arms, you are my bravehe"
       }
     ]
   },
@@ -11295,6 +11691,38 @@
       }
     ]
   },
+  "drive:1ibLjeg3N2Znx6bi-7WY1I6dqIE45SDlZ": {
+    "name": "7clouds - Jonas Blue - Fast Car (Lyrics) ft. Dakota.mp3",
+    "matchedTitle": "Fast Car Ft. Dakota",
+    "matchedArtist": "Jonas Blue",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 19.01,
+        "label": "You got a fast car"
+      },
+      {
+        "atSeconds": 52.88,
+        "label": "You got a fast car"
+      },
+      {
+        "atSeconds": 80.07,
+        "label": "The speed so fast, felt like I was drunk"
+      },
+      {
+        "atSeconds": 128.61,
+        "label": "You got a fast car"
+      },
+      {
+        "atSeconds": 145.35,
+        "label": "You got a fast car"
+      },
+      {
+        "atSeconds": 172.58,
+        "label": "The speed so fast, felt like I was drunk"
+      }
+    ]
+  },
   "drive:1iuqm-rnTaMClOXtWXXD9iQXi4V5-CXRV": {
     "name": "Marshmello, Farruko - Marshmello, Farruko - Esta Vida (Official Video).mp3",
     "matchedTitle": "Esta Vida",
@@ -11480,6 +11908,26 @@
       {
         "atSeconds": 225.76,
         "label": "(Hook / Coro)"
+      }
+    ]
+  },
+  "drive:1jI8MNxmId1SKecdEmWV7W29lQMqugfNY": {
+    "name": "protectorofillinois3 - Delerium feat. Sarah McLachlan - Silence (Tiesto's In Search of Sunrise Remix) [HD].mp3",
+    "matchedTitle": "Silence (Tiësto’s “In Search of Sunrise” remix)",
+    "matchedArtist": "Delerium feat. Sarah McLachlan",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 170.42,
+        "label": "Heaven holds a sense of wonder"
+      },
+      {
+        "atSeconds": 253.75,
+        "label": "Heaven holds a sense of wonder"
+      },
+      {
+        "atSeconds": 358.04,
+        "label": "Heaven holds a sense of wonder"
       }
     ]
   },
@@ -12087,6 +12535,38 @@
       }
     ]
   },
+  "drive:1lkQGgPMKg9luD29NOUJJEJCEOJSXDXvj": {
+    "name": "Embassy One - iiO - Rapture (Official Video).mp3",
+    "matchedTitle": "Rapture",
+    "matchedArtist": "iiO",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 11.32,
+        "label": "La"
+      },
+      {
+        "atSeconds": 49.89,
+        "label": "Mi amore"
+      },
+      {
+        "atSeconds": 95.52,
+        "label": "Mi amore"
+      },
+      {
+        "atSeconds": 98.65,
+        "label": "My love I want you so"
+      },
+      {
+        "atSeconds": 127.41,
+        "label": "La la la la la la"
+      },
+      {
+        "atSeconds": 157.28,
+        "label": "Mi amore"
+      }
+    ]
+  },
   "drive:1llc_H27zSxmYjMTcEUnngFgexRKcXYI_": {
     "name": "WY Records - Wisin & Yandel - Tu Olor [Official Audio] [qKsuRw8kNp4].mp3",
     "matchedTitle": "WY Records - Wisin & Yandel - Tu Olor [Official Audio] [qKsuRw8kNp4]",
@@ -12392,6 +12872,38 @@
       {
         "atSeconds": 115.24,
         "label": "(Break / Beat)"
+      }
+    ]
+  },
+  "drive:1mr2JgeYyxQj66rYDciLuHAYeI1SRWa0b": {
+    "name": "Ministry of Sound - Eric Prydz – Call On Me (Official Music Video) ｜ Ministry of Sound.mp3",
+    "matchedTitle": "Call On Me",
+    "matchedArtist": "Eric Prydz",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 11.64,
+        "label": "Call on me, call on me"
+      },
+      {
+        "atSeconds": 38.27,
+        "label": "Call on me, call on me"
+      },
+      {
+        "atSeconds": 61.43,
+        "label": "Call on me, call on me"
+      },
+      {
+        "atSeconds": 101.74,
+        "label": "Call on me"
+      },
+      {
+        "atSeconds": 110.46,
+        "label": "Call on me, call on me"
+      },
+      {
+        "atSeconds": 136.94,
+        "label": "Call on me, call on me"
       }
     ]
   },
@@ -13288,6 +13800,26 @@
       {
         "atSeconds": 253.96,
         "label": "¿Pero cuándo será?"
+      }
+    ]
+  },
+  "drive:1pZipB7IzLrNt-LWWKkqkZPt4WFwt_4ne": {
+    "name": "ATB - 9Pm (Till I Come).mp3",
+    "matchedTitle": "9PM Till I Come",
+    "matchedArtist": "ATB",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 12.45,
+        "label": "Change it and see"
+      },
+      {
+        "atSeconds": 104,
+        "label": "Till I come"
+      },
+      {
+        "atSeconds": 114.73,
+        "label": "Till I Come"
       }
     ]
   },
@@ -14236,6 +14768,34 @@
       {
         "atSeconds": 222.92,
         "label": "(Break / Beat)"
+      }
+    ]
+  },
+  "drive:1sc-GZx0C0dvvoK6DL-DfoTHNto78kkAj": {
+    "name": "Robert Miles - Robert Miles - Children (Official Video).mp3",
+    "matchedTitle": "Children",
+    "matchedArtist": "Hand in Hand for Children E.V.",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 13.82,
+        "label": "Where have all of the children gone"
+      },
+      {
+        "atSeconds": 44.83,
+        "label": "expectations great and small"
+      },
+      {
+        "atSeconds": 104.15,
+        "label": "Children children"
+      },
+      {
+        "atSeconds": 112.9,
+        "label": "from afar we see them fall"
+      },
+      {
+        "atSeconds": 168.37,
+        "label": "Children children"
       }
     ]
   },
@@ -15228,6 +15788,26 @@
       {
         "atSeconds": 131.93,
         "label": "(Drop)"
+      }
+    ]
+  },
+  "drive:1wPaLWHzizMzYR81fQMec-mFImo8u3xvX": {
+    "name": "Paul van Dyk - Paul van Dyk - For An Angel (1998).mp3",
+    "matchedTitle": "For An Angel 2009",
+    "matchedArtist": "Paul Van Dyk",
+    "source": "lrclib",
+    "cues": [
+      {
+        "atSeconds": 13.96,
+        "label": "Lover (x11)"
+      },
+      {
+        "atSeconds": 46.06,
+        "label": "You give me love, give me love"
+      },
+      {
+        "atSeconds": 53.47,
+        "label": "You're all that I've been dreaming of"
       }
     ]
   },
