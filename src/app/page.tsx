@@ -1107,7 +1107,7 @@ function DeckPanel({
             )}
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%", maxWidth: "100%", minWidth: 0 }}>
             <input
               type="search"
               value={deckSearch}
@@ -1116,6 +1116,8 @@ function DeckPanel({
               aria-label={`Search song for ${label}`}
               style={{
                 width: "100%",
+                maxWidth: "100%",
+                minWidth: 0,
                 padding: "6px 10px",
                 borderRadius: 6,
                 background: "#090d16",
@@ -1124,68 +1126,67 @@ function DeckPanel({
                 fontSize: "0.8rem",
               }}
             />
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              <select
-                value={trackId && libraryTracks.some((t) => t.id === trackId) ? trackId : ""}
-                onChange={(e) => {
-                  if (e.target.value) {
-                    onSelectCrateTrack(e.target.value, false);
-                  }
-                }}
-                aria-label={`Choose song for ${label}`}
-                style={{
-                  flex: 1,
-                  minWidth: 180,
-                  padding: "7px 9px",
-                  borderRadius: 6,
-                  background: "#0f172a",
-                  color: "#f8fafc",
-                  border: "1px solid #475569",
-                  fontSize: "0.82rem",
-                  fontWeight: 700,
-                }}
-              >
-                <option value="">
-                  {hasTrack && trackName
-                    ? `Current: ${musicLabel({ name: trackName })} — Click to pick another song…`
-                    : `▼ Click to pick any song for ${label}…`}
-                </option>
-                {matchedForOtherDeck.length > 0 && (
-                  <optgroup label={`🔥 Best BPM & Key Matches for Other Deck (${Math.round(otherDeckBpm!)} BPM)`}>
-                    {matchedForOtherDeck.slice(0, 25).map((t) => (
-                      <option key={`match-${t.id}`} value={t.id}>
-                        ★ {t.label}
-                      </option>
-                    ))}
-                  </optgroup>
-                )}
-                <optgroup label={`📚 All Library Songs (${filteredLibraryTracks.length})`}>
-                  {filteredLibraryTracks.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.label}
+            <select
+              value={trackId && libraryTracks.some((t) => t.id === trackId) ? trackId : ""}
+              onChange={(e) => {
+                if (e.target.value) {
+                  onSelectCrateTrack(e.target.value, false);
+                }
+              }}
+              aria-label={`Choose song for ${label}`}
+              style={{
+                width: "100%",
+                maxWidth: "100%",
+                minWidth: 0,
+                padding: "7px 9px",
+                borderRadius: 6,
+                background: "#0f172a",
+                color: "#f8fafc",
+                border: "1px solid #475569",
+                fontSize: "0.82rem",
+                fontWeight: 700,
+              }}
+            >
+              <option value="">
+                {hasTrack && trackName
+                  ? `Current: ${musicLabel({ name: trackName })} — Tap to change song…`
+                  : `▼ Tap to pick any song for ${label}…`}
+              </option>
+              {matchedForOtherDeck.length > 0 && (
+                <optgroup label={`✅ Best BPM & Key Matches (${Math.round(otherDeckBpm!)} BPM)`}>
+                  {matchedForOtherDeck.slice(0, 30).map((t) => (
+                    <option key={`match-${t.id}`} value={t.id}>
+                      ★ {t.label}
                     </option>
                   ))}
                 </optgroup>
-              </select>
-              {trackId && onOpenInStemStudio && (
-                <button
-                  type="button"
-                  className={styles.secondaryButton}
-                  onClick={onOpenInStemStudio}
-                  style={{
-                    padding: "6px 10px",
-                    fontSize: "0.76rem",
-                    fontWeight: 800,
-                    background: "rgba(6, 182, 212, 0.22)",
-                    color: "#22d3ee",
-                    borderColor: "#06b6d4",
-                  }}
-                  title="Open this song in the 4-Stem Horn & Beat Looper"
-                >
-                  🎺 Stem Looper
-                </button>
               )}
-            </div>
+              <optgroup label={`📚 All Library Songs (${filteredLibraryTracks.length})`}>
+                {filteredLibraryTracks.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.label}
+                  </option>
+                ))}
+              </optgroup>
+            </select>
+            {onOpenInStemStudio && hasTrack && (
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={onOpenInStemStudio}
+                style={{
+                  fontSize: "0.75rem",
+                  padding: "6px 10px",
+                  fontWeight: 800,
+                  borderColor: "#22d3ee",
+                  color: "#cffafe",
+                  alignSelf: "flex-start",
+                }}
+                title="Open this song in the 4-Stem Isolator & Loop Studio to loop its horns or beat"
+              >
+                🎛️ Isolate / Loop Horns &amp; Beat in 4-Stems →
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -2820,20 +2821,23 @@ function LiveStemMixerPanel({
             </button>
           )}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <label style={{ fontSize: "0.8rem", color: "#cbd5e1", fontWeight: 600 }}>
-            Or Pick Any 4-Stem Song:{" "}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", flex: "1 1 240px", minWidth: 0, maxWidth: "100%" }}>
+          <label style={{ fontSize: "0.8rem", color: "#cbd5e1", fontWeight: 600, display: "flex", flexDirection: "column", gap: 4, width: "100%", minWidth: 0 }}>
+            <span>Or Pick Any 4-Stem Song:</span>
             <select
               value={selectedId}
               onChange={(e) => void handleSelectSongFromDropdown(e.target.value)}
               style={{
-                padding: "5px 8px",
+                padding: "6px 8px",
                 borderRadius: 6,
                 background: "#0f172a",
                 color: "#f8fafc",
                 border: "1px solid #475569",
-                maxWidth: 280,
+                width: "100%",
+                maxWidth: "100%",
+                minWidth: 0,
                 fontSize: "0.82rem",
+                textOverflow: "ellipsis",
               }}
               aria-label="Select a song for 4-Stem Isolation and Looping"
             >
@@ -3801,117 +3805,105 @@ interface BrainLogEntry {
   say: string;
 }
 
-const GOLD_STANDARD_MASHUP_PRESETS: Array<{
-  id: string;
-  badge: string;
-  title: string;
-  subtitle: string;
-  beatTrackId: string;
-  vocalTrackId: string;
-  bars: 16 | 32 | 64;
-  accent: string;
-}> = [
-  {
-    id: "gym_calvin_te_extrano",
-    badge: "🏋️ YOUR GYM DISCOVERY (Cross-Genre)",
-    title: "Calvin Harris · Feel So Close × Te Extraño",
-    subtitle: "128.5 → 130 BPM (1.2% stretch) · 8-Bar Synth/House Groove × Full Bachata Vocals",
-    beatTrackId: "1lZFsJSa_o6M83ZQlpqOncX_QnY8dnmju",
-    vocalTrackId: "1W2ac_DeE9OzHaQVzNtXy3xX-p-Ydzt1B",
-    bars: 64,
-    accent: "linear-gradient(135deg, #f97316, #ec4899)",
-  },
-  {
-    id: "blame_bad_bunny_5a",
-    badge: "🔥 CROSS-GENRE 5A TONIC LOCK",
-    title: "Calvin Harris · Blame × Bad Bunny · NI BIEN NI MAL",
-    subtitle: "128 BPM (0.0% stretch · 5A Cm Lock) · Festival House Beat × Full Bad Bunny Hook & Verse",
-    beatTrackId: "1zl2bmgRSzcBQxNvsmr_BKAD6VGDf3YTb",
-    vocalTrackId: "1g3CtbD9xVzEzRdDTs_BLIAW6hxd5RTbi",
-    bars: 64,
-    accent: "linear-gradient(135deg, #8b5cf6, #ec4899)",
-  },
-  {
-    id: "blame_romeo_drake_5a_5b",
-    badge: "🔥 CROSS-GENRE 5A↔5B RELATIVE LOCK",
-    title: "Calvin Harris · Blame × Romeo Santos & Drake · Odio",
-    subtitle: "128 BPM (0.0% stretch · 5A↔5B) · House Groove Pocket × Romeo & Drake Full Vocals",
-    beatTrackId: "1zl2bmgRSzcBQxNvsmr_BKAD6VGDf3YTb",
-    vocalTrackId: "1GoQFQNamjEeaM-85fJOQPA_uoWIM6A5B",
-    bars: 64,
-    accent: "linear-gradient(135deg, #6366f1, #a855f7)",
-  },
-  {
-    id: "reggaeton_98_8a",
-    badge: "🔥 SAME-GENRE REGGAETON 8A LOCK",
-    title: "Chyno, Wisin & Gente de Zona × Farruko · Nervios de Acero",
-    subtitle: "98 BPM (0.0% stretch · 8A Am Lock) · Quédate Conmigo Dembow × Farruko Full Hook",
-    beatTrackId: "10_fjwTNV20k4N-0NlY8UaNp2je2SuFCS",
-    vocalTrackId: "1rhKtFEWOVtkYkaPfl5TVBdiMxRbsWz8H",
-    bars: 64,
-    accent: "linear-gradient(135deg, #10b981, #059669)",
-  },
-  {
-    id: "reggaeton_92_8a",
-    badge: "🔥 SAME-GENRE REGGAETON 8A LOCK",
-    title: "Bad Bunny · A Tu Merced × Farruko & Lenier · La Bendición",
-    subtitle: "92 BPM (0.01% stretch · 8A Am Lock) · YHLQMDLG Dembow Pocket × La Bendición Coro",
-    beatTrackId: "1EHbX5zhcEzo22JWoAdC73P6pNcuaUeGO",
-    vocalTrackId: "1rAom4FxzA10KMjitHBWvGyqBYGd72HXh",
-    bars: 64,
-    accent: "linear-gradient(135deg, #0ea5e9, #2563eb)",
-  },
-  {
-    id: "bachata_124_aventura",
-    badge: "🔥 SAME-GENRE BACHATA ANTHEMS",
-    title: "Aventura · Inmortal × Aventura · Dile Al Amor",
-    subtitle: "124 BPM (0.01% stretch · 12A↔1B) · Inmortal Bongo/Bass Pocket × Dile Al Amor Hook",
-    beatTrackId: "1VwQdmKx4MnyvsQl4he1PhMF87_mKdEGI",
-    vocalTrackId: "1BCRa3h9w2Ngm6zWF0kSQ-fg1AaNEetaQ",
-    bars: 64,
-    accent: "linear-gradient(135deg, #eab308, #ca8a04)",
-  },
-  {
-    id: "trance_atb_incondicional_8a",
-    badge: "⚡ TRANCE × BACHATA 8A TONIC LOCK",
-    title: "ATB · 9Pm (Till I Come) × Prince Royce · Incondicional",
-    subtitle: "129.9 → 128.9 BPM (0.7% stretch · 8A Am Lock) · ATB Rolling Guitar/4x4 Pocket × Incondicional Full Vocals",
-    beatTrackId: "1pZipB7IzLrNt-LWWKkqkZPt4WFwt_4ne",
-    vocalTrackId: "1_EaN7Mug5gpaDahAs4BHEpyi97pbWqAD",
-    bars: 64,
-    accent: "linear-gradient(135deg, #06b6d4, #3b82f6)",
-  },
-  {
-    id: "trance_cafedelmar_monotonia_4a",
-    badge: "⚡ TRANCE × BACHATA 4A TONIC LOCK",
-    title: "Energy 52 · Café del Mar × Shakira & Ozuna · Monotonía",
-    subtitle: "131.5 → 132 BPM (0.4% stretch · 4A Fm Lock) · Three 'n One Trance Groove × Shakira & Ozuna Full Vocals",
-    beatTrackId: "1YS12BHPDj1Jyz-BC2hJRFW5JsLdEPuv3",
-    vocalTrackId: "1H3WLopXVI40KLQfdQQeXpm8ibtYz7Zac",
-    bars: 64,
-    accent: "linear-gradient(135deg, #ec4899, #8b5cf6)",
-  },
-  {
-    id: "trance_4strings_solita_2a",
-    badge: "⚡ TRANCE × LATIN TRAP 2A LOCK",
-    title: "4 Strings · Take Me Away × Ozuna & Bad Bunny · Solita",
-    subtitle: "137.7 → 138 BPM (0.2% stretch · 2A E♭m Lock) · Uplifting Trance 4x4 Bassline × Bad Bunny & Ozuna Vocals",
-    beatTrackId: "1DUfEUgIzhnCUTNFygllhLiWwUxW85UHi",
-    vocalTrackId: "1UzKISSbHuDOfx18xtMCwcjar6kTuNZ-_",
-    bars: 64,
-    accent: "linear-gradient(135deg, #a855f7, #6366f1)",
-  },
-  {
-    id: "trance_pvd_silence_8a",
-    badge: "⚡ CLASSIC TRANCE ANTHEM 8A LOCK",
-    title: "Paul van Dyk · For An Angel × Delerium · Silence (Tiësto Remix)",
-    subtitle: "138.0 → 137.7 BPM (0.3% stretch · 8A Am Lock) · PvD Rolling 4x4 Groove × Sarah McLachlan Full Vocals",
-    beatTrackId: "1wPaLWHzizMzYR81fQMec-mFImo8u3xvX",
-    vocalTrackId: "1jI8MNxmId1SKecdEmWV7W29lQMqugfNY",
-    bars: 64,
-    accent: "linear-gradient(135deg, #14b8a6, #0284c7)",
-  },
-];
+function evaluateMashupPair(
+  beat: {
+    id: string | null;
+    title: string;
+    bpm: number | null;
+    key: string | null;
+    hasStems: boolean;
+  } | null,
+  vocal: {
+    id: string | null;
+    title: string;
+    bpm: number | null;
+    key: string | null;
+    hasStems: boolean;
+  } | null
+): {
+  level: "ready" | "caution" | "blocked";
+  status: "ready" | "caution" | "blocked";
+  headline: string;
+  reasons: string[];
+} {
+  if (!beat || !beat.id || !vocal || !vocal.id) {
+    return {
+      level: "blocked",
+      status: "blocked",
+      headline: "👆 Pick 2 songs to check if they will mash together",
+      reasons: ["Select a Beat song (Track A) and a Vocal song (Track B)."],
+    };
+  }
+  if (beat.id === vocal.id) {
+    return {
+      level: "blocked",
+      status: "blocked",
+      headline: "❌ Same song selected on both sides",
+      reasons: ["Pick two different songs so Track A provides the beat and Track B provides the vocals."],
+    };
+  }
+
+  const reasons: string[] = [];
+  let status: "ready" | "caution" | "blocked" = "ready";
+
+  if (!beat.hasStems || !vocal.hasStems) {
+    status = "blocked";
+    if (!beat.hasStems) {
+      reasons.push(`❌ "${beat.title}" does not have isolated 4-stems (Vocals/Drums/Bass). Pick a library song instead of a test/local file.`);
+    }
+    if (!vocal.hasStems) {
+      reasons.push(`❌ "${vocal.title}" does not have isolated 4-stems (Vocals/Drums/Bass). Pick a library song instead of a test/local file.`);
+    }
+  }
+
+  const bpmA = beat.bpm && beat.bpm > 0 ? beat.bpm : null;
+  const bpmB = vocal.bpm && vocal.bpm > 0 ? vocal.bpm : null;
+  if (!bpmA || !bpmB) {
+    if (status !== "blocked") status = "caution";
+    reasons.push("⚠️ One of the songs is missing a BPM tag — beatmatching may drift.");
+  } else {
+    const stretchPct = (Math.abs(bpmA - bpmB) / bpmB) * 100;
+    const minGoodBpm = Math.round(bpmA * 0.94);
+    const maxGoodBpm = Math.round(bpmA * 1.06);
+    if (stretchPct > 8.5) {
+      status = "blocked";
+      reasons.push(
+        `❌ BPM Too Far Apart: ${Math.round(bpmA)} BPM vs ${Math.round(bpmB)} BPM (${stretchPct.toFixed(1)}% stretch). Vocals will sound warped/chipmunked! Pick a vocal song between ${minGoodBpm}–${maxGoodBpm} BPM.`
+      );
+    } else if (stretchPct > 5.8) {
+      if (status === "ready") status = "caution";
+      reasons.push(
+        `⚠️ Tempo Stretch Notice: ${Math.round(bpmA)} BPM vs ${Math.round(bpmB)} BPM (${stretchPct.toFixed(1)}% stretch — vocals will sound slightly sped up/slowed down; ideal is ${minGoodBpm}–${maxGoodBpm} BPM).`
+      );
+    } else {
+      reasons.push(
+        `✅ BPM Lock: ${Math.round(bpmA)} BPM ↔ ${Math.round(bpmB)} BPM (${stretchPct.toFixed(1)}% stretch — natural vocal speed).`
+      );
+    }
+  }
+
+  const harmonic = analyzeHarmonicRelationship(beat.key, vocal.key);
+  const keyA = toCamelot(beat.key) ?? beat.key ?? "—";
+  const keyB = toCamelot(vocal.key) ?? vocal.key ?? "—";
+  if (harmonic.harmonicScore >= 0.75) {
+    reasons.push(`✅ Key Match: ${keyA} ↔ ${keyB} (${harmonic.headline}).`);
+  } else if (harmonic.harmonicScore >= 0.5) {
+    if (status === "ready") status = "caution";
+    reasons.push(`⚠️ Key Note: ${keyA} ↔ ${keyB} (Slight harmonic tension — works best with drum+bass groove + vocals).`);
+  } else {
+    if (status === "ready") status = "caution";
+    reasons.push(`⚠️ Key Clash Warning: ${keyA} vs ${keyB} (Different musical keys — melodic synths/guitars may clash out of key).`);
+  }
+
+  const headline =
+    status === "ready"
+      ? `✅ WILL WORK GREAT — ${beat.title} × ${vocal.title}`
+      : status === "caution"
+        ? `⚠️ WILL WORK WITH CAUTION — Check notes below`
+        : `❌ WON'T WORK WELL — See why below`;
+
+  return { level: status, status, headline, reasons };
+}
 
 function BrainPanel({
   autopilot,
@@ -4050,22 +4042,45 @@ function BrainPanel({
       .filter((t) => usableStemEntry((STEM_MANIFEST as Record<string, StemManifestEntry>)[t.id]) !== null && (t.bpm ?? 0) >= 70)
       .map((t) => ({
         id: t.id,
+        title: musicLabel(t),
         label: `${musicLabel(t)} (${Math.round(t.bpm ?? 0)} BPM · ${toCamelot(t.key ?? null) ?? t.key ?? "—"})`,
         bpm: t.bpm ?? 100,
+        key: t.key ?? null,
+        hasStems: true,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [crate]);
 
-  const selectedBeatBpm = useMemo(() => {
-    return stemReadyTracks.find((t) => t.id === customBeatId)?.bpm ?? 128;
+  const effectiveBeatTrack = useMemo(() => {
+    return stemReadyTracks.find((t) => t.id === customBeatId) ?? stemReadyTracks[0] ?? null;
   }, [stemReadyTracks, customBeatId]);
 
-  const compatibleVocalTracks = useMemo(() => {
-    const close = stemReadyTracks.filter(
-      (t) => t.id !== customBeatId && Math.abs(selectedBeatBpm / t.bpm - 1) <= 0.06
+  const selectedBeatBpm = effectiveBeatTrack?.bpm ?? 128;
+
+  const { closeVocalTracks, otherVocalTracks, allVocalTracks } = useMemo(() => {
+    const beatId = effectiveBeatTrack?.id ?? customBeatId;
+    const pool = stemReadyTracks.filter((t) => t.id !== beatId);
+    const close = pool.filter((t) => Math.abs(selectedBeatBpm / t.bpm - 1) <= 0.06);
+    const other = pool.filter((t) => Math.abs(selectedBeatBpm / t.bpm - 1) > 0.06);
+    return {
+      closeVocalTracks: close,
+      otherVocalTracks: other,
+      allVocalTracks: [...close, ...other],
+    };
+  }, [stemReadyTracks, effectiveBeatTrack, customBeatId, selectedBeatBpm]);
+
+  const effectiveVocalTrack = useMemo(() => {
+    return (
+      allVocalTracks.find((t) => t.id === customVocalId) ??
+      closeVocalTracks[0] ??
+      allVocalTracks[0] ??
+      null
     );
-    return close.length > 0 ? close : stemReadyTracks.filter((t) => t.id !== customBeatId);
-  }, [stemReadyTracks, customBeatId, selectedBeatBpm]);
+  }, [allVocalTracks, closeVocalTracks, customVocalId]);
+
+  const mashupVerdict = useMemo(() => {
+    return evaluateMashupPair(effectiveBeatTrack, effectiveVocalTrack);
+  }, [effectiveBeatTrack, effectiveVocalTrack]);
 
   return (
     <section className={styles.brainPanel}>
@@ -4418,49 +4433,21 @@ function BrainPanel({
             borderRadius: 12,
             background: "rgba(15, 23, 42, 0.88)",
             border: "1px solid rgba(168, 85, 247, 0.4)",
+            width: "100%",
+            maxWidth: "100%",
+            minWidth: 0,
+            boxSizing: "border-box",
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
             <div>
               <strong style={{ color: "#f3e8ff", fontSize: 13 }}>
-                🧬 FULL-SONG 2-TRACK MASHUP STUDIO (8-Bar Groove Anchor × Full Song Vocals)
+                🧬 PICK ANY 2 SONGS TO MASH UP (With Live Compatibility Check)
               </strong>
               <p className={styles.hint} style={{ margin: "2px 0 0 0" }}>
-                Locks Track A&apos;s 8-bar drum + bass groove pocket underneath for up to 64 bars (~2.5 min) while layering Track B&apos;s full vocals &amp; harmony right from Bar 2.
+                Pick your Beat/Bass song (Track A) and your Vocal/Hook song (Track B) below — we&apos;ll tell you right away if they&apos;ll sound great together or why they won&apos;t!
               </p>
             </div>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-              gap: 8,
-              marginBottom: 12,
-            }}
-          >
-            {GOLD_STANDARD_MASHUP_PRESETS.map((preset) => (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() => onStartPairMashup(preset.beatTrackId, preset.vocalTrackId, preset.bars)}
-                style={{
-                  textAlign: "left",
-                  padding: "9px 11px",
-                  borderRadius: 10,
-                  border: "1px solid rgba(255,255,255,0.16)",
-                  background: preset.accent,
-                  color: "#fff",
-                  cursor: "pointer",
-                }}
-              >
-                <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.04em", opacity: 0.92 }}>
-                  {preset.badge}
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 800, marginTop: 2 }}>{preset.title}</div>
-                <div style={{ fontSize: 11, opacity: 0.9, marginTop: 2 }}>{preset.subtitle}</div>
-              </button>
-            ))}
           </div>
 
           <div
@@ -4468,20 +4455,17 @@ function BrainPanel({
               display: "flex",
               flexWrap: "wrap",
               gap: 8,
-              alignItems: "center",
-              paddingTop: 8,
-              borderTop: "1px solid rgba(148, 163, 184, 0.2)",
+              alignItems: "flex-end",
+              width: "100%",
+              minWidth: 0,
             }}
           >
-            <label style={{ display: "flex", flexDirection: "column", gap: 3, flex: "1 1 220px", fontSize: 11, color: "#cbd5e1" }}>
-              <span>🥁 Track A (8-Bar Beat &amp; Bass Groove Anchor):</span>
+            <label style={{ display: "flex", flexDirection: "column", gap: 3, flex: "1 1 220px", minWidth: 0, maxWidth: "100%", fontSize: 11, color: "#cbd5e1" }}>
+              <span>🥁 Song 1 — Beat &amp; Bass Groove (8-Bar Loop):</span>
               <select
                 className={styles.cueSelect}
-                value={
-                  stemReadyTracks.some((t) => t.id === customBeatId)
-                    ? customBeatId
-                    : (stemReadyTracks[0]?.id ?? customBeatId)
-                }
+                style={{ width: "100%", maxWidth: "100%", minWidth: 0, textOverflow: "ellipsis" }}
+                value={effectiveBeatTrack?.id ?? customBeatId}
                 onChange={(e) => {
                   const nextBeat = e.target.value;
                   setCustomBeatId(nextBeat);
@@ -4495,26 +4479,36 @@ function BrainPanel({
               </select>
             </label>
 
-            <label style={{ display: "flex", flexDirection: "column", gap: 3, flex: "1 1 220px", fontSize: 11, color: "#cbd5e1" }}>
-              <span>🎤 Track B (Full Vocals &amp; Melodic Hook Partner):</span>
+            <label style={{ display: "flex", flexDirection: "column", gap: 3, flex: "1 1 220px", minWidth: 0, maxWidth: "100%", fontSize: 11, color: "#cbd5e1" }}>
+              <span>🎤 Song 2 — Full Vocals &amp; Hook:</span>
               <select
                 className={styles.cueSelect}
-                value={
-                  compatibleVocalTracks.some((t) => t.id === customVocalId)
-                    ? customVocalId
-                    : (compatibleVocalTracks[0]?.id ?? customVocalId)
-                }
+                style={{ width: "100%", maxWidth: "100%", minWidth: 0, textOverflow: "ellipsis" }}
+                value={effectiveVocalTrack?.id ?? customVocalId}
                 onChange={(e) => setCustomVocalId(e.target.value)}
               >
-                {compatibleVocalTracks.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.label}
-                  </option>
-                ))}
+                {closeVocalTracks.length > 0 && (
+                  <optgroup label={`✅ Best BPM Matches for ${Math.round(selectedBeatBpm)} BPM (±6% — Sounds Natural)`}>
+                    {closeVocalTracks.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        ✅ {t.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+                {otherVocalTracks.length > 0 && (
+                  <optgroup label="⚠️ Other Library Songs (Outside ±6% BPM — Will Stretch Vocals)">
+                    {otherVocalTracks.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
               </select>
             </label>
 
-            <label style={{ display: "flex", flexDirection: "column", gap: 3, fontSize: 11, color: "#cbd5e1" }}>
+            <label style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0, fontSize: 11, color: "#cbd5e1" }}>
               <span>⏱️ Mashup Length:</span>
               <select
                 className={styles.cueSelect}
@@ -4531,25 +4525,67 @@ function BrainPanel({
               type="button"
               className={styles.syncButton}
               onClick={() => {
-                const beatId = stemReadyTracks.some((t) => t.id === customBeatId)
-                  ? customBeatId
-                  : (stemReadyTracks[0]?.id ?? customBeatId);
-                const vocalId = compatibleVocalTracks.some((t) => t.id === customVocalId)
-                  ? customVocalId
-                  : (compatibleVocalTracks[0]?.id ?? customVocalId);
+                const beatId = effectiveBeatTrack?.id ?? customBeatId;
+                const vocalId = effectiveVocalTrack?.id ?? customVocalId;
                 onStartPairMashup(beatId, vocalId, customBars);
               }}
               style={{
                 fontWeight: 800,
-                background: "linear-gradient(135deg, #f97316, #db2777)",
+                background:
+                  mashupVerdict.level === "blocked"
+                    ? "linear-gradient(135deg, #64748b, #475569)"
+                    : "linear-gradient(135deg, #f97316, #db2777)",
                 color: "#fff",
-                borderColor: "#f97316",
-                alignSelf: "flex-end",
+                borderColor: mashupVerdict.level === "blocked" ? "#94a3b8" : "#f97316",
                 padding: "8px 14px",
               }}
             >
               🔥 Mash These 2 Songs ({customBars} Bars)
             </button>
+          </div>
+
+          {/* 🚦 LIVE MASHUP COMPATIBILITY VERDICT */}
+          <div
+            style={{
+              marginTop: 10,
+              padding: "9px 12px",
+              borderRadius: 8,
+              background:
+                mashupVerdict.level === "ready"
+                  ? "rgba(16, 185, 129, 0.14)"
+                  : mashupVerdict.level === "caution"
+                    ? "rgba(245, 158, 11, 0.14)"
+                    : "rgba(239, 68, 68, 0.16)",
+              border:
+                mashupVerdict.level === "ready"
+                  ? "1px solid rgba(16, 185, 129, 0.45)"
+                  : mashupVerdict.level === "caution"
+                    ? "1px solid rgba(245, 158, 11, 0.5)"
+                    : "1px solid rgba(239, 68, 68, 0.55)",
+              fontSize: "0.78rem",
+            }}
+          >
+            <div
+              style={{
+                fontWeight: 900,
+                color:
+                  mashupVerdict.level === "ready"
+                    ? "#34d399"
+                    : mashupVerdict.level === "caution"
+                      ? "#fbbf24"
+                      : "#f87171",
+                marginBottom: 4,
+              }}
+            >
+              {mashupVerdict.headline}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2, color: "#e2e8f0" }}>
+              {mashupVerdict.reasons.map((r, i) => (
+                <div key={i} style={{ lineHeight: 1.35 }}>
+                  {r}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -9403,7 +9439,6 @@ export default function Home() {
   const [autoTurntablistFx, setAutoTurntablistFx] = useState(false);
   const autoTurntablistFxRef = useRef(false);
   autoTurntablistFxRef.current = autoTurntablistFx;
-  const mashupPresetCursorRef = useRef(0);
 
   const [stemMixerState, setStemMixerState] = useState<{
     playing: boolean;
@@ -9745,29 +9780,32 @@ export default function Home() {
     const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
     const liveId = liveCtrl?.trackId ?? null;
 
-    const launchNextGoldPreset = (reason?: string) => {
-      const idx = mashupPresetCursorRef.current % GOLD_STANDARD_MASHUP_PRESETS.length;
-      mashupPresetCursorRef.current += 1;
-      const preset = GOLD_STANDARD_MASHUP_PRESETS[idx];
-      if (reason) {
-        pushBrainLog("stem_migrate", `${reason} — launching ${preset.title} (${targetBars} bars)`);
+    const launchFallbackPair = (reason?: string) => {
+      if (deckA.trackId && deckB.trackId && deckA.trackId !== deckB.trackId && stemEntryFor(deckA.trackId) && stemEntryFor(deckB.trackId)) {
+        const beatId = deckB.isPlaying && !deckA.isPlaying ? deckB.trackId : deckA.trackId;
+        const vocalId = beatId === deckA.trackId ? deckB.trackId : deckA.trackId;
+        handleStartPairMashup(beatId, vocalId, targetBars);
+        return;
       }
-      handleStartPairMashup(preset.beatTrackId, preset.vocalTrackId, targetBars);
+      if (reason) {
+        pushBrainLog("stem_migrate", `${reason} — pick any 2 songs in the 2-Song Mashup Picker or on Deck A & Deck B!`);
+      }
+      handleStartPairMashup("1zl2bmgRSzcBQxNvsmr_BKAD6VGDf3YTb", "1g3CtbD9xVzEzRdDTs_BLIAW6hxd5RTbi", targetBars);
     };
 
     if (!liveLabel || !liveCtrl || !liveId) {
-      launchNextGoldPreset(fullSong ? "🔥 Starting Full-Song 64-Bar Mashup" : "🧬 Starting 16-Bar Live Stem Mashup");
+      launchFallbackPair(fullSong ? "🔥 Starting Full-Song 64-Bar Mashup" : "🧬 Starting 16-Bar Live Stem Mashup");
       return;
     }
 
     const liveGrid = effectiveGrid(liveCtrl.tags, liveCtrl.grid);
     if (!stemEntryFor(liveId) || !liveGrid || liveGrid.estimated) {
-      launchNextGoldPreset("🧬 Current song lacks 4-stem separation or a real BeatGrid");
+      launchFallbackPair("🧬 Current song lacks 4-stem separation or a real BeatGrid");
       return;
     }
 
     if (crate.length === 0) {
-      launchNextGoldPreset("🧬 Crate not yet hydrated");
+      launchFallbackPair("🧬 Crate not yet hydrated");
       return;
     }
 
@@ -9821,7 +9859,7 @@ export default function Home() {
 
     const best = ranked[0]?.track ? crate.find((t) => t.id === ranked[0].track.id) : eligible[0];
     if (!best) {
-      launchNextGoldPreset(`🧬 No stem partner within ±6% of ${liveBpm.toFixed(1)} BPM`);
+      launchFallbackPair(`🧬 No stem partner within ±6% of ${liveBpm.toFixed(1)} BPM`);
       return;
     }
 
@@ -10518,89 +10556,173 @@ export default function Home() {
               />
 
               {/* 🧬 DIRECT DECK A × DECK B MASHUP & MIX BRIDGE */}
-              <div
-                style={{
-                  marginTop: 10,
-                  padding: "10px 12px",
-                  borderRadius: 10,
-                  background: "rgba(15, 23, 42, 0.85)",
-                  border: "1px solid rgba(168, 85, 247, 0.45)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 6,
-                }}
-              >
-                <span style={{ fontSize: "0.75rem", fontWeight: 900, color: "#e9d5ff", textAlign: "center", letterSpacing: "0.03em" }}>
-                  🧬 MASH DECK A × DECK B SONGS TOGETHER:
-                </span>
-                <button
-                  type="button"
-                  className={styles.syncButton}
-                  disabled={!deckA.trackId || !deckB.trackId}
-                  onClick={() => {
-                    if (deckA.trackId && deckB.trackId) {
-                      handleStartPairMashup(deckA.trackId, deckB.trackId, 64);
-                    }
-                  }}
-                  style={{
-                    background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
-                    color: "#fff",
-                    fontWeight: 900,
-                    fontSize: "0.78rem",
-                    padding: "8px 10px",
-                  }}
-                  title="Loop Deck A's 8-bar drum+bass groove pocket and layer Deck B's FULL vocals & melody over it (64 bars)"
-                >
-                  🔥 Mash Deck A Beat × Deck B Vocals (Full 64b)
-                </button>
-                <button
-                  type="button"
-                  className={styles.syncButton}
-                  disabled={!deckA.trackId || !deckB.trackId}
-                  onClick={() => {
-                    if (deckA.trackId && deckB.trackId) {
-                      handleStartPairMashup(deckB.trackId, deckA.trackId, 64);
-                    }
-                  }}
-                  style={{
-                    background: "linear-gradient(135deg, #f97316, #db2777)",
-                    color: "#fff",
-                    fontWeight: 900,
-                    fontSize: "0.78rem",
-                    padding: "8px 10px",
-                  }}
-                  title="Loop Deck B's 8-bar drum+bass groove pocket and layer Deck A's FULL vocals & melody over it (64 bars)"
-                >
-                  🔥 Mash Deck B Beat × Deck A Vocals (Full 64b)
-                </button>
-                <button
-                  type="button"
-                  className={styles.secondaryButton}
-                  disabled={!deckA.trackId || !deckB.trackId}
-                  onClick={() => {
-                    if (deckA.trackId && deckB.trackId) {
-                      const beatId = deckB.isPlaying && !deckA.isPlaying ? deckB.trackId : deckA.trackId;
-                      const vocalId = beatId === deckA.trackId ? deckB.trackId : deckA.trackId;
-                      handleStartPairMashup(beatId, vocalId, 16);
-                    }
-                  }}
-                  style={{
-                    fontWeight: 800,
-                    fontSize: "0.75rem",
-                    padding: "6px 10px",
-                    borderColor: "#a855f7",
-                    color: "#e9d5ff",
-                  }}
-                  title="16-bar quick mashup between Deck A and Deck B"
-                >
-                  🧬 16-Bar Quick Mash (Deck A × Deck B)
-                </button>
-                {(!deckA.trackId || !deckB.trackId) && (
-                  <span style={{ fontSize: "0.72rem", color: "#94a3b8", textAlign: "center" }}>
-                    👆 Pick a song in the dropdown on Deck A &amp; Deck B above to mash them!
-                  </span>
-                )}
-              </div>
+              {(() => {
+                const deckAHasStems = Boolean(
+                  deckA.trackId && usableStemEntry((STEM_MANIFEST as Record<string, StemManifestEntry>)[deckA.trackId]) !== null
+                );
+                const deckBHasStems = Boolean(
+                  deckB.trackId && usableStemEntry((STEM_MANIFEST as Record<string, StemManifestEntry>)[deckB.trackId]) !== null
+                );
+                const deckPairVerdict = evaluateMashupPair(
+                  deckA.trackName
+                    ? {
+                        id: deckA.trackId ?? "deck-a",
+                        title: musicLabel({ name: deckA.trackName }),
+                        bpm: deckA.tags.bpm ?? 120,
+                        key: deckA.tags.key ?? null,
+                        hasStems: deckAHasStems,
+                      }
+                    : null,
+                  deckB.trackName
+                    ? {
+                        id: deckB.trackId ?? "deck-b",
+                        title: musicLabel({ name: deckB.trackName }),
+                        bpm: deckB.tags.bpm ?? 120,
+                        key: deckB.tags.key ?? null,
+                        hasStems: deckBHasStems,
+                      }
+                    : null
+                );
+                return (
+                  <div
+                    style={{
+                      marginTop: 10,
+                      padding: "10px 12px",
+                      borderRadius: 10,
+                      background: "rgba(15, 23, 42, 0.85)",
+                      border: "1px solid rgba(168, 85, 247, 0.45)",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 6,
+                      width: "100%",
+                      maxWidth: "100%",
+                      minWidth: 0,
+                      boxSizing: "border-box",
+                    }}
+                  >
+                    <span style={{ fontSize: "0.75rem", fontWeight: 900, color: "#e9d5ff", textAlign: "center", letterSpacing: "0.03em" }}>
+                      🧬 MASH DECK A × DECK B SONGS TOGETHER:
+                    </span>
+
+                    {/* Live Compatibility Verdict for Deck A × Deck B */}
+                    <div
+                      style={{
+                        padding: "7px 9px",
+                        borderRadius: 8,
+                        background:
+                          deckPairVerdict.level === "ready"
+                            ? "rgba(16, 185, 129, 0.14)"
+                            : deckPairVerdict.level === "caution"
+                              ? "rgba(245, 158, 11, 0.14)"
+                              : "rgba(239, 68, 68, 0.16)",
+                        border:
+                          deckPairVerdict.level === "ready"
+                            ? "1px solid rgba(16, 185, 129, 0.45)"
+                            : deckPairVerdict.level === "caution"
+                              ? "1px solid rgba(245, 158, 11, 0.5)"
+                              : "1px solid rgba(239, 68, 68, 0.55)",
+                        fontSize: "0.72rem",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontWeight: 900,
+                          color:
+                            deckPairVerdict.level === "ready"
+                              ? "#34d399"
+                              : deckPairVerdict.level === "caution"
+                                ? "#fbbf24"
+                                : "#f87171",
+                          marginBottom: 3,
+                        }}
+                      >
+                        {deckPairVerdict.headline}
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 2, color: "#e2e8f0" }}>
+                        {deckPairVerdict.reasons.map((r, i) => (
+                          <div key={i} style={{ lineHeight: 1.3 }}>
+                            {r}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className={styles.syncButton}
+                      disabled={!deckA.trackId || !deckB.trackId}
+                      onClick={() => {
+                        if (deckA.trackId && deckB.trackId) {
+                          handleStartPairMashup(deckA.trackId, deckB.trackId, 64);
+                        }
+                      }}
+                      style={{
+                        background:
+                          deckPairVerdict.level === "blocked"
+                            ? "linear-gradient(135deg, #64748b, #475569)"
+                            : "linear-gradient(135deg, #8b5cf6, #ec4899)",
+                        color: "#fff",
+                        fontWeight: 900,
+                        fontSize: "0.78rem",
+                        padding: "8px 10px",
+                      }}
+                      title="Loop Deck A's 8-bar drum+bass groove pocket and layer Deck B's FULL vocals & melody over it (64 bars)"
+                    >
+                      🔥 Mash Deck A Beat × Deck B Vocals (Full 64b)
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.syncButton}
+                      disabled={!deckA.trackId || !deckB.trackId}
+                      onClick={() => {
+                        if (deckA.trackId && deckB.trackId) {
+                          handleStartPairMashup(deckB.trackId, deckA.trackId, 64);
+                        }
+                      }}
+                      style={{
+                        background:
+                          deckPairVerdict.level === "blocked"
+                            ? "linear-gradient(135deg, #64748b, #475569)"
+                            : "linear-gradient(135deg, #f97316, #db2777)",
+                        color: "#fff",
+                        fontWeight: 900,
+                        fontSize: "0.78rem",
+                        padding: "8px 10px",
+                      }}
+                      title="Loop Deck B's 8-bar drum+bass groove pocket and layer Deck A's FULL vocals & melody over it (64 bars)"
+                    >
+                      🔥 Mash Deck B Beat × Deck A Vocals (Full 64b)
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.secondaryButton}
+                      disabled={!deckA.trackId || !deckB.trackId}
+                      onClick={() => {
+                        if (deckA.trackId && deckB.trackId) {
+                          const beatId = deckB.isPlaying && !deckA.isPlaying ? deckB.trackId : deckA.trackId;
+                          const vocalId = beatId === deckA.trackId ? deckB.trackId : deckA.trackId;
+                          handleStartPairMashup(beatId, vocalId, 16);
+                        }
+                      }}
+                      style={{
+                        fontWeight: 800,
+                        fontSize: "0.75rem",
+                        padding: "6px 10px",
+                        borderColor: "#a855f7",
+                        color: "#e9d5ff",
+                      }}
+                      title="16-bar quick mashup between Deck A and Deck B"
+                    >
+                      🧬 16-Bar Quick Mash (Deck A × Deck B)
+                    </button>
+                    {(!deckA.trackId || !deckB.trackId) && (
+                      <span style={{ fontSize: "0.72rem", color: "#94a3b8", textAlign: "center" }}>
+                        👆 Pick a song in the dropdown on Deck A &amp; Deck B above to mash them!
+                      </span>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
 
             <DeckPanel
