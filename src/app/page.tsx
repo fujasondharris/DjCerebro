@@ -918,6 +918,13 @@ function DeckPanel({
   onAssignSingalong,
   onDeleteCue,
   onNudgeCue,
+  crate = [],
+  otherDeckTrackId = null,
+  otherDeckTrackName = null,
+  otherDeckBpm = null,
+  otherDeckKey = null,
+  onSelectCrateTrack,
+  onOpenInStemStudio,
 }: {
   label: string;
   accentClass: string;
@@ -935,10 +942,18 @@ function DeckPanel({
   onAssignSingalong: (index: number, durationSeconds: number) => void;
   onDeleteCue: (index: number) => void;
   onNudgeCue: (index: number, deltaSeconds: number) => void;
+  crate?: CrateTrack[];
+  otherDeckTrackId?: string | null;
+  otherDeckTrackName?: string | null;
+  otherDeckBpm?: number | null;
+  otherDeckKey?: string | null;
+  onSelectCrateTrack?: (trackId: string, autoPlay?: boolean) => void;
+  onOpenInStemStudio?: () => void;
 }) {
   const {
     deck,
     fileInputRef,
+    trackId,
     trackName,
     tags,
     grid,
@@ -961,9 +976,84 @@ function DeckPanel({
     handleResetEq,
   } = deckState;
 
+  const [deckSearch, setDeckSearch] = useState("");
+
+  const libraryTracks = useMemo(() => {
+    const base = crate.length > 0 ? crate : (crateManifestJson as CrateManifestEntry[]);
+    return base
+      .filter((t) => !STUDIO_TRACK_IDS.has(t.id))
+      .map((t) => {
+        const hasStems = usableStemEntry((STEM_MANIFEST as Record<string, StemManifestEntry>)[t.id]) !== null;
+        const camelot = toCamelot(t.key ?? null) ?? t.key ?? "—";
+        const cleanTitle = musicLabel(t);
+        const bpmVal = t.bpm ?? null;
+        return {
+          id: t.id,
+          title: cleanTitle,
+          bpm: bpmVal,
+          key: t.key ?? null,
+          camelot,
+          hasStems,
+          hasGrid: Boolean(t.grid),
+          label: `${cleanTitle} (${bpmVal ? `${Math.round(bpmVal)} BPM` : "no BPM"} · ${camelot}${hasStems ? " · 4-Stem" : ""})`,
+        };
+      })
+      .sort((a, b) => a.title.localeCompare(b.title));
+  }, [crate]);
+
+  const filteredLibraryTracks = useMemo(() => {
+    const q = deckSearch.trim().toLowerCase();
+    if (!q) return libraryTracks;
+    return libraryTracks.filter((t) => t.label.toLowerCase().includes(q));
+  }, [libraryTracks, deckSearch]);
+
+  const matchedForOtherDeck = useMemo(() => {
+    if (!otherDeckBpm || otherDeckBpm <= 0) return [];
+    const close = filteredLibraryTracks.filter(
+      (t) =>
+        t.id !== otherDeckTrackId &&
+        t.id !== trackId &&
+        t.bpm !== null &&
+        t.bpm > 0 &&
+        Math.abs(otherDeckBpm / t.bpm - 1) <= 0.065
+    );
+    if (close.length === 0) return [];
+    const ranked = rankCandidatesByMusicTheory(
+      {
+        id: otherDeckTrackId ?? "other",
+        name: otherDeckTrackName ?? "Other Deck",
+        bpm: otherDeckBpm,
+        key: otherDeckKey,
+        hasStems: true,
+        hasRealGrid: true,
+      },
+      close.map((c) => ({
+        id: c.id,
+        name: c.title,
+        bpm: c.bpm,
+        key: c.key,
+        hasStems: c.hasStems,
+        hasRealGrid: c.hasGrid,
+      }))
+    );
+    const rankMap = new Map(ranked.map((r, idx) => [r.track.id, { idx, score: r.totalScore, headline: r.harmonic.headline }]));
+    return [...close].sort((a, b) => (rankMap.get(a.id)?.idx ?? 999) - (rankMap.get(b.id)?.idx ?? 999));
+  }, [filteredLibraryTracks, otherDeckBpm, otherDeckKey, otherDeckTrackId, otherDeckTrackName, trackId]);
+
   const hasTrack = trackName !== null;
   const effectiveBpm = tags.bpm ? tags.bpm * tempo : null;
   const duration = deck.duration; // used only for cue-marker positioning below
+
+  // Live Beat & Bar Counter telemetry for this deck:
+  const livePosSec = deck.positionSeconds;
+  const gridBpm = grid?.bpm ?? tags.bpm ?? 120;
+  const gridAnchor = grid?.anchor ?? 0;
+  const beatLengthSec = 60 / Math.max(60, gridBpm);
+  const barLengthSec = beatLengthSec * 4;
+  const beatsFromAnchor = Math.max(0, (livePosSec - gridAnchor) / beatLengthSec);
+  const currentBeatInBar = (Math.floor(beatsFromAnchor) % 4) + 1; // 1, 2, 3, 4
+  const currentBarNumber = Math.floor(beatsFromAnchor / 4) + 1;
+  const currentPhraseBar = (Math.floor(beatsFromAnchor / 4) % 4) + 1; // 1..4
 
   return (
     <section className={`${styles.deckPanel} ${accentClass}`}>
@@ -982,11 +1072,130 @@ function DeckPanel({
         </button>
       </div>
 
+      {/* 🎵 DIRECT SONG PICKER FOR THIS DECK (Pick any of the 600 Library Songs right on Deck A or Deck B!) */}
+      {onSelectCrateTrack && (
+        <div
+          style={{
+            padding: "10px 12px",
+            marginBottom: 10,
+            borderRadius: 10,
+            background: "rgba(15, 23, 42, 0.82)",
+            border: label === "Deck A" ? "1px solid rgba(56, 189, 248, 0.45)" : "1px solid rgba(249, 115, 22, 0.45)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 6, marginBottom: 6 }}>
+            <span style={{ fontSize: "0.78rem", fontWeight: 900, color: label === "Deck A" ? "#38bdf8" : "#fb923c", letterSpacing: "0.03em" }}>
+              🎵 CHANGE SONG ON {label.toUpperCase()} ({libraryTracks.length} SONGS):
+            </span>
+            {matchedForOtherDeck.length > 0 && (
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={() => onSelectCrateTrack(matchedForOtherDeck[0].id, false)}
+                style={{
+                  padding: "3px 9px",
+                  fontSize: "0.74rem",
+                  fontWeight: 800,
+                  background: "linear-gradient(135deg, #10b981, #059669)",
+                  color: "#fff",
+                  borderColor: "#34d399",
+                }}
+                title={`Load the #1 BPM & Key match for ${otherDeckTrackName ? musicLabel({ name: otherDeckTrackName }) : "the other deck"}: ${matchedForOtherDeck[0].label}`}
+              >
+                🎯 Load #1 Match ({matchedForOtherDeck[0].title.slice(0, 22)})
+              </button>
+            )}
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <input
+              type="search"
+              value={deckSearch}
+              onChange={(e) => setDeckSearch(e.target.value)}
+              placeholder={`🔍 Search song, artist, or BPM for ${label}…`}
+              aria-label={`Search song for ${label}`}
+              style={{
+                width: "100%",
+                padding: "6px 10px",
+                borderRadius: 6,
+                background: "#090d16",
+                color: "#f8fafc",
+                border: "1px solid #334155",
+                fontSize: "0.8rem",
+              }}
+            />
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              <select
+                value={trackId && libraryTracks.some((t) => t.id === trackId) ? trackId : ""}
+                onChange={(e) => {
+                  if (e.target.value) {
+                    onSelectCrateTrack(e.target.value, false);
+                  }
+                }}
+                aria-label={`Choose song for ${label}`}
+                style={{
+                  flex: 1,
+                  minWidth: 180,
+                  padding: "7px 9px",
+                  borderRadius: 6,
+                  background: "#0f172a",
+                  color: "#f8fafc",
+                  border: "1px solid #475569",
+                  fontSize: "0.82rem",
+                  fontWeight: 700,
+                }}
+              >
+                <option value="">
+                  {hasTrack && trackName
+                    ? `Current: ${musicLabel({ name: trackName })} — Click to pick another song…`
+                    : `▼ Click to pick any song for ${label}…`}
+                </option>
+                {matchedForOtherDeck.length > 0 && (
+                  <optgroup label={`🔥 Best BPM & Key Matches for Other Deck (${Math.round(otherDeckBpm!)} BPM)`}>
+                    {matchedForOtherDeck.slice(0, 25).map((t) => (
+                      <option key={`match-${t.id}`} value={t.id}>
+                        ★ {t.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+                <optgroup label={`📚 All Library Songs (${filteredLibraryTracks.length})`}>
+                  {filteredLibraryTracks.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.label}
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
+              {trackId && onOpenInStemStudio && (
+                <button
+                  type="button"
+                  className={styles.secondaryButton}
+                  onClick={onOpenInStemStudio}
+                  style={{
+                    padding: "6px 10px",
+                    fontSize: "0.76rem",
+                    fontWeight: 800,
+                    background: "rgba(6, 182, 212, 0.22)",
+                    color: "#22d3ee",
+                    borderColor: "#06b6d4",
+                  }}
+                  title="Open this song in the 4-Stem Horn & Beat Looper"
+                >
+                  🎺 Stem Looper
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className={styles.loadRow}>
         <button
           type="button"
           className={styles.bigButton}
           onClick={() => fileInputRef.current?.click()}
+          title="Upload a local MP3 file from your computer or phone"
         >
           Load MP3
         </button>
@@ -1102,6 +1311,81 @@ function DeckPanel({
             >
               🔥 Skip Intro / Drop
             </button>
+          </div>
+
+          {/* 🥁 LIVE VISUAL BEAT & BAR COUNTER ON DECK (1 Bar = 4 Beats, 4 Bars = 16 Beats) */}
+          <div
+            style={{
+              padding: "7px 10px",
+              marginBottom: 8,
+              borderRadius: 8,
+              background: "rgba(9, 13, 22, 0.85)",
+              border: "1px solid rgba(56, 189, 248, 0.3)",
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 6,
+            }}
+            title={`1 Bar = 4 Beats (${barLengthSec.toFixed(1)}s) · 4 Bars = 16 Beats (${(barLengthSec * 4).toFixed(1)}s)`}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "#94a3b8", marginRight: 2 }}>
+                BAR #{currentBarNumber}:
+              </span>
+              {([1, 2, 3, 4] as const).map((b) => {
+                const active = isPlaying && currentBeatInBar === b;
+                const isDownbeat = b === 1;
+                return (
+                  <span
+                    key={b}
+                    style={{
+                      padding: "2px 7px",
+                      borderRadius: 5,
+                      fontSize: "0.73rem",
+                      fontWeight: 900,
+                      background: active
+                        ? isDownbeat
+                          ? "#f59e0b"
+                          : "#06b6d4"
+                        : "rgba(30, 41, 59, 0.9)",
+                      color: active ? "#090d16" : "#94a3b8",
+                      border: active
+                        ? isDownbeat
+                          ? "1px solid #fde047"
+                          : "1px solid #38bdf8"
+                        : "1px solid rgba(71, 85, 105, 0.5)",
+                    }}
+                  >
+                    {isDownbeat ? "1·DOWN" : b}
+                  </span>
+                );
+              })}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#64748b" }}>
+                4-Bar Phrase:
+              </span>
+              {([1, 2, 3, 4] as const).map((barIdx) => {
+                const activeBar = isPlaying && currentPhraseBar === barIdx;
+                return (
+                  <span
+                    key={barIdx}
+                    style={{
+                      padding: "2px 6px",
+                      borderRadius: 4,
+                      fontSize: "0.7rem",
+                      fontWeight: 800,
+                      background: activeBar ? "rgba(16, 185, 129, 0.3)" : "rgba(15, 23, 42, 0.7)",
+                      color: activeBar ? "#34d399" : "#64748b",
+                      border: activeBar ? "1px solid #10b981" : "1px solid rgba(51, 65, 85, 0.5)",
+                    }}
+                  >
+                    Bar {barIdx}/4
+                  </span>
+                );
+              })}
+            </div>
           </div>
 
           <div className={styles.tempoSection}>
@@ -1826,16 +2110,70 @@ function LiveStemMixerPanel({
     setLoopWindow(next);
   };
 
-  // Analyzed recurring Horn/Melody Hooks & Beat Loops from loop-points.json for the selected song:
+  const [punchInSec, setPunchInSec] = useState<number | null>(null);
+
+  // Analyzed recurring Horn/Melody Hooks, Drops & Beat Loops from loop-points.json for the selected song:
+  const songEntry = useMemo(
+    () => getLoopPoints(CURRENT_LOOP_POINTS, `drive:${selectedId}`),
+    [selectedId]
+  );
+
   const songHooks = useMemo(() => {
-    const entry = getLoopPoints(CURRENT_LOOP_POINTS, `drive:${selectedId}`);
-    if (!entry || !entry.loops) return [];
-    return [...entry.loops].sort((a, b) => {
-      // Put melody/horn hooks first, then sort by score
-      if (a.isolation !== b.isolation) return a.isolation === "melody" ? -1 : 1;
-      return b.score - a.score;
-    });
-  }, [selectedId]);
+    if (!songEntry) return [];
+    const bpmVal = songEntry.bpm > 0 ? songEntry.bpm : trackBpm || 120;
+    const barSecVal = (60 / bpmVal) * 4;
+    const items: Array<{
+      startBar: number;
+      lengthBars: 1 | 2 | 4 | 8;
+      startSeconds: number;
+      endSeconds: number;
+      isolation: "melody" | "beat";
+      kindLabel: string;
+    }> = [];
+
+    for (const l of songEntry.loops ?? []) {
+      const vDb = (l as { vocalsDb?: number }).vocalsDb;
+      const isVocalFree = typeof vDb === "number" && vDb <= -24;
+      const isMelodyHook = l.isolation === "melody" || isVocalFree;
+      items.push({
+        startBar: l.startBar,
+        lengthBars: (l.lengthBars === 1 || l.lengthBars === 2 || l.lengthBars === 4 || l.lengthBars === 8 ? l.lengthBars : 4) as 1 | 2 | 4 | 8,
+        startSeconds: l.startSeconds,
+        endSeconds: l.endSeconds,
+        isolation: isMelodyHook ? "melody" : "beat",
+        kindLabel: l.isolation === "melody" ? "🎺 Horn/Melody Hook" : isVocalFree ? "🎺 Synth/Horn Hook" : "🥁 Beat Groove",
+      });
+    }
+
+    for (let i = 0; i < (songEntry.drops ?? []).length; i++) {
+      const d = songEntry.drops[i];
+      const alreadyCovered = items.some((it) => Math.abs(it.startSeconds - d.atSeconds) < 2.0);
+      if (!alreadyCovered) {
+        items.push({
+          startBar: (d as { bar?: number }).bar ?? Math.round(d.atSeconds / barSecVal),
+          lengthBars: 8,
+          startSeconds: d.atSeconds,
+          endSeconds: d.atSeconds + 8 * barSecVal,
+          isolation: "melody",
+          kindLabel: `🔥 Main Drop #${i + 1}`,
+        });
+      }
+    }
+
+    return items.sort((a, b) => a.startSeconds - b.startSeconds);
+  }, [songEntry, trackBpm]);
+
+  // Live Beat & Bar Counter telemetry synced to the song's BeatGrid:
+  const gridAnchorSec = songEntry?.anchor ?? (selectedId === activeDeckTrackId ? activeDeckAnchorSec : 0);
+  const beatSec = 60 / Math.max(60, trackBpm);
+  const barSec = beatSec * 4;
+  const beatsSinceAnchor = Math.max(0, (positionSec - gridAnchorSec) / beatSec);
+  const beatInBar = (Math.floor(beatsSinceAnchor) % 4) + 1; // 1, 2, 3, 4
+  const songBarNum = Math.floor(beatsSinceAnchor / 4) + 1;
+  const totalCycleBars = loopWindow ? Math.max(1, loopWindow.bars) : 4;
+  const barInCurrentCycle = loopWindow
+    ? (Math.floor(Math.max(0, (positionSec - loopWindow.startSec) / barSec)) % totalCycleBars) + 1
+    : (Math.floor(beatsSinceAnchor / 4) % 4) + 1;
 
   const stemReadyCrateTracks = useMemo(() => {
     const base = crate.length > 0 ? crate : (crateManifestJson as CrateManifestEntry[]);
@@ -2509,6 +2847,146 @@ function LiveStemMixerPanel({
         </div>
       </div>
 
+      {/* 🥁 LIVE VISUAL BEAT & BAR COUNTER + 2-TAP "LOOP BY EAR" (No Mental Counting Needed!) */}
+      <div
+        style={{
+          padding: "12px 14px",
+          marginBottom: 12,
+          borderRadius: 12,
+          background: "rgba(9, 13, 22, 0.9)",
+          border: "1px solid rgba(251, 191, 36, 0.45)",
+        }}
+      >
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
+          <div>
+            <span style={{ fontWeight: 900, color: "#fbbf24", fontSize: "0.86rem", letterSpacing: "0.03em" }}>
+              🥁 LIVE BEAT &amp; BAR COUNTER — BAR #{songBarNum} AT {formatMmSs(positionSec)}
+            </span>
+            <div style={{ fontSize: "0.76rem", color: "#cbd5e1", marginTop: 2 }}>
+              <strong>How DJs Count:</strong> 1 Bar = <strong>4 Beats</strong> (<strong>{barSec.toFixed(1)}s</strong>) · 4 Bars = <strong>16 Beats</strong> (<strong>{(barSec * 4).toFixed(1)}s</strong> = 1 full horn/synth riff) · 8 Bars = <strong>32 Beats</strong> (<strong>{(barSec * 8).toFixed(1)}s</strong> = full drop)
+            </div>
+          </div>
+
+          {/* 4 Flashing Beat Boxes (1 - 2 - 3 - 4) */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+            {([1, 2, 3, 4] as const).map((b) => {
+              const isBeatNow = beatInBar === b;
+              const isDownbeat = b === 1;
+              return (
+                <div
+                  key={b}
+                  style={{
+                    padding: "6px 11px",
+                    borderRadius: 8,
+                    fontWeight: 900,
+                    fontSize: "0.8rem",
+                    background: isBeatNow
+                      ? isDownbeat
+                        ? "linear-gradient(135deg, #f59e0b, #ea580c)"
+                        : "linear-gradient(135deg, #06b6d4, #0284c7)"
+                      : "rgba(30, 41, 59, 0.85)",
+                    color: isBeatNow ? (isDownbeat ? "#090d16" : "#ffffff") : "#64748b",
+                    border: isBeatNow
+                      ? isDownbeat
+                        ? "2px solid #fde047"
+                        : "2px solid #38bdf8"
+                      : "1px solid rgba(71, 85, 105, 0.5)",
+                    boxShadow: isBeatNow ? "0 0 12px rgba(56, 189, 248, 0.55)" : undefined,
+                  }}
+                >
+                  {isDownbeat ? "🔥 BEAT 1 (DOWNBEAT)" : `BEAT ${b}`}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bar Progress Row + 2-Tap "Punch Loop IN / OUT By Ear" */}
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10, paddingTop: 8, borderTop: "1px solid rgba(148, 163, 184, 0.2)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+            <span style={{ fontSize: "0.76rem", fontWeight: 800, color: "#94a3b8" }}>
+              {loopWindow ? `LOOP BAR (${totalCycleBars} BARS):` : "PHRASE BAR (4 BARS):"}
+            </span>
+            {Array.from({ length: Math.min(8, totalCycleBars) }, (_, idx) => idx + 1).map((barNum) => {
+              const activeBar = barInCurrentCycle === barNum;
+              return (
+                <span
+                  key={barNum}
+                  style={{
+                    padding: "4px 9px",
+                    borderRadius: 6,
+                    fontSize: "0.75rem",
+                    fontWeight: 900,
+                    background: activeBar ? "rgba(16, 185, 129, 0.32)" : "rgba(15, 23, 42, 0.8)",
+                    color: activeBar ? "#34d399" : "#64748b",
+                    border: activeBar ? "1.5px solid #10b981" : "1px solid rgba(51, 65, 85, 0.6)",
+                  }}
+                >
+                  BAR {barNum}/{totalCycleBars}
+                </span>
+              );
+            })}
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <span style={{ fontSize: "0.76rem", fontWeight: 800, color: "#fde68a" }}>
+              👂 DON&apos;T WANT TO COUNT? TAP BY EAR:
+            </span>
+            <button
+              type="button"
+              className={styles.stemPresetBtn}
+              onClick={() => {
+                const curPos = currentLivePositionSec();
+                const barIdx = Math.max(0, Math.round((curPos - gridAnchorSec) / barSec));
+                const snappedStart = Math.max(0, gridAnchorSec + barIdx * barSec);
+                setPunchInSec(snappedStart);
+                setStemStatus(`📍 Loop IN marked at ${formatMmSs(snappedStart)} (Bar #${barIdx + 1}) — now tap "2. Tap Loop OUT" when the riff ends!`);
+              }}
+              style={{
+                background: punchInSec !== null ? "linear-gradient(135deg, #f59e0b, #d97706)" : "rgba(245, 158, 11, 0.22)",
+                color: punchInSec !== null ? "#090d16" : "#fde68a",
+                borderColor: "#fbbf24",
+                fontWeight: 900,
+                padding: "5px 10px",
+              }}
+              title="Tap this when the horn/synth riff starts — it automatically snaps to the nearest bar!"
+            >
+              {punchInSec !== null ? `📍 1. Loop IN Set (${formatMmSs(punchInSec)})` : "📍 1. Tap When Riff Starts"}
+            </button>
+            <button
+              type="button"
+              className={styles.stemPresetBtn}
+              onClick={() => {
+                const curPos = currentLivePositionSec();
+                const start = punchInSec !== null && curPos > punchInSec + 0.5 ? punchInSec : Math.max(0, curPos - 4 * barSec);
+                const rawBars = Math.max(1, Math.round((curPos - start) / barSec));
+                const snappedBars = rawBars <= 1 ? 1 : rawBars <= 2 ? 2 : rawBars <= 6 ? 4 : 8;
+                const end = start + snappedBars * barSec;
+                const label = `Ear-Tapped ${snappedBars}-Bar Riff (${formatMmSs(start)}–${formatMmSs(end)})`;
+                setPunchInSec(null);
+                void ensureStemsAndRun(label, {
+                  explicitLoop: { startSec: start, endSec: end, bars: snappedBars, label },
+                  seekSec: start,
+                  nextLevels: { vocals: 1, drums: 1, bass: 1, other: 1 },
+                  nextMuted: { vocals: true, drums: false, bass: false, other: false },
+                  nextSoloed: { vocals: false, drums: false, bass: false, other: false },
+                });
+              }}
+              style={{
+                background: "linear-gradient(135deg, #10b981, #059669)",
+                color: "#ffffff",
+                borderColor: "#34d399",
+                fontWeight: 900,
+                padding: "5px 10px",
+              }}
+              title="Tap this when the riff finishes — locks & loops your exact riff (quantized to 1, 2, 4, or 8 bars) with Vocals removed!"
+            >
+              🔁 2. Tap When Riff Ends (Lock &amp; Loop!)
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* 🎺 1-CLICK HORN / MELODY & BEAT LOOP STUDIO (Quantized to the Song's BeatGrid!) */}
       <div
         style={{
@@ -2560,7 +3038,7 @@ function LiveStemMixerPanel({
             }}
             title="Strip out the vocals and loop 4 bars of the Horns/Melody + Drums + Bass right where you are in the song!"
           >
-            🎺 Loop Horns + Beat Here (4 Bars · No Vocals)
+            🎺 Loop Horns + Beat Here (4 Bars · {(barSec * 4).toFixed(1)}s · No Vocals)
           </button>
 
           <button
@@ -2583,7 +3061,7 @@ function LiveStemMixerPanel({
             }}
             title="Solo ONLY the Horns / Melody / Synth / Guitar stem and loop 4 bars right here"
           >
-            🎺 Loop Horns / Melody Solo Here (4 Bars)
+            🎺 Loop Horns / Melody Solo Here (4 Bars · {(barSec * 4).toFixed(1)}s)
           </button>
 
           <button
@@ -2606,7 +3084,7 @@ function LiveStemMixerPanel({
             }}
             title="Loop 4 bars of pure Drums + Bass (no vocals, no horns) right here"
           >
-            🥁 Loop Beat + Bass Only Here (4 Bars)
+            🥁 Loop Beat + Bass Only Here (4 Bars · {(barSec * 4).toFixed(1)}s)
           </button>
 
           <button
@@ -2623,7 +3101,7 @@ function LiveStemMixerPanel({
             }}
             title="Loop 4 bars at your current position while keeping your current stem faders/mutes"
           >
-            🔁 Loop Current Mix Here (4 Bars)
+            🔁 Loop Current Mix Here (4 Bars · {(barSec * 4).toFixed(1)}s)
           </button>
 
           {loopWindow && (
@@ -2656,12 +3134,12 @@ function LiveStemMixerPanel({
         {songHooks.length > 0 && (
           <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid rgba(148, 163, 184, 0.25)" }}>
             <div style={{ fontSize: "0.78rem", fontWeight: 800, color: "#fde68a", marginBottom: 6 }}>
-              🎯 ANALYZED HORN / MELODY HOOKS &amp; BEAT BREAKDOWNS IN &ldquo;{trackTitle}&rdquo; (CLICK TO JUMP &amp; LOOP NO VOCALS):
+              🎯 ANALYZED HORN / SYNTH HOOKS, DROPS &amp; BEAT BREAKDOWNS IN &ldquo;{trackTitle}&rdquo; (IN TIME ORDER — CLICK TO JUMP &amp; LOOP NO VOCALS):
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {songHooks.map((h, idx) => {
                 const isMelody = h.isolation === "melody";
-                const label = `${isMelody ? "🎺 Horn/Melody Hook" : "🥁 Beat Groove"} #${idx + 1} (${formatMmSs(h.startSeconds)}–${formatMmSs(h.endSeconds)} · ${h.lengthBars}b)`;
+                const label = `${h.kindLabel} (${formatMmSs(h.startSeconds)}–${formatMmSs(h.endSeconds)} · ${h.lengthBars} Bars / ${(h.endSeconds - h.startSeconds).toFixed(0)}s)`;
                 const isCurrentHook =
                   loopWindow !== null &&
                   Math.abs(loopWindow.startSec - h.startSeconds) < 0.5 &&
@@ -2719,9 +3197,11 @@ function LiveStemMixerPanel({
       >
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#94a3b8" }}>LOOP SIZE:</span>
+            <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#94a3b8" }}>LOOP SIZE (BEATS &amp; SECONDS):</span>
             {([1, 2, 4, 8] as const).map((bars) => {
               const activeBars = loopWindow?.bars === bars;
+              const beatsCount = bars * 4;
+              const secsVal = (bars * barSec).toFixed(1);
               return (
                 <button
                   key={bars}
@@ -2735,7 +3215,7 @@ function LiveStemMixerPanel({
                     padding: "5px 10px",
                   }}
                 >
-                  🔁 {bars} Bar{bars > 1 ? "s" : ""}
+                  🔁 {bars} Bar{bars > 1 ? "s" : ""} ({beatsCount} Beats · {secsVal}s)
                 </button>
               );
             })}
@@ -3085,6 +3565,9 @@ function CratePanel({
   onAddClick,
   onFilesSelected,
   onTapTrack,
+  onLoadToDeckA,
+  onLoadToDeckB,
+  onMashWithLive,
   driveTracks,
   driveListing,
   driveAdding,
@@ -3104,6 +3587,9 @@ function CratePanel({
   onAddClick: () => void;
   onFilesSelected: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onTapTrack: (track: CrateTrack) => void;
+  onLoadToDeckA?: (track: CrateTrack) => void;
+  onLoadToDeckB?: (track: CrateTrack) => void;
+  onMashWithLive?: (track: CrateTrack) => void;
   driveTracks: CrateTrackListing[] | null;
   driveListing: boolean;
   driveAdding: boolean;
@@ -3208,6 +3694,41 @@ function CratePanel({
                     {` · ${metadata.stemCount} stems`}
                   </span>
                 </button>
+                <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap", marginTop: 4, marginBottom: 4 }}>
+                  {onLoadToDeckA && (
+                    <button
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={() => onLoadToDeckA(track)}
+                      style={{ padding: "3px 8px", fontSize: "0.73rem", fontWeight: 800, borderColor: "#38bdf8", color: "#38bdf8" }}
+                      title={`Load "${metadata.label}" specifically onto Deck A`}
+                    >
+                      🅰️ Load Deck A
+                    </button>
+                  )}
+                  {onLoadToDeckB && (
+                    <button
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={() => onLoadToDeckB(track)}
+                      style={{ padding: "3px 8px", fontSize: "0.73rem", fontWeight: 800, borderColor: "#fb923c", color: "#fb923c" }}
+                      title={`Load "${metadata.label}" specifically onto Deck B`}
+                    >
+                      🅱️ Load Deck B
+                    </button>
+                  )}
+                  {onMashWithLive && metadata.stemCount > 0 && (
+                    <button
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={() => onMashWithLive(track)}
+                      style={{ padding: "3px 8px", fontSize: "0.73rem", fontWeight: 800, borderColor: "#a855f7", color: "#e9d5ff", background: "rgba(168, 85, 247, 0.2)" }}
+                      title={`Mash "${metadata.label}" vocals & melody over the currently playing song`}
+                    >
+                      🧬 Mash Into Playing Song
+                    </button>
+                  )}
+                </div>
                 <label className={styles.genreEditor}>
                   Genre
                   <input key={`${track.id}:${track.genre ?? ""}`} type="text" list="crate-genres" maxLength={80}
@@ -3479,11 +4000,48 @@ function BrainPanel({
   const activeSongHooks = useMemo(() => {
     if (!activeTrackId) return [];
     const entry = getLoopPoints(CURRENT_LOOP_POINTS, `drive:${activeTrackId}`);
-    if (!entry || !entry.loops) return [];
-    return [...entry.loops].sort((a, b) => {
-      if (a.isolation !== b.isolation) return a.isolation === "melody" ? -1 : 1;
-      return b.score - a.score;
-    });
+    if (!entry) return [];
+    const bpmVal = entry.bpm > 0 ? entry.bpm : 120;
+    const barSecVal = (60 / bpmVal) * 4;
+    const items: Array<{
+      startBar: number;
+      lengthBars: 2 | 4 | 8;
+      startSeconds: number;
+      endSeconds: number;
+      isolation: "melody" | "beat";
+      kindLabel: string;
+    }> = [];
+
+    for (const l of entry.loops ?? []) {
+      const vDb = (l as { vocalsDb?: number }).vocalsDb;
+      const isVocalFree = typeof vDb === "number" && vDb <= -24;
+      const isMelody = l.isolation === "melody" || isVocalFree;
+      items.push({
+        startBar: l.startBar,
+        lengthBars: (l.lengthBars === 2 || l.lengthBars === 4 || l.lengthBars === 8 ? l.lengthBars : 4) as 2 | 4 | 8,
+        startSeconds: l.startSeconds,
+        endSeconds: l.endSeconds,
+        isolation: isMelody ? "melody" : "beat",
+        kindLabel: l.isolation === "melody" ? "🎺 Horn/Melody" : isVocalFree ? "🎺 Synth/Horn Hook" : "🥁 Beat Groove",
+      });
+    }
+
+    for (let i = 0; i < (entry.drops ?? []).length; i++) {
+      const d = entry.drops[i];
+      const alreadyCovered = items.some((it) => Math.abs(it.startSeconds - d.atSeconds) < 2.0);
+      if (!alreadyCovered) {
+        items.push({
+          startBar: (d as { bar?: number }).bar ?? Math.round(d.atSeconds / barSecVal),
+          lengthBars: 8,
+          startSeconds: d.atSeconds,
+          endSeconds: d.atSeconds + 8 * barSecVal,
+          isolation: "melody",
+          kindLabel: `🔥 Drop #${i + 1}`,
+        });
+      }
+    }
+
+    return items.sort((a, b) => a.startSeconds - b.startSeconds);
   }, [activeTrackId]);
 
   const stemReadyTracks = useMemo(() => {
@@ -3818,7 +4376,7 @@ function BrainPanel({
               </span>
               {activeSongHooks.map((h, idx) => {
                 const isMelody = h.isolation === "melody";
-                const lbl = `${isMelody ? "🎺 Horn/Melody" : "🥁 Beat"} ${formatMmSs(h.startSeconds)}–${formatMmSs(h.endSeconds)} (${h.lengthBars}b)`;
+                const lbl = `${h.kindLabel} ${formatMmSs(h.startSeconds)}–${formatMmSs(h.endSeconds)} (${h.lengthBars}b)`;
                 return (
                   <button
                     key={`${h.startBar}-${idx}`}
@@ -5447,6 +6005,46 @@ export default function Home() {
           ...prev,
           `${track.name}: ${err instanceof Error ? err.message : "could not load track"}`,
         ]);
+      }
+    })();
+  }
+
+  function handleLoadTrackToSpecificDeck(targetLabel: DeckLabel, trackId: string, autoPlay = false) {
+    coreRef.current?.ensureContext();
+    const resolved = ensureTrackInCrate(trackId);
+    if (!resolved) {
+      pushBrainLog("error", `Deck ${targetLabel}: could not find track "${trackId}" in library`);
+      return;
+    }
+    const { track } = resolved;
+    const ctrl = deckByLabel(targetLabel);
+    const wasPlayingOnThisDeck = ctrl.deck.playing;
+    if (wasPlayingOnThisDeck || autoPlay) {
+      stopStemMixerRef.current?.();
+      performanceControlVersionRef.current += 1;
+      queuePreparationRef.current?.abort(new Error(`Loading track onto Deck ${targetLabel}`));
+      teardownMigration();
+    }
+    pushBrainLog(
+      "crate",
+      `🎵 Loading "${musicLabel(track)}" (${track.bpm ? `${Math.round(track.bpm)} BPM` : "—"} · ${toCamelot(track.key) ?? track.key ?? "—"}) onto Deck ${targetLabel}…`
+    );
+    void (async () => {
+      try {
+        const blob = await getTrackForPlayback(track);
+        await ctrl.loadFile(blob, track.name, track.id, track.source);
+        await ctrl.decodeIfNeeded();
+        if (autoPlay || wasPlayingOnThisDeck) {
+          handleManualPlayDeck(targetLabel);
+          ctrl.deck.play();
+          ctrl.markPlaying();
+        }
+        pushBrainLog("crate", `✅ Deck ${targetLabel} ready: "${musicLabel(track)}"`);
+      } catch (err) {
+        pushBrainLog(
+          "error",
+          `Deck ${targetLabel}: could not load "${track.name}" (${err instanceof Error ? err.message : "load error"})`
+        );
       }
     })();
   }
@@ -9893,6 +10491,13 @@ export default function Home() {
               onAssignSingalong={(index, duration) => handleAssignCueSingalong("A", index, duration)}
               onDeleteCue={(index) => handleDeleteCue("A", index)}
               onNudgeCue={(index, delta) => handleNudgeCue("A", index, delta)}
+              crate={crate}
+              otherDeckTrackId={deckB.trackId}
+              otherDeckTrackName={deckB.trackName}
+              otherDeckBpm={deckB.tags.bpm ? deckB.tags.bpm * deckB.tempo : null}
+              otherDeckKey={deckB.tags.key ?? null}
+              onSelectCrateTrack={(id, autoPlay) => handleLoadTrackToSpecificDeck("A", id, autoPlay)}
+              onOpenInStemStudio={() => setActiveTab("stems")}
             />
 
             <div className={styles.crossfaderSection}>
@@ -9911,6 +10516,91 @@ export default function Home() {
                 onChange={handleCrossfadeChange}
                 aria-label="Crossfader, A to B"
               />
+
+              {/* 🧬 DIRECT DECK A × DECK B MASHUP & MIX BRIDGE */}
+              <div
+                style={{
+                  marginTop: 10,
+                  padding: "10px 12px",
+                  borderRadius: 10,
+                  background: "rgba(15, 23, 42, 0.85)",
+                  border: "1px solid rgba(168, 85, 247, 0.45)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 6,
+                }}
+              >
+                <span style={{ fontSize: "0.75rem", fontWeight: 900, color: "#e9d5ff", textAlign: "center", letterSpacing: "0.03em" }}>
+                  🧬 MASH DECK A × DECK B SONGS TOGETHER:
+                </span>
+                <button
+                  type="button"
+                  className={styles.syncButton}
+                  disabled={!deckA.trackId || !deckB.trackId}
+                  onClick={() => {
+                    if (deckA.trackId && deckB.trackId) {
+                      handleStartPairMashup(deckA.trackId, deckB.trackId, 64);
+                    }
+                  }}
+                  style={{
+                    background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
+                    color: "#fff",
+                    fontWeight: 900,
+                    fontSize: "0.78rem",
+                    padding: "8px 10px",
+                  }}
+                  title="Loop Deck A's 8-bar drum+bass groove pocket and layer Deck B's FULL vocals & melody over it (64 bars)"
+                >
+                  🔥 Mash Deck A Beat × Deck B Vocals (Full 64b)
+                </button>
+                <button
+                  type="button"
+                  className={styles.syncButton}
+                  disabled={!deckA.trackId || !deckB.trackId}
+                  onClick={() => {
+                    if (deckA.trackId && deckB.trackId) {
+                      handleStartPairMashup(deckB.trackId, deckA.trackId, 64);
+                    }
+                  }}
+                  style={{
+                    background: "linear-gradient(135deg, #f97316, #db2777)",
+                    color: "#fff",
+                    fontWeight: 900,
+                    fontSize: "0.78rem",
+                    padding: "8px 10px",
+                  }}
+                  title="Loop Deck B's 8-bar drum+bass groove pocket and layer Deck A's FULL vocals & melody over it (64 bars)"
+                >
+                  🔥 Mash Deck B Beat × Deck A Vocals (Full 64b)
+                </button>
+                <button
+                  type="button"
+                  className={styles.secondaryButton}
+                  disabled={!deckA.trackId || !deckB.trackId}
+                  onClick={() => {
+                    if (deckA.trackId && deckB.trackId) {
+                      const beatId = deckB.isPlaying && !deckA.isPlaying ? deckB.trackId : deckA.trackId;
+                      const vocalId = beatId === deckA.trackId ? deckB.trackId : deckA.trackId;
+                      handleStartPairMashup(beatId, vocalId, 16);
+                    }
+                  }}
+                  style={{
+                    fontWeight: 800,
+                    fontSize: "0.75rem",
+                    padding: "6px 10px",
+                    borderColor: "#a855f7",
+                    color: "#e9d5ff",
+                  }}
+                  title="16-bar quick mashup between Deck A and Deck B"
+                >
+                  🧬 16-Bar Quick Mash (Deck A × Deck B)
+                </button>
+                {(!deckA.trackId || !deckB.trackId) && (
+                  <span style={{ fontSize: "0.72rem", color: "#94a3b8", textAlign: "center" }}>
+                    👆 Pick a song in the dropdown on Deck A &amp; Deck B above to mash them!
+                  </span>
+                )}
+              </div>
             </div>
 
             <DeckPanel
@@ -9930,6 +10620,13 @@ export default function Home() {
               onAssignSingalong={(index, duration) => handleAssignCueSingalong("B", index, duration)}
               onDeleteCue={(index) => handleDeleteCue("B", index)}
               onNudgeCue={(index, delta) => handleNudgeCue("B", index, delta)}
+              crate={crate}
+              otherDeckTrackId={deckA.trackId}
+              otherDeckTrackName={deckA.trackName}
+              otherDeckBpm={deckA.tags.bpm ? deckA.tags.bpm * deckA.tempo : null}
+              otherDeckKey={deckA.tags.key ?? null}
+              onSelectCrateTrack={(id, autoPlay) => handleLoadTrackToSpecificDeck("B", id, autoPlay)}
+              onOpenInStemStudio={() => setActiveTab("stems")}
             />
           </div>
         </>
@@ -9962,6 +10659,19 @@ export default function Home() {
           onFilesSelected={handleAddToCrate}
           onTapTrack={(track) => {
             handleCrateTap(track);
+          }}
+          onLoadToDeckA={(track) => {
+            handleLoadTrackToSpecificDeck("A", track.id, false);
+            setActiveTab("booth");
+          }}
+          onLoadToDeckB={(track) => {
+            handleLoadTrackToSpecificDeck("B", track.id, false);
+            setActiveTab("booth");
+          }}
+          onMashWithLive={(track) => {
+            const beatId = liveDeckNow?.trackId ?? deckA.trackId ?? "1zl2bmgRSzcBQxNvsmr_BKAD6VGDf3YTb";
+            handleStartPairMashup(beatId, track.id, 64);
+            setActiveTab("booth");
           }}
           driveTracks={driveTracks}
           driveListing={driveListing}
