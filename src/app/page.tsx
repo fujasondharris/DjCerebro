@@ -335,9 +335,9 @@ const PAISA_VOCAL_LABELS: Record<string, { phrase: string; vibe: string }> = {
 type StemRoleKey = "vocals" | "drums" | "bass" | "other";
 const STEM_ROLES: { key: StemRoleKey; label: string; icon: string; model: string; color: string }[] = [
   { key: "vocals", label: "Vocals", icon: "🎤", model: "BS-RoFormer SDR 12.9", color: "#f43f5e" },
-  { key: "drums", label: "Drums", icon: "🥁", model: "HTDemucs-FT", color: "#f59e0b" },
-  { key: "bass", label: "Bass", icon: "🎸", model: "HTDemucs-FT", color: "#8b5cf6" },
-  { key: "other", label: "Other / Synth", icon: "🎹", model: "HTDemucs-FT", color: "#06b6d4" },
+  { key: "drums", label: "Drums / Beat", icon: "🥁", model: "HTDemucs 6-Stem", color: "#f59e0b" },
+  { key: "bass", label: "Bassline", icon: "🎸", model: "HTDemucs 6-Stem", color: "#8b5cf6" },
+  { key: "other", label: "Horns / Melody / Synth", icon: "🎺", model: "Horns + Synth + Guitar + Keys", color: "#06b6d4" },
 ];
 
 function resolveAudioAssetUrl(idOrPath: string): { url: string } {
@@ -1710,11 +1710,25 @@ function ClubBoothHud({
   );
 }
 
+const TEMPORAL_DEFAULT_ID = "1nZUDRNgEZmt-W_ZhpMlS9F1PD5IbyXJC";
+const TEMPORAL_DEFAULT_TITLE = 'Tito "El Bambino" & Farruko — Temporal';
+const TEMPORAL_DEFAULT_BPM = 127.99;
+const TEMPORAL_DEFAULT_CAMELOT = "9A";
+
 function LiveStemMixerPanel({
   core,
   activeDeckTrackId,
   activeDeckTrackName,
+  activeDeckBpm = null,
+  activeDeckCamelot = null,
+  activeDeckTempo = 1,
+  activeDeckPositionSec = 0,
+  activeDeckDurationSec = 0,
+  activeDeckAnchorSec = 0,
+  crate = [],
+  trackCacheStore,
   onLoadVipToDeck,
+  onReturnToDeck,
   onLog,
   onPlayingChange,
   stopRef,
@@ -1724,23 +1738,53 @@ function LiveStemMixerPanel({
   core: AudioCore;
   activeDeckTrackId: string | null;
   activeDeckTrackName: string | null;
+  activeDeckBpm?: number | null;
+  activeDeckCamelot?: string | null;
+  activeDeckTempo?: number;
+  activeDeckPositionSec?: number;
+  activeDeckDurationSec?: number;
+  activeDeckAnchorSec?: number;
+  crate?: CrateTrack[];
+  trackCacheStore?: ReturnType<typeof createIndexedDbStore>;
   onLoadVipToDeck: (trackId: string) => void;
+  onReturnToDeck?: (resumePositionSec: number, resumeTempo: number) => void;
   onLog: (action: string, say: string) => void;
   onPlayingChange?: (playing: boolean, bpm: number | null, title: string | null) => void;
   stopRef?: React.MutableRefObject<(() => void) | null>;
   onBeforePlay?: () => void;
   onPurgeMasterBus?: () => void;
 }) {
-  const [selectedId, setSelectedId] = useState<string>(STUDIO_VIP_TRACKS[0].id);
-  const [trackTitle, setTrackTitle] = useState<string>(STUDIO_VIP_TRACKS[0].title);
-  const [trackBpm, setTrackBpm] = useState<number>(STUDIO_VIP_TRACKS[0].bpm);
-  const [trackCamelot, setTrackCamelot] = useState<string>(STUDIO_VIP_TRACKS[0].camelot);
+  const initialId = activeDeckTrackId && (STEM_MANIFEST as Record<string, StemManifestEntry>)[activeDeckTrackId]
+    ? activeDeckTrackId
+    : TEMPORAL_DEFAULT_ID;
+  const initialManifest = PLAYBACK_MANIFEST.get(initialId);
+  const initialTitle =
+    initialId === activeDeckTrackId && activeDeckTrackName
+      ? musicLabel({ name: activeDeckTrackName })
+      : initialManifest
+        ? musicLabel({ name: initialManifest.name })
+        : TEMPORAL_DEFAULT_TITLE;
+
+  const [selectedId, setSelectedId] = useState<string>(initialId);
+  const [trackTitle, setTrackTitle] = useState<string>(initialTitle);
+  const [trackBpm, setTrackBpm] = useState<number>(activeDeckBpm ?? initialManifest?.bpm ?? TEMPORAL_DEFAULT_BPM);
+  const [trackCamelot, setTrackCamelot] = useState<string>(
+    activeDeckCamelot ?? toCamelot(initialManifest?.key ?? null) ?? initialManifest?.key ?? TEMPORAL_DEFAULT_CAMELOT
+  );
   const [loadingStems, setLoadingStems] = useState(false);
-  const [stemStatus, setStemStatus] = useState<string>("Ready — click any VIP 4-Stem Pack or press Play 4-Stems!");
+  const [stemStatus, setStemStatus] = useState<string>(
+    "🎧 Synced to active song — click any Horn/Beat Loop, Hook, or Stem Isolation button below!"
+  );
   const [isPlaying, setIsPlaying] = useState(false);
-  const [stemTempo, setStemTempo] = useState(1);
-  const [positionSec, setPositionSec] = useState(0);
-  const [durationSec, setDurationSec] = useState(0);
+  const [stemTempo, setStemTempo] = useState(activeDeckTempo || 1);
+  const [positionSec, setPositionSec] = useState(activeDeckPositionSec || 0);
+  const [durationSec, setDurationSec] = useState(activeDeckDurationSec || initialManifest?.durationSeconds || 323.13);
+  const [loopWindow, setLoopWindow] = useState<{
+    startSec: number;
+    endSec: number;
+    bars: number;
+    label: string;
+  } | null>(null);
   const [levels, setLevels] = useState<Record<StemRoleKey, number>>({
     vocals: 1,
     drums: 1,
@@ -1768,6 +1812,44 @@ function LiveStemMixerPanel({
   const offsetSecRef = useRef<number>(0);
   const isPlayingRef = useRef(false);
   const loadGenRef = useRef<number>(0);
+  const loopWindowRef = useRef<{
+    startSec: number;
+    endSec: number;
+    bars: number;
+    label: string;
+  } | null>(null);
+
+  const setActiveLoopWindow = (
+    next: { startSec: number; endSec: number; bars: number; label: string } | null
+  ) => {
+    loopWindowRef.current = next;
+    setLoopWindow(next);
+  };
+
+  // Analyzed recurring Horn/Melody Hooks & Beat Loops from loop-points.json for the selected song:
+  const songHooks = useMemo(() => {
+    const entry = getLoopPoints(CURRENT_LOOP_POINTS, `drive:${selectedId}`);
+    if (!entry || !entry.loops) return [];
+    return [...entry.loops].sort((a, b) => {
+      // Put melody/horn hooks first, then sort by score
+      if (a.isolation !== b.isolation) return a.isolation === "melody" ? -1 : 1;
+      return b.score - a.score;
+    });
+  }, [selectedId]);
+
+  const stemReadyCrateTracks = useMemo(() => {
+    const base = crate.length > 0 ? crate : (crateManifestJson as CrateManifestEntry[]);
+    return base
+      .filter((t) => usableStemEntry((STEM_MANIFEST as Record<string, StemManifestEntry>)[t.id]) !== null && !STUDIO_TRACK_IDS.has(t.id))
+      .map((t) => ({
+        id: t.id,
+        label: `${musicLabel(t)} (${Math.round(t.bpm ?? 0)} BPM · ${toCamelot(t.key ?? null) ?? t.key ?? "—"})`,
+        title: musicLabel(t),
+        bpm: t.bpm ?? 110,
+        camelot: toCamelot(t.key ?? null) ?? t.key ?? "8A",
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [crate]);
 
   const computeEffectiveGain = (
     role: StemRoleKey,
@@ -1803,6 +1885,25 @@ function LiveStemMixerPanel({
         param.setTargetAtTime(target, now, 0.012);
       }
     }
+  };
+
+  const currentLivePositionSec = (): number => {
+    if (!isPlayingRef.current) {
+      if (selectedId === activeDeckTrackId && activeDeckPositionSec > 0) {
+        return activeDeckPositionSec;
+      }
+      return offsetSecRef.current || positionSec || 0;
+    }
+    const ctx = core.ensureContext();
+    const dur = durationSec || 323.13;
+    const lw = loopWindowRef.current;
+    if (lw && lw.endSec > lw.startSec) {
+      const loopLen = Math.max(0.05, lw.endSec - lw.startSec);
+      const relElapsed = (ctx.currentTime - startedAtCtxTimeRef.current) * stemTempo + (offsetSecRef.current - lw.startSec);
+      return lw.startSec + (((relElapsed % loopLen) + loopLen) % loopLen);
+    }
+    const elapsed = (ctx.currentTime - startedAtCtxTimeRef.current) * stemTempo + offsetSecRef.current;
+    return dur > 0 ? elapsed % dur : 0;
   };
 
   const stopSources = () => {
@@ -1844,11 +1945,20 @@ function LiveStemMixerPanel({
 
   const handleHardStopStems = () => {
     stopSources();
-    offsetSecRef.current = 0;
-    setPositionSec(0);
-    setStemStatus("🛑 4-Stem Mixer OFF (All Stems Silenced)");
-    onLog("stem_mixer", "🛑 Turned OFF 4-Stem Mixer (All Stems Silenced)");
+    setActiveLoopWindow(null);
+    setStemStatus("🛑 4-Stem Isolator OFF (All Stems Silenced)");
+    onLog("stem_mixer", "🛑 Turned OFF 4-Stem Isolator");
     onPurgeMasterBus?.();
+  };
+
+  const handleHandBackToDeck = () => {
+    const resumePos = currentLivePositionSec();
+    const resumeTmp = stemTempo;
+    stopSources();
+    setActiveLoopWindow(null);
+    setStemStatus(`🎧 Handed "${trackTitle}" back to Deck at ${formatMmSs(resumePos)}`);
+    onLog("stem_mixer", `🎧 Returned "${trackTitle}" to normal Deck at ${formatMmSs(resumePos)}`);
+    onReturnToDeck?.(resumePos, resumeTmp);
   };
 
   if (stopRef) {
@@ -1863,25 +1973,89 @@ function LiveStemMixerPanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Automatically follow the active Deck song whenever the Stem Isolator is not actively overriding with another track!
+  useEffect(() => {
+    if (!activeDeckTrackId || isPlayingRef.current) return;
+    if (!(STEM_MANIFEST as Record<string, StemManifestEntry>)[activeDeckTrackId]) return;
+    const manifestEntry = PLAYBACK_MANIFEST.get(activeDeckTrackId);
+    const nextTitle = activeDeckTrackName ? musicLabel({ name: activeDeckTrackName }) : manifestEntry ? musicLabel({ name: manifestEntry.name }) : activeDeckTrackId;
+    const nextBpm = activeDeckBpm ?? manifestEntry?.bpm ?? 120;
+    const nextCamelot = activeDeckCamelot ?? toCamelot(manifestEntry?.key ?? null) ?? manifestEntry?.key ?? "8A";
+    setSelectedId(activeDeckTrackId);
+    setTrackTitle(nextTitle);
+    setTrackBpm(nextBpm);
+    setTrackCamelot(nextCamelot);
+    if (activeDeckTempo > 0) setStemTempo(activeDeckTempo);
+    if (activeDeckDurationSec > 0) setDurationSec(activeDeckDurationSec);
+    if (activeDeckPositionSec >= 0) {
+      offsetSecRef.current = activeDeckPositionSec;
+      setPositionSec(activeDeckPositionSec);
+    }
+    // Pre-decode the active deck song's stems in the background so 1-click Horn/Beat loops start instantaneously!
+    if (loadedTrackIdRef.current !== activeDeckTrackId && !loadingStems) {
+      void loadStemsForTrack(activeDeckTrackId, nextTitle, nextBpm, nextCamelot, true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeDeckTrackId, activeDeckTrackName, activeDeckBpm, activeDeckCamelot]);
+
+  // Keep playhead & tempo mirrored to the active deck while the stem isolator is in standby:
+  useEffect(() => {
+    if (isPlaying || selectedId !== activeDeckTrackId) return;
+    if (activeDeckPositionSec >= 0) {
+      offsetSecRef.current = activeDeckPositionSec;
+      setPositionSec(activeDeckPositionSec);
+    }
+    if (activeDeckDurationSec > 0) setDurationSec(activeDeckDurationSec);
+    if (activeDeckTempo > 0) setStemTempo(activeDeckTempo);
+  }, [isPlaying, selectedId, activeDeckTrackId, activeDeckPositionSec, activeDeckDurationSec, activeDeckTempo]);
+
   useEffect(() => {
     if (!isPlaying) return;
     const interval = setInterval(() => {
-      const ctx = core.ensureContext();
-      const dur = durationSec || 19.94;
-      const elapsed = (ctx.currentTime - startedAtCtxTimeRef.current) * stemTempo + offsetSecRef.current;
-      setPositionSec(dur > 0 ? elapsed % dur : 0);
+      setPositionSec(currentLivePositionSec());
     }, 80);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying, durationSec, stemTempo, core]);
 
-  async function loadStemsForTrack(targetId: string, titleOverride?: string, bpmOverride?: number, camelotOverride?: string): Promise<boolean> {
+  async function fetchStemArrayBuffer(idOrUrl: string): Promise<ArrayBuffer> {
+    if (idOrUrl.startsWith("/audio/") || STUDIO_TRACK_IDS.has(idOrUrl)) {
+      const { url } = resolveAudioAssetUrl(idOrUrl);
+      const res = await fetchWithPasscode(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.arrayBuffer();
+    }
+    const blob = await getTrackBlob(
+      idOrUrl,
+      async () => {
+        const { url } = resolveAudioAssetUrl(idOrUrl);
+        const res = await fetchWithPasscode(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.blob();
+      },
+      trackCacheStore ? { store: trackCacheStore } : undefined
+    );
+    return blob.arrayBuffer();
+  }
+
+  async function loadStemsForTrack(
+    targetId: string,
+    titleOverride?: string,
+    bpmOverride?: number,
+    camelotOverride?: string,
+    backgroundPreload = false
+  ): Promise<boolean> {
     const stemEntry = (STEM_MANIFEST as Record<string, StemManifestEntry>)[targetId];
     if (!stemEntry || !stemEntry.stems) {
-      setStemStatus(`No 4-stem pack registered for "${targetId}"`);
+      setStemStatus(`No separated stems registered for "${titleOverride ?? targetId}"`);
       return false;
     }
     setLoadingStems(true);
-    setStemStatus(`Decoding 4 separated stems (Vocals, Drums, Bass, Other) for "${titleOverride ?? targetId}"…`);
+    setStemStatus(
+      backgroundPreload
+        ? `⏳ Pre-loading 6-stem pack (Vocals, Drums, Bass, Horns/Guitar/Keys) for "${titleOverride ?? targetId}"…`
+        : `⏳ Loading separated stems (Vocals, Drums, Bass, Horns/Melody) for "${titleOverride ?? targetId}"…`
+    );
     try {
       const ctx = core.ensureContext();
       const decodedMap: Partial<Record<StemRoleKey, AudioBuffer>> = {};
@@ -1889,21 +2063,79 @@ function LiveStemMixerPanel({
         STEM_ROLES.map(async ({ key }) => {
           const idOrUrl = stemEntry.stems[key];
           if (!idOrUrl) return;
-          const { url } = resolveAudioAssetUrl(idOrUrl);
-          const res = await fetchWithPasscode(url);
-          if (!res.ok) throw new Error(`HTTP ${res.status} loading ${key} stem`);
-          const buf = await res.arrayBuffer();
+          const buf = await fetchStemArrayBuffer(idOrUrl);
           decodedMap[key] = await ctx.decodeAudioData(buf);
         })
       );
+
+      // For 6-stem (htdemucs_6s) tracks like Farruko — Temporal, fold `guitar` and `piano`
+      // into the `other` (🎺 Horns / Melody / Synth) buffer so 100% of the horns, guitars, and keys play!
+      const extraHarmonyKeys = (["guitar", "piano"] as const).filter((k) => {
+        const id = stemEntry.stems[k];
+        if (!id) return false;
+        const stats = stemEntry.loudness?.[k];
+        if (stats && stats.silentPct >= 0.92 && !stemEntry.compingLayer?.includes(k)) return false;
+        return true;
+      });
+      if (extraHarmonyKeys.length > 0 && decodedMap.other) {
+        const baseOther = decodedMap.other;
+        const combined = ctx.createBuffer(baseOther.numberOfChannels, baseOther.length, baseOther.sampleRate);
+        for (let ch = 0; ch < baseOther.numberOfChannels; ch++) {
+          combined.getChannelData(ch).set(baseOther.getChannelData(ch));
+        }
+        for (const extraKey of extraHarmonyKeys) {
+          try {
+            const extraBuf = await fetchStemArrayBuffer(stemEntry.stems[extraKey]);
+            const extraDecoded = await ctx.decodeAudioData(extraBuf);
+            const len = Math.min(combined.length, extraDecoded.length);
+            const chCount = Math.min(combined.numberOfChannels, extraDecoded.numberOfChannels);
+            for (let ch = 0; ch < chCount; ch++) {
+              const dst = combined.getChannelData(ch);
+              const src = extraDecoded.getChannelData(ch);
+              for (let i = 0; i < len; i++) {
+                dst[i] += src[i];
+              }
+            }
+          } catch {
+            // Best-effort auxiliary harmony merge
+          }
+        }
+        // Soft peak guard on the combined Horn/Melody/Guitar/Piano buffer:
+        let peak = 0;
+        for (let ch = 0; ch < combined.numberOfChannels; ch++) {
+          const data = combined.getChannelData(ch);
+          for (let i = 0; i < data.length; i++) {
+            const abs = Math.abs(data[i]);
+            if (abs > peak) peak = abs;
+          }
+        }
+        if (peak > 0.95) {
+          const scale = 0.95 / peak;
+          for (let ch = 0; ch < combined.numberOfChannels; ch++) {
+            const data = combined.getChannelData(ch);
+            for (let i = 0; i < data.length; i++) {
+              data[i] *= scale;
+            }
+          }
+        }
+        decodedMap.other = combined;
+      }
+
+      if (backgroundPreload && isPlayingRef.current && loadedTrackIdRef.current !== targetId) {
+        return false;
+      }
       buffersRef.current = decodedMap;
       loadedTrackIdRef.current = targetId;
-      const firstBuf = decodedMap.vocals ?? decodedMap.drums ?? decodedMap.bass ?? decodedMap.other;
-      const dur = firstBuf?.duration ?? 19.94;
+      const firstBuf = decodedMap.drums ?? decodedMap.vocals ?? decodedMap.bass ?? decodedMap.other;
+      const dur = firstBuf?.duration ?? 323.13;
       setDurationSec(dur);
-      offsetSecRef.current = 0;
-      setPositionSec(0);
-      setStemStatus(`✅ 4-Stem Pack Ready (${dur.toFixed(1)}s · Vocals + Drums + Bass + Other isolated)`);
+      if (!backgroundPreload && targetId !== activeDeckTrackId) {
+        offsetSecRef.current = 0;
+        setPositionSec(0);
+      }
+      setStemStatus(
+        `✅ Stems Ready for "${titleOverride ?? trackTitle}" (${formatMmSs(dur)}) — Click any Horn/Beat Loop or Isolation button!`
+      );
       if (titleOverride) setTrackTitle(titleOverride);
       if (bpmOverride) setTrackBpm(bpmOverride);
       if (camelotOverride) setTrackCamelot(camelotOverride);
@@ -1916,26 +2148,48 @@ function LiveStemMixerPanel({
     }
   }
 
-  function startPlaybackFromOffset(startOffset: number, currentTitle = trackTitle, currentBpm = trackBpm) {
+  function startPlaybackFromOffset(
+    startOffset: number,
+    currentTitle = trackTitle,
+    currentBpm = trackBpm,
+    customLoopWindow: { startSec: number; endSec: number; bars: number; label: string } | null = loopWindowRef.current,
+    overrideLevels = levels,
+    overrideMuted = muted,
+    overrideSoloed = soloed,
+    overrideTempo = stemTempo
+  ) {
     onBeforePlay?.();
     const ctx = core.ensureContext();
     stopSources();
     const newSources: Partial<Record<StemRoleKey, AudioBufferSourceNode>> = {};
     const newGains: Partial<Record<StemRoleKey, GainNode>> = {};
-    const startWhen = ctx.currentTime + 0.02;
+    const startWhen = ctx.currentTime + 0.018;
 
+    let effectiveStartOffset = startOffset;
     for (const { key } of STEM_ROLES) {
       const buffer = buffersRef.current[key];
       if (!buffer) continue;
       const source = ctx.createBufferSource();
       source.buffer = buffer;
       source.loop = true;
-      source.playbackRate.value = stemTempo;
+      source.playbackRate.value = overrideTempo;
+      let safeOffset = buffer.duration > 0 ? Math.max(0, startOffset % buffer.duration) : 0;
+      if (customLoopWindow && buffer.duration > 0 && customLoopWindow.endSec > customLoopWindow.startSec) {
+        const lStart = Math.max(0, Math.min(customLoopWindow.startSec, buffer.duration - 0.1));
+        const lEnd = Math.max(lStart + 0.1, Math.min(customLoopWindow.endSec, buffer.duration));
+        source.loopStart = lStart;
+        source.loopEnd = lEnd;
+        if (safeOffset < lStart || safeOffset >= lEnd) {
+          safeOffset = lStart;
+        }
+      }
+      effectiveStartOffset = safeOffset;
       const gain = ctx.createGain();
-      gain.gain.value = computeEffectiveGain(key);
+      const targetGain = computeEffectiveGain(key, overrideLevels, overrideMuted, overrideSoloed);
+      gain.gain.setValueAtTime(0.0001, startWhen);
+      gain.gain.linearRampToValueAtTime(targetGain, startWhen + 0.012);
       source.connect(gain);
       gain.connect(core.master);
-      const safeOffset = buffer.duration > 0 ? startOffset % buffer.duration : 0;
       source.start(startWhen, safeOffset);
       newSources[key] = source;
       newGains[key] = gain;
@@ -1943,68 +2197,154 @@ function LiveStemMixerPanel({
     sourcesRef.current = newSources;
     gainsRef.current = newGains;
     startedAtCtxTimeRef.current = startWhen;
-    offsetSecRef.current = startOffset;
+    offsetSecRef.current = effectiveStartOffset;
+    setPositionSec(effectiveStartOffset);
     isPlayingRef.current = true;
     setIsPlaying(true);
-    onPlayingChange?.(true, currentBpm * stemTempo, currentTitle);
+    onPlayingChange?.(true, currentBpm * overrideTempo, currentTitle);
   }
 
-  async function handleSelectAndPlayVip(vip: StudioVipTrackMeta) {
-    if (isPlayingRef.current && selectedId === vip.id) {
-      handleHardStopStems();
-      return;
+  async function ensureStemsAndRun(
+    actionLabel: string,
+    opts: {
+      loopBars?: number | null;
+      explicitLoop?: { startSec: number; endSec: number; bars: number; label: string } | null;
+      seekSec?: number;
+      nextLevels?: Record<StemRoleKey, number>;
+      nextMuted?: Record<StemRoleKey, boolean>;
+      nextSoloed?: Record<StemRoleKey, boolean>;
     }
-    stopSources();
+  ) {
+    // Capture the live deck's exact current timestamp & tempo BEFORE stopping the deck!
+    const wasPlayingStems = isPlayingRef.current;
+    const basePos =
+      opts.seekSec !== undefined
+        ? opts.seekSec
+        : opts.explicitLoop
+          ? opts.explicitLoop.startSec
+          : wasPlayingStems
+            ? currentLivePositionSec()
+            : selectedId === activeDeckTrackId && activeDeckPositionSec > 0
+              ? activeDeckPositionSec
+              : offsetSecRef.current || 0;
+    const nextTempo = !wasPlayingStems && selectedId === activeDeckTrackId && activeDeckTempo > 0 ? activeDeckTempo : stemTempo;
+    if (nextTempo !== stemTempo) setStemTempo(nextTempo);
+
+    const nextLevels = opts.nextLevels ?? levels;
+    const nextMuted = opts.nextMuted ?? muted;
+    const nextSoloed = opts.nextSoloed ?? soloed;
+    setLevels(nextLevels);
+    setMuted(nextMuted);
+    setSoloed(nextSoloed);
+
     const myGen = ++loadGenRef.current;
-    setSelectedId(vip.id);
-    setTrackTitle(vip.title);
-    setTrackBpm(vip.bpm);
-    setTrackCamelot(vip.camelot);
-    const ok = await loadStemsForTrack(vip.id, vip.title, vip.bpm, vip.camelot);
-    if (ok && loadGenRef.current === myGen) {
-      startPlaybackFromOffset(0, vip.title, vip.bpm);
-      onLog("stem_mixer", `🎛️ Playing 4-Stem Studio Pack: "${vip.title}" (${vip.bpm} BPM · ${vip.camelot})`);
+    if (loadedTrackIdRef.current !== selectedId || !buffersRef.current.drums) {
+      const ok = await loadStemsForTrack(selectedId, trackTitle, trackBpm, trackCamelot, false);
+      if (!ok || loadGenRef.current !== myGen) return;
+    }
+
+    const dur = buffersRef.current.drums?.duration ?? durationSec ?? 323.13;
+    let nextLoop = loopWindowRef.current;
+    if (opts.explicitLoop !== undefined) {
+      nextLoop = opts.explicitLoop;
+    } else if (opts.loopBars !== undefined) {
+      if (opts.loopBars === null || opts.loopBars <= 0) {
+        nextLoop = null;
+      } else {
+        const beatSec = 60 / Math.max(60, trackBpm);
+        const barSec = beatSec * 4;
+        const anchor = selectedId === activeDeckTrackId ? activeDeckAnchorSec : 0;
+        const barIdx = Math.max(0, Math.floor((basePos - anchor) / barSec));
+        const startSec = Math.max(0, Math.min(dur - barSec, anchor + barIdx * barSec));
+        const endSec = Math.min(dur, startSec + opts.loopBars * barSec);
+        nextLoop = {
+          startSec,
+          endSec,
+          bars: opts.loopBars,
+          label: `${opts.loopBars}-Bar Loop (${formatMmSs(startSec)}–${formatMmSs(endSec)})`,
+        };
+      }
+    }
+    setActiveLoopWindow(nextLoop);
+    startPlaybackFromOffset(
+      nextLoop ? Math.max(nextLoop.startSec, Math.min(basePos, nextLoop.endSec - 0.05)) : basePos,
+      trackTitle,
+      trackBpm,
+      nextLoop,
+      nextLevels,
+      nextMuted,
+      nextSoloed,
+      nextTempo
+    );
+    setStemStatus(
+      nextLoop
+        ? `🔁 ${actionLabel} — Looping ${nextLoop.label}`
+        : `🔊 ${actionLabel} at ${formatMmSs(basePos)}`
+    );
+    onLog(
+      "stem_mixer",
+      nextLoop
+        ? `🎛️ ${actionLabel} on "${trackTitle}" [${nextLoop.label}]`
+        : `🎛️ ${actionLabel} on "${trackTitle}" @ ${formatMmSs(basePos)}`
+    );
+  }
+
+  function handleShiftBars(deltaBars: number) {
+    const dur = buffersRef.current.drums?.duration ?? durationSec ?? 323.13;
+    const beatSec = 60 / Math.max(60, trackBpm);
+    const barSec = beatSec * 4;
+    const shiftSec = deltaBars * barSec;
+    const curLoop = loopWindowRef.current;
+    if (curLoop) {
+      const len = curLoop.endSec - curLoop.startSec;
+      const newStart = Math.max(0, Math.min(dur - len, curLoop.startSec + shiftSec));
+      const newEnd = Math.min(dur, newStart + len);
+      void ensureStemsAndRun(`Shifted Loop ${deltaBars > 0 ? `+${deltaBars}` : deltaBars} Bars`, {
+        explicitLoop: {
+          startSec: newStart,
+          endSec: newEnd,
+          bars: curLoop.bars,
+          label: `${curLoop.bars}-Bar Loop (${formatMmSs(newStart)}–${formatMmSs(newEnd)})`,
+        },
+        seekSec: newStart,
+      });
+    } else {
+      const curPos = currentLivePositionSec();
+      const target = Math.max(0, Math.min(dur - 1, curPos + shiftSec));
+      void ensureStemsAndRun(`Jumped ${deltaBars > 0 ? `+${deltaBars}` : deltaBars} Bars`, {
+        seekSec: target,
+      });
     }
   }
 
   async function handleTogglePlay() {
     if (isPlayingRef.current || loadingStems) {
-      const ctx = core.ensureContext();
-      const dur = durationSec || 19.94;
-      const elapsed = (ctx.currentTime - startedAtCtxTimeRef.current) * stemTempo + offsetSecRef.current;
-      offsetSecRef.current = dur > 0 ? elapsed % dur : 0;
+      const curPos = currentLivePositionSec();
+      offsetSecRef.current = curPos;
+      setPositionSec(curPos);
       stopSources();
       onPurgeMasterBus?.();
-      setStemStatus(`⏹ Stopped 4-Stem Mixer at ${formatMmSs(offsetSecRef.current)}`);
+      setStemStatus(`⏹ Paused 4-Stem Isolator at ${formatMmSs(curPos)}`);
       return;
     }
-    const myGen = ++loadGenRef.current;
-    if (loadedTrackIdRef.current !== selectedId || Object.keys(buffersRef.current).length === 0) {
-      const ok = await loadStemsForTrack(selectedId, trackTitle, trackBpm, trackCamelot);
-      if (!ok || loadGenRef.current !== myGen) return;
-    }
-    startPlaybackFromOffset(offsetSecRef.current);
-    setStemStatus(`🔊 Playing 4-Stem Live Mix: ${trackTitle}`);
-    onLog("stem_mixer", `🎛️ Live 4-Stem Mixer started: "${trackTitle}"`);
+    await ensureStemsAndRun("Playing 4-Stem Live Isolator", {});
   }
 
-  async function handleLoadActiveDeckStems() {
-    if (!activeDeckTrackId) return;
+  async function handleSelectSongFromDropdown(targetId: string) {
+    const found = stemReadyCrateTracks.find((t) => t.id === targetId);
+    const manifestEntry = PLAYBACK_MANIFEST.get(targetId);
+    const title = found?.title ?? (manifestEntry ? musicLabel({ name: manifestEntry.name }) : targetId);
+    const bpm = found?.bpm ?? manifestEntry?.bpm ?? 120;
+    const camelot = found?.camelot ?? toCamelot(manifestEntry?.key ?? null) ?? manifestEntry?.key ?? "8A";
     stopSources();
-    const myGen = ++loadGenRef.current;
-    const manifestEntry = PLAYBACK_MANIFEST.get(activeDeckTrackId);
-    const title = activeDeckTrackName ? musicLabel({ name: activeDeckTrackName }) : activeDeckTrackId;
-    const bpm = manifestEntry?.bpm ?? 110;
-    const camelot = toCamelot(manifestEntry?.key ?? null) ?? manifestEntry?.key ?? "8A";
-    setSelectedId(activeDeckTrackId);
+    setActiveLoopWindow(null);
+    setSelectedId(targetId);
     setTrackTitle(title);
     setTrackBpm(bpm);
     setTrackCamelot(camelot);
-    const ok = await loadStemsForTrack(activeDeckTrackId, title, bpm, camelot);
-    if (ok && loadGenRef.current === myGen) {
-      startPlaybackFromOffset(0, title, bpm);
-      onLog("stem_mixer", `🎛️ Loaded active deck "${title}" into 4-Stem Live Mixer`);
-    }
+    offsetSecRef.current = 0;
+    setPositionSec(0);
+    await loadStemsForTrack(targetId, title, bpm, camelot, false);
   }
 
   function applyStemPreset(
@@ -2013,30 +2353,65 @@ function LiveStemMixerPanel({
     nextMuted: Record<StemRoleKey, boolean>,
     nextSoloed: Record<StemRoleKey, boolean>
   ) {
-    setLevels(nextLevels);
-    setMuted(nextMuted);
-    setSoloed(nextSoloed);
-    syncGainNodes(nextLevels, nextMuted, nextSoloed);
-    setStemStatus(`🎛️ Stem Preset Active: ${presetName}`);
-    onLog("stem_mixer", `🎛️ Applied 4-Stem Isolation Preset: ${presetName}`);
-    if (!isPlayingRef.current && !loadingStems) {
-      void handleTogglePlay();
+    if (isPlayingRef.current) {
+      setLevels(nextLevels);
+      setMuted(nextMuted);
+      setSoloed(nextSoloed);
+      syncGainNodes(nextLevels, nextMuted, nextSoloed);
+      setStemStatus(
+        loopWindowRef.current
+          ? `🎛️ ${presetName} · Looping ${loopWindowRef.current.label}`
+          : `🎛️ Stem Preset Active: ${presetName}`
+      );
+      onLog("stem_mixer", `🎛️ Applied 4-Stem Isolation Preset: ${presetName}`);
+      return;
     }
+    void ensureStemsAndRun(presetName, {
+      nextLevels,
+      nextMuted,
+      nextSoloed,
+    });
   }
 
   return (
     <section className={styles.stemMixerPanel} aria-label="Live 4-Stem Studio Mixer">
       <div className={styles.stemMixerHeader}>
         <div>
-          <span className={styles.stemBadge}>⚡ NEW · REAL-TIME 4-STEM ISOLATOR</span>
+          <span className={styles.stemBadge}>⚡ REAL-TIME 6-STEM ISOLATOR &amp; HORN / BEAT LOOPER</span>
           <h2 className={styles.stemMixerTitle}>
-            🎛️ Live 4-Stem Studio Mixer &amp; VIP Club Packs
+            🎛️ Live Song Stem Isolator &amp; Horn / Beat Loop Studio
           </h2>
           <p className={styles.stemMixerSub}>
-            Play &amp; isolate <strong>Vocals (BS-RoFormer)</strong>, <strong>Drums</strong>, <strong>Bass</strong>, and <strong>Other/Synth (HTDemucs-FT)</strong> in real time — or send any VIP pack straight to Deck A/B!
+            Automatically locked to your playing song (<strong>{trackTitle}</strong>). Click <strong>🎺 Loop Horns + Beat</strong> or any <strong>Song Hook</strong> below to strip out the vocals and loop the horn riff &amp; beat right where you are listening!
           </p>
         </div>
-        <div className={styles.stemHeaderActions}>
+        <div className={styles.stemHeaderActions} style={{ flexWrap: "wrap", gap: 8 }}>
+          {onReturnToDeck && selectedId === activeDeckTrackId && (
+            <button
+              type="button"
+              className={styles.stemActionBtn}
+              onClick={handleHandBackToDeck}
+              style={{
+                background: "linear-gradient(135deg, #10b981, #059669)",
+                color: "#ffffff",
+                fontWeight: 800,
+                border: "2px solid #34d399",
+              }}
+              title="Hand playback smoothly back to the main DJ Deck at the exact current timestamp"
+            >
+              🔙 Return to Normal Deck ({formatMmSs(positionSec)})
+            </button>
+          )}
+          <button
+            type="button"
+            className={styles.stemSendDeckBtn}
+            onClick={() => {
+              handleHardStopStems();
+              onLoadVipToDeck(selectedId);
+            }}
+          >
+            📥 Send &ldquo;{trackTitle.split("—")[0].trim()}&rdquo; to Deck
+          </button>
           <button
             type="button"
             className={styles.stemActionBtn}
@@ -2050,74 +2425,398 @@ function LiveStemMixerPanel({
             }}
             title="Immediately turn off all 4-Stem Mixer channels and silence any looping stem"
           >
-            🛑 STOP STEMS / TURN OFF STEM MIXER
-          </button>
-          {activeDeckTrackId && (STEM_MANIFEST as Record<string, StemManifestEntry>)[activeDeckTrackId] && (
-            <button
-              type="button"
-              className={styles.stemActionBtn}
-              onClick={() => void handleLoadActiveDeckStems()}
-              disabled={loadingStems}
-            >
-              🔄 Load Active Deck Stems ({activeDeckTrackName ? musicLabel({ name: activeDeckTrackName }).slice(0, 22) : "Deck"})
-            </button>
-          )}
-          <button
-            type="button"
-            className={styles.stemSendDeckBtn}
-            onClick={() => {
-              handleHardStopStems();
-              onLoadVipToDeck(selectedId);
-            }}
-          >
-            📥 Send &ldquo;{trackTitle.split("—")[0].trim()}&rdquo; to Idle Deck
+            🛑 STOP STEMS
           </button>
         </div>
       </div>
 
-      {/* 4 Bundled Studio VIP 4-Stem Cards */}
-      <div className={styles.vipCardsGrid}>
-        {STUDIO_VIP_TRACKS.map((vip) => {
-          const active = selectedId === vip.id;
-          return (
-            <div
-              key={vip.id}
-              className={`${styles.vipCard} ${active ? styles.vipCardActive : ""}`}
-              style={{ borderColor: active ? vip.accent : undefined }}
+      {/* Song Selector & Active Deck Sync Row */}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 10,
+          padding: "10px 14px",
+          marginBottom: 12,
+          borderRadius: 10,
+          background: "rgba(15, 23, 42, 0.75)",
+          border: "1px solid rgba(56, 189, 248, 0.35)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <span style={{ fontWeight: 800, color: "#38bdf8", fontSize: "0.86rem" }}>
+            🎵 TARGET SONG:
+          </span>
+          <strong style={{ color: "#f8fafc", fontSize: "0.95rem" }}>{trackTitle}</strong>
+          <span style={{ color: "#94a3b8", fontSize: "0.82rem" }}>
+            ({(trackBpm * stemTempo).toFixed(1)} BPM · Key {trackCamelot})
+          </span>
+          {activeDeckTrackId && selectedId !== activeDeckTrackId && (STEM_MANIFEST as Record<string, StemManifestEntry>)[activeDeckTrackId] && (
+            <button
+              type="button"
+              className={styles.stemPresetBtn}
+              onClick={() => {
+                const manifestEntry = PLAYBACK_MANIFEST.get(activeDeckTrackId);
+                const nextTitle = activeDeckTrackName ? musicLabel({ name: activeDeckTrackName }) : manifestEntry ? musicLabel({ name: manifestEntry.name }) : activeDeckTrackId;
+                const nextBpm = activeDeckBpm ?? manifestEntry?.bpm ?? 120;
+                const nextCamelot = activeDeckCamelot ?? toCamelot(manifestEntry?.key ?? null) ?? manifestEntry?.key ?? "8A";
+                stopSources();
+                setActiveLoopWindow(null);
+                setSelectedId(activeDeckTrackId);
+                setTrackTitle(nextTitle);
+                setTrackBpm(nextBpm);
+                setTrackCamelot(nextCamelot);
+                offsetSecRef.current = activeDeckPositionSec || 0;
+                setPositionSec(activeDeckPositionSec || 0);
+                void loadStemsForTrack(activeDeckTrackId, nextTitle, nextBpm, nextCamelot, false);
+              }}
+              style={{
+                background: "linear-gradient(135deg, #0ea5e9, #2563eb)",
+                color: "#fff",
+                fontWeight: 800,
+              }}
             >
-              <div className={styles.vipCardTop}>
-                <span className={styles.vipGenreTag} style={{ background: vip.accent }}>
-                  {vip.genre}
-                </span>
-                <span className={styles.vipMetaBadge}>
-                  {vip.bpm} BPM · {vip.camelot} ({vip.key}) · {vip.lufs} LUFS
-                </span>
-              </div>
-              <div className={styles.vipCardTitle}>{vip.title}</div>
-              <div className={styles.vipCardSub}>{vip.subtitle}</div>
-              <div className={styles.vipCardButtons}>
+              🔄 Sync to Active Deck ({activeDeckTrackName ? musicLabel({ name: activeDeckTrackName }).slice(0, 26) : "Deck"})
+            </button>
+          )}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <label style={{ fontSize: "0.8rem", color: "#cbd5e1", fontWeight: 600 }}>
+            Or Pick Any 4-Stem Song:{" "}
+            <select
+              value={selectedId}
+              onChange={(e) => void handleSelectSongFromDropdown(e.target.value)}
+              style={{
+                padding: "5px 8px",
+                borderRadius: 6,
+                background: "#0f172a",
+                color: "#f8fafc",
+                border: "1px solid #475569",
+                maxWidth: 280,
+                fontSize: "0.82rem",
+              }}
+              aria-label="Select a song for 4-Stem Isolation and Looping"
+            >
+              {stemReadyCrateTracks.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+      </div>
+
+      {/* 🎺 1-CLICK HORN / MELODY & BEAT LOOP STUDIO (Quantized to the Song's BeatGrid!) */}
+      <div
+        style={{
+          padding: "12px 14px",
+          marginBottom: 12,
+          borderRadius: 12,
+          background: "linear-gradient(135deg, rgba(6, 182, 212, 0.16), rgba(245, 158, 11, 0.14))",
+          border: "1px solid rgba(6, 182, 212, 0.5)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
+          <span style={{ fontWeight: 900, color: "#22d3ee", fontSize: "0.88rem", letterSpacing: "0.03em" }}>
+            🎺 STEP 1 — 1-CLICK HORN &amp; BEAT LOOPERS (AT CURRENT SONG POSITION: {formatMmSs(positionSec)})
+          </span>
+          {loopWindow && (
+            <span
+              style={{
+                padding: "3px 10px",
+                borderRadius: 999,
+                background: "#f59e0b",
+                color: "#090d16",
+                fontWeight: 900,
+                fontSize: "0.78rem",
+              }}
+            >
+              🔁 ACTIVE LOOP: {loopWindow.label}
+            </span>
+          )}
+        </div>
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: songHooks.length > 0 ? 10 : 0 }}>
+          <button
+            type="button"
+            className={styles.stemPresetBtn}
+            onClick={() =>
+              void ensureStemsAndRun("🎺 Loop Horns/Melody + Beat (No Vocals)", {
+                loopBars: 4,
+                nextLevels: { vocals: 1, drums: 1, bass: 1, other: 1 },
+                nextMuted: { vocals: true, drums: false, bass: false, other: false },
+                nextSoloed: { vocals: false, drums: false, bass: false, other: false },
+              })
+            }
+            style={{
+              background: "linear-gradient(135deg, #06b6d4, #0284c7)",
+              color: "#ffffff",
+              fontWeight: 900,
+              borderColor: "#38bdf8",
+              padding: "9px 14px",
+            }}
+            title="Strip out the vocals and loop 4 bars of the Horns/Melody + Drums + Bass right where you are in the song!"
+          >
+            🎺 Loop Horns + Beat Here (4 Bars · No Vocals)
+          </button>
+
+          <button
+            type="button"
+            className={styles.stemPresetBtn}
+            onClick={() =>
+              void ensureStemsAndRun("🎺 Loop Horns / Melody ONLY", {
+                loopBars: 4,
+                nextLevels: { vocals: 1, drums: 1, bass: 1, other: 1 },
+                nextMuted: { vocals: true, drums: true, bass: true, other: false },
+                nextSoloed: { vocals: false, drums: false, bass: false, other: true },
+              })
+            }
+            style={{
+              background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+              color: "#ffffff",
+              fontWeight: 800,
+              borderColor: "#a855f7",
+              padding: "9px 14px",
+            }}
+            title="Solo ONLY the Horns / Melody / Synth / Guitar stem and loop 4 bars right here"
+          >
+            🎺 Loop Horns / Melody Solo Here (4 Bars)
+          </button>
+
+          <button
+            type="button"
+            className={styles.stemPresetBtn}
+            onClick={() =>
+              void ensureStemsAndRun("🥁 Loop Beat + Bass Pocket", {
+                loopBars: 4,
+                nextLevels: { vocals: 1, drums: 1, bass: 1, other: 1 },
+                nextMuted: { vocals: true, drums: false, bass: false, other: true },
+                nextSoloed: { vocals: false, drums: false, bass: false, other: false },
+              })
+            }
+            style={{
+              background: "linear-gradient(135deg, #f59e0b, #d97706)",
+              color: "#090d16",
+              fontWeight: 900,
+              borderColor: "#fbbf24",
+              padding: "9px 14px",
+            }}
+            title="Loop 4 bars of pure Drums + Bass (no vocals, no horns) right here"
+          >
+            🥁 Loop Beat + Bass Only Here (4 Bars)
+          </button>
+
+          <button
+            type="button"
+            className={styles.stemPresetBtn}
+            onClick={() =>
+              void ensureStemsAndRun("🔊 Loop All 4 Stems Here", {
+                loopBars: 4,
+              })
+            }
+            style={{
+              fontWeight: 800,
+              padding: "9px 14px",
+            }}
+            title="Loop 4 bars at your current position while keeping your current stem faders/mutes"
+          >
+            🔁 Loop Current Mix Here (4 Bars)
+          </button>
+
+          {loopWindow && (
+            <button
+              type="button"
+              className={styles.stemPresetBtn}
+              onClick={() => {
+                const curPos = currentLivePositionSec();
+                setActiveLoopWindow(null);
+                if (isPlayingRef.current) {
+                  startPlaybackFromOffset(curPos, trackTitle, trackBpm, null);
+                }
+                setStemStatus(`🔓 Loop Released — Continuing "${trackTitle}" from ${formatMmSs(curPos)}`);
+                onLog("stem_mixer", `🔓 Released stem loop on "${trackTitle}" at ${formatMmSs(curPos)}`);
+              }}
+              style={{
+                background: "linear-gradient(135deg, #10b981, #059669)",
+                color: "#ffffff",
+                fontWeight: 900,
+                borderColor: "#34d399",
+                padding: "9px 14px",
+              }}
+            >
+              🔓 Release Loop (Keep Playing Song)
+            </button>
+          )}
+        </div>
+
+        {/* Song's Pre-Analyzed Horn/Melody Hooks & Beat Breakdowns from loop-points.json */}
+        {songHooks.length > 0 && (
+          <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid rgba(148, 163, 184, 0.25)" }}>
+            <div style={{ fontSize: "0.78rem", fontWeight: 800, color: "#fde68a", marginBottom: 6 }}>
+              🎯 ANALYZED HORN / MELODY HOOKS &amp; BEAT BREAKDOWNS IN &ldquo;{trackTitle}&rdquo; (CLICK TO JUMP &amp; LOOP NO VOCALS):
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {songHooks.map((h, idx) => {
+                const isMelody = h.isolation === "melody";
+                const label = `${isMelody ? "🎺 Horn/Melody Hook" : "🥁 Beat Groove"} #${idx + 1} (${formatMmSs(h.startSeconds)}–${formatMmSs(h.endSeconds)} · ${h.lengthBars}b)`;
+                const isCurrentHook =
+                  loopWindow !== null &&
+                  Math.abs(loopWindow.startSec - h.startSeconds) < 0.5 &&
+                  Math.abs(loopWindow.endSec - h.endSeconds) < 0.5;
+                return (
+                  <button
+                    key={`${h.startBar}-${h.lengthBars}-${idx}`}
+                    type="button"
+                    className={styles.stemPresetBtn}
+                    onClick={() =>
+                      void ensureStemsAndRun(label, {
+                        explicitLoop: {
+                          startSec: h.startSeconds,
+                          endSec: h.endSeconds,
+                          bars: h.lengthBars,
+                          label,
+                        },
+                        seekSec: h.startSeconds,
+                        nextLevels: { vocals: 1, drums: 1, bass: 1, other: 1 },
+                        nextMuted: { vocals: true, drums: false, bass: false, other: false },
+                        nextSoloed: { vocals: false, drums: false, bass: false, other: false },
+                      })
+                    }
+                    style={{
+                      background: isCurrentHook
+                        ? "linear-gradient(135deg, #f59e0b, #ea580c)"
+                        : isMelody
+                          ? "rgba(6, 182, 212, 0.24)"
+                          : "rgba(245, 158, 11, 0.2)",
+                      color: isCurrentHook ? "#090d16" : "#f8fafc",
+                      borderColor: isCurrentHook ? "#fde047" : isMelody ? "#22d3ee" : "#fbbf24",
+                      fontWeight: 800,
+                      fontSize: "0.79rem",
+                    }}
+                    title={`Jump to ${formatMmSs(h.startSeconds)}–${formatMmSs(h.endSeconds)} (${h.lengthBars} bars), mute Vocals, and loop Horns/Melody + Drums + Bass`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Bar Loop Size, BeatGrid Nudge & Interactive Full-Song Scrub Slider */}
+      <div
+        style={{
+          padding: "10px 14px",
+          marginBottom: 12,
+          borderRadius: 10,
+          background: "rgba(15, 23, 42, 0.65)",
+          border: "1px solid rgba(148, 163, 184, 0.25)",
+        }}
+      >
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 }}>
+            <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#94a3b8" }}>LOOP SIZE:</span>
+            {([1, 2, 4, 8] as const).map((bars) => {
+              const activeBars = loopWindow?.bars === bars;
+              return (
                 <button
+                  key={bars}
                   type="button"
-                  className={styles.vipPlayStemBtn}
-                  onClick={() => void handleSelectAndPlayVip(vip)}
-                  disabled={loadingStems}
-                >
-                  {active && isPlaying ? "⏹ Stop 4-Stems (Playing)" : "🎛️ Play in 4-Stem Mixer"}
-                </button>
-                <button
-                  type="button"
-                  className={styles.vipLoadDeckBtn}
-                  onClick={() => {
-                    stopSources();
-                    onLoadVipToDeck(vip.id);
+                  className={styles.stemPresetBtn}
+                  onClick={() => void ensureStemsAndRun(`Loop ${bars} Bar${bars > 1 ? "s" : ""}`, { loopBars: bars })}
+                  style={{
+                    background: activeBars ? "#06b6d4" : undefined,
+                    color: activeBars ? "#090d16" : undefined,
+                    fontWeight: 800,
+                    padding: "5px 10px",
                   }}
                 >
-                  ▶️ Load to Deck
+                  🔁 {bars} Bar{bars > 1 ? "s" : ""}
                 </button>
-              </div>
-            </div>
-          );
-        })}
+              );
+            })}
+            <button
+              type="button"
+              className={styles.stemPresetBtn}
+              onClick={() => {
+                const curPos = currentLivePositionSec();
+                setActiveLoopWindow(null);
+                if (isPlayingRef.current) {
+                  startPlaybackFromOffset(curPos, trackTitle, trackBpm, null);
+                }
+                setStemStatus(`🔓 Full Song Mode (No Bar Loop) at ${formatMmSs(curPos)}`);
+              }}
+              style={{
+                background: loopWindow === null ? "rgba(52, 211, 153, 0.22)" : undefined,
+                borderColor: loopWindow === null ? "#34d399" : undefined,
+                fontWeight: 800,
+                padding: "5px 10px",
+              }}
+            >
+              🔓 Full Song (No Loop)
+            </button>
+          </div>
+
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 }}>
+            <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#94a3b8" }}>MOVE WINDOW:</span>
+            <button type="button" className={styles.stemPresetBtn} onClick={() => handleShiftBars(-4)} style={{ padding: "5px 9px", fontWeight: 700 }}>
+              ⏪ -4 Bars
+            </button>
+            <button type="button" className={styles.stemPresetBtn} onClick={() => handleShiftBars(-1)} style={{ padding: "5px 9px", fontWeight: 700 }}>
+              ⏪ -1 Bar
+            </button>
+            <button type="button" className={styles.stemPresetBtn} onClick={() => handleShiftBars(1)} style={{ padding: "5px 9px", fontWeight: 700 }}>
+              ⏩ +1 Bar
+            </button>
+            <button type="button" className={styles.stemPresetBtn} onClick={() => handleShiftBars(4)} style={{ padding: "5px 9px", fontWeight: 700 }}>
+              ⏩ +4 Bars
+            </button>
+          </div>
+        </div>
+
+        {/* Full-Song Timeline Scrub Slider */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "#38bdf8", minWidth: 42 }}>
+            {formatMmSs(positionSec)}
+          </span>
+          <input
+            type="range"
+            min={0}
+            max={Math.max(1, durationSec)}
+            step={0.1}
+            value={Math.min(durationSec || 323, positionSec)}
+            onChange={(e) => {
+              const target = parseFloat(e.target.value);
+              offsetSecRef.current = target;
+              setPositionSec(target);
+              if (loopWindowRef.current) {
+                const len = loopWindowRef.current.endSec - loopWindowRef.current.startSec;
+                const newEnd = Math.min(durationSec || 323, target + len);
+                const nextLw = {
+                  startSec: target,
+                  endSec: newEnd,
+                  bars: loopWindowRef.current.bars,
+                  label: `${loopWindowRef.current.bars}-Bar Loop (${formatMmSs(target)}–${formatMmSs(newEnd)})`,
+                };
+                setActiveLoopWindow(nextLw);
+                if (isPlayingRef.current) {
+                  startPlaybackFromOffset(target, trackTitle, trackBpm, nextLw);
+                }
+              } else if (isPlayingRef.current) {
+                startPlaybackFromOffset(target, trackTitle, trackBpm, null);
+              }
+            }}
+            style={{ flex: 1, cursor: "pointer" }}
+            aria-label="Scrub through song in 4-Stem Isolator"
+          />
+          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#94a3b8", minWidth: 42 }}>
+            {formatMmSs(durationSec)}
+          </span>
+        </div>
       </div>
 
       {/* Transport & Preset Bar */}
@@ -2127,7 +2826,7 @@ function LiveStemMixerPanel({
           className={`${styles.stemMasterPlayBtn} ${isPlaying ? styles.stemMasterPlayBtnActive : ""}`}
           onClick={() => void handleTogglePlay()}
         >
-          {loadingStems ? "🛑 CANCEL / STOP STEMS" : isPlaying ? "⏹ STOP / PAUSE 4-STEM MIXER" : "▶ PLAY 4-STEM MIXER"}
+          {loadingStems ? "🛑 CANCEL / LOADING…" : isPlaying ? "⏹ PAUSE 4-STEM ISOLATOR" : `▶ ISOLATE "${trackTitle.slice(0, 22)}" AT ${formatMmSs(positionSec)}`}
         </button>
         <button
           type="button"
@@ -2148,7 +2847,7 @@ function LiveStemMixerPanel({
             <strong>{trackTitle}</strong> · {(trackBpm * stemTempo).toFixed(1)} BPM · Key {trackCamelot}
           </div>
           <div className={styles.stemStatusLine}>
-            {stemStatus} ({formatMmSs(positionSec)} / {formatMmSs(durationSec || 19.94)})
+            {stemStatus} ({formatMmSs(positionSec)} / {formatMmSs(durationSec || 323.13)})
           </div>
         </div>
 
@@ -2178,20 +2877,53 @@ function LiveStemMixerPanel({
 
       {/* 1-Click Stem Isolation Presets */}
       <div className={styles.stemPresetRow}>
-        <span className={styles.stemPresetLabel}>QUICK ISOLATION:</span>
+        <span className={styles.stemPresetLabel}>STEP 2 — QUICK CHANNEL ISOLATION:</span>
         <button
           type="button"
           className={styles.stemPresetBtn}
           onClick={() =>
             applyStemPreset(
-              "🔊 Full 4-Stem Club Mix",
+              "🎺 Horns/Melody + Beat (No Vocals / Instrumental)",
               { vocals: 1, drums: 1, bass: 1, other: 1 },
-              { vocals: false, drums: false, bass: false, other: false },
+              { vocals: true, drums: false, bass: false, other: false },
+              { vocals: false, drums: false, bass: false, other: false }
+            )
+          }
+          style={{
+            background: "rgba(6, 182, 212, 0.25)",
+            borderColor: "#22d3ee",
+            fontWeight: 800,
+          }}
+        >
+          🎺 Horns + Beat (No Vocals)
+        </button>
+        <button
+          type="button"
+          className={styles.stemPresetBtn}
+          onClick={() =>
+            applyStemPreset(
+              "🔥 Drums + Bass (Riddim Only)",
+              { vocals: 1, drums: 1, bass: 1, other: 1 },
+              { vocals: true, drums: false, bass: false, other: true },
               { vocals: false, drums: false, bass: false, other: false }
             )
           }
         >
-          🔊 Full 4-Stem Mix
+          🔥 Drums + Bass (Riddim)
+        </button>
+        <button
+          type="button"
+          className={styles.stemPresetBtn}
+          onClick={() =>
+            applyStemPreset(
+              "🎺 Horns / Melody Solo (Other + Guitar + Keys Only)",
+              { vocals: 1, drums: 1, bass: 1, other: 1 },
+              { vocals: true, drums: true, bass: true, other: false },
+              { vocals: false, drums: false, bass: false, other: true }
+            )
+          }
+        >
+          🎺 Horns / Melody Solo
         </button>
         <button
           type="button"
@@ -2212,42 +2944,28 @@ function LiveStemMixerPanel({
           className={styles.stemPresetBtn}
           onClick={() =>
             applyStemPreset(
-              "🥁 Instrumental Dub (Vocals Muted)",
-              { vocals: 1, drums: 1, bass: 1, other: 1 },
-              { vocals: true, drums: false, bass: false, other: false },
-              { vocals: false, drums: false, bass: false, other: false }
-            )
-          }
-        >
-          🥁 Instrumental (No Vocals)
-        </button>
-        <button
-          type="button"
-          className={styles.stemPresetBtn}
-          onClick={() =>
-            applyStemPreset(
-              "🔥 Drums + Bass Riddim Strip",
-              { vocals: 1, drums: 1, bass: 1, other: 1 },
-              { vocals: true, drums: false, bass: false, other: true },
-              { vocals: false, drums: false, bass: false, other: false }
-            )
-          }
-        >
-          🔥 Drums + Bass (Riddim)
-        </button>
-        <button
-          type="button"
-          className={styles.stemPresetBtn}
-          onClick={() =>
-            applyStemPreset(
-              "🎹 Harmonic Breakdown (Vocals + Melodic Other)",
+              "🎹 Melodic Breakdown (Vocals + Horns/Melody, No Drums)",
               { vocals: 1, drums: 1, bass: 1, other: 1 },
               { vocals: false, drums: true, bass: true, other: false },
               { vocals: false, drums: false, bass: false, other: false }
             )
           }
         >
-          🎹 Melodic Breakdown
+          🎹 Vocals + Horns (No Beat)
+        </button>
+        <button
+          type="button"
+          className={styles.stemPresetBtn}
+          onClick={() =>
+            applyStemPreset(
+              "🔊 Full 4-Stem Club Mix",
+              { vocals: 1, drums: 1, bass: 1, other: 1 },
+              { vocals: false, drums: false, bass: false, other: false },
+              { vocals: false, drums: false, bass: false, other: false }
+            )
+          }
+        >
+          🔊 All 4 Stems On
         </button>
         <button
           type="button"
@@ -2260,7 +2978,7 @@ function LiveStemMixerPanel({
             borderColor: "#ef4444",
           }}
         >
-          🛑 OFF / SILENCE ALL STEMS
+          🛑 OFF / SILENCE STEMS
         </button>
       </div>
 
@@ -2306,7 +3024,11 @@ function LiveStemMixerPanel({
                     const v = parseFloat(e.target.value);
                     const nextLevels = { ...levels, [key]: v };
                     setLevels(nextLevels);
-                    syncGainNodes(nextLevels, muted, soloed);
+                    if (isPlayingRef.current) {
+                      syncGainNodes(nextLevels, muted, soloed);
+                    } else if (!loadingStems) {
+                      void ensureStemsAndRun(`Adjusted ${label} Fader`, { nextLevels });
+                    }
                   }}
                 />
                 <span className={styles.stemFaderPct}>
@@ -2321,7 +3043,11 @@ function LiveStemMixerPanel({
                   onClick={() => {
                     const nextMuted = { ...muted, [key]: !muted[key] };
                     setMuted(nextMuted);
-                    syncGainNodes(levels, nextMuted, soloed);
+                    if (isPlayingRef.current) {
+                      syncGainNodes(levels, nextMuted, soloed);
+                    } else if (!loadingStems) {
+                      void ensureStemsAndRun(`${nextMuted[key] ? "Muted" : "Unmuted"} ${label}`, { nextMuted });
+                    }
                   }}
                   aria-pressed={isMuted}
                 >
@@ -2333,7 +3059,11 @@ function LiveStemMixerPanel({
                   onClick={() => {
                     const nextSolo = { ...soloed, [key]: !soloed[key] };
                     setSoloed(nextSolo);
-                    syncGainNodes(levels, muted, nextSolo);
+                    if (isPlayingRef.current) {
+                      syncGainNodes(levels, muted, nextSolo);
+                    } else if (!loadingStems) {
+                      void ensureStemsAndRun(`${nextSolo[key] ? "Soloed" : "Unsoloed"} ${label}`, { nextSoloed: nextSolo });
+                    }
                   }}
                   aria-pressed={isSolo}
                 >
@@ -2692,6 +3422,12 @@ function BrainPanel({
   hasLiveTrack,
   onSoloActiveDeck,
   onStopAllAudio,
+  activeTrackId = null,
+  activeTrackName = null,
+  activeLoopLabel = null,
+  onTriggerStemLoop,
+  onReleaseStemLoop,
+  onOpenStemStudio,
 }: {
   autopilot: boolean;
   onToggleAutopilot: () => void;
@@ -2722,11 +3458,33 @@ function BrainPanel({
   hasLiveTrack: boolean;
   onSoloActiveDeck: () => void;
   onStopAllAudio: () => void;
+  activeTrackId?: string | null;
+  activeTrackName?: string | null;
+  activeLoopLabel?: string | null;
+  onTriggerStemLoop?: (opts: {
+    isolation: "melody" | "beat";
+    bars: 1 | 2 | 4 | 8;
+    startSeconds?: number;
+    endSeconds?: number;
+    label?: string;
+  }) => void;
+  onReleaseStemLoop?: () => void;
+  onOpenStemStudio?: () => void;
 }) {
   const [showMashupStudio, setShowMashupStudio] = useState(false);
   const [customBeatId, setCustomBeatId] = useState<string>("1lZFsJSa_o6M83ZQlpqOncX_QnY8dnmju");
   const [customVocalId, setCustomVocalId] = useState<string>("1W2ac_DeE9OzHaQVzNtXy3xX-p-Ydzt1B");
   const [customBars, setCustomBars] = useState<16 | 32 | 64>(64);
+
+  const activeSongHooks = useMemo(() => {
+    if (!activeTrackId) return [];
+    const entry = getLoopPoints(CURRENT_LOOP_POINTS, `drive:${activeTrackId}`);
+    if (!entry || !entry.loops) return [];
+    return [...entry.loops].sort((a, b) => {
+      if (a.isolation !== b.isolation) return a.isolation === "melody" ? -1 : 1;
+      return b.score - a.score;
+    });
+  }, [activeTrackId]);
 
   const stemReadyTracks = useMemo(() => {
     const base = crate.length > 0 ? crate : (crateManifestJson as CrateManifestEntry[]);
@@ -2907,6 +3665,191 @@ function BrainPanel({
           🔥 Skip Intro / Drop
         </button>
       </div>
+
+      {/* 🎺 LIVE SONG HORN / BEAT LOOP & HOOK ISOLATOR (Works right on the Booth tab!) */}
+      {onTriggerStemLoop && (
+        <div
+          style={{
+            marginTop: 6,
+            marginBottom: 10,
+            padding: "10px 12px",
+            borderRadius: 10,
+            background: "linear-gradient(135deg, rgba(6, 182, 212, 0.16), rgba(245, 158, 11, 0.12))",
+            border: "1px solid rgba(6, 182, 212, 0.45)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginBottom: 6 }}>
+            <span style={{ fontSize: "0.79rem", fontWeight: 900, color: "#22d3ee", letterSpacing: "0.02em" }}>
+              🎺 LIVE HORN &amp; BEAT LOOPER ({activeTrackName ? musicLabel({ name: activeTrackName }).slice(0, 34) : "Current Song"}) — Strips Vocals &amp; Loops Horns/Beat!
+            </span>
+            {activeLoopLabel && (
+              <span
+                style={{
+                  padding: "2px 9px",
+                  borderRadius: 999,
+                  background: "#f59e0b",
+                  color: "#090d16",
+                  fontWeight: 900,
+                  fontSize: "0.75rem",
+                }}
+              >
+                🔁 LOOPING: {activeLoopLabel}
+              </span>
+            )}
+          </div>
+
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            <button
+              type="button"
+              className={styles.syncButton}
+              disabled={!hasLiveTrack}
+              onClick={() =>
+                onTriggerStemLoop({
+                  isolation: "melody",
+                  bars: 4,
+                  label: "🎺 Horns/Melody + Beat (4 Bars · No Vocals)",
+                })
+              }
+              style={{
+                background: "linear-gradient(135deg, #06b6d4, #0284c7)",
+                color: "#fff",
+                fontWeight: 800,
+                borderColor: "#38bdf8",
+              }}
+              title="Loop 4 bars at your current position with Vocals stripped out so the Horns/Melody + Drums + Bass loop cleanly!"
+            >
+              🎺 Loop Horns + Beat Here (4 Bars)
+            </button>
+
+            <button
+              type="button"
+              className={styles.syncButton}
+              disabled={!hasLiveTrack}
+              onClick={() =>
+                onTriggerStemLoop({
+                  isolation: "beat",
+                  bars: 4,
+                  label: "🥁 Beat + Bass Pocket (4 Bars)",
+                })
+              }
+              style={{
+                background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                color: "#090d16",
+                fontWeight: 800,
+                borderColor: "#fbbf24",
+              }}
+              title="Loop 4 bars of the Beat + Bass groove right at your current position"
+            >
+              🥁 Loop Beat + Bass Here (4 Bars)
+            </button>
+
+            <button
+              type="button"
+              className={styles.secondaryButton}
+              disabled={!hasLiveTrack}
+              onClick={() =>
+                onTriggerStemLoop({
+                  isolation: "melody",
+                  bars: 2,
+                  label: "🎺 Tight 2-Bar Horn/Beat Loop",
+                })
+              }
+              style={{ fontWeight: 700 }}
+              title="Loop 2 bars of Horns/Melody + Beat right here"
+            >
+              🔁 Loop 2 Bars
+            </button>
+
+            <button
+              type="button"
+              className={styles.secondaryButton}
+              disabled={!hasLiveTrack}
+              onClick={() =>
+                onTriggerStemLoop({
+                  isolation: "melody",
+                  bars: 8,
+                  label: "🎺 Full 8-Bar Horn/Beat Loop",
+                })
+              }
+              style={{ fontWeight: 700 }}
+              title="Loop 8 bars of Horns/Melody + Beat right here"
+            >
+              🔁 Loop 8 Bars
+            </button>
+
+            {activeLoopLabel && onReleaseStemLoop && (
+              <button
+                type="button"
+                className={styles.syncButton}
+                onClick={onReleaseStemLoop}
+                style={{
+                  background: "linear-gradient(135deg, #10b981, #059669)",
+                  color: "#fff",
+                  fontWeight: 900,
+                  borderColor: "#34d399",
+                }}
+                title="Release the active loop and continue playing the song seamlessly"
+              >
+                🔓 Release Loop (Keep Playing)
+              </button>
+            )}
+
+            {onOpenStemStudio && (
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={onOpenStemStudio}
+                style={{
+                  fontWeight: 800,
+                  borderColor: "#38bdf8",
+                  color: "#bae6fd",
+                }}
+                title="Open the full 4-Stem Isolator & Loop Studio synced to this exact song and timestamp"
+              >
+                🎛️ Open 4-Stem Faders &amp; Loop Studio →
+              </button>
+            )}
+          </div>
+
+          {activeSongHooks.length > 0 && (
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, marginTop: 8, paddingTop: 6, borderTop: "1px solid rgba(148, 163, 184, 0.22)" }}>
+              <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#fde68a" }}>
+                🎯 SONG HOOKS (1-CLICK JUMP &amp; LOOP NO VOCALS):
+              </span>
+              {activeSongHooks.map((h, idx) => {
+                const isMelody = h.isolation === "melody";
+                const lbl = `${isMelody ? "🎺 Horn/Melody" : "🥁 Beat"} ${formatMmSs(h.startSeconds)}–${formatMmSs(h.endSeconds)} (${h.lengthBars}b)`;
+                return (
+                  <button
+                    key={`${h.startBar}-${idx}`}
+                    type="button"
+                    className={styles.secondaryButton}
+                    onClick={() =>
+                      onTriggerStemLoop({
+                        isolation: h.isolation,
+                        bars: (h.lengthBars === 2 || h.lengthBars === 4 || h.lengthBars === 8 ? h.lengthBars : 4) as 2 | 4 | 8,
+                        startSeconds: h.startSeconds,
+                        endSeconds: h.endSeconds,
+                        label: lbl,
+                      })
+                    }
+                    style={{
+                      fontSize: "0.75rem",
+                      fontWeight: 800,
+                      padding: "4px 9px",
+                      borderColor: isMelody ? "#22d3ee" : "#fbbf24",
+                      color: isMelody ? "#cffafe" : "#fef3c7",
+                    }}
+                    title={`Jump to ${formatMmSs(h.startSeconds)}–${formatMmSs(h.endSeconds)}, strip vocals, and loop ${h.lengthBars} bars`}
+                  >
+                    {lbl}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {showMashupStudio && (
         <div
@@ -3793,16 +4736,8 @@ export default function Home() {
       initialEntries,
       manifestEntries,
     );
-    // Pin the 4 Studio VIP 4-Stem tracks at the very top of the crate
-    const studioOrder = STUDIO_VIP_TRACKS.map((s) => s.id);
-    const restored = [...restoredRaw].sort((a, b) => {
-      const ia = studioOrder.indexOf(a.id as (typeof studioOrder)[number]);
-      const ib = studioOrder.indexOf(b.id as (typeof studioOrder)[number]);
-      if (ia !== -1 && ib !== -1) return ia - ib;
-      if (ia !== -1) return -1;
-      if (ib !== -1) return 1;
-      return 0;
-    });
+    // Exclude synthetic 19-second studio demo clips from the main Crate list
+    const restored = restoredRaw.filter((entry) => !STUDIO_TRACK_IDS.has(entry.id));
     if (restored.length === 0) return;
     setCrate((prev) => {
       const existingIds = new Set(prev.map((t) => t.id));
@@ -5263,7 +6198,10 @@ export default function Home() {
     }
   }
 
+  const [manualLoopLabel, setManualLoopLabel] = useState<string | null>(null);
+
   function cleanupHeldLoopAndRoutine(reason: string) {
+    setManualLoopLabel(null);
     if (!heldLoopRef.current && routineTimersRef.current.length === 0 && !routineIntervalRef.current) return false;
     const handle = heldLoopRef.current;
     heldLoopRef.current = null;
@@ -6495,6 +7433,191 @@ export default function Home() {
       ctrl.markPaused();
       ctrl.deck.allNeutral();
       ctrl.deck.clearAllDucks();
+    }
+  }
+
+  function handleReturnFromStemsToDeck(resumePositionSec: number, resumeTempo: number) {
+    coreRef.current?.ensureContext();
+    stopStemMixerRef.current?.();
+    const targetLabel: DeckLabel | null =
+      deckARef.current.trackId
+        ? "A"
+        : deckBRef.current.trackId
+          ? "B"
+          : null;
+    if (!targetLabel) return;
+    const ctrl = deckByLabel(targetLabel);
+    const otherCtrl = deckByLabel(targetLabel === "A" ? "B" : "A");
+    if (otherCtrl.deck.playing) {
+      otherCtrl.deck.pause();
+      otherCtrl.markPaused();
+      otherCtrl.deck.allNeutral();
+      otherCtrl.deck.clearAllDucks();
+      otherCtrl.deck.setGain(0);
+    }
+    ctrl.setTempoDirectly(Math.min(TEMPO_MAX, Math.max(TEMPO_MIN, resumeTempo)));
+    if (Number.isFinite(resumePositionSec) && resumePositionSec >= 0) {
+      ctrl.deck.seekTo(resumePositionSec);
+    }
+    ctrl.deck.clearAllDucks();
+    ctrl.deck.allNeutral();
+    ctrl.deck.setEq({ low: 0, mid: 0, high: 0 });
+    ctrl.deck.setGain(1);
+    setCrossfade(targetLabel === "A" ? 0 : 1);
+    ctrl.deck.play();
+    ctrl.markPlaying();
+  }
+
+  function handleReleaseManualLoop() {
+    coreRef.current?.ensureContext();
+    if (heldLoopRef.current) {
+      cleanupHeldLoopAndRoutine("🔓 Released horn/beat loop — continuing song");
+    }
+  }
+
+  async function handleManualStemLoop(opts: {
+    isolation: "melody" | "beat";
+    bars: 1 | 2 | 4 | 8;
+    startSeconds?: number;
+    endSeconds?: number;
+    label?: string;
+  }) {
+    coreRef.current?.ensureContext();
+    stopStemMixerRef.current?.();
+    if (migrationRef.current || migrationPreparingRef.current) {
+      teardownMigration();
+    }
+    if (transitionEngineRef.current.isRunning) {
+      transitionEngineRef.current.cancel();
+      setTransitionRunning(false);
+    }
+    if (heldLoopRef.current) {
+      cleanupHeldLoopAndRoutine("switching loop");
+    }
+
+    const liveLabel: DeckLabel | null =
+      getLiveDeckLabel() ??
+      (deckARef.current.trackId ? "A" : deckBRef.current.trackId ? "B" : null);
+    if (!liveLabel) {
+      pushBrainLog("error", "loop: load or play a song first");
+      return;
+    }
+    const liveCtrl = deckByLabel(liveLabel);
+    if (!liveCtrl.deck.audioBuffer) {
+      await liveCtrl.decodeIfNeeded();
+    }
+    if (!liveCtrl.deck.playing) {
+      handleManualPlayDeck(liveLabel);
+      liveCtrl.deck.play();
+      liveCtrl.markPlaying();
+    }
+
+    const liveTrackId = liveCtrl.trackId;
+    const cueKey = cueKeyForLabel(liveLabel);
+    const loopPts = cueKey ? getLoopPoints(CURRENT_LOOP_POINTS, cueKey) : undefined;
+    const rawGrid = effectiveGrid(liveCtrl.tags, liveCtrl.grid);
+    const grid: BeatGridLike =
+      rawGrid && !rawGrid.estimated
+        ? rawGrid
+        : loopPts && loopPts.bpm > 0
+          ? { bpm: loopPts.bpm, anchor: loopPts.anchor ?? 0 }
+          : rawGrid ?? { bpm: 120, anchor: 0 };
+
+    const fromSeconds =
+      opts.startSeconds !== undefined ? opts.startSeconds : liveCtrl.deck.positionSeconds;
+    const plan = planHeldLoop(grid, fromSeconds, liveCtrl.deck.tempo, {
+      captureBars: opts.bars,
+      targetHoldSeconds: 180,
+      halvingStages: 0,
+      isolation: opts.isolation,
+      peakRate: 1.0,
+      resolveToRate: liveCtrl.deck.tempo,
+    });
+    if (!plan) return;
+
+    if (opts.startSeconds !== undefined && opts.endSeconds !== undefined && opts.endSeconds > opts.startSeconds + 0.2) {
+      plan.loopStart = opts.startSeconds;
+      plan.loopEnd = opts.endSeconds;
+      for (const stage of plan.stages) {
+        stage.loopEnd = opts.endSeconds;
+      }
+      liveCtrl.deck.seekTo(opts.startSeconds);
+    }
+
+    const displayLabel =
+      opts.label ??
+      `${opts.isolation === "melody" ? "🎺 Horns + Beat" : "🥁 Beat + Bass"} (${formatMmSs(plan.loopStart)}–${formatMmSs(plan.loopEnd)} · ${opts.bars}b)`;
+
+    const cacheKey = liveTrackId
+      ? `${liveTrackId}:${opts.isolation}:${Math.floor(plan.loopStart)}:${Math.ceil(plan.loopEnd)}`
+      : "";
+    const cachedStem = cacheKey ? stemLoopCacheRef.current.get(cacheKey) ?? null : null;
+
+    // 1. Start the BeatGrid-quantized loop IMMEDIATELY (0ms latency)
+    const controlVersion = performanceControlVersionRef.current;
+    liveCtrl.deck.duck(HELD_LOOP_DUCK_DB, HELD_LOOP_DUCK_RAMP_SECONDS);
+    const initialHandle = fireIsolatedLoopHold(
+      liveCtrl.deck,
+      coreRef.current!,
+      plan,
+      () => {
+        if (heldLoopRef.current === initialHandle) {
+          heldLoopRef.current = null;
+          setManualLoopLabel(null);
+          liveCtrl.deck.unduck(HELD_LOOP_DUCK_RAMP_SECONDS);
+        }
+      },
+      0,
+      cachedStem
+    );
+    if (!initialHandle) {
+      liveCtrl.deck.unduck(HELD_LOOP_DUCK_RAMP_SECONDS);
+      return;
+    }
+    heldLoopRef.current = initialHandle;
+    setManualLoopLabel(cachedStem ? `${displayLabel} [Vocal-Free Stems]` : `${displayLabel} [Isolating Stems…]`);
+    pushBrainLog(
+      "loop",
+      `🔁 Looping ${displayLabel} @ ${formatMmSs(plan.loopStart)}–${formatMmSs(plan.loopEnd)}${cachedStem ? " (100% vocal-free stems)" : " (loading vocal-free stems…)"}`
+    );
+
+    // 2. If the vocal-free stem mix wasn't cached yet, decode it in the background and hot-swap seamlessly!
+    if (!cachedStem && liveTrackId && stemEntryFor(liveTrackId)) {
+      const stemSource = await loadStemBufferForLoop(
+        liveTrackId,
+        opts.isolation,
+        plan.loopStart,
+        plan.loopEnd
+      );
+      if (
+        stemSource &&
+        controlVersion === performanceControlVersionRef.current &&
+        heldLoopRef.current === initialHandle
+      ) {
+        const upgradedHandle = fireIsolatedLoopHold(
+          liveCtrl.deck,
+          coreRef.current!,
+          plan,
+          () => {
+            if (heldLoopRef.current === upgradedHandle) {
+              heldLoopRef.current = null;
+              setManualLoopLabel(null);
+              liveCtrl.deck.unduck(HELD_LOOP_DUCK_RAMP_SECONDS);
+            }
+          },
+          0,
+          stemSource
+        );
+        if (upgradedHandle) {
+          heldLoopRef.current = upgradedHandle;
+          initialHandle.stop();
+          setManualLoopLabel(`${displayLabel} [Vocal-Free Stems]`);
+          pushBrainLog(
+            "loop",
+            `🎺 Vocal-free stems locked in for ${displayLabel} (Drums + Bass + Horns/Melody, Vocals removed!)`
+          );
+        }
+      }
     }
   }
 
@@ -8744,6 +9867,12 @@ export default function Home() {
             hasLiveTrack={anyPlaying || Boolean(deckA.trackName || deckB.trackName)}
             onSoloActiveDeck={handleKillBackgroundAndSoloActiveDeck}
             onStopAllAudio={handleStopAllAudio}
+            activeTrackId={liveDeckNow?.trackId ?? null}
+            activeTrackName={liveDeckNow?.trackName ?? null}
+            activeLoopLabel={manualLoopLabel}
+            onTriggerStemLoop={(opts) => void handleManualStemLoop(opts)}
+            onReleaseStemLoop={handleReleaseManualLoop}
+            onOpenStemStudio={() => setActiveTab("stems")}
           />
 
           <div className={styles.deckGrid}>
@@ -8849,18 +9978,26 @@ export default function Home() {
         />
       )}
 
-      {/* TAB 4: LIVE 4-STEM MIXER & VIP PACKS */}
+      {/* TAB 4: LIVE 4-STEM MIXER & HORN / BEAT LOOP STUDIO */}
       {(activeTab === "stems" || activeTab === "all") && (
         <LiveStemMixerPanel
           core={coreRef.current}
-          activeDeckTrackId={
-            (deckA.isPlaying ? deckA.trackId : deckB.isPlaying ? deckB.trackId : deckA.trackId ?? deckB.trackId) ?? null
-          }
-          activeDeckTrackName={
-            (deckA.isPlaying ? deckA.trackName : deckB.isPlaying ? deckB.trackName : deckA.trackName ?? deckB.trackName) ?? null
-          }
+          activeDeckTrackId={liveDeckNow?.trackId ?? null}
+          activeDeckTrackName={liveDeckNow?.trackName ?? null}
+          activeDeckBpm={liveDeckNow?.tags.bpm ?? null}
+          activeDeckCamelot={liveDeckKey}
+          activeDeckTempo={liveDeckNow?.tempo ?? 1}
+          activeDeckPositionSec={liveDeckNow?.deck.positionSeconds ?? 0}
+          activeDeckDurationSec={liveDeckNow?.deck.duration ?? 0}
+          activeDeckAnchorSec={liveDeckNow?.grid?.anchor ?? 0}
+          crate={crate}
+          trackCacheStore={trackCacheStoreRef.current}
           onLoadVipToDeck={(id) => {
             handleLoadVipToDeck(id);
+            setActiveTab("booth");
+          }}
+          onReturnToDeck={(resumePos, resumeTmp) => {
+            handleReturnFromStemsToDeck(resumePos, resumeTmp);
             setActiveTab("booth");
           }}
           onLog={pushBrainLog}
