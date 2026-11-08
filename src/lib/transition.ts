@@ -475,14 +475,13 @@ export function createTransitionEngine() {
       return { started: true };
     }
 
-    // (b) start toDeck and phase-snap it onto fromDeck. Gain is zeroed on
-    // toDeck (and pinned to full on fromDeck) BEFORE play() reconnects
-    // toDeck's audio graph, so there is no audible glitch from a stale
-    // leftover gain value becoming instantly audible on reconnect.
+    // (b) phase-snap toDeck onto fromDeck and start it. Gain is zeroed on
+    // toDeck (and pinned to full on fromDeck) and low EQ is set BEFORE play()
+    // starts toDeck's AudioBufferSourceNode, so there is no stop/restart click
+    // on frame 0 and no stale leftover gain/EQ becoming audible on start.
     const initialGains = equalPowerGains(0);
     fromDeck.setGain(initialGains.fromGain);
     toDeck.setGain(initialGains.toGain);
-    toDeck.play();
     snapPhase(fromDeck, fromGrid, toDeck, toGrid, sync.tempo, sync.multiplier);
 
     // Every overlapping beatmatch starts with only the outgoing bassline.
@@ -491,6 +490,7 @@ export function createTransitionEngine() {
     if (transition === "bass_swap" || transition === "beatmatch_crossfade") {
       toDeck.setEq({ low: BASS_SWAP_LOW_KILL_DB });
     }
+    toDeck.play();
 
     if (transition === "cut") {
       // Instant switch — no fade. Tempo-sync + phase-snap already happened above.

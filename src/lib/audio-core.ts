@@ -2,7 +2,7 @@
 // used by both Deck A and Deck B so the crossfader can mix their output.
 // Kept UI-free like the rest of src/lib/ (a future Claude "brain" milestone
 // only ever talks to Deck/AudioCore, never to React).
-const MASTER_HEADROOM_GAIN = 0.88; // ~-1.1 dB headroom before brickwall peak limiter
+const MASTER_HEADROOM_GAIN = 0.80; // ~-1.9 dB headroom before transparent safety limiter
 
 export class AudioCore {
   private context: AudioContext | null = null;
@@ -15,11 +15,11 @@ export class AudioCore {
     if (!this.masterLimiter && typeof this.context.createDynamicsCompressor === "function") {
       try {
         const limiter = this.context.createDynamicsCompressor();
-        limiter.threshold.value = -1.2; // brickwall ceiling just below 0 dBFS
-        limiter.knee.value = 3;
-        limiter.ratio.value = 20;
-        limiter.attack.value = 0.001; // 1ms fast transient catch
-        limiter.release.value = 0.08; // 80ms smooth release without pumping
+        limiter.threshold.value = -1.0; // gentle safety ceiling just below 0 dBFS
+        limiter.knee.value = 8; // soft knee avoids hard saturation corners
+        limiter.ratio.value = 6; // moderate ratio avoids sub-cycle wave-shaping on 60Hz bass
+        limiter.attack.value = 0.020; // 20ms attack (>1 full cycle of 50Hz sub-bass) prevents inter-cycle buzz
+        limiter.release.value = 0.25; // 250ms smooth release prevents low-end modulation distortion
         limiter.connect(this.context.destination);
         this.masterLimiter = limiter;
       } catch {

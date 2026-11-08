@@ -411,18 +411,6 @@ const AUTOPILOT_FX_COOLDOWN_SECONDS = 120;
 // Salsa/bachata total suppression is a separate gate entirely and is
 // untouched by this split.
 const AUTOPILOT_PERFORMANCE_COOLDOWN_SECONDS = 10;
-const REGGAETON_SHOWCASE_TRACK_IDS = [
-  "1AqZS9S-R2Jzkq6r-gjtCellJV0TxkGrf", // 1. Daddy Yankee - Gasolina (96 BPM)
-  "13hRsJn3nMqxa4q3dPTbk7migoxXQstOc", // 2. Bad Bunny, Jowell & Randy, Ñengo Flow - Safaera (96 BPM)
-  "1z07ku7vUEVQm6w0WLZ6cWo5sfO61B5yb", // 3. DJ Snake ft. Selena Gomez, Ozuna, Cardi B - Taki Taki (96 BPM)
-  "1gxeziASsQtQcDsxbWGQa_nnArZsvk0cg", // 4. Bad Bunny, Nesi & Ivy Queen - Yo Perreo Sola (Remix) (97 BPM)
-  "1OM_IkZdq0SL7h_YikTJpUiroYw74uKXb", // 5. Karol G, Cris MJ & Ryan Castro - Una Noche En Medellín (Remix) (95.75 BPM)
-  "1qiVM9gp291CzGEG7Oe66Kvn8_IiUpMRO", // 6. Maluma, Don Omar, Wisin - Sin Contrato (Remix) (96 BPM)
-  "14mfDc7jTP1D818KiyjKwzCei0rBdotuM", // 7. J Balvin, Jowell & Randy - Bonita (96 BPM)
-  "1jQvV-YvC_9jo-m_aAQnfaJRPTs0OdMcC", // 8. Nio Garcia, Casper Magico, Bad Bunny, Darell, Ozuna, Nicky Jam - Te Boté (Remix) (96.5 BPM)
-  "1cPP-QcoRZrC1-_2TDDn27egoPy6sWM_g", // 9. Bad Bunny & Don Omar - Pa' Romperla (94 BPM)
-  "1iG_33rFLw_YW0CNubSGLlckvf3NjLZeU", // 10. Don Omar - Dile (94 BPM)
-] as const;
 // Longest a queue/routine/migration can legitimately be "in flight" before the
 // watchdog assumes it died. 90s sample_mix hold + 16s phrase wait + decode, with margin.
 const QUEUE_INFLIGHT_STALE_SECONDS = 150;
@@ -2673,8 +2661,6 @@ function BrainPanel({
   onModelOnlyChange,
   unpricedCalls,
   lastLatency,
-  onStartReggaetonShowcase,
-  showcaseRemaining,
   onSkipNext,
   onTriggerLiveMashup,
   onStartPairMashup,
@@ -2705,8 +2691,6 @@ function BrainPanel({
   onModelOnlyChange: (value: boolean) => void;
   unpricedCalls: number;
   lastLatency: number | null;
-  onStartReggaetonShowcase: () => void;
-  showcaseRemaining: number;
   onSkipNext: (instantCut: boolean) => void;
   onTriggerLiveMashup: (fullSong?: boolean) => void;
   onStartPairMashup: (beatTrackId: string, vocalTrackId: string, bars: 16 | 32 | 64) => void;
@@ -2756,21 +2740,6 @@ function BrainPanel({
           aria-pressed={autopilot}
         >
           {autopilot ? "Autopilot: ON" : "Start autopilot"}
-        </button>
-        <button
-          type="button"
-          className={styles.syncButton}
-          onClick={onStartReggaetonShowcase}
-          style={{
-            background: showcaseRemaining > 0 ? "linear-gradient(135deg, #f97316, #dc2626)" : "linear-gradient(135deg, #ea580c, #b91c1c)",
-            color: "#fff",
-            fontWeight: 700,
-          }}
-          title="Spin up a 10-song High-Energy Reggaeton demo (~45s per song including transitions) with hot mid-track lead-ins, 3-cycle loops + flanger + dub echo + 250 Hz crossover, stem migrations, rolls, scratches, Colombian El Cerebro vocals, and SFX"
-        >
-          {showcaseRemaining > 0
-            ? `🔥 Reggaeton 10-Song Demo (${10 - showcaseRemaining + 1}/10)`
-            : "🔥 10-Song Reggaeton Demo (45s · All Skills)"}
         </button>
         <select
           className={styles.cueSelect}
@@ -3829,26 +3798,6 @@ export default function Home() {
     if (relinked > 0) {
       pushBrainLog("crate", `Updated ${relinked} saved track link${relinked === 1 ? "" : "s"} to the current library`);
     }
-    try {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("demo") === "reggaeton10") {
-        pushBrainLog(
-          "plan",
-          "🔥 10-Song Reggaeton Showcase armed via ?demo=reggaeton10 — click anywhere (or tap the orange 🔥 Demo button) to unlock audio and drop Song 1/10!"
-        );
-        const startOnGesture = () => {
-          window.removeEventListener("pointerdown", startOnGesture);
-          window.removeEventListener("keydown", startOnGesture);
-          if (showcaseQueueRef.current.length === 0 && !autopilotRef.current) {
-            handleStartReggaetonShowcase();
-          }
-        };
-        window.addEventListener("pointerdown", startOnGesture, { once: true });
-        window.addEventListener("keydown", startOnGesture, { once: true });
-      }
-    } catch {
-      // ignore URL parse errors
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -4179,9 +4128,6 @@ export default function Home() {
   // which is what makes the instruction actually bind instead of being
   // prompt guidance the brain can drift past.
   const residencyRequestRef = useRef<ResidencyRequest | null>(null);
-  const showcaseQueueRef = useRef<string[]>([]);
-  const showcaseStepRef = useRef(0);
-  const [showcaseRemaining, setShowcaseRemaining] = useState(0);
   // Deferred re-consult (owner soundcheck fix, 2026-07-26): a brain response
   // can set followUpSeconds ("re-consult me in N seconds") instead of dying
   // silently after a one-command ack — this is the single pending slot for
@@ -4954,6 +4900,8 @@ export default function Home() {
   }
 
   function resolveCommandTrack(trackId: string): CrateTrack | null {
+    const direct = crateRef.current.find((t) => t.id === trackId);
+    if (direct) return direct;
     const trackIndex = Number(trackId);
     if (!Number.isFinite(trackIndex)) return null;
     const mappedId = crateIndexMapRef.current.get(trackIndex);
@@ -5050,113 +4998,8 @@ export default function Home() {
     };
   }
 
-  function tryExecuteShowcaseStep(liveTrackId: string | null): boolean {
-    if (queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current) return false;
-    while (showcaseQueueRef.current.length > 0 && showcaseQueueRef.current[0] === liveTrackId) {
-      showcaseQueueRef.current.shift();
-    }
-    if (showcaseQueueRef.current.length === 0) {
-      setShowcaseRemaining(0);
-      return false;
-    }
-    const nextTrackId = showcaseQueueRef.current.shift()!;
-    setShowcaseRemaining(showcaseQueueRef.current.length);
-    const trackIndex = crateIndexForTrackId(nextTrackId);
-    const target = crateRef.current.find((t) => t.id === nextTrackId);
-    if (trackIndex === null || !target) return false;
-
-    const step = showcaseStepRef.current;
-    showcaseStepRef.current = step + 1;
-    const songNumber = Math.min(10, 10 - showcaseQueueRef.current.length);
-    const liveLabel = getLiveDeckLabel();
-    const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
-    if (!liveCtrl || liveTrackId === null) {
-      pushBrainLog(
-        "plan",
-        `🔥 Reggaeton Demo [${songNumber}/10]: opening on "${musicLabel(target)}" (hot mid-track lead-in + Colombian El Cerebro hype drop)`
-      );
-      executeCommand(
-        {
-          action: "queue",
-          trackId: String(trackIndex),
-          transition: "bass_swap",
-          durationBars: 4,
-          startAt: "auto",
-          say: `Showcase Song ${songNumber}/10: ${musicLabel(target)} (hot mid-track lead-in)`,
-        },
-        "user_chat"
-      );
-      setTimeout(() => {
-        playVocalCategory("drop", false);
-        void fxPlayerRef.current?.play("airhorn");
-      }, 2800);
-      return true;
-    }
-
-    const liveGrid = effectiveGrid(liveCtrl.tags, liveCtrl.grid);
-    const inGrid = (crateManifestJson as CrateManifestEntry[]).find((t) => t.id === target.id)?.grid ?? target.grid;
-    const canStem =
-      stemEntryFor(liveCtrl.trackId) !== null &&
-      stemEntryFor(target.id) !== null &&
-      liveGrid !== null &&
-      !liveGrid.estimated &&
-      inGrid !== null &&
-      Math.abs(liveCtrl.deck.tempo - 1) <= 0.06 &&
-      Math.abs((liveGrid.bpm * liveCtrl.deck.tempo) / inGrid.bpm - 1) <= 0.05;
-
-    if (canStem && step % 2 === 1) {
-      const anchor = step % 4 === 1 ? "out" : "in";
-      pushBrainLog(
-        "plan",
-        `🔥 Reggaeton Demo [${songNumber}/10]: 8-bar stem_migrate (${anchor} anchor, drums→harmony→bass→vocals + riser/drop SFX) into "${musicLabel(target)}"`
-      );
-      executeCommand(
-        {
-          action: "stem_migrate",
-          trackId: String(trackIndex),
-          bars: 8,
-          anchor,
-          say: `Showcase Song ${songNumber}/10: 8-bar stem migration into ${musicLabel(target)}`,
-        },
-        "user_chat"
-      );
-      return true;
-    }
-
-    pushBrainLog(
-      "plan",
-      `🔥 Reggaeton Demo [${songNumber}/10]: 3-cycle sample_mix (flat 0 dB loop + flanger + dub delay throw + Colombian vocal + airhorn + 250 Hz crossover) into "${musicLabel(target)}"`
-    );
-    executeCommand(
-      {
-        action: "routine",
-        routine: "sample_mix",
-        sample: {
-          isolation: "beat",
-          captureBars: 4,
-          holdSeconds: 18,
-          halvings: 0,
-          sweepToBpm: (liveGrid?.bpm ?? liveCtrl.tags.bpm ?? 96) * liveCtrl.deck.tempo,
-        },
-        queue: {
-          trackId: String(trackIndex),
-          transition: "bass_swap",
-          durationBars: 4,
-          startAt: "auto",
-          maskFx: "space_sweep",
-        },
-        say: `Showcase Song ${songNumber}/10: 3-cycle loop + 250 Hz crossover into ${musicLabel(target)}`,
-      },
-      "user_chat"
-    );
-    return true;
-  }
-
   function tryExecuteLocalAutopilotRecipe(liveState: Pick<DjLiveState, "trackId">, recovery = false): boolean {
     if (queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current) return false;
-    if (showcaseQueueRef.current.length > 0 && tryExecuteShowcaseStep(liveState.trackId)) {
-      return true;
-    }
     recovery = recovery || Date.now() < localRecoveryUntilRef.current;
     if (!recovery && modelOnlyRef.current) return false;
     if (!recovery && hasFreshVibeNote() && residencyRequestRef.current === null && genreRequestRef.current === null) return false;
@@ -5700,75 +5543,6 @@ export default function Home() {
     m?.cancel();
   }
 
-  function pickTransitionSeamSfx(
-    fromName: string,
-    toName: string,
-    requestedMaskFx?: string
-  ): {
-    soloVocalCategory?: VocalCategory;
-    soloAccentSfx?: SfxName;
-    preDropSfx?: SfxName;
-    dropSfx?: SfxName;
-    layerSubdrop?: boolean;
-  } | null {
-    if (isPartnerDanceTrackName(fromName) || isPartnerDanceTrackName(toName)) return null;
-    let hash = 0;
-    const key = `${fromName}->${toName}`;
-    for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) | 0;
-    const idx = Math.abs(hash);
-    const vocalChoices: VocalCategory[] = ["tag", "drop", "crowd", "cue_hype", "adlib"];
-    const soloVocalCategory = vocalChoices[idx % vocalChoices.length];
-    const accentChoices: SfxName[] = ["airhorn", "horn_stab", "timbale", "dub_siren", "laser", "gunshot"];
-    const soloAccentSfx = accentChoices[idx % accentChoices.length];
-
-    if (requestedMaskFx && requestedMaskFx !== "space_sweep") {
-      const explicit = requestedMaskFx as SfxName;
-      if (
-        explicit === "rewind" ||
-        explicit === "siren" ||
-        explicit === "dub_siren" ||
-        explicit === "riser" ||
-        explicit === "brake" ||
-        explicit === "timbale" ||
-        explicit === "crash"
-      ) {
-        return { soloVocalCategory, soloAccentSfx, preDropSfx: explicit, dropSfx: "subdrop", layerSubdrop: true };
-      }
-      return { soloVocalCategory, soloAccentSfx, preDropSfx: "rewind", dropSfx: explicit, layerSubdrop: explicit !== "subdrop" };
-    }
-    const toGenre = resolveMusicMetadata({ name: toName }).genre;
-    if (
-      toGenre === "House" ||
-      toGenre === "Trance" ||
-      toGenre === "Melodic Techno" ||
-      toGenre === "Guaracha" ||
-      toGenre === "Dance" ||
-      toGenre === "Dance Pop"
-    ) {
-      const electronicPre: SfxName[] = ["crash", "riser", "rewind", "crash"];
-      const electronicDrop: SfxName[] = ["cryo_jet", "downlifter", "subdrop", "laser", "airhorn"];
-      const dropSfx = electronicDrop[idx % electronicDrop.length];
-      return {
-        soloVocalCategory,
-        soloAccentSfx: idx % 2 === 0 ? "laser" : "cryo_jet",
-        preDropSfx: electronicPre[idx % electronicPre.length],
-        dropSfx,
-        layerSubdrop: dropSfx !== "subdrop",
-      };
-    }
-    // Reggaeton, Cubaton, Latin Pop, Latin Trap, Dembow, Merengue, Cumbia, Hip-Hop, Open-Format:
-    const preChoices: SfxName[] = ["rewind", "timbale", "crash", "dub_siren", "rewind", "timbale", "siren"];
-    const dropChoices: SfxName[] = ["airhorn", "subdrop", "cryo_jet", "horn_stab", "downlifter", "booyaka", "gunshot"];
-    const dropSfx = dropChoices[idx % dropChoices.length];
-    return {
-      soloVocalCategory,
-      soloAccentSfx,
-      preDropSfx: preChoices[idx % preChoices.length],
-      dropSfx,
-      layerSubdrop: dropSfx !== "subdrop" && dropSfx !== "booyaka",
-    };
-  }
-
   /** Prepared performance; all audible handoffs are scheduled before the first fade. */
   async function executeStemMigrateCommand(command: StemMigrateCommand | TranceBreakdownCommand, cooldownReason: ConsultReason) {
     stopStemMixerRef.current?.();
@@ -5892,24 +5666,25 @@ export default function Home() {
       if (!await abortable(idleCtrl.decodeIfNeeded(aborter.signal), aborter.signal)) throw new Error("incoming full-track decode failed");
       check();
       idleCtrl.setTempoDirectly(incomingRate);
-      const windowStart = Math.min(outBasePos, liveCtrl.deck.positionSeconds);
-      outSet = await abortable(loadStemSet(core, outgoingId!, outEntry, fetchBytes, { signal: aborter.signal, fromSeconds: windowStart, toSeconds: windowStart + (STEM_PREPARE_SECONDS + outActiveDuration + 2) * rate, maxDecodedBytes: STEM_MEMORY_BYTES }), aborter.signal);
+      const windowStart = Math.max(0, Math.min(outBasePos, liveCtrl.deck.positionSeconds) - 1);
+      outSet = await abortable(loadStemSet(core, outgoingId!, outEntry, fetchBytes, { signal: aborter.signal, fromSeconds: windowStart, toSeconds: windowStart + (STEM_PREPARE_SECONDS + outActiveDuration + 6) * rate, maxDecodedBytes: STEM_MEMORY_BYTES }), aborter.signal);
       check();
-      inSet = await abortable(loadStemSet(core, item.id, inEntry, fetchBytes, { signal: aborter.signal, fromSeconds: initial.incomingOffset, toSeconds: initial.incomingOffset + (initial.duration + STEM_TAIL_SECONDS) * incomingRate, maxDecodedBytes: STEM_MEMORY_BYTES - outSet.decodedBytes }), aborter.signal);
+      inSet = await abortable(loadStemSet(core, item.id, inEntry, fetchBytes, { signal: aborter.signal, fromSeconds: Math.max(0, initial.incomingOffset - 1), toSeconds: initial.incomingOffset + (initial.duration + STEM_TAIL_SECONDS + 6) * incomingRate, maxDecodedBytes: STEM_MEMORY_BYTES }), aborter.signal);
       check();
       if (deckByLabel(idleLabel).trackId !== item.id) throw new Error("incoming deck changed during preparation");
       const delay = nextPhraseBoundaries(liveGrid, liveCtrl.deck.positionSeconds, rate, 3).find(d => d >= 0.5);
       if (delay === undefined || delay > PHRASE_CANDIDATE_CAP_SECONDS) throw new Error("no nearby phrase boundary");
       let livePosForClock = liveCtrl.deck.positionSeconds;
-      if (isOutLoopingMashup && livePosForClock + (delay + outActiveDuration + 1) * rate > windowStart + Array.from(outSet.stems.values())[0]!.buffer.duration && outLoopSpanSource > 1) {
-        const excess = livePosForClock + (delay + outActiveDuration + 1) * rate - (windowStart + Array.from(outSet.stems.values())[0]!.buffer.duration - 1);
+      const outBufDuration = Array.from(outSet.stems.values())[0]!.buffer.duration;
+      if (isOutLoopingMashup && livePosForClock + (delay + outActiveDuration + 0.5) * rate > outSet.bufferOffset + outBufDuration && outLoopSpanSource > 1) {
+        const excess = livePosForClock + (delay + outActiveDuration + 0.5) * rate - (outSet.bufferOffset + outBufDuration - 0.5);
         const shiftLoops = Math.max(1, Math.ceil(excess / outLoopSpanSource));
-        livePosForClock = Math.max(windowStart, livePosForClock - shiftLoops * outLoopSpanSource);
+        livePosForClock = Math.max(outSet.bufferOffset, livePosForClock - shiftLoops * outLoopSpanSource);
       }
       const clock = stemClock({ now: ctx.currentTime, delay, outgoingPosition: livePosForClock, outgoingRate: rate, outgoingBpm: liveGrid.bpm, incomingBpm: inGrid.bpm, incomingAnchor: inGrid.anchor, beatIn: stemBeatIn, bars: migBars, ...(breakdown ? { dropSeconds: command.dropSeconds } : {}) });
       const covers = (set: StemSet, offset: number, length: number) => offset >= set.bufferOffset && Array.from(set.stems.values()).every(st => offset + length <= set.bufferOffset + st.buffer.duration);
       const outCheckLen = (outActiveDuration + 0.2) * rate;
-      if (!covers(outSet, clock.outgoingOffset, outCheckLen) || !covers(inSet, clock.incomingOffset, (clock.duration + 0.2) * incomingRate) || clock.incomingOffset + (clock.duration + 2) * incomingRate >= idleCtrl.deck.duration) throw new Error("not enough prepared audio for this many bars");
+      if (!covers(outSet, clock.outgoingOffset, outCheckLen) || !covers(inSet, clock.incomingOffset, (clock.duration + 0.2) * incomingRate) || clock.incomingOffset + (clock.duration + 1) * incomingRate >= idleCtrl.deck.duration) throw new Error("not enough prepared audio for this many bars");
       if (breakdown) {
         // An intentional bass gap must retain audible melodic material. Check the
         // retained incoming harmony in one-second windows; unknown/quiet is refused.
@@ -5956,35 +5731,27 @@ export default function Home() {
       });
       for (const stem of Array.from(incoming.stems.values())) stem.gain.gain.setValueAtTime(0, clock.startTime);
       scheduleMigration(ctx, plan, outgoing, incoming, clock.startTime);
+      const mashupTrim = 0.78;
+      const resolveStart = Math.max(clock.startTime + 0.05, clock.endsAt - Math.min(4, migBars * 0.25) * plan.barSeconds);
+      outgoing.setGain.gain.cancelScheduledValues(clock.startTime);
       outgoing.setGain.gain.setValueAtTime(0, clock.startTime);
-      outgoing.setGain.gain.linearRampToValueAtTime(originalGain, clock.startTime + 0.05);
+      outgoing.setGain.gain.linearRampToValueAtTime(originalGain * mashupTrim, clock.startTime + 0.05);
+      outgoing.setGain.gain.setValueAtTime(originalGain * mashupTrim, clock.endsAt);
+      outgoing.setGain.gain.linearRampToValueAtTime(0, clock.endsAt + STEM_HANDOFF_SECONDS);
       liveCtrl.deck.scheduleGainEnvelope([originalGain, 0], 0.05, clock.startTime);
+      incoming.setGain.gain.cancelScheduledValues(clock.startTime);
       incoming.setGain.gain.setValueAtTime(0, clock.startTime);
-      incoming.setGain.gain.linearRampToValueAtTime(1, clock.startTime + 0.05);
-      incoming.setGain.gain.setValueAtTime(1, clock.endsAt);
+      incoming.setGain.gain.linearRampToValueAtTime(mashupTrim, clock.startTime + 0.05);
+      incoming.setGain.gain.setValueAtTime(mashupTrim, resolveStart);
+      incoming.setGain.gain.linearRampToValueAtTime(0.95, clock.endsAt);
       incoming.setGain.gain.linearRampToValueAtTime(0, clock.endsAt + STEM_HANDOFF_SECONDS);
       idleCtrl.deck.scheduleGainEnvelope([0, 1], STEM_HANDOFF_SECONDS, clock.endsAt);
       for (const set of [outgoing, incoming]) for (const stem of Array.from(set.stems.values())) stem.source?.stop(clock.endsAt + STEM_HANDOFF_SECONDS + 0.05);
       setTransitionRunning(true);
       lastPerformanceAtRef.current = Date.now();
-      const seamSfx = pickTransitionSeamSfx(liveCtrl.trackName ?? "", item.name);
-      let seamTimer: ReturnType<typeof setTimeout> | undefined;
-      if (seamSfx?.preDropSfx) {
-        const preDelayMs = Math.max(0, (clock.endsAt - 1.25 - ctx.currentTime) * 1000);
-        seamTimer = setTimeout(() => {
-          if (migrationRef.current?.out !== outgoing) return;
-          void fxPlayerRef.current?.play(seamSfx.preDropSfx!).then((ok) => {
-            if (ok) {
-              recordFxFired();
-              recordLedgerFx(seamSfx.preDropSfx!, "brain");
-            }
-          });
-        }, preDelayMs);
-      }
       let timer: ReturnType<typeof setTimeout>;
       const cancel = () => {
         clearTimeout(timer);
-        if (seamTimer) clearTimeout(seamTimer);
         clearInterval(monitor);
         idleCtrl.deck.pause(); idleCtrl.markPaused();
         liveCtrl.deck.setGain(originalGain);
@@ -6011,21 +5778,12 @@ export default function Home() {
           timer = setTimeout(finish, 100); return;
         }
         migrationRef.current = null;
-        if (seamTimer) clearTimeout(seamTimer);
         clearInterval(monitor);
         disposeStemSet(outgoing); disposeStemSet(incoming);
         liveCtrl.deck.pause(); liveCtrl.markPaused();
         if (idleCtrl.deck.playing) idleCtrl.markPlaying();
         setCrossfade(idleLabel === "A" ? 0 : 1);
         setTransitionRunning(false);
-        if (seamSfx?.dropSfx) {
-          void fxPlayerRef.current?.play(seamSfx.dropSfx).then((ok) => {
-            if (ok) {
-              recordFxFired();
-              recordLedgerFx(seamSfx.dropSfx!, "brain");
-            }
-          });
-        }
         queueInFlightRef.current = false;
         queueInFlightSinceRef.current = null;
         askedForTrackRef.current = null;
@@ -6033,17 +5791,17 @@ export default function Home() {
         setTransitionRecords(appendTransitionRecord({
           when: Date.now(), fromTrack: liveCtrl.trackName ?? outgoingId ?? "unknown", toTrack: item.name,
           bpmFrom: liveGrid.bpm, bpmTo: inGrid.bpm, clamped: false, degraded: false,
-          transitionType: action, durationBars: command.bars, rating: null,
-          note: `Prepared ${action}; incoming cue ${clock.incomingOffset.toFixed(2)}s; rate ${incomingRate.toFixed(5)}`,
+          transitionType: action, durationBars: migBars, rating: null,
+          note: `Prepared ${action} (${migBars} bars); incoming cue ${clock.incomingOffset.toFixed(2)}s; rate ${incomingRate.toFixed(5)}`,
           outPositionSeconds: clock.outgoingOffset,
         }));
         pushBrainLog(action, `completed on the audio clock — "${item.name}"${idleCtrl.deck.playing ? " is live" : " finished while the tab was inactive"}`);
-        if (autopilotRef.current && residencyRequestRef.current === null && showcaseQueueRef.current.length === 0) {
+        if (autopilotRef.current && residencyRequestRef.current === null) {
           scheduleFollowUp(2, cooldownReason);
         }
       };
       timer = setTimeout(finish, Math.max(0, (clock.endsAt + STEM_HANDOFF_SECONDS - ctx.currentTime) * 1000));
-      pushBrainLog(action, `scheduled ${command.bars} bars into "${item.name}", source cue ${clock.incomingOffset.toFixed(2)}s; full-track return prepared`);
+      pushBrainLog(action, `scheduled ${migBars} bars into "${item.name}", source cue ${clock.incomingOffset.toFixed(2)}s; full-track return prepared`);
     } catch (error) {
       if (!committed) {
         aborter.abort(error); // also cancel prefetched compressed stem files
@@ -6365,7 +6123,6 @@ export default function Home() {
       idleCtrl.deck.scheduleGainEnvelope(envelope.incomingGain, remainingSeconds);
       idleCtrl.deck.scheduleEqEnvelope("low", envelope.incomingLowDb, remainingSeconds);
 
-      const seamSfx = pickTransitionSeamSfx(liveCtrl.trackName ?? "", item.name, command.queue.maskFx);
       if (!seamSweepFired) {
         seamSweepFired = true;
         const untilSweepFraction = startProgress >= 0.5 ? 0 : (0.5 - startProgress) / Math.max(0.001, 1 - startProgress);
@@ -6375,19 +6132,6 @@ export default function Home() {
           recordLedgerFx("space_sweep", "brain");
         }, remainingSeconds * untilSweepFraction * 1000);
         routineTimersRef.current.push(seamLogTimer);
-        if (seamSfx?.preDropSfx) {
-          const preDropDelayMs = Math.max(0, (remainingSeconds - 1.25) * 1000);
-          const preDropTimer = setTimeout(() => {
-            if (routineFinished) return;
-            void fxPlayerRef.current?.play(seamSfx.preDropSfx!).then((ok) => {
-              if (ok) {
-                recordFxFired();
-                recordLedgerFx(seamSfx.preDropSfx!, "brain");
-              }
-            });
-          }, preDropDelayMs);
-          routineTimersRef.current.push(preDropTimer);
-        }
       }
     };
 
@@ -6436,18 +6180,15 @@ export default function Home() {
       idleCtrl.deck.setGain(1);
       setCrossfade(idleLabel === "A" ? 0 : 1);
       setTransitionRunning(false);
-      const finishSfx = pickTransitionSeamSfx(liveCtrl.trackName ?? "", item.name, command.queue.maskFx);
-      if (finishSfx?.dropSfx && !dropFxFired) {
+      if (command.queue.maskFx && command.queue.maskFx !== "space_sweep" && !dropFxFired) {
         dropFxFired = true;
-        void fxPlayerRef.current?.play(finishSfx.dropSfx).then((success) => {
+        const explicitFx = command.queue.maskFx;
+        void fxPlayerRef.current?.play(explicitFx).then((success) => {
           if (success) {
             recordFxFired();
-            recordLedgerFx(finishSfx.dropSfx!, "brain");
+            recordLedgerFx(explicitFx, "brain");
           }
         });
-        if (finishSfx.layerSubdrop) {
-          void fxPlayerRef.current?.play("subdrop");
-        }
       }
       startTempoGlide(idleLabel);
       queueInFlightRef.current = false;
@@ -6516,26 +6257,6 @@ export default function Home() {
       pushBrainLog("routine", `sample captured on the phrase - ${plan.handoffStartAtSeconds.toFixed(1)}s solo before the handoff`);
     }, activationGuardDelaySeconds * 1000);
     routineTimersRef.current.push(activationTimer);
-
-    const routineSfx = pickTransitionSeamSfx(liveCtrl.trackName ?? "", item.name, command.queue.maskFx);
-    if (routineSfx?.soloVocalCategory && plan.handoffStartAtSeconds >= 3) {
-      const soloHypeTimer = setTimeout(() => {
-        if (routineFinished || heldLoopRef.current !== handle) return;
-        playVocalCategory(routineSfx.soloVocalCategory!, false);
-      }, (activationDelaySeconds + plan.handoffStartAtSeconds * 0.45) * 1000);
-      routineTimersRef.current.push(soloHypeTimer);
-      const accentSfx = routineSfx.soloAccentSfx ?? "airhorn";
-      const soloAccentTimer = setTimeout(() => {
-        if (routineFinished || heldLoopRef.current !== handle) return;
-        void fxPlayerRef.current?.play(accentSfx).then((ok) => {
-          if (ok) {
-            recordFxFired();
-            recordLedgerFx(accentSfx, "brain");
-          }
-        });
-      }, (activationDelaySeconds + plan.handoffStartAtSeconds * 0.72) * 1000);
-      routineTimersRef.current.push(soloAccentTimer);
-    }
 
     const handoffTimer = setTimeout(() => {
       if (routineFinished || heldLoopRef.current !== handle) return;
@@ -6726,8 +6447,6 @@ export default function Home() {
     queuePreparationRef.current?.abort(new Error("Stopped all audio"));
     queuePreparationRef.current = null;
     pendingGapRef.current = null;
-    showcaseQueueRef.current = [];
-    setShowcaseRemaining(0);
     cancelPendingTransitionStart();
     teardownMigration();
     cleanupHeldLoopAndRoutine("stopped all audio");
@@ -7268,55 +6987,6 @@ export default function Home() {
     pushBrainLog(command.action === "none" ? "none" : "plan", command.action === "none" ? command.say ?? "No move requested" : `${command.action}: ${command.say ?? "requested"}`);
     switch (command.action) {
       case "queue": {
-        const liveLabel = getLiveDeckLabel();
-        const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
-        const liveGrid = liveCtrl ? effectiveGrid(liveCtrl.tags, liveCtrl.grid) : null;
-        const inGrid = requestedTrack ? ((crateManifestJson as CrateManifestEntry[]).find(t => t.id === requestedTrack.id)?.grid ?? requestedTrack.grid) : null;
-        const partnerDance =
-          !performanceMixRef.current &&
-          (isPartnerDanceTrackName(liveCtrl?.trackName ?? "") || isPartnerDanceTrackName(requestedTrack?.name ?? ""));
-        const canPromoteToSampleMix =
-          liveCtrl !== null &&
-          requestedTrack !== null &&
-          !partnerDance &&
-          command.transition !== "gap" &&
-          performanceMoveReady() &&
-          liveGrid !== null &&
-          !liveGrid.estimated &&
-          inGrid !== null &&
-          liveCtrl.tags.bpm !== undefined &&
-          requestedTrack.bpm !== null &&
-          !syncTempo(liveGrid.bpm * liveCtrl.deck.tempo, 1, requestedTrack.bpm).clamped;
-        if (canPromoteToSampleMix) {
-          const shortResidency = residencyRequestRef.current !== null && residencyRequestRef.current.seconds <= 60;
-          pushBrainLog(
-            "routine",
-            `upgrading queue (${command.transition}) -> 3-cycle stem-loop sample_mix (flanger + 250 Hz crossover + dub throw + vocal tag + drop SFX)`
-          );
-          void executeRoutineCommand(
-            {
-              action: "routine",
-              routine: "sample_mix",
-              sample: {
-                isolation: "beat",
-                captureBars: 4,
-                holdSeconds: shortResidency ? 18 : 22,
-                halvings: 0,
-                sweepToBpm: liveGrid.bpm * liveCtrl.deck.tempo,
-              },
-              queue: {
-                trackId: command.trackId,
-                transition: "bass_swap",
-                durationBars: 4,
-                startAt: command.startAt ?? "auto",
-                ...(command.maskFx ? { maskFx: command.maskFx } : {}),
-              },
-              say: command.say,
-            },
-            cooldownReason
-          );
-          return;
-        }
         void executeQueueCommand(command, !isHumanInitiated(cooldownReason));
         return;
       }
@@ -7691,40 +7361,6 @@ export default function Home() {
     if (turningOn) void handleWarmUpFx();
   }
 
-  function handleStartReggaetonShowcase() {
-    coreRef.current?.ensureContext();
-    stopStemMixerRef.current?.();
-    enforceSingleLiveDeck();
-    void handleWarmUpFx();
-    const noteText =
-      "10 songs high energy reggaeton with 45 seconds each total including transitions and use all the skills, efx, loops, stems, hot lead ins";
-    lastVibeNoteRef.current = { text: noteText, at: Date.now() };
-    genreRequestRef.current = { include: ["reggaeton"], exclude: [] };
-    performanceMixRef.current = true;
-    residencyRequestRef.current = { seconds: 45, clamped: false };
-    showcaseQueueRef.current = [...REGGAETON_SHOWCASE_TRACK_IDS];
-    showcaseStepRef.current = 0;
-    setShowcaseRemaining(showcaseQueueRef.current.length);
-    askedForTrackRef.current = null;
-    retryStageRef.current = 0;
-    cancelFollowUp();
-    if (!autopilotRef.current) {
-      autopilotRef.current = true;
-      setAutopilot(true);
-      if (partyStartMsRef.current === null) {
-        partyStartMsRef.current = Date.now();
-        savePartyStartMs(partyStartMsRef.current);
-      }
-    }
-    pushBrainLog(
-      "plan",
-      "🔥 10-Song High-Energy Reggaeton Showcase started — 45s per song including transitions (hot mid-track lead-ins + 3-cycle loops + flanger + dub delay + 250 Hz crossover + stem migrations + rolls + scratches + Colombian El Cerebro vocals + SFX)"
-    );
-    const liveLabel = getLiveDeckLabel();
-    const liveId = liveLabel ? deckByLabel(liveLabel).trackId : null;
-    tryExecuteShowcaseStep(liveId);
-  }
-
   function handleSeekLive(deltaSeconds: number) {
     coreRef.current?.ensureContext();
     const label = getLiveDeckLabel();
@@ -7831,33 +7467,6 @@ export default function Home() {
       enforceSingleLiveDeck(liveLabel);
     }
 
-    // If showcase queue has tracks remaining, advance the showcase immediately
-    if (showcaseQueueRef.current.length > 0) {
-      pushBrainLog(
-        "skip",
-        instantCut
-          ? `⚡ Cut straight to next showcase track (${showcaseQueueRef.current.length} left)`
-          : `⏭️ Mixing into next showcase track now (${showcaseQueueRef.current.length} left)`
-      );
-      if (!instantCut && tryExecuteShowcaseStep(liveId)) {
-        return;
-      }
-      const nextTrackId = showcaseQueueRef.current.shift()!;
-      setShowcaseRemaining(showcaseQueueRef.current.length);
-      executeCommand(
-        {
-          action: "queue",
-          trackId: nextTrackId,
-          startAt: "auto",
-          transition: instantCut ? "cut" : "bass_swap",
-          durationBars: instantCut ? 1 : 4,
-          maskFx: "airhorn",
-        },
-        "user_chat"
-      );
-      return;
-    }
-
     // Standard autopilot / crate skip
     if (!instantCut && liveId && tryExecuteLocalAutopilotRecipe({ trackId: liveId })) {
       pushBrainLog("skip", "⏭️ Manual Next Song — triggered immediate transition into next track");
@@ -7882,6 +7491,7 @@ export default function Home() {
     }
     const chosen = pool[Math.floor(Math.random() * pool.length)] ?? crate[0];
     if (!chosen) return;
+    const chosenIndex = crateIndexForTrackId(chosen.id);
 
     pushBrainLog(
       "skip",
@@ -7892,11 +7502,10 @@ export default function Home() {
     executeCommand(
       {
         action: "queue",
-        trackId: chosen.id,
+        trackId: chosenIndex !== null ? String(chosenIndex) : chosen.id,
         startAt: "auto",
         transition: instantCut ? "cut" : "bass_swap",
         durationBars: instantCut ? 1 : 4,
-        maskFx: instantCut ? "rewind" : "airhorn",
       },
       "user_chat"
     );
@@ -7917,15 +7526,6 @@ export default function Home() {
     // says nothing about residency — "more salsa" must not silently cancel
     // "30 seconds of a song".
     residencyRequestRef.current = applyResidencyParse(residencyRequestRef.current, parseResidencyRequest(trimmed));
-    // If the user asked for a 10-song reggaeton demo/showcase, arm the 10-song showcase queue directly:
-    if (
-      genreRequest?.include.includes("reggaeton") &&
-      (/\b(10|ten)\s+songs?\b/i.test(trimmed) || /\b(demo|showcase|all the skills|all the shit)\b/i.test(trimmed))
-    ) {
-      setChatInput("");
-      handleStartReggaetonShowcase();
-      return;
-    }
     if (!autopilotRef.current && (residencyRequestRef.current || genreRequest || performanceMixRef.current)) {
       autopilotRef.current = true;
       setAutopilot(true);
@@ -8002,9 +7602,10 @@ export default function Home() {
     playVocalCategory(category, true);
   }
 
-  const [autoTurntablistFx, setAutoTurntablistFx] = useState(true);
-  const autoTurntablistFxRef = useRef(true);
+  const [autoTurntablistFx, setAutoTurntablistFx] = useState(false);
+  const autoTurntablistFxRef = useRef(false);
   autoTurntablistFxRef.current = autoTurntablistFx;
+  const mashupPresetCursorRef = useRef(0);
 
   const [stemMixerState, setStemMixerState] = useState<{
     playing: boolean;
@@ -8189,7 +7790,6 @@ export default function Home() {
         transition: isSocial ? "gap" : "bass_swap",
         durationBars: isSocial ? 8 : 4,
         startAt: isSocial ? "beginning" : "auto",
-        ...(isSocial ? {} : { maskFx: "subdrop" }),
         say: `Music Theory Master: mixing into ${musicLabel(target)}`,
       },
       "user_chat"
@@ -8233,7 +7833,16 @@ export default function Home() {
 
     const liveLabel = getLiveDeckLabel();
     const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
-    if (liveLabel && liveCtrl && liveCtrl.trackId === beatResolved.track.id && liveCtrl.deck.playing) {
+    if (
+      liveLabel &&
+      liveCtrl &&
+      liveCtrl.trackId === beatResolved.track.id &&
+      liveCtrl.deck.playing &&
+      !queueInFlightRef.current &&
+      !transitionEngineRef.current.isRunning &&
+      !migrationRef.current &&
+      !heldLoopRef.current
+    ) {
       pushBrainLog(
         "stem_migrate",
         `🔥 Launching ${bars}-Bar Mashup: "${musicLabel(beatResolved.track)}" (8-bar beat pocket) × "${musicLabel(vocalResolved.track)}" (Full Vocals & Hook)`
@@ -8241,7 +7850,7 @@ export default function Home() {
       executeCommand(
         {
           action: "stem_migrate",
-          trackId: String(vocalResolved.index),
+          trackId: vocalResolved.track.id,
           bars,
           anchor: "out",
           say: `🔥 ${bars}-bar mashup: ${musicLabel(beatResolved.track)} × ${musicLabel(vocalResolved.track)}`,
@@ -8251,8 +7860,9 @@ export default function Home() {
       return;
     }
 
-    // Otherwise, cleanly load & start beatTrack on Deck A at its groove pocket, then fire stem_migrate into vocalTrack:
+    // Otherwise, cleanly load & start beatTrack on Deck A right before a phrase boundary, then fire stem_migrate into vocalTrack:
     performanceControlVersionRef.current += 1;
+    const mashupVersion = performanceControlVersionRef.current;
     queuePreparationRef.current?.abort(new Error("Starting 2-song mashup"));
     queuePreparationRef.current = null;
     pendingGapRef.current = null;
@@ -8281,12 +7891,23 @@ export default function Home() {
     void (async () => {
       try {
         const blob = await getTrackForPlayback(beatResolved.track);
+        if (mashupVersion !== performanceControlVersionRef.current) return;
         await anchorCtrl.loadFile(blob, beatResolved.track.name, beatResolved.track.id, beatResolved.track.source);
         if (!(await anchorCtrl.decodeIfNeeded())) throw new Error("decode failed");
+        if (mashupVersion !== performanceControlVersionRef.current) return;
         anchorCtrl.deck.ensureContext();
         const midEntry = midTrackEntryFor(beatResolved.track, 75, 16);
         const beatIn = beatInFor(beatResolved.track.id);
-        const seekTo = midEntry?.seconds ?? beatIn ?? 24;
+        let seekTo = midEntry?.seconds ?? beatIn ?? 24;
+        const beatGrid = effectiveGrid(anchorCtrl.tags, anchorCtrl.grid) ?? beatResolved.track.grid;
+        if (beatGrid && beatGrid.bpm > 0) {
+          // Position ~1.5s before a 16-beat phrase boundary so once stems decode,
+          // the phrase handoff fires almost immediately instead of waiting 15s!
+          const nextPhrases = nextPhraseBoundaries({ anchor: beatGrid.anchor, bpm: beatGrid.bpm }, seekTo, 1, 2);
+          if (nextPhrases.length > 0 && nextPhrases[0] > 2.0) {
+            seekTo = Math.max(0, seekTo + nextPhrases[0] - 1.5);
+          }
+        }
         if (seekTo > 0) anchorCtrl.deck.seekTo(seekTo);
         anchorCtrl.deck.setGain(1);
         setCrossfade(0);
@@ -8294,19 +7915,19 @@ export default function Home() {
         anchorCtrl.markPlaying();
         appendHistory({ trackId: beatResolved.track.id, name: beatResolved.track.name });
 
-        const latestVocalIdx = crateIndexForTrackId(vocalResolved.track.id) ?? vocalResolved.index;
         setTimeout(() => {
+          if (mashupVersion !== performanceControlVersionRef.current) return;
           executeCommand(
             {
               action: "stem_migrate",
-              trackId: String(latestVocalIdx),
+              trackId: vocalResolved.track.id,
               bars,
               anchor: "out",
               say: `🔥 ${bars}-bar mashup: ${musicLabel(beatResolved.track)} × ${musicLabel(vocalResolved.track)}`,
             },
             "user_chat"
           );
-        }, 350);
+        }, 150);
       } catch (err) {
         pushBrainLog(
           "error",
@@ -8326,20 +7947,33 @@ export default function Home() {
     const liveCtrl = liveLabel ? deckByLabel(liveLabel) : null;
     const liveId = liveCtrl?.trackId ?? null;
 
-    if (!liveLabel || !liveCtrl || !liveId) {
-      // No song playing yet: immediately launch the Gym Discovery (if fullSong) or Blame × Bad Bunny preset!
-      const defaultPreset = fullSong ? GOLD_STANDARD_MASHUP_PRESETS[0] : GOLD_STANDARD_MASHUP_PRESETS[1];
-      handleStartPairMashup(defaultPreset.beatTrackId, defaultPreset.vocalTrackId, targetBars);
-      return;
-    }
+    const launchNextGoldPreset = (reason?: string) => {
+      const idx = mashupPresetCursorRef.current % GOLD_STANDARD_MASHUP_PRESETS.length;
+      mashupPresetCursorRef.current += 1;
+      const preset = GOLD_STANDARD_MASHUP_PRESETS[idx];
+      if (reason) {
+        pushBrainLog("stem_migrate", `${reason} — launching ${preset.title} (${targetBars} bars)`);
+      }
+      handleStartPairMashup(preset.beatTrackId, preset.vocalTrackId, targetBars);
+    };
 
-    if (crate.length === 0) {
-      pushBrainLog("error", "mashup: crate is empty — load crate from Drive first");
+    if (!liveLabel || !liveCtrl || !liveId) {
+      launchNextGoldPreset(fullSong ? "🔥 Starting Full-Song 64-Bar Mashup" : "🧬 Starting 16-Bar Live Stem Mashup");
       return;
     }
 
     const liveGrid = effectiveGrid(liveCtrl.tags, liveCtrl.grid);
-    const liveBpm = liveGrid ? liveGrid.bpm * liveCtrl.deck.tempo : (liveCtrl.tags.bpm ?? 100) * liveCtrl.deck.tempo;
+    if (!stemEntryFor(liveId) || !liveGrid || liveGrid.estimated) {
+      launchNextGoldPreset("🧬 Current song lacks 4-stem separation or a real BeatGrid");
+      return;
+    }
+
+    if (crate.length === 0) {
+      launchNextGoldPreset("🧬 Crate not yet hydrated");
+      return;
+    }
+
+    const liveBpm = liveGrid.bpm * liveCtrl.deck.tempo;
     const liveKey = liveCtrl.tags.key ?? crate.find((t) => t.id === liveId)?.key ?? null;
     const recentIds = new Set(historyRef.current.slice(-6).map((r) => r.trackId));
     recentIds.add(liveId);
@@ -8347,10 +7981,11 @@ export default function Home() {
     const eligible = crate.filter((t) => {
       if (t.id === liveId || recentIds.has(t.id)) return false;
       if (!stemEntryFor(t.id)) return false;
+      if (isPartnerDanceTrack(t)) return false;
       const inGrid = (crateManifestJson as CrateManifestEntry[]).find((m) => m.id === t.id)?.grid ?? t.grid;
       if (!inGrid || !inGrid.bpm) return false;
       const ratio = liveBpm / inGrid.bpm;
-      return Math.abs(ratio - 1) <= 0.05;
+      return Math.abs(ratio - 1) <= 0.058;
     });
 
     const ranked = rankCandidatesByMusicTheory(
@@ -8359,8 +7994,8 @@ export default function Home() {
         name: liveCtrl.trackName ?? "",
         bpm: liveBpm,
         key: liveKey,
-        hasStems: stemEntryFor(liveId) !== null,
-        hasRealGrid: Boolean(liveGrid && !liveGrid.estimated),
+        hasStems: true,
+        hasRealGrid: true,
       },
       eligible.map((t) => ({
         id: t.id,
@@ -8375,12 +8010,23 @@ export default function Home() {
 
     const best = ranked[0]?.track ? crate.find((t) => t.id === ranked[0].track.id) : eligible[0];
     if (!best) {
-      pushBrainLog("stem_migrate", "🧬 No close-BPM stem-ready partner found within ±5% BPM — using Next Song mix");
-      handleSkipToNextSong(false);
+      launchNextGoldPreset(`🧬 No stem partner within ±6% of ${liveBpm.toFixed(1)} BPM`);
       return;
     }
-    const idx = crateIndexForTrackId(best.id);
-    if (idx === null) return;
+
+    // Cancel any in-progress transition/routine so the user's explicit Mashup button click executes immediately!
+    if (queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current) {
+      performanceControlVersionRef.current += 1;
+      queuePreparationRef.current?.abort(new Error("User triggered live mashup"));
+      queuePreparationRef.current = null;
+      cancelPendingTransitionStart();
+      teardownMigration();
+      cleanupHeldLoopAndRoutine("switching to live stem mashup");
+      transitionEngineRef.current.cancel();
+      setTransitionRunning(false);
+      queueInFlightRef.current = false;
+      enforceSingleLiveDeck(liveLabel);
+    }
 
     pushBrainLog(
       "stem_migrate",
@@ -8391,7 +8037,7 @@ export default function Home() {
     executeCommand(
       {
         action: "stem_migrate",
-        trackId: String(idx),
+        trackId: best.id,
         bars: targetBars,
         anchor: "out",
         say: `${fullSong ? "🔥 Full-Song 64-bar" : "🧬 Live 16-bar"} stem mashup into ${musicLabel(best)} (${ranked[0]?.harmonic.headline ?? "harmonic lock"})`,
@@ -8677,9 +8323,6 @@ export default function Home() {
       const liveLabel = getLiveDeckLabel();
       if (liveLabel === null) {
         if (crateRef.current.length > 0) {
-          if (showcaseQueueRef.current.length > 0 && tryExecuteShowcaseStep(null)) {
-            return;
-          }
           const asked = askedForTrackRef.current;
           // Review-panel fix: re-ask the opener after the reask window even
           // if we already asked once — a "none" reply or a failed queue
@@ -9002,8 +8645,6 @@ export default function Home() {
             onModelOnlyChange={value => { modelOnlyRef.current = value; setModelOnly(value); }}
             unpricedCalls={unpricedCalls}
             lastLatency={lastLatency}
-            onStartReggaetonShowcase={handleStartReggaetonShowcase}
-            showcaseRemaining={showcaseRemaining}
             onSkipNext={handleSkipToNextSong}
             onTriggerLiveMashup={handleTriggerLiveMashupNow}
             onStartPairMashup={handleStartPairMashup}

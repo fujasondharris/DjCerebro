@@ -52,6 +52,16 @@ const SFX_FILES: Record<SfxName, string> = {
   gunshot: "/sfx/gunshot.mp3",
 };
 
+const SYNTH_SFX_TRIM_DB: Partial<Record<SfxName, number>> = {
+  cryo_jet: -5,
+  crash: -5,
+  downlifter: -5,
+  riser: -4,
+  subdrop: -5,
+  booyaka: -5,
+  gunshot: -4,
+};
+
 function dbToLinear(db: number): number {
   return Math.pow(10, db / 20);
 }
@@ -110,7 +120,8 @@ export class FxPlayer {
         const source = ctx.createBufferSource();
         source.buffer = buffer;
         const gain = ctx.createGain();
-        gain.gain.value = dbToLinear(opts.gainDb ?? -2);
+        const defaultDb = -5.5 + (SYNTH_SFX_TRIM_DB[name] ?? 0);
+        gain.gain.value = dbToLinear(opts.gainDb ?? defaultDb);
         source.connect(gain);
         gain.connect(this.core.master);
         source.onended = () => {

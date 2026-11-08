@@ -1,8 +1,8 @@
 import { STEM_ROLE, type MigrationPlan } from "./stem-migration.ts";
 
-export const STEM_PREPARE_SECONDS = 45;
-export const STEM_TAIL_SECONDS = 1;
-export const STEM_MEMORY_BYTES = 320 * 1024 * 1024;
+export const STEM_PREPARE_SECONDS = 60;
+export const STEM_TAIL_SECONDS = 2;
+export const STEM_MEMORY_BYTES = 512 * 1024 * 1024;
 export const STEM_HANDOFF_SECONDS = 0.12;
 
 /** Bound cache/decode waits as well as fetches; late results cannot resume a canceled job. */

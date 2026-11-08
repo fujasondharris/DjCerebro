@@ -35,7 +35,6 @@ import {
   clampWet,
   delayTimeForBeats,
   getOrBuildReverbImpulseResponse,
-  REVERB_WET_CAP,
 } from "./fx-sends.ts";
 
 const BEATS_PER_BAR = 4;
@@ -568,6 +567,7 @@ export function fireIsolatedLoopHold(
   gainNode.gain.value = 1;
 
   const delayNode = ctx.createDelay(2);
+  delayNode.delayTime.value = Math.min(2, delayTimeForBeats(plan.exitBpm, 1));
   const feedbackGain = ctx.createGain();
   feedbackGain.gain.value = 0;
   const echoWetGain = ctx.createGain();
@@ -577,15 +577,6 @@ export function fireIsolatedLoopHold(
   convolverNode.buffer = getOrBuildReverbImpulseResponse(ctx);
   const reverbWetGain = ctx.createGain();
   reverbWetGain.gain.value = 0;
-
-  // Classic DJM Flanger / Phaser comb-filter path for tweaking the solo loop
-  // on its second repetition before the incoming track enters.
-  const flangerDelayNode = ctx.createDelay(0.05);
-  flangerDelayNode.delayTime.value = 0.002;
-  const flangerFeedbackGain = ctx.createGain();
-  flangerFeedbackGain.gain.value = 0;
-  const flangerWetGain = ctx.createGain();
-  flangerWetGain.gain.value = 0;
 
   lowFilter.connect(midFilter);
   midFilter.connect(highFilter);
@@ -600,11 +591,6 @@ export function fireIsolatedLoopHold(
   hpfFilter.connect(convolverNode);
   convolverNode.connect(reverbWetGain);
   reverbWetGain.connect(core.master);
-  hpfFilter.connect(flangerDelayNode);
-  flangerDelayNode.connect(flangerFeedbackGain);
-  flangerFeedbackGain.connect(flangerDelayNode);
-  flangerDelayNode.connect(flangerWetGain);
-  flangerWetGain.connect(gainNode);
 
   const safeStartDelaySeconds = Number.isFinite(startDelaySeconds) ? Math.max(0, startDelaySeconds) : 0;
   const startTime = ctx.currentTime + safeStartDelaySeconds;
@@ -640,53 +626,10 @@ export function fireIsolatedLoopHold(
       echoWetGain.disconnect();
       convolverNode.disconnect();
       reverbWetGain.disconnect();
-      flangerDelayNode.disconnect();
-      flangerFeedbackGain.disconnect();
-      flangerWetGain.disconnect();
     } catch {
       // best-effort teardown
     }
     return null;
-  }
-
-  // Schedule solo-loop texture (flanger jet sweep + dotted-eighth dub delay throw)
-  // across the second half of the solo hold before the incoming track enters at
-  // handoffStartAtSeconds, keeping gain at 1.0 (full volume) and EQ flat (0 dB).
-  if (plan.handoffStartAtSeconds >= 3) {
-    const tweakStart = startTime + plan.handoffStartAtSeconds * 0.42;
-    const tweakEnd = startTime + Math.max(plan.handoffStartAtSeconds * 0.45, plan.handoffStartAtSeconds - 0.15);
-    const tweakMid = (tweakStart + tweakEnd) / 2;
-    if (tweakEnd > tweakStart + 0.5) {
-      // 1. Flanger / Phaser comb-filter jet sweep (1.5ms -> 5.8ms -> 1.5ms)
-      // Gentle wet/feedback staging + slight dry trim prevents comb-filter peak clipping.
-      gainNode.gain.setValueAtTime(1, tweakStart);
-      gainNode.gain.linearRampToValueAtTime(0.9, tweakStart + 0.25);
-      gainNode.gain.setValueAtTime(0.9, tweakEnd - 0.25);
-      gainNode.gain.linearRampToValueAtTime(1, tweakEnd);
-      flangerWetGain.gain.setValueAtTime(0, tweakStart);
-      flangerWetGain.gain.linearRampToValueAtTime(0.15, tweakStart + 0.25);
-      flangerWetGain.gain.setValueAtTime(0.15, tweakEnd - 0.25);
-      flangerWetGain.gain.linearRampToValueAtTime(0, tweakEnd);
-      flangerFeedbackGain.gain.setValueAtTime(0.24, tweakStart);
-      flangerFeedbackGain.gain.setValueAtTime(0, tweakEnd);
-      flangerDelayNode.delayTime.setValueAtTime(0.0015, tweakStart);
-      flangerDelayNode.delayTime.linearRampToValueAtTime(0.0058, tweakMid);
-      flangerDelayNode.delayTime.linearRampToValueAtTime(0.0015, tweakEnd);
-
-      // 2. Dotted-eighth (3/4-beat) Dub Delay Throw on the final 4 beats of Cycle 2
-      // so the outgoing horn/melody hook echoes into the handoff seam like a DJM-A9 Dub Echo.
-      const beatSec = 60 / Math.max(60, plan.exitBpm);
-      const dubStart = Math.max(tweakMid, tweakEnd - 4 * beatSec);
-      const dottedEighthSec = Math.min(1.8, Math.max(0.12, beatSec * 0.75));
-      delayNode.delayTime.setValueAtTime(dottedEighthSec, dubStart);
-      feedbackGain.gain.setValueAtTime(0, tweakStart);
-      feedbackGain.gain.setValueAtTime(0.36, dubStart);
-      feedbackGain.gain.linearRampToValueAtTime(0, tweakEnd + beatSec);
-      echoWetGain.gain.setValueAtTime(0, tweakStart);
-      echoWetGain.gain.setValueAtTime(0, dubStart);
-      echoWetGain.gain.linearRampToValueAtTime(0.18, tweakEnd - 0.1);
-      echoWetGain.gain.linearRampToValueAtTime(0, tweakEnd + beatSec);
-    }
   }
 
   let stopped = false;
@@ -725,9 +668,6 @@ export function fireIsolatedLoopHold(
       echoWetGain.disconnect();
       convolverNode.disconnect();
       reverbWetGain.disconnect();
-      flangerDelayNode.disconnect();
-      flangerFeedbackGain.disconnect();
-      flangerWetGain.disconnect();
     } catch {
       // best-effort teardown
     }
@@ -792,12 +732,15 @@ export function fireIsolatedLoopHold(
       });
       scheduleEnvelope(hpfFilter.frequency, hpfValues, safeDuration);
 
-      const echoWet = clampWet(fx?.echoWet ?? 0.35);
-      const reverbWet = clampWet(fx?.reverbWet ?? 0.35, REVERB_WET_CAP);
-      const feedback = Math.min(0.85, Math.max(0, fx?.echoFeedback ?? 0.5));
+      const echoWet = clampWet((fx?.echoWet ?? 0.25) * 0.4, 0.14);
+      const reverbWet = clampWet((fx?.reverbWet ?? 0.22) * 0.35, 0.10);
+      const feedback = Math.min(0.28, Math.max(0, (fx?.echoFeedback ?? 0.35) * 0.55));
       const effectiveBpm = fx?.effectiveBpm ?? plan.exitBpm;
       const echoBeats = fx?.echoBeats ?? 1;
-      delayNode.delayTime.setValueAtTime(Math.min(2, delayTimeForBeats(effectiveBpm, echoBeats)), ctx.currentTime);
+      const targetDelay = Math.min(2, delayTimeForBeats(effectiveBpm, echoBeats));
+      if (Math.abs(delayNode.delayTime.value - targetDelay) > 0.02) {
+        delayNode.delayTime.setValueAtTime(targetDelay, ctx.currentTime);
+      }
       scheduleEnvelope(echoWetGain.gain, fxFrames.map(({ wetShape }) => echoWet * wetShape), safeDuration);
       scheduleEnvelope(reverbWetGain.gain, fxFrames.map(({ wetShape }) => reverbWet * wetShape), safeDuration);
       scheduleEnvelope(

@@ -416,6 +416,10 @@ export class Deck {
 
   /** Seek by a relative SOURCE-seconds delta (positive = forward). */
   seekBy(sourceSeconds: number): void {
+    // When already playing on native AudioBufferSourceNode, ignore sub-15ms
+    // corrective micro-nudges (e.g. legacy 1s ScriptProcessor resnap) so we
+    // never stop/restart the live source mid-waveform for negligible drift.
+    if (this.playingState && Math.abs(sourceSeconds) < 0.015) return;
     this.seekTo(this.positionSeconds + sourceSeconds);
   }
 
@@ -424,16 +428,29 @@ export class Deck {
    * curve computed by the caller). Only ever touches logicalGain — the node
    * gets logicalGain * the current duck factor (see gain-math.ts), so this
    * composes correctly with any active duck() instead of overwriting it.
-   * Writes the node value immediately (no ramp), preserving the existing
-   * semantics the ~30Hz transition-engine gain tick and the manual
-   * crossfader slider both depend on.
+   * Uses a short 10ms smoothing target while playing so the ~30Hz transition
+   * tick never creates staircase zipper noise, while setting immediately when
+   * paused or zeroing before play().
    */
   setGain(value: number): void {
     this.gainValue = value;
     if (this.gainNode) {
       const ctx = this.core.ensureContext();
-      this.gainNode.gain.cancelScheduledValues(ctx.currentTime);
-      this.gainNode.gain.setValueAtTime(composeGain(this.gainValue, this.duckState), ctx.currentTime);
+      const now = ctx.currentTime;
+      const target = composeGain(this.gainValue, this.duckState);
+      const param = this.gainNode.gain;
+      if (typeof param.cancelAndHoldAtTime === "function") {
+        param.cancelAndHoldAtTime(now);
+      } else {
+        const current = param.value;
+        param.cancelScheduledValues(now);
+        param.setValueAtTime(current, now);
+      }
+      if (!this.playingState || value <= 0.0001) {
+        param.setValueAtTime(target, now);
+      } else {
+        param.setTargetAtTime(target, now, 0.010);
+      }
     }
   }
 
@@ -518,8 +535,16 @@ export class Deck {
     const filter = band === "low" ? this.lowFilter : band === "mid" ? this.midFilter : this.highFilter;
     if (filter) {
       const ctx = this.core.ensureContext();
-      filter.gain.cancelScheduledValues(ctx.currentTime);
-      filter.gain.setTargetAtTime(clamped, ctx.currentTime, EQ_TIME_CONSTANT_SECONDS);
+      const now = ctx.currentTime;
+      const param = filter.gain;
+      if (typeof param.cancelAndHoldAtTime === "function") {
+        param.cancelAndHoldAtTime(now);
+      } else {
+        const current = param.value;
+        param.cancelScheduledValues(now);
+        param.setValueAtTime(current, now);
+      }
+      param.setTargetAtTime(clamped, now, EQ_TIME_CONSTANT_SECONDS);
     }
   }
 

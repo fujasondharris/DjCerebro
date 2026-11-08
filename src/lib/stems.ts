@@ -377,14 +377,14 @@ export function scheduleMigration(
     }
   }
   // Dual-stem-set overlap headroom: summing two mastered songs' stems at unity
-  // drives peaks ~+4..+6 dB above 0 dBFS. Trim both setGain nodes to 0.84 during
-  // the two-track mashup overlap and ramp incoming setGain to 0.96 over the final
+  // drives peaks ~+4..+6 dB above 0 dBFS. Trim both setGain nodes to 0.78 during
+  // the two-track mashup overlap and ramp incoming setGain to 0.95 over the final
   // 4 bars so the handoff back to the full deck is seamless and unclipped.
   const resolveStart = Math.max(startTime, end - Math.min(4, plan.totalBars * 0.25) * plan.barSeconds);
   outgoing.setGain.gain.cancelScheduledValues(startTime);
-  outgoing.setGain.gain.setValueAtTime(0.84, startTime);
+  outgoing.setGain.gain.setValueAtTime(0.78, startTime);
   incoming.setGain.gain.cancelScheduledValues(startTime);
-  incoming.setGain.gain.setValueAtTime(0.84, startTime);
-  incoming.setGain.gain.setValueAtTime(0.84, resolveStart);
-  incoming.setGain.gain.linearRampToValueAtTime(0.96, end);
+  incoming.setGain.gain.setValueAtTime(0.78, startTime);
+  incoming.setGain.gain.setValueAtTime(0.78, resolveStart);
+  incoming.setGain.gain.linearRampToValueAtTime(0.95, end);
 }
