@@ -1786,10 +1786,21 @@ function LiveStemMixerPanel({
     nextMuted = muted,
     nextSoloed = soloed
   ) => {
+    const ctx = core.ensureContext();
+    const now = ctx.currentTime;
     for (const { key } of STEM_ROLES) {
       const gainNode = gainsRef.current[key];
       if (gainNode) {
-        gainNode.gain.value = computeEffectiveGain(key, nextLevels, nextMuted, nextSoloed);
+        const target = computeEffectiveGain(key, nextLevels, nextMuted, nextSoloed);
+        const param = gainNode.gain;
+        if (typeof param.cancelAndHoldAtTime === "function") {
+          param.cancelAndHoldAtTime(now);
+        } else {
+          const cur = param.value;
+          param.cancelScheduledValues(now);
+          param.setValueAtTime(cur, now);
+        }
+        param.setTargetAtTime(target, now, 0.012);
       }
     }
   };
@@ -1798,26 +1809,34 @@ function LiveStemMixerPanel({
     // Invalidate any in-flight loadStemsForTrack so an async decode never auto-starts after stop!
     loadGenRef.current += 1;
     setLoadingStems(false);
-    for (const { key } of STEM_ROLES) {
-      try {
-        if (gainsRef.current[key]) gainsRef.current[key]!.gain.value = 0;
-        gainsRef.current[key]?.disconnect();
-      } catch {
-        // ignore
-      }
-      try {
-        sourcesRef.current[key]?.stop();
-      } catch {
-        // ignore already stopped
-      }
-      try {
-        sourcesRef.current[key]?.disconnect();
-      } catch {
-        // ignore already disconnected
-      }
-    }
+    const oldSources = sourcesRef.current;
+    const oldGains = gainsRef.current;
     sourcesRef.current = {};
     gainsRef.current = {};
+    const ctx = core.ensureContext();
+    const now = ctx.currentTime;
+    for (const { key } of STEM_ROLES) {
+      const g = oldGains[key];
+      const s = oldSources[key];
+      try {
+        if (g) {
+          if (typeof g.gain.cancelAndHoldAtTime === "function") g.gain.cancelAndHoldAtTime(now);
+          else { const cur = g.gain.value; g.gain.cancelScheduledValues(now); g.gain.setValueAtTime(cur, now); }
+          g.gain.linearRampToValueAtTime(0, now + 0.012);
+        }
+        if (s) {
+          s.stop(now + 0.015);
+        }
+      } catch {
+        try { s?.stop(); } catch { /* ignore */ }
+      }
+    }
+    setTimeout(() => {
+      for (const { key } of STEM_ROLES) {
+        try { oldSources[key]?.disconnect(); } catch { /* ignore */ }
+        try { oldGains[key]?.disconnect(); } catch { /* ignore */ }
+      }
+    }, 25);
     isPlayingRef.current = false;
     setIsPlaying(false);
     onPlayingChange?.(false, trackBpm * stemTempo, trackTitle);
@@ -2000,6 +2019,9 @@ function LiveStemMixerPanel({
     syncGainNodes(nextLevels, nextMuted, nextSoloed);
     setStemStatus(`🎛️ Stem Preset Active: ${presetName}`);
     onLog("stem_mixer", `🎛️ Applied 4-Stem Isolation Preset: ${presetName}`);
+    if (!isPlayingRef.current && !loadingStems) {
+      void handleTogglePlay();
+    }
   }
 
   return (
@@ -2954,7 +2976,11 @@ function BrainPanel({
               <span>🥁 Track A (8-Bar Beat &amp; Bass Groove Anchor):</span>
               <select
                 className={styles.cueSelect}
-                value={customBeatId}
+                value={
+                  stemReadyTracks.some((t) => t.id === customBeatId)
+                    ? customBeatId
+                    : (stemReadyTracks[0]?.id ?? customBeatId)
+                }
                 onChange={(e) => {
                   const nextBeat = e.target.value;
                   setCustomBeatId(nextBeat);
@@ -3004,10 +3030,13 @@ function BrainPanel({
               type="button"
               className={styles.syncButton}
               onClick={() => {
+                const beatId = stemReadyTracks.some((t) => t.id === customBeatId)
+                  ? customBeatId
+                  : (stemReadyTracks[0]?.id ?? customBeatId);
                 const vocalId = compatibleVocalTracks.some((t) => t.id === customVocalId)
                   ? customVocalId
                   : (compatibleVocalTracks[0]?.id ?? customVocalId);
-                onStartPairMashup(customBeatId, vocalId, customBars);
+                onStartPairMashup(beatId, vocalId, customBars);
               }}
               style={{
                 fontWeight: 800,
@@ -5538,6 +5567,7 @@ export default function Home() {
 
   function teardownMigration() {
     migrationPreparingRef.current?.abort();
+    migrationPreparingRef.current = null;
     const m = migrationRef.current;
     migrationRef.current = null;
     m?.cancel();
@@ -5545,11 +5575,10 @@ export default function Home() {
 
   /** Prepared performance; all audible handoffs are scheduled before the first fade. */
   async function executeStemMigrateCommand(command: StemMigrateCommand | TranceBreakdownCommand, cooldownReason: ConsultReason) {
-    stopStemMixerRef.current?.();
     const controlVersion = performanceControlVersionRef.current;
     const action = command.action;
     const liveLabel = getLiveDeckLabel();
-    if (!liveLabel || queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current) {
+    if (!liveLabel || queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current || migrationPreparingRef.current) {
       pushBrainLog(action, "skipped — no free live performance slot");
       return;
     }
@@ -5559,11 +5588,12 @@ export default function Home() {
     const refuse = (reason: string) => {
       pushBrainLog(action, `skipped — ${reason}; current track kept playing`);
       askedForTrackRef.current = null;
-      // A rejected showcase move must not strand playback. Defer until the
-      // preparation finally block releases its reservation; never resurrect a
-      // command canceled by a transport change or autopilot stop.
+      // For autopilot-initiated moves, fall back to a clean handoff so autopilot
+      // does not stall; for explicit human mashup button clicks, do not silently
+      // replace a requested stem mashup with a 4-bar bass_swap.
+      if (isHumanInitiated(cooldownReason)) return;
       queueMicrotask(() => {
-        if (!item || item.id === liveCtrl.trackId || controlVersion !== performanceControlVersionRef.current || !liveCtrl.deck.playing || queueInFlightRef.current) return;
+        if (!item || item.id === liveCtrl.trackId || controlVersion !== performanceControlVersionRef.current || !liveCtrl.deck.playing || queueInFlightRef.current || migrationPreparingRef.current) return;
         pushBrainLog("recovery", `${action} did not run — preparing an ordinary handoff to ${musicLabel(item)}; this is not a stem mix`);
         const fallback = queueForResidency({ action: "queue", trackId: command.trackId,
           transition: isPartnerDanceTrack(item) && !performanceMixRef.current ? "gap" : "bass_swap", durationBars: 4, startAt: "auto" },
@@ -5572,7 +5602,7 @@ export default function Home() {
       });
     };
     if (!item || item.id === liveCtrl.trackId) { refuse("target is missing or already live"); return; }
-    if (!performanceMixRef.current && (isPartnerDanceTrack(crateRef.current.find(t => t.id === liveCtrl.trackId) ?? { name: liveCtrl.trackName ?? "" }) || isPartnerDanceTrack(item))) {
+    if (!performanceMixRef.current && !isHumanInitiated(cooldownReason) && (isPartnerDanceTrack(crateRef.current.find(t => t.id === liveCtrl.trackId) ?? { name: liveCtrl.trackName ?? "" }) || isPartnerDanceTrack(item))) {
       refuse("partner-dance tracks keep their full-song clean ending"); return;
     }
     const outEntry = stemEntryFor(liveCtrl.trackId), inEntry = stemEntryFor(item.id);
@@ -5590,6 +5620,7 @@ export default function Home() {
     if (breakdown && (!isTranceTrackName(liveCtrl.trackName ?? "") || !isTranceTrackName(item.name) || !loopEntry?.drops.some(d => Math.abs(d.atSeconds - command.dropSeconds) < 0.05))) {
       refuse("trance breakdown requires two eligible trance tracks and a current analyzed drop cue"); return;
     }
+    stopStemMixerRef.current?.();
     const core = coreRef.current!, ctx = core.ensureContext();
     const idleLabel: DeckLabel = liveLabel === "A" ? "B" : "A";
     const idleCtrl = deckByLabel(idleLabel);
@@ -5601,11 +5632,13 @@ export default function Home() {
       idleCtrl.deck.clearAllDucks();
     }
     cancelTempoGlide();
+    const originalGain = liveCtrl.deck.gain;
+    const originalEq = liveCtrl.deck.getEq();
     const aborter = new AbortController();
     migrationPreparingRef.current = aborter;
     queueInFlightRef.current = true;
     queueInFlightSinceRef.current = Date.now();
-    const deadline = setTimeout(() => aborter.abort(), STEM_PREPARE_SECONDS * 1000);
+    const deadline = setTimeout(() => aborter.abort(new Error("stem preparation timed out")), STEM_PREPARE_SECONDS * 1000);
     let outSet: StemSet | null = null, inSet: StemSet | null = null;
     let committed = false;
     const check = () => {
@@ -5613,39 +5646,6 @@ export default function Home() {
       if (!liveCtrl.deck.playing || deckByLabel(liveLabel).trackId !== outgoingId || Math.abs(liveCtrl.deck.tempo - rate) > 1e-6) throw new Error("live playback changed during preparation");
     };
     try {
-      const knownInDuration = loopEntry?.durationSeconds ?? (crateManifestJson as CrateManifestEntry[]).find(t => t.id === item.id)?.durationSeconds ?? null;
-      let migBars = command.bars;
-      let stemBeatIn = mashupEntryFor(item, migBars)?.seconds ?? midTrackEntryFor(item, migBars >= 32 ? 55 : 95, 32)?.seconds ?? beatInFor(item.id) ?? 0;
-      if (knownInDuration && !breakdown) {
-        if (migBars >= 32 && stemBeatIn + ((migBars * 240 / effectiveBpm) + 2) * incomingRate >= knownInDuration) {
-          // For a Full-Song Mashup (32–64 bars), prefer moving the incoming entry earlier (to beatIn or 12s) BEFORE shrinking bars!
-          const earlyCue = Math.max(8, Math.min(beatInFor(item.id) ?? 12, knownInDuration - ((migBars * 240 / effectiveBpm) + 4) * incomingRate));
-          if (earlyCue + ((migBars * 240 / effectiveBpm) + 2) * incomingRate < knownInDuration) {
-            stemBeatIn = earlyCue;
-          }
-        }
-        while (migBars > 8 && stemBeatIn + ((migBars * 240 / effectiveBpm) + 2) * incomingRate >= knownInDuration) {
-          migBars = migBars > 48 ? 48 : migBars > 32 ? 32 : migBars > 24 ? 24 : migBars > 16 ? 16 : 8;
-        }
-        if (stemBeatIn + ((migBars * 240 / effectiveBpm) + 2) * incomingRate >= knownInDuration) {
-          stemBeatIn = Math.max(0, Math.min(beatInFor(item.id) ?? 0, knownInDuration - ((migBars * 240 / effectiveBpm) + 4) * incomingRate));
-        }
-      }
-      const anchorLoopBars = migBars >= 16 ? 8 : 4;
-      const isOutLoopingMashup = !breakdown && command.anchor === "out";
-      const outLoopSpanSource = anchorLoopBars * (240 / liveGrid.bpm);
-      // When outgoing drums/bass/harmony loop over 8 bars, we only need 10 bars of outgoing audio after the phrase start!
-      const outActiveBars = isOutLoopingMashup ? Math.min(migBars, migBars >= 32 ? 10 : Math.max(10, Math.ceil(migBars * 0.35))) : migBars;
-      const outActiveDuration = outActiveBars * (240 / effectiveBpm);
-      let outBasePos = liveCtrl.deck.positionSeconds;
-      const knownOutDuration = liveCtrl.deck.duration > 0 ? liveCtrl.deck.duration : ((crateManifestJson as CrateManifestEntry[]).find(t => t.id === outgoingId)?.durationSeconds ?? 180);
-      if (isOutLoopingMashup && outBasePos + (STEM_PREPARE_SECONDS + outActiveDuration + 4) * rate >= knownOutDuration && outLoopSpanSource > 1) {
-        const shortfall = outBasePos + (STEM_PREPARE_SECONDS + outActiveDuration + 4) * rate - Math.max(40, knownOutDuration - 8);
-        const shiftLoops = Math.max(1, Math.ceil(shortfall / outLoopSpanSource));
-        outBasePos = Math.max(liveGrid.anchor, outBasePos - shiftLoops * outLoopSpanSource);
-      }
-      const initial = stemClock({ now: ctx.currentTime, delay: 0, outgoingPosition: outBasePos, outgoingRate: rate, outgoingBpm: liveGrid.bpm, incomingBpm: inGrid.bpm, incomingAnchor: inGrid.anchor, beatIn: stemBeatIn, bars: migBars, ...(breakdown ? { dropSeconds: command.dropSeconds } : {}) });
-      pushBrainLog(action, `preparing ${migBars >= 32 ? `Full-Song Mashup (${migBars} bars)` : `${migBars}-bar stem mashup`} for "${item.name}"…`);
       const fetchBytes = async (id: string) => {
         const stemBlob = await getTrackBlob(id, async () => {
           const asset = resolveAudioAssetUrl(id);
@@ -5660,31 +5660,87 @@ export default function Home() {
       for (const stemId of [...Object.values(outEntry.stems), ...Object.values(inEntry.stems)]) {
         if (stemId) void fetchBytes(stemId).catch(() => {});
       }
+      pushBrainLog(action, `preparing ${command.bars >= 32 ? `Full-Song Mashup (${command.bars} bars)` : `${command.bars}-bar stem mashup`} for "${item.name}"…`);
       const blob = await abortable(getTrackForPlayback(item, aborter.signal), aborter.signal);
       check();
       await idleCtrl.loadFile(blob, item.name, item.id, item.source);
       if (!await abortable(idleCtrl.decodeIfNeeded(aborter.signal), aborter.signal)) throw new Error("incoming full-track decode failed");
       check();
       idleCtrl.setTempoDirectly(incomingRate);
+
+      // Now that idleCtrl.deck is decoded, we have the exact incoming audio duration!
+      const knownInDuration = idleCtrl.deck.duration > 0
+        ? idleCtrl.deck.duration
+        : (loopEntry?.durationSeconds ?? (crateManifestJson as CrateManifestEntry[]).find(t => t.id === item.id)?.durationSeconds ?? null);
+      let migBars = command.bars;
+      const requestedBars = command.bars;
+      let stemBeatIn = mashupEntryFor(item, migBars)?.seconds ?? midTrackEntryFor(item, migBars >= 32 ? 55 : 95, 32)?.seconds ?? beatInFor(item.id) ?? 0;
+      const sourceBarIn = 240 / inGrid.bpm;
+      const snappedEntryFor = (cueSec: number) =>
+        inGrid.anchor + Math.max(0, Math.ceil((Math.max(0, cueSec, inGrid.anchor) - inGrid.anchor) / sourceBarIn - 1e-7)) * sourceBarIn;
+      const fitsIncoming = (cueSec: number, barsToTest: number) => {
+        if (!knownInDuration) return true;
+        const entrySec = snappedEntryFor(cueSec);
+        const neededSec = ((barsToTest * 240) / effectiveBpm + STEM_TAIL_SECONDS + 1.5) * incomingRate;
+        return entrySec + neededSec < knownInDuration;
+      };
+      if (knownInDuration && !breakdown) {
+        if (!fitsIncoming(stemBeatIn, migBars)) {
+          // Prefer moving the incoming entry earlier (down to beatIn or the first grid bar) so all 64 bars fit!
+          const maxEntry = Math.max(inGrid.anchor, knownInDuration - ((migBars * 240) / effectiveBpm + STEM_TAIL_SECONDS + 2.5) * incomingRate - sourceBarIn);
+          const candidateCue = Math.max(inGrid.anchor, Math.min(beatInFor(item.id) ?? inGrid.anchor, maxEntry));
+          if (fitsIncoming(candidateCue, migBars)) {
+            stemBeatIn = candidateCue;
+          } else if (fitsIncoming(inGrid.anchor, migBars)) {
+            stemBeatIn = inGrid.anchor;
+          } else {
+            stemBeatIn = inGrid.anchor;
+            while (migBars > 8 && !fitsIncoming(stemBeatIn, migBars)) {
+              migBars = migBars > 56 ? 56 : migBars > 48 ? 48 : migBars > 40 ? 40 : migBars > 32 ? 32 : migBars > 24 ? 24 : migBars > 16 ? 16 : 8;
+            }
+            if (migBars < requestedBars) {
+              pushBrainLog(action, `fitted mashup to ${migBars} bars (full available length of "${item.name}")`);
+            }
+          }
+        }
+      }
+      const anchorLoopBars = migBars >= 16 ? 8 : 4;
+      const isOutLoopingMashup = !breakdown && command.anchor === "out";
+      const outLoopSpanSource = anchorLoopBars * (240 / liveGrid.bpm);
+      // When outgoing drums/bass/harmony loop over 8 bars, we only need 10 bars of outgoing audio after the phrase start!
+      const outActiveBars = isOutLoopingMashup ? Math.min(migBars, migBars >= 32 ? 10 : Math.max(10, Math.ceil(migBars * 0.35))) : migBars;
+      const outActiveDuration = outActiveBars * (240 / effectiveBpm);
+      let outBasePos = liveCtrl.deck.positionSeconds;
+      const knownOutDuration = liveCtrl.deck.duration > 0 ? liveCtrl.deck.duration : ((crateManifestJson as CrateManifestEntry[]).find(t => t.id === outgoingId)?.durationSeconds ?? 180);
+      const outWindowNeededSource = (28 + outActiveDuration + 6) * rate;
+      if (isOutLoopingMashup && outBasePos + outWindowNeededSource >= knownOutDuration && outLoopSpanSource > 1) {
+        const shortfall = outBasePos + outWindowNeededSource - Math.max(30, knownOutDuration - 4);
+        const shiftLoops = Math.max(1, Math.ceil(shortfall / outLoopSpanSource));
+        outBasePos = Math.max(liveGrid.anchor, outBasePos - shiftLoops * outLoopSpanSource);
+      }
+      const initial = stemClock({ now: ctx.currentTime, delay: 0, outgoingPosition: outBasePos, outgoingRate: rate, outgoingBpm: liveGrid.bpm, incomingBpm: inGrid.bpm, incomingAnchor: inGrid.anchor, beatIn: stemBeatIn, bars: migBars, ...(breakdown ? { dropSeconds: command.dropSeconds } : {}) });
       const windowStart = Math.max(0, Math.min(outBasePos, liveCtrl.deck.positionSeconds) - 1);
-      outSet = await abortable(loadStemSet(core, outgoingId!, outEntry, fetchBytes, { signal: aborter.signal, fromSeconds: windowStart, toSeconds: windowStart + (STEM_PREPARE_SECONDS + outActiveDuration + 6) * rate, maxDecodedBytes: STEM_MEMORY_BYTES }), aborter.signal);
+      outSet = await abortable(loadStemSet(core, outgoingId!, outEntry, fetchBytes, { signal: aborter.signal, fromSeconds: windowStart, toSeconds: windowStart + Math.max(outWindowNeededSource, (STEM_PREPARE_SECONDS + outActiveDuration + 6) * rate), maxDecodedBytes: STEM_MEMORY_BYTES }), aborter.signal);
       check();
       inSet = await abortable(loadStemSet(core, item.id, inEntry, fetchBytes, { signal: aborter.signal, fromSeconds: Math.max(0, initial.incomingOffset - 1), toSeconds: initial.incomingOffset + (initial.duration + STEM_TAIL_SECONDS + 6) * incomingRate, maxDecodedBytes: STEM_MEMORY_BYTES }), aborter.signal);
       check();
       if (deckByLabel(idleLabel).trackId !== item.id) throw new Error("incoming deck changed during preparation");
-      const delay = nextPhraseBoundaries(liveGrid, liveCtrl.deck.positionSeconds, rate, 3).find(d => d >= 0.5);
-      if (delay === undefined || delay > PHRASE_CANDIDATE_CAP_SECONDS) throw new Error("no nearby phrase boundary");
+      const boundaries = nextPhraseBoundaries(liveGrid, liveCtrl.deck.positionSeconds, rate, 3);
+      const delay = boundaries.find(d => d >= 0.4 && d <= PHRASE_CANDIDATE_CAP_SECONDS) ?? boundaries.find(d => d >= 0.25) ?? 0.5;
       let livePosForClock = liveCtrl.deck.positionSeconds;
-      const outBufDuration = Array.from(outSet.stems.values())[0]!.buffer.duration;
-      if (isOutLoopingMashup && livePosForClock + (delay + outActiveDuration + 0.5) * rate > outSet.bufferOffset + outBufDuration && outLoopSpanSource > 1) {
-        const excess = livePosForClock + (delay + outActiveDuration + 0.5) * rate - (outSet.bufferOffset + outBufDuration - 0.5);
+      const outMinBufDuration = Math.min(...Array.from(outSet.stems.values()).map(st => st.buffer.duration));
+      const outCheckLen = (outActiveDuration + 0.2) * rate;
+      if (isOutLoopingMashup && livePosForClock + delay * rate + outCheckLen > outSet.bufferOffset + outMinBufDuration && outLoopSpanSource > 1) {
+        const excess = (livePosForClock + delay * rate + outCheckLen) - (outSet.bufferOffset + outMinBufDuration - 0.2);
         const shiftLoops = Math.max(1, Math.ceil(excess / outLoopSpanSource));
         livePosForClock = Math.max(outSet.bufferOffset, livePosForClock - shiftLoops * outLoopSpanSource);
+        if (livePosForClock + delay * rate + outCheckLen > outSet.bufferOffset + outMinBufDuration) {
+          livePosForClock = Math.max(outSet.bufferOffset, outSet.bufferOffset + outMinBufDuration - outCheckLen - delay * rate - 0.1);
+        }
       }
       const clock = stemClock({ now: ctx.currentTime, delay, outgoingPosition: livePosForClock, outgoingRate: rate, outgoingBpm: liveGrid.bpm, incomingBpm: inGrid.bpm, incomingAnchor: inGrid.anchor, beatIn: stemBeatIn, bars: migBars, ...(breakdown ? { dropSeconds: command.dropSeconds } : {}) });
-      const covers = (set: StemSet, offset: number, length: number) => offset >= set.bufferOffset && Array.from(set.stems.values()).every(st => offset + length <= set.bufferOffset + st.buffer.duration);
-      const outCheckLen = (outActiveDuration + 0.2) * rate;
-      if (!covers(outSet, clock.outgoingOffset, outCheckLen) || !covers(inSet, clock.incomingOffset, (clock.duration + 0.2) * incomingRate) || clock.incomingOffset + (clock.duration + 1) * incomingRate >= idleCtrl.deck.duration) throw new Error("not enough prepared audio for this many bars");
+      const covers = (set: StemSet, offset: number, length: number) => offset >= set.bufferOffset - 1e-3 && Array.from(set.stems.values()).every(st => offset + length <= set.bufferOffset + st.buffer.duration + 0.05);
+      if (!covers(outSet, clock.outgoingOffset, outCheckLen) || !covers(inSet, clock.incomingOffset, (clock.duration + 0.1) * incomingRate) || clock.incomingOffset + (clock.duration + 0.25) * incomingRate >= idleCtrl.deck.duration) throw new Error("not enough prepared audio for this many bars");
       if (breakdown) {
         // An intentional bass gap must retain audible melodic material. Check the
         // retained incoming harmony in one-second windows; unknown/quiet is refused.
@@ -5708,11 +5764,10 @@ export default function Home() {
       if (plan.warnings.some(w => w.includes("BASS DROPS TO ZERO"))) throw new Error("no continuous bass carrier for this migration");
       for (const warning of plan.warnings) pushBrainLog(action, warning);
       const outgoing = outSet, incoming = inSet;
-      const originalGain = liveCtrl.deck.gain;
-      const originalEq = liveCtrl.deck.getEq();
       if (Object.values(originalEq).some(db => Math.abs(db) > 0.1)) {
         liveCtrl.deck.setEq({ low: 0, mid: 0, high: 0 });
       }
+      liveCtrl.deck.allNeutral();
       idleCtrl.deck.allNeutral();
       idleCtrl.deck.setGain(0);
       // Reserve the full-mix return FIRST. Failure cannot mute the live track.
@@ -5732,21 +5787,21 @@ export default function Home() {
       for (const stem of Array.from(incoming.stems.values())) stem.gain.gain.setValueAtTime(0, clock.startTime);
       scheduleMigration(ctx, plan, outgoing, incoming, clock.startTime);
       const mashupTrim = 0.78;
-      const resolveStart = Math.max(clock.startTime + 0.05, clock.endsAt - Math.min(4, migBars * 0.25) * plan.barSeconds);
+      const resolveStart = Math.max(clock.startTime + 0.02, clock.endsAt - Math.min(4, migBars * 0.25) * plan.barSeconds);
       outgoing.setGain.gain.cancelScheduledValues(clock.startTime);
       outgoing.setGain.gain.setValueAtTime(0, clock.startTime);
-      outgoing.setGain.gain.linearRampToValueAtTime(originalGain * mashupTrim, clock.startTime + 0.05);
+      outgoing.setGain.gain.linearRampToValueAtTime(originalGain * mashupTrim, clock.startTime + 0.015);
       outgoing.setGain.gain.setValueAtTime(originalGain * mashupTrim, clock.endsAt);
       outgoing.setGain.gain.linearRampToValueAtTime(0, clock.endsAt + STEM_HANDOFF_SECONDS);
-      liveCtrl.deck.scheduleGainEnvelope([originalGain, 0], 0.05, clock.startTime);
+      liveCtrl.deck.scheduleGainEnvelope([originalGain, 0], 0.015, clock.startTime);
       incoming.setGain.gain.cancelScheduledValues(clock.startTime);
       incoming.setGain.gain.setValueAtTime(0, clock.startTime);
-      incoming.setGain.gain.linearRampToValueAtTime(mashupTrim, clock.startTime + 0.05);
+      incoming.setGain.gain.linearRampToValueAtTime(mashupTrim, clock.startTime + 0.015);
       incoming.setGain.gain.setValueAtTime(mashupTrim, resolveStart);
       incoming.setGain.gain.linearRampToValueAtTime(0.95, clock.endsAt);
       incoming.setGain.gain.linearRampToValueAtTime(0, clock.endsAt + STEM_HANDOFF_SECONDS);
       idleCtrl.deck.scheduleGainEnvelope([0, 1], STEM_HANDOFF_SECONDS, clock.endsAt);
-      for (const set of [outgoing, incoming]) for (const stem of Array.from(set.stems.values())) stem.source?.stop(clock.endsAt + STEM_HANDOFF_SECONDS + 0.05);
+      for (const set of [outgoing, incoming]) for (const stem of Array.from(set.stems.values())) stem.source?.stop(clock.endsAt + STEM_HANDOFF_SECONDS + 0.02);
       setTransitionRunning(true);
       lastPerformanceAtRef.current = Date.now();
       let timer: ReturnType<typeof setTimeout>;
@@ -5754,8 +5809,21 @@ export default function Home() {
         clearTimeout(timer);
         clearInterval(monitor);
         idleCtrl.deck.pause(); idleCtrl.markPaused();
+        liveCtrl.deck.setEq(originalEq);
         liveCtrl.deck.setGain(originalGain);
-        disposeStemSet(outgoing); disposeStemSet(incoming);
+        const cancelNow = ctx.currentTime;
+        for (const set of [outgoing, incoming]) {
+          try {
+            const p = set.setGain.gain;
+            if (typeof p.cancelAndHoldAtTime === "function") p.cancelAndHoldAtTime(cancelNow);
+            else { const cur = p.value; p.cancelScheduledValues(cancelNow); p.setValueAtTime(cur, cancelNow); }
+            p.linearRampToValueAtTime(0, cancelNow + 0.020);
+          } catch { /* ignore */ }
+        }
+        setTimeout(() => {
+          disposeStemSet(outgoing);
+          disposeStemSet(incoming);
+        }, 30);
         queueInFlightRef.current = false;
         queueInFlightSinceRef.current = null;
         askedForTrackRef.current = null;
@@ -5781,7 +5849,11 @@ export default function Home() {
         clearInterval(monitor);
         disposeStemSet(outgoing); disposeStemSet(incoming);
         liveCtrl.deck.pause(); liveCtrl.markPaused();
-        if (idleCtrl.deck.playing) idleCtrl.markPlaying();
+        liveCtrl.deck.setGain(1);
+        if (idleCtrl.deck.playing) {
+          idleCtrl.markPlaying();
+          startTempoGlide(idleLabel);
+        }
         setCrossfade(idleLabel === "A" ? 0 : 1);
         setTransitionRunning(false);
         queueInFlightRef.current = false;
@@ -5808,13 +5880,19 @@ export default function Home() {
         if (outSet) disposeStemSet(outSet);
         if (inSet) disposeStemSet(inSet);
         idleCtrl.deck.pause(); idleCtrl.markPaused();
-        liveCtrl.deck.setGain(1);
+        liveCtrl.deck.setEq(originalEq);
+        liveCtrl.deck.setGain(originalGain);
         refuse(error instanceof Error ? error.message : "preparation failed");
       }
     } finally {
       clearTimeout(deadline);
-      if (migrationPreparingRef.current === aborter) migrationPreparingRef.current = null;
-      if (!committed) { queueInFlightRef.current = false; queueInFlightSinceRef.current = null; }
+      if (migrationPreparingRef.current === aborter) {
+        migrationPreparingRef.current = null;
+        if (!committed) {
+          queueInFlightRef.current = false;
+          queueInFlightSinceRef.current = null;
+        }
+      }
     }
   }
 
@@ -6774,7 +6852,7 @@ export default function Home() {
         loopBlend: loopBlendPlan ?? undefined,
         onLoopBlendStart: () => {
           if (!loopBlendPlan) return;
-          loopOverlayStop = fireLoopOverlay(liveCtrl.deck, coreRef.current!, loopBlendPlan.loopStart, loopBlendPlan.loopEnd);
+          loopOverlayStop = fireLoopOverlay(liveCtrl.deck, coreRef.current!, loopBlendPlan.loopStart, loopBlendPlan.loopEnd, loopBlendPlan.totalDurationSeconds);
         },
         onLoopBlendEnd: () => {
           loopOverlayStop?.();
@@ -7594,7 +7672,6 @@ export default function Home() {
   }
 
   function handlePlayVocal(category: VocalCategory) {
-    if (migrationRef.current || migrationPreparingRef.current) return;
     coreRef.current?.ensureContext(); // this tap is a user gesture too
     // demonstrate=true — a manual pad tap, so playVocalCategory also logs a
     // fx-demonstration entry on success (recordFxFired() happens inside its
@@ -7614,15 +7691,14 @@ export default function Home() {
   }>({ playing: false, bpm: null, title: null });
 
   function handlePlayVocalFile(file: string) {
-    if (migrationRef.current || migrationPreparingRef.current) return;
     coreRef.current?.ensureContext();
     const decks = [deckARef.current.deck, deckBRef.current.deck];
     const meta = PAISA_VOCAL_LABELS[file];
-    pushBrainLog("vocal", `🇨🇴 Paisa Vocal: ${meta ? meta.phrase : file} (${file})`);
     vocalPlayerRef.current?.playFile(file, decks, {
-      isTransitionRunning: () => transitionEngineRef.current.isRunning,
+      isTransitionRunning: () => transitionEngineRef.current.isRunning || Boolean(migrationRef.current),
       onResult: (success) => {
         if (success) {
+          pushBrainLog("vocal", `🇨🇴 Paisa Vocal: ${meta ? meta.phrase : file} (${file})`);
           recordFxFired();
           recordFxDemonstration(`vocal:${file}`);
         }
@@ -7822,7 +7898,7 @@ export default function Home() {
   function handleStartPairMashup(beatTrackId: string, vocalTrackId: string, bars: 16 | 32 | 64 = 64) {
     coreRef.current?.ensureContext();
     stopStemMixerRef.current?.();
-    performanceMixRef.current = true;
+    genreRequestRef.current = null; // explicit mashup button overrides any stale chat genre filter
 
     const beatResolved = ensureTrackInCrate(beatTrackId);
     const vocalResolved = ensureTrackInCrate(vocalTrackId);
@@ -7841,6 +7917,7 @@ export default function Home() {
       !queueInFlightRef.current &&
       !transitionEngineRef.current.isRunning &&
       !migrationRef.current &&
+      !migrationPreparingRef.current &&
       !heldLoopRef.current
     ) {
       pushBrainLog(
@@ -7940,7 +8017,7 @@ export default function Home() {
   function handleTriggerLiveMashupNow(fullSong = false) {
     coreRef.current?.ensureContext();
     stopStemMixerRef.current?.();
-    performanceMixRef.current = true;
+    genreRequestRef.current = null; // explicit mashup button overrides any stale chat genre filter
     const targetBars: 16 | 64 = fullSong ? 64 : 16;
     const crate = crateRef.current;
     const liveLabel = getLiveDeckLabel();
@@ -7978,7 +8055,7 @@ export default function Home() {
     const recentIds = new Set(historyRef.current.slice(-6).map((r) => r.trackId));
     recentIds.add(liveId);
 
-    const eligible = crate.filter((t) => {
+    let eligible = crate.filter((t) => {
       if (t.id === liveId || recentIds.has(t.id)) return false;
       if (!stemEntryFor(t.id)) return false;
       if (isPartnerDanceTrack(t)) return false;
@@ -7987,6 +8064,19 @@ export default function Home() {
       const ratio = liveBpm / inGrid.bpm;
       return Math.abs(ratio - 1) <= 0.058;
     });
+
+    if (eligible.length === 0) {
+      // Relax recent-history exclusion so a playing stem-ready song always finds a partner without resetting playback.
+      eligible = crate.filter((t) => {
+        if (t.id === liveId) return false;
+        if (!stemEntryFor(t.id)) return false;
+        if (isPartnerDanceTrack(t)) return false;
+        const inGrid = (crateManifestJson as CrateManifestEntry[]).find((m) => m.id === t.id)?.grid ?? t.grid;
+        if (!inGrid || !inGrid.bpm) return false;
+        const ratio = liveBpm / inGrid.bpm;
+        return Math.abs(ratio - 1) <= 0.06;
+      });
+    }
 
     const ranked = rankCandidatesByMusicTheory(
       {
@@ -8015,7 +8105,7 @@ export default function Home() {
     }
 
     // Cancel any in-progress transition/routine so the user's explicit Mashup button click executes immediately!
-    if (queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current) {
+    if (queueInFlightRef.current || transitionEngineRef.current.isRunning || heldLoopRef.current || migrationRef.current || migrationPreparingRef.current) {
       performanceControlVersionRef.current += 1;
       queuePreparationRef.current?.abort(new Error("User triggered live mashup"));
       queuePreparationRef.current = null;
@@ -8318,7 +8408,7 @@ export default function Home() {
       checkQueueWatchdog();
       // Let preparation/the audio clock finish its accepted move. Polling the
       // cloud again here creates competing plans and unnecessary paid calls.
-      if (queueInFlightRef.current || heldLoopRef.current || migrationRef.current) return;
+      if (queueInFlightRef.current || heldLoopRef.current || migrationRef.current || migrationPreparingRef.current) return;
 
       const liveLabel = getLiveDeckLabel();
       if (liveLabel === null) {

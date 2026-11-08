@@ -166,13 +166,30 @@ export class VocalPlayer {
     void this.load(file)
       .then((buffer) => {
         const ctx = this.core.ensureContext();
+        const now = ctx.currentTime;
         const source = ctx.createBufferSource();
         source.buffer = buffer;
         const gain = ctx.createGain();
-        gain.gain.value = 0.82; // -1.7 dB headroom so vocal drops sit cleanly over full-scale music
-        source.connect(gain);
-        gain.connect(this.core.master);
-        source.onended = () => {
+        const peakGain = 0.74; // -2.6 dB headroom so vocal drops sit cleanly over ducked music
+        const dur = Math.max(0.02, buffer.duration);
+        const fadeOutStart = Math.max(now + 0.006, now + dur - 0.015);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(peakGain, now + 0.006);
+        gain.gain.setValueAtTime(peakGain, fadeOutStart);
+        gain.gain.linearRampToValueAtTime(0.0001, now + dur);
+
+        const shouldDuck = !opts.isTransitionRunning?.() && decks.length > 0;
+        if (shouldDuck) {
+          for (const d of decks) d.duck(-6.5, 0.025);
+        }
+        let cleanedUp = false;
+        const cleanup = () => {
+          if (cleanedUp) return;
+          cleanedUp = true;
+          clearTimeout(fallbackTimer);
+          if (shouldDuck) {
+            for (const d of decks) d.unduck(0.060);
+          }
           try {
             source.disconnect();
             gain.disconnect();
@@ -180,8 +197,14 @@ export class VocalPlayer {
             // ignore
           }
         };
+        const fallbackTimer = setTimeout(cleanup, (dur + 0.08) * 1000);
+        (fallbackTimer as unknown as { unref?: () => void }).unref?.();
 
-        source.start();
+        source.connect(gain);
+        gain.connect(this.core.master);
+        source.onended = cleanup;
+
+        source.start(now);
         opts.onResult?.(true);
       })
       .catch((err) => {

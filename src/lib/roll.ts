@@ -84,6 +84,8 @@ export function planRoll(
   return { loopStart, loopEnd, playbackRate: safeTempo, durationSeconds };
 }
 
+let activeRollCancel: (() => void) | null = null;
+
 /**
  * Schedules the real overlay node for `subdivision` against `deck`'s
  * currently-decoded buffer, ducking the deck's own playback for the roll's
@@ -109,34 +111,52 @@ export function fireRoll(
   const loopStart = Math.min(plan.loopStart, loopEnd);
   if (loopEnd - loopStart <= 0 || plan.durationSeconds <= 0) return false;
 
+  activeRollCancel?.();
+
   deck.duck(ROLL_DUCK_DB, ROLL_DUCK_RAMP_SECONDS);
 
+  const now = ctx.currentTime;
+  const endAt = now + plan.durationSeconds;
   const source = ctx.createBufferSource();
   source.buffer = buffer;
   source.loop = true;
   source.loopStart = loopStart;
   source.loopEnd = loopEnd;
   source.playbackRate.value = plan.playbackRate;
-  source.connect(core.master);
-  source.start(ctx.currentTime, loopStart);
 
-  setTimeout(() => {
-    // Choir round #2 (P4): source.stop()/disconnect() can throw
-    // (InvalidStateError per the Web Audio spec — e.g. the node was
-    // already stopped/GC'd through some other path) — guard so a thrown
-    // error never skips the unduck() below, which would otherwise leave
-    // the deck stuck permanently quiet (duck()'s refcount never balanced
-    // back to 0). scratch.ts's segments were audited too — they never call
-    // an explicit stop()/disconnect() at all (each source just ends
-    // naturally after its own scheduled duration), so they don't share
-    // this failure mode.
+  const rollGain = ctx.createGain();
+  rollGain.gain.setValueAtTime(0.0001, now);
+  rollGain.gain.linearRampToValueAtTime(0.85, now + 0.006);
+  rollGain.gain.setValueAtTime(0.85, Math.max(now + 0.006, endAt - 0.010));
+  rollGain.gain.linearRampToValueAtTime(0.0001, endAt);
+
+  source.connect(rollGain);
+  rollGain.connect(core.master);
+  source.start(now, loopStart);
+  try {
+    source.stop(endAt + 0.005);
+  } catch {
+    // ignore in minimal mock contexts
+  }
+
+  let finished = false;
+  const finishRoll = () => {
+    if (finished) return;
+    finished = true;
+    if (activeRollCancel === finishRoll) activeRollCancel = null;
+    clearTimeout(timer);
     try {
       source.stop();
       source.disconnect();
+      rollGain.disconnect();
+    } catch {
+      // already stopped
     } finally {
       deck.unduck(ROLL_DUCK_RAMP_SECONDS);
     }
-  }, plan.durationSeconds * 1000);
+  };
+  activeRollCancel = finishRoll;
+  const timer = setTimeout(finishRoll, plan.durationSeconds * 1000);
 
   return true;
 }

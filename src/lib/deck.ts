@@ -1,5 +1,5 @@
-// One playable deck: decode -> SoundTouchJS PitchShifter (pitch-preserving
-// tempo shift, .pitch left at 1) -> a 3-band EQ (lowshelf/peaking/highshelf,
+// One playable deck: decode -> native Web Audio AudioBufferSourceNode (hardware
+// audio-thread transport with per-source micro-fade GainNode) -> a 3-band EQ (lowshelf/peaking/highshelf,
 // M4 Part A) -> permanent HPF/LPF sweep filters (audio engine v2, Part 1,
 // neutral at 20Hz/20kHz) -> this deck's own GainNode -> the shared AudioCore's
 // master GainNode -> destination. Two parallel FX sends tap that same
@@ -76,8 +76,8 @@ export class Deck {
   private positionSecondsValue = 0;
   private progressListeners = new Set<ProgressListener>();
   private endedListeners = new Set<EndedListener>();
-  private scheduledSource: { source: AudioBufferSourceNode; when: number; offset: number; rate: number; timer: ReturnType<typeof setInterval> } | null = null;
-  private liveSource: { source: AudioBufferSourceNode; when: number; offset: number; rate: number; timer: ReturnType<typeof setInterval> } | null = null;
+  private scheduledSource: { source: AudioBufferSourceNode; sourceGain?: GainNode; when: number; offset: number; rate: number; timer: ReturnType<typeof setInterval> } | null = null;
+  private liveSource: { source: AudioBufferSourceNode; sourceGain: GainNode; when: number; offset: number; rate: number; timer: ReturnType<typeof setInterval> } | null = null;
 
   // EQ nodes + cached values (M4 Part A) — cached so setEq()/killX() can be
   // called (and reflected by getEq()) before ensureContext() has ever run,
@@ -218,6 +218,7 @@ export class Deck {
     this.pause();
     const decoded = await ctx.decodeAudioData(arrayBuffer);
     signal?.throwIfAborted();
+    this.pause(); // stop any source started while decodeAudioData was in flight
     this.buffer = decoded;
     this.reversedBufferCache = null; // invalidate the scratch engine's cached reverse copy — see getReversedBuffer()
     this.positionSecondsValue = 0;
@@ -311,8 +312,16 @@ export class Deck {
     const source = ctx.createBufferSource();
     source.buffer = this.buffer;
     source.playbackRate.value = rate;
-    source.connect(this.lowFilter);
+    const sourceGain = ctx.createGain();
     const when = ctx.currentTime;
+    try {
+      sourceGain.gain.setValueAtTime(0.0001, when);
+      sourceGain.gain.linearRampToValueAtTime(1, when + 0.006);
+    } catch {
+      sourceGain.gain.value = 1;
+    }
+    source.connect(sourceGain);
+    sourceGain.connect(this.lowFilter);
     const timer = setInterval(() => {
       const timePlayed = this.positionSeconds;
       this.positionSecondsValue = timePlayed;
@@ -328,12 +337,13 @@ export class Deck {
       }
     }, 200);
     (timer as unknown as { unref?: () => void }).unref?.();
-    this.liveSource = { source, when, offset, rate, timer };
+    this.liveSource = { source, sourceGain, when, offset, rate, timer };
     this.playingState = true;
     source.onended = () => {
       if (this.liveSource?.source !== source) return;
       clearInterval(timer);
       try { source.disconnect(); } catch { /* ignore */ }
+      try { sourceGain.disconnect(); } catch { /* ignore */ }
       this.liveSource = null;
       this.playingState = false;
       this.positionSecondsValue = 0;
@@ -350,7 +360,7 @@ export class Deck {
       clearInterval(s.timer);
       s.source.onended = null;
       try { s.source.stop(); } catch { /* already ended */ }
-      s.source.disconnect();
+      try { s.source.disconnect(); } catch { /* ignore */ }
       this.playingState = false;
       return;
     }
@@ -360,8 +370,24 @@ export class Deck {
       this.liveSource = null;
       clearInterval(s.timer);
       s.source.onended = null;
-      try { s.source.stop(); } catch { /* already ended */ }
-      try { s.source.disconnect(); } catch { /* already disconnected */ }
+      const ctx = this.core.ensureContext();
+      const now = ctx.currentTime;
+      try {
+        const g = s.sourceGain.gain;
+        if (typeof g.cancelAndHoldAtTime === "function") g.cancelAndHoldAtTime(now);
+        else { const cur = g.value; g.cancelScheduledValues(now); g.setValueAtTime(cur, now); }
+        g.linearRampToValueAtTime(0, now + 0.008);
+        s.source.stop(now + 0.010);
+        const cleanupTimer = setTimeout(() => {
+          try { s.source.disconnect(); } catch { /* ignore */ }
+          try { s.sourceGain.disconnect(); } catch { /* ignore */ }
+        }, 18);
+        (cleanupTimer as unknown as { unref?: () => void }).unref?.();
+      } catch {
+        try { s.source.stop(); } catch { /* already ended */ }
+        try { s.source.disconnect(); } catch { /* already disconnected */ }
+        try { s.sourceGain.disconnect(); } catch { /* ignore */ }
+      }
       this.playingState = false;
       return;
     }
@@ -371,6 +397,22 @@ export class Deck {
   setTempo(tempo: number): void {
     const safeTempo = Number.isFinite(tempo) && tempo > 0 ? tempo : 1;
     if (this.scheduledSource !== null) {
+      const now = this.core.ensureContext().currentTime;
+      if (now >= this.scheduledSource.when) {
+        const currentPos = this.positionSeconds;
+        this.scheduledSource.offset = currentPos;
+        this.scheduledSource.when = now;
+        this.scheduledSource.rate = safeTempo;
+        this.positionSecondsValue = currentPos;
+        try {
+          this.scheduledSource.source.playbackRate.cancelScheduledValues(now);
+          this.scheduledSource.source.playbackRate.setValueAtTime(safeTempo, now);
+        } catch {
+          this.scheduledSource.source.playbackRate.value = safeTempo;
+        }
+        this.tempoValue = safeTempo;
+        return;
+      }
       this.pause();
       this.tempoValue = safeTempo;
       this.play();
@@ -416,10 +458,11 @@ export class Deck {
 
   /** Seek by a relative SOURCE-seconds delta (positive = forward). */
   seekBy(sourceSeconds: number): void {
-    // When already playing on native AudioBufferSourceNode, ignore sub-15ms
-    // corrective micro-nudges (e.g. legacy 1s ScriptProcessor resnap) so we
-    // never stop/restart the live source mid-waveform for negligible drift.
-    if (this.playingState && Math.abs(sourceSeconds) < 0.015) return;
+    // When already playing on a live hardware-clocked AudioBufferSourceNode,
+    // ignore sub-60ms corrective micro-nudges (e.g. legacy 1s ScriptProcessor
+    // resnap or tiny tag-vs-grid BPM jitter) so we never splice the active
+    // waveform during a transition.
+    if (this.liveSource !== null && Math.abs(sourceSeconds) < 0.060) return;
     this.seekTo(this.positionSeconds + sourceSeconds);
   }
 
@@ -428,9 +471,10 @@ export class Deck {
    * curve computed by the caller). Only ever touches logicalGain — the node
    * gets logicalGain * the current duck factor (see gain-math.ts), so this
    * composes correctly with any active duck() instead of overwriting it.
-   * Uses a short 10ms smoothing target while playing so the ~30Hz transition
-   * tick never creates staircase zipper noise, while setting immediately when
-   * paused or zeroing before play().
+   * Uses a short 8ms smoothing target while playing (including when fading to
+   * silence) so the ~30Hz transition tick and cut/loop_blend transitions never
+   * create staircase zipper noise or step-to-zero clicks, while setting
+   * immediately when paused before play().
    */
   setGain(value: number): void {
     this.gainValue = value;
@@ -446,10 +490,10 @@ export class Deck {
         param.cancelScheduledValues(now);
         param.setValueAtTime(current, now);
       }
-      if (!this.playingState || value <= 0.0001) {
+      if (!this.playingState) {
         param.setValueAtTime(target, now);
       } else {
-        param.setTargetAtTime(target, now, 0.010);
+        param.setTargetAtTime(target, now, 0.008);
       }
     }
   }
@@ -575,27 +619,41 @@ export class Deck {
   startEchoTail(delayTimeSec: number, feedback: number): void {
     const ctx = this.core.ensureContext();
     if (!this.delayNode || !this.feedbackGain) return;
+    const now = ctx.currentTime;
     const clampedDelay = Math.min(Math.max(delayTimeSec, 0), ECHO_MAX_DELAY_SECONDS);
-    this.delayNode.delayTime.setValueAtTime(clampedDelay, ctx.currentTime);
-    this.feedbackGain.gain.setValueAtTime(feedback, ctx.currentTime);
+    const clampedFeedback = Math.min(0.85, Math.max(0, feedback));
+    if (Math.abs(this.delayNode.delayTime.value - clampedDelay) > 0.005) {
+      this.delayNode.delayTime.setTargetAtTime(clampedDelay, now, 0.020);
+    } else {
+      this.delayNode.delayTime.setValueAtTime(clampedDelay, now);
+    }
+    this.feedbackGain.gain.setTargetAtTime(clampedFeedback, now, 0.008);
   }
 
   /** Linearly ramps the echo's wet send level to `target` over `rampSeconds`. */
   rampEchoWet(target: number, rampSeconds: number): void {
     const ctx = this.core.ensureContext();
     if (!this.wetGain) return;
-    this.wetGain.gain.cancelScheduledValues(ctx.currentTime);
-    this.wetGain.gain.setValueAtTime(this.wetGain.gain.value, ctx.currentTime);
-    this.wetGain.gain.linearRampToValueAtTime(target, ctx.currentTime + Math.max(0, rampSeconds));
+    const now = ctx.currentTime;
+    const param = this.wetGain.gain;
+    if (typeof param.cancelAndHoldAtTime === "function") param.cancelAndHoldAtTime(now);
+    else { const cur = param.value; param.cancelScheduledValues(now); param.setValueAtTime(cur, now); }
+    param.linearRampToValueAtTime(target, now + Math.max(0, rampSeconds));
   }
 
-  /** Silences the echo send/feedback immediately — call after letting the tail decay naturally for a bit, not the instant the source cuts. */
+  /** Silences the echo send/feedback smoothly — call after letting the tail decay naturally for a bit, not the instant the source cuts. */
   stopEcho(): void {
     const ctx = this.core.ensureContext();
     if (!this.wetGain || !this.feedbackGain) return;
-    this.wetGain.gain.cancelScheduledValues(ctx.currentTime);
-    this.wetGain.gain.setValueAtTime(0, ctx.currentTime);
-    this.feedbackGain.gain.setValueAtTime(0, ctx.currentTime);
+    const now = ctx.currentTime;
+    const wetParam = this.wetGain.gain;
+    if (typeof wetParam.cancelAndHoldAtTime === "function") wetParam.cancelAndHoldAtTime(now);
+    else { const cur = wetParam.value; wetParam.cancelScheduledValues(now); wetParam.setValueAtTime(cur, now); }
+    wetParam.setTargetAtTime(0, now, 0.010);
+    const fbParam = this.feedbackGain.gain;
+    if (typeof fbParam.cancelAndHoldAtTime === "function") fbParam.cancelAndHoldAtTime(now);
+    else { const cur = fbParam.value; fbParam.cancelScheduledValues(now); fbParam.setValueAtTime(cur, now); }
+    fbParam.setTargetAtTime(0, now, 0.010);
   }
 
   private clearEchoSchedule(): void {
@@ -650,22 +708,26 @@ export class Deck {
   reverbWash(wetLevel: number, seconds: number): void {
     const ctx = this.core.ensureContext();
     if (!this.reverbWetGain) return;
+    const now = ctx.currentTime;
     const clamped = clampWet(wetLevel, REVERB_WET_CAP);
-    this.reverbWetGain.gain.cancelScheduledValues(ctx.currentTime);
-    this.reverbWetGain.gain.setValueAtTime(this.reverbWetGain.gain.value, ctx.currentTime);
-    this.reverbWetGain.gain.linearRampToValueAtTime(clamped, ctx.currentTime + Math.max(0, seconds));
+    const param = this.reverbWetGain.gain;
+    if (typeof param.cancelAndHoldAtTime === "function") param.cancelAndHoldAtTime(now);
+    else { const cur = param.value; param.cancelScheduledValues(now); param.setValueAtTime(cur, now); }
+    param.linearRampToValueAtTime(clamped, now + Math.max(0, seconds));
   }
 
   private sweepFilter(filter: BiquadFilterNode | null, targetHz: number, seconds: number): void {
     if (!filter) return;
     const ctx = this.core.ensureContext();
+    const now = ctx.currentTime;
     const plan = sweepPlan(targetHz, seconds);
-    filter.frequency.cancelScheduledValues(ctx.currentTime);
-    filter.frequency.setValueAtTime(filter.frequency.value, ctx.currentTime);
+    const param = filter.frequency;
+    if (typeof param.cancelAndHoldAtTime === "function") param.cancelAndHoldAtTime(now);
+    else { const cur = param.value; param.cancelScheduledValues(now); param.setValueAtTime(cur, now); }
     if (plan.seconds <= 0) {
-      filter.frequency.setValueAtTime(plan.targetHz, ctx.currentTime);
+      param.setTargetAtTime(plan.targetHz, now, 0.010);
     } else {
-      filter.frequency.linearRampToValueAtTime(plan.targetHz, ctx.currentTime + plan.seconds);
+      param.linearRampToValueAtTime(plan.targetHz, now + plan.seconds);
     }
   }
 
@@ -783,8 +845,16 @@ export class Deck {
   private rampGainTo(target: number, rampSeconds: number): void {
     if (!this.gainNode) return;
     const ctx = this.core.ensureContext();
-    this.gainNode.gain.cancelScheduledValues(ctx.currentTime);
-    this.gainNode.gain.setTargetAtTime(target, ctx.currentTime, rampSeconds);
+    const now = ctx.currentTime;
+    const param = this.gainNode.gain;
+    if (typeof param.cancelAndHoldAtTime === "function") {
+      param.cancelAndHoldAtTime(now);
+    } else {
+      const current = param.value;
+      param.cancelScheduledValues(now);
+      param.setValueAtTime(current, now);
+    }
+    param.setTargetAtTime(target, now, rampSeconds);
   }
 
   dispose(): void {

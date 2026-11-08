@@ -141,10 +141,11 @@ export function startStemSet(
   opts: { offsetSeconds?: number; when?: number; playbackRate?: number; loopRhythmSeconds?: number } = {},
 ): void {
   const ctx = core.ensureContext();
-  const when = opts.when ?? ctx.currentTime;
+  const rawWhen = opts.when ?? ctx.currentTime;
   const offset = opts.offsetSeconds ?? 0;
   const rate = opts.playbackRate ?? 1;
-  if (![when, offset, rate].every(Number.isFinite) || when < 0 || rate <= 0 || offset < set.bufferOffset || Array.from(set.stems.values()).some(st => offset - set.bufferOffset >= st.buffer.duration)) throw new Error("Stem start is outside the prepared window");
+  if (![rawWhen, offset, rate].every(Number.isFinite) || rawWhen < 0 || rate <= 0 || offset < set.bufferOffset || Array.from(set.stems.values()).some(st => offset - set.bufferOffset >= st.buffer.duration)) throw new Error("Stem start is outside the prepared window");
+  const when = Math.max(ctx.currentTime, rawWhen);
   stopStemSet(set);
   const relOffset = Math.max(0, offset - set.bufferOffset);
   for (const stem of Array.from(set.stems.values())) {
@@ -298,14 +299,26 @@ export function setStemGain(set: StemSet, stemName: string, value: number, at?: 
   if (at !== undefined && ctx) {
     stem.gain.gain.setValueAtTime(value, at);
   } else {
-    stem.gain.gain.value = value;
+    const nodeCtx = ctx ?? (stem.gain.context as AudioContext | undefined);
+    if (nodeCtx && typeof stem.gain.gain.setTargetAtTime === "function") {
+      stem.gain.gain.setTargetAtTime(value, nodeCtx.currentTime, 0.010);
+    } else {
+      stem.gain.gain.value = value;
+    }
   }
 }
 
 /** Mute/unmute every stem of a ROLE (e.g. all harmony stems at once). */
 export function setRoleGain(set: StemSet, role: string, value: number): void {
   for (const [name, stem] of Array.from(set.stems.entries())) {
-    if (STEM_ROLE[name] === role) stem.gain.gain.value = value;
+    if (STEM_ROLE[name] === role) {
+      const nodeCtx = stem.gain.context as AudioContext | undefined;
+      if (nodeCtx && typeof stem.gain.gain.setTargetAtTime === "function") {
+        stem.gain.gain.setTargetAtTime(value, nodeCtx.currentTime, 0.010);
+      } else {
+        stem.gain.gain.value = value;
+      }
+    }
   }
 }
 
@@ -315,12 +328,24 @@ export function setRoleGain(set: StemSet, role: string, value: number): void {
  */
 export function setAcapella(set: StemSet, on: boolean): void {
   for (const [name, stem] of Array.from(set.stems.entries())) {
-    stem.gain.gain.value = on ? (name === "vocals" ? 1 : 0) : 1;
+    const target = on ? (name === "vocals" ? 1 : 0) : 1;
+    const nodeCtx = stem.gain.context as AudioContext | undefined;
+    if (nodeCtx && typeof stem.gain.gain.setTargetAtTime === "function") {
+      stem.gain.gain.setTargetAtTime(target, nodeCtx.currentTime, 0.010);
+    } else {
+      stem.gain.gain.value = target;
+    }
   }
 }
 export function setInstrumental(set: StemSet, on: boolean): void {
   for (const [name, stem] of Array.from(set.stems.entries())) {
-    stem.gain.gain.value = on ? (name === "vocals" ? 0 : 1) : 1;
+    const target = on ? (name === "vocals" ? 0 : 1) : 1;
+    const nodeCtx = stem.gain.context as AudioContext | undefined;
+    if (nodeCtx && typeof stem.gain.gain.setTargetAtTime === "function") {
+      stem.gain.gain.setTargetAtTime(target, nodeCtx.currentTime, 0.010);
+    } else {
+      stem.gain.gain.value = target;
+    }
   }
 }
 
@@ -373,7 +398,8 @@ export function scheduleMigration(
   for (const [name, stem] of Array.from(outgoing.stems.entries())) {
     if (!plan.ramps.some((r) => r.deck === "out" && r.stem === name)) {
       stem.gain.gain.setValueAtTime(1, startTime);
-      stem.gain.gain.setValueAtTime(0, end);
+      stem.gain.gain.setValueAtTime(1, Math.max(startTime, end - 0.05));
+      stem.gain.gain.linearRampToValueAtTime(0, end);
     }
   }
   // Dual-stem-set overlap headroom: summing two mastered songs' stems at unity

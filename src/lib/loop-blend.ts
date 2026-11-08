@@ -132,7 +132,13 @@ export function planLoopBlend(
  * to zero length — should be rare given the no-grid guard already ran
  * upstream, but stays defensive rather than throwing.
  */
-export function fireLoopOverlay(deck: Deck, core: AudioCore, loopStart: number, loopEnd: number): (() => void) | null {
+export function fireLoopOverlay(
+  deck: Deck,
+  core: AudioCore,
+  loopStart: number,
+  loopEnd: number,
+  totalDurationSeconds?: number
+): (() => void) | null {
   const ctx = core.ensureContext();
   const buffer = deck.audioBuffer;
   if (!buffer) return null;
@@ -141,31 +147,72 @@ export function fireLoopOverlay(deck: Deck, core: AudioCore, loopStart: number, 
   const clampedStart = Math.min(loopStart, clampedEnd);
   if (clampedEnd - clampedStart <= 0) return null;
 
+  const now = ctx.currentTime;
   const source = ctx.createBufferSource();
   source.buffer = buffer;
   source.loop = true;
   source.loopStart = clampedStart;
   source.loopEnd = clampedEnd;
   source.playbackRate.value = deck.tempo;
-  source.connect(core.master);
-  source.start(ctx.currentTime, clampedStart);
+
+  const lowShelf = ctx.createBiquadFilter();
+  lowShelf.type = "lowshelf";
+  lowShelf.frequency.value = 250;
+  lowShelf.gain.value = 0;
+
+  const loopGain = ctx.createGain();
+  loopGain.gain.setValueAtTime(0.0001, now);
+  loopGain.gain.linearRampToValueAtTime(0.92, now + 0.008);
+
+  if (typeof totalDurationSeconds === "number" && totalDurationSeconds > 0.1) {
+    // Schedule an equal-power cosine fade-out + low-end handover on the audio clock
+    // so the loop never sums at +6 dBFS with the incoming deck's bassline.
+    const steps = 16;
+    const stepSec = totalDurationSeconds / steps;
+    for (let i = 1; i <= steps; i++) {
+      const p = i / steps;
+      const g = Math.max(0.04, 0.92 * Math.cos((p * Math.PI) / 2));
+      loopGain.gain.linearRampToValueAtTime(g, now + i * stepSec);
+    }
+    lowShelf.gain.setValueAtTime(0, now + totalDurationSeconds * 0.35);
+    lowShelf.gain.linearRampToValueAtTime(-24, now + totalDurationSeconds * 0.85);
+  }
+
+  source.connect(lowShelf);
+  lowShelf.connect(loopGain);
+  loopGain.connect(core.master);
+  source.start(now, clampedStart);
 
   let stopped = false;
   return () => {
     if (stopped) return;
     stopped = true;
-    // Choir round #2 (P4 audit): this closure is called from INSIDE
-    // transition.ts's own loop_blend completion/cancel path (see
-    // onLoopBlendEnd) — an uncaught InvalidStateError from stop() here
-    // would abort that caller's own remaining cleanup (toDeck's gain,
-    // fromDeck's pause/reset, `running`/onDone), a worse wedge than
-    // roll.ts's version of this bug. Guard the same way.
     try {
-      source.stop();
-      source.disconnect();
+      const stopNow = ctx.currentTime;
+      if (typeof loopGain.gain.cancelAndHoldAtTime === "function") {
+        loopGain.gain.cancelAndHoldAtTime(stopNow);
+      } else {
+        const cur = loopGain.gain.value;
+        loopGain.gain.cancelScheduledValues(stopNow);
+        loopGain.gain.setValueAtTime(cur, stopNow);
+      }
+      loopGain.gain.linearRampToValueAtTime(0, stopNow + 0.015);
+      source.stop(stopNow + 0.020);
+      const timer = setTimeout(() => {
+        try { source.disconnect(); } catch { /* ignore */ }
+        try { lowShelf.disconnect(); } catch { /* ignore */ }
+        try { loopGain.disconnect(); } catch { /* ignore */ }
+      }, 30);
+      (timer as unknown as { unref?: () => void }).unref?.();
     } catch {
-      // best-effort teardown — nothing further to do if the node was
-      // already stopped/disconnected through some other path
+      try {
+        source.stop();
+        source.disconnect();
+        lowShelf.disconnect();
+        loopGain.disconnect();
+      } catch {
+        // best-effort teardown
+      }
     }
   };
 }

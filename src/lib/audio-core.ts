@@ -2,28 +2,67 @@
 // used by both Deck A and Deck B so the crossfader can mix their output.
 // Kept UI-free like the rest of src/lib/ (a future Claude "brain" milestone
 // only ever talks to Deck/AudioCore, never to React).
-const MASTER_HEADROOM_GAIN = 0.80; // ~-1.9 dB headroom before transparent safety limiter
+const MASTER_HEADROOM_GAIN = 0.80; // ~-1.9 dB headroom before fast safety limiter + oversampled soft clipper
+
+function buildSoftClipCurve(): Float32Array {
+  const samples = 4096;
+  const curve = new Float32Array(samples);
+  const norm = Math.tanh(1.5);
+  for (let i = 0; i < samples; i++) {
+    const x = (i * 2) / (samples - 1) - 1;
+    // Linear inside [-0.85, 0.85], smooth tanh ceiling above that so normal program
+    // audio is 100% untouched and only rogue inter-sample transients are rounded.
+    if (Math.abs(x) <= 0.85) {
+      curve[i] = x;
+    } else {
+      const sign = x < 0 ? -1 : 1;
+      const excess = (Math.abs(x) - 0.85) / 0.15;
+      curve[i] = sign * (0.85 + 0.15 * (Math.tanh(excess * 1.5) / norm));
+    }
+  }
+  return curve;
+}
 
 export class AudioCore {
   private context: AudioContext | null = null;
   private masterGain: GainNode | null = null;
   private masterLimiter: DynamicsCompressorNode | null = null;
+  private masterClipper: WaveShaperNode | null = null;
 
-  private wireMasterToDestination(): void {
+  private wireMasterToDestination(fadeIn = false): void {
     if (!this.context || !this.masterGain) return;
+    const now = this.context.currentTime;
     this.masterGain.gain.value = MASTER_HEADROOM_GAIN;
+    if (fadeIn) {
+      try {
+        this.masterGain.gain.setValueAtTime(0.0001, now);
+        this.masterGain.gain.linearRampToValueAtTime(MASTER_HEADROOM_GAIN, now + 0.015);
+      } catch {
+        this.masterGain.gain.value = MASTER_HEADROOM_GAIN;
+      }
+    }
     if (!this.masterLimiter && typeof this.context.createDynamicsCompressor === "function") {
       try {
         const limiter = this.context.createDynamicsCompressor();
-        limiter.threshold.value = -1.0; // gentle safety ceiling just below 0 dBFS
-        limiter.knee.value = 8; // soft knee avoids hard saturation corners
-        limiter.ratio.value = 6; // moderate ratio avoids sub-cycle wave-shaping on 60Hz bass
-        limiter.attack.value = 0.020; // 20ms attack (>1 full cycle of 50Hz sub-bass) prevents inter-cycle buzz
-        limiter.release.value = 0.25; // 250ms smooth release prevents low-end modulation distortion
-        limiter.connect(this.context.destination);
+        limiter.threshold.value = -2.5; // fast peak ceiling below 0 dBFS
+        limiter.knee.value = 0; // hard limiting knee catches drum transients cleanly
+        limiter.ratio.value = 20; // true 20:1 brickwall limiting ratio
+        limiter.attack.value = 0.003; // 3ms attack catches overlapping kick/snare transients
+        limiter.release.value = 0.10; // 100ms release recovers cleanly between beats
+        if (typeof this.context.createWaveShaper === "function") {
+          const clipper = this.context.createWaveShaper();
+          clipper.curve = buildSoftClipCurve() as Float32Array<ArrayBuffer>;
+          clipper.oversample = "4x";
+          limiter.connect(clipper);
+          clipper.connect(this.context.destination);
+          this.masterClipper = clipper;
+        } else {
+          limiter.connect(this.context.destination);
+        }
         this.masterLimiter = limiter;
       } catch {
         this.masterLimiter = null;
+        this.masterClipper = null;
       }
     }
     this.masterGain.connect(this.masterLimiter ?? this.context.destination);
@@ -86,15 +125,35 @@ export class AudioCore {
    */
   purgeOrphanedNodes(reconnectDecks?: () => void): void {
     if (!this.context || !this.masterGain) return;
+    const oldMaster = this.masterGain;
+    const now = this.context.currentTime;
     try {
-      this.masterGain.gain.cancelScheduledValues(this.context.currentTime);
-      this.masterGain.gain.setValueAtTime(0, this.context.currentTime);
-      this.masterGain.disconnect();
+      const param = oldMaster.gain;
+      if (typeof param.cancelAndHoldAtTime === "function") {
+        param.cancelAndHoldAtTime(now);
+      } else {
+        const current = param.value;
+        param.cancelScheduledValues(now);
+        param.setValueAtTime(current, now);
+      }
+      param.linearRampToValueAtTime(0, now + 0.018);
+      const disconnectTimer = setTimeout(() => {
+        try {
+          oldMaster.disconnect();
+        } catch {
+          // ignore already disconnected
+        }
+      }, 28);
+      (disconnectTimer as unknown as { unref?: () => void }).unref?.();
     } catch {
-      // ignore already disconnected
+      try {
+        oldMaster.disconnect();
+      } catch {
+        // ignore
+      }
     }
     this.masterGain = this.context.createGain();
-    this.wireMasterToDestination();
+    this.wireMasterToDestination(true);
     reconnectDecks?.();
   }
 }
