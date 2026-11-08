@@ -212,7 +212,7 @@ export async function loadStemLoopMixBuffer(
 
   for (const itemPromise of pending) {
     options.signal?.throwIfAborted();
-    const { bytes } = await itemPromise;
+    const { name, bytes } = await itemPromise;
     options.signal?.throwIfAborted();
     const full = await ctx.decodeAudioData(bytes);
     options.signal?.throwIfAborted();
@@ -232,13 +232,38 @@ export async function loadStemLoopMixBuffer(
     if (!mixed) {
       mixed = ctx.createBuffer(full.numberOfChannels, frameCount, full.sampleRate);
     }
+    const stemWeight =
+      name === "drums" || name === "bass"
+        ? 1.0
+        : options.isolation === "beat"
+          ? 0.85
+          : 1.0;
     const channels = Math.min(mixed.numberOfChannels, full.numberOfChannels);
     const length = Math.min(mixed.length, frameCount);
     for (let ch = 0; ch < channels; ch++) {
       const dst = mixed.getChannelData(ch);
       const src = full.getChannelData(ch).subarray(first, first + length);
       for (let i = 0; i < length; i++) {
-        dst[i] += src[i];
+        dst[i] += src[i] * stemWeight;
+      }
+    }
+  }
+  if (mixed) {
+    let peak = 0;
+    for (let ch = 0; ch < mixed.numberOfChannels; ch++) {
+      const data = mixed.getChannelData(ch);
+      for (let i = 0; i < data.length; i++) {
+        const abs = Math.abs(data[i]);
+        if (abs > peak) peak = abs;
+      }
+    }
+    if (peak > 0.92) {
+      const scale = 0.92 / peak;
+      for (let ch = 0; ch < mixed.numberOfChannels; ch++) {
+        const data = mixed.getChannelData(ch);
+        for (let i = 0; i < data.length; i++) {
+          data[i] *= scale;
+        }
       }
     }
   }
@@ -351,4 +376,15 @@ export function scheduleMigration(
       stem.gain.gain.setValueAtTime(0, end);
     }
   }
+  // Dual-stem-set overlap headroom: summing two mastered songs' stems at unity
+  // drives peaks ~+4..+6 dB above 0 dBFS. Trim both setGain nodes to 0.84 during
+  // the two-track mashup overlap and ramp incoming setGain to 0.96 over the final
+  // 4 bars so the handoff back to the full deck is seamless and unclipped.
+  const resolveStart = Math.max(startTime, end - Math.min(4, plan.totalBars * 0.25) * plan.barSeconds);
+  outgoing.setGain.gain.cancelScheduledValues(startTime);
+  outgoing.setGain.gain.setValueAtTime(0.84, startTime);
+  incoming.setGain.gain.cancelScheduledValues(startTime);
+  incoming.setGain.gain.setValueAtTime(0.84, startTime);
+  incoming.setGain.gain.setValueAtTime(0.84, resolveStart);
+  incoming.setGain.gain.linearRampToValueAtTime(0.96, end);
 }

@@ -1470,6 +1470,8 @@ function ClubBoothHud({
   const loopsB = cueKeyB ? getLoopPoints(CURRENT_LOOP_POINTS, cueKeyB)?.loops.length ?? 0 : 0;
   const recipesA = deckA.trackId ? ((TRANSITION_RECIPES as TransitionRecipeFile).recipes[deckA.trackId]?.length ?? 0) : 0;
   const recipesB = deckB.trackId ? ((TRANSITION_RECIPES as TransitionRecipeFile).recipes[deckB.trackId]?.length ?? 0) : 0;
+  const hasGridA = Boolean(deckA.grid);
+  const hasGridB = Boolean(deckB.grid);
 
   // Compute live Music Theory & Turntablist Mastery intelligence
   const theorySummary = useMemo(() => {
@@ -1528,7 +1530,24 @@ function ClubBoothHud({
       choreography,
       topRecommendation: topRanked,
     };
-  }, [deckA, deckB, crate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    deckA.trackId,
+    deckA.trackName,
+    deckA.isPlaying,
+    deckA.tempo,
+    deckA.tags.bpm,
+    deckA.tags.key,
+    hasGridA,
+    deckB.trackId,
+    deckB.trackName,
+    deckB.isPlaying,
+    deckB.tempo,
+    deckB.tags.bpm,
+    deckB.tags.key,
+    hasGridB,
+    crate,
+  ]);
 
   return (
     <section className={styles.boothHud} aria-label="El Cerebro Pro Club Booth Telemetry">
@@ -2170,7 +2189,7 @@ function LiveStemMixerPanel({
           onClick={() =>
             applyStemPreset(
               "🎤 Acapella Only (BS-RoFormer Vocals)",
-              { vocals: 1.15, drums: 1, bass: 1, other: 1 },
+              { vocals: 1, drums: 1, bass: 1, other: 1 },
               { vocals: false, drums: true, bass: true, other: true },
               { vocals: true, drums: false, bass: false, other: false }
             )
@@ -2198,7 +2217,7 @@ function LiveStemMixerPanel({
           onClick={() =>
             applyStemPreset(
               "🔥 Drums + Bass Riddim Strip",
-              { vocals: 1, drums: 1.1, bass: 1.1, other: 1 },
+              { vocals: 1, drums: 1, bass: 1, other: 1 },
               { vocals: true, drums: false, bass: false, other: true },
               { vocals: false, drums: false, bass: false, other: false }
             )
@@ -2212,7 +2231,7 @@ function LiveStemMixerPanel({
           onClick={() =>
             applyStemPreset(
               "🎹 Harmonic Breakdown (Vocals + Melodic Other)",
-              { vocals: 1, drums: 1, bass: 1, other: 1.1 },
+              { vocals: 1, drums: 1, bass: 1, other: 1 },
               { vocals: false, drums: true, bass: true, other: false },
               { vocals: false, drums: false, bass: false, other: false }
             )
@@ -2268,7 +2287,7 @@ function LiveStemMixerPanel({
                 <input
                   type="range"
                   min={0}
-                  max={1.25}
+                  max={1}
                   step={0.01}
                   value={levels[key]}
                   className={styles.stemFaderInput}

@@ -658,11 +658,16 @@ export function fireIsolatedLoopHold(
     const tweakMid = (tweakStart + tweakEnd) / 2;
     if (tweakEnd > tweakStart + 0.5) {
       // 1. Flanger / Phaser comb-filter jet sweep (1.5ms -> 5.8ms -> 1.5ms)
+      // Gentle wet/feedback staging + slight dry trim prevents comb-filter peak clipping.
+      gainNode.gain.setValueAtTime(1, tweakStart);
+      gainNode.gain.linearRampToValueAtTime(0.9, tweakStart + 0.25);
+      gainNode.gain.setValueAtTime(0.9, tweakEnd - 0.25);
+      gainNode.gain.linearRampToValueAtTime(1, tweakEnd);
       flangerWetGain.gain.setValueAtTime(0, tweakStart);
-      flangerWetGain.gain.linearRampToValueAtTime(0.28, tweakStart + 0.25);
-      flangerWetGain.gain.setValueAtTime(0.28, tweakEnd - 0.25);
+      flangerWetGain.gain.linearRampToValueAtTime(0.15, tweakStart + 0.25);
+      flangerWetGain.gain.setValueAtTime(0.15, tweakEnd - 0.25);
       flangerWetGain.gain.linearRampToValueAtTime(0, tweakEnd);
-      flangerFeedbackGain.gain.setValueAtTime(0.42, tweakStart);
+      flangerFeedbackGain.gain.setValueAtTime(0.24, tweakStart);
       flangerFeedbackGain.gain.setValueAtTime(0, tweakEnd);
       flangerDelayNode.delayTime.setValueAtTime(0.0015, tweakStart);
       flangerDelayNode.delayTime.linearRampToValueAtTime(0.0058, tweakMid);
@@ -675,11 +680,11 @@ export function fireIsolatedLoopHold(
       const dottedEighthSec = Math.min(1.8, Math.max(0.12, beatSec * 0.75));
       delayNode.delayTime.setValueAtTime(dottedEighthSec, dubStart);
       feedbackGain.gain.setValueAtTime(0, tweakStart);
-      feedbackGain.gain.setValueAtTime(0.46, dubStart);
+      feedbackGain.gain.setValueAtTime(0.36, dubStart);
       feedbackGain.gain.linearRampToValueAtTime(0, tweakEnd + beatSec);
       echoWetGain.gain.setValueAtTime(0, tweakStart);
       echoWetGain.gain.setValueAtTime(0, dubStart);
-      echoWetGain.gain.linearRampToValueAtTime(0.28, tweakEnd - 0.1);
+      echoWetGain.gain.linearRampToValueAtTime(0.18, tweakEnd - 0.1);
       echoWetGain.gain.linearRampToValueAtTime(0, tweakEnd + beatSec);
     }
   }

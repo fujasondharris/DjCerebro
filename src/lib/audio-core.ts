@@ -2,9 +2,32 @@
 // used by both Deck A and Deck B so the crossfader can mix their output.
 // Kept UI-free like the rest of src/lib/ (a future Claude "brain" milestone
 // only ever talks to Deck/AudioCore, never to React).
+const MASTER_HEADROOM_GAIN = 0.88; // ~-1.1 dB headroom before brickwall peak limiter
+
 export class AudioCore {
   private context: AudioContext | null = null;
   private masterGain: GainNode | null = null;
+  private masterLimiter: DynamicsCompressorNode | null = null;
+
+  private wireMasterToDestination(): void {
+    if (!this.context || !this.masterGain) return;
+    this.masterGain.gain.value = MASTER_HEADROOM_GAIN;
+    if (!this.masterLimiter && typeof this.context.createDynamicsCompressor === "function") {
+      try {
+        const limiter = this.context.createDynamicsCompressor();
+        limiter.threshold.value = -1.2; // brickwall ceiling just below 0 dBFS
+        limiter.knee.value = 3;
+        limiter.ratio.value = 20;
+        limiter.attack.value = 0.001; // 1ms fast transient catch
+        limiter.release.value = 0.08; // 80ms smooth release without pumping
+        limiter.connect(this.context.destination);
+        this.masterLimiter = limiter;
+      } catch {
+        this.masterLimiter = null;
+      }
+    }
+    this.masterGain.connect(this.masterLimiter ?? this.context.destination);
+  }
 
   /**
    * Creates the AudioContext (and master gain) on first call, resumes it if
@@ -21,7 +44,7 @@ export class AudioCore {
         (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       this.context = new AudioContextCtor();
       this.masterGain = this.context.createGain();
-      this.masterGain.connect(this.context.destination);
+      this.wireMasterToDestination();
     } else if (this.context.state === "suspended") {
       void this.context.resume();
     }
@@ -71,7 +94,7 @@ export class AudioCore {
       // ignore already disconnected
     }
     this.masterGain = this.context.createGain();
-    this.masterGain.connect(this.context.destination);
+    this.wireMasterToDestination();
     reconnectDecks?.();
   }
 }

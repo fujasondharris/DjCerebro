@@ -188,10 +188,20 @@ export function getOrBuildReverbImpulseResponse(ctx: AudioContext, seconds: numb
   if (cached) return cached;
   const length = Math.max(1, Math.floor(ctx.sampleRate * seconds));
   const impulse = ctx.createBuffer(2, length, ctx.sampleRate);
+  // Normalize convolution energy and apply progressive low-pass damping so the
+  // synthesized impulse sounds like a warm studio plate/hall rather than raw
+  // full-scale high-frequency white-noise static.
+  const irGain = 0.16;
   for (let channel = 0; channel < impulse.numberOfChannels; channel++) {
     const data = impulse.getChannelData(channel);
+    let lpState = 0;
     for (let i = 0; i < length; i++) {
-      data[i] = (Math.random() * 2 - 1) * reverbDecayEnvelope(i / length);
+      const frac = i / length;
+      const white = Math.random() * 2 - 1;
+      // Progressive HF damping: brighter early reflections, warm dark tail
+      const alpha = 0.36 * (1 - 0.78 * frac);
+      lpState = lpState + alpha * (white - lpState);
+      data[i] = lpState * reverbDecayEnvelope(frac) * irGain;
     }
   }
   reverbIrCache.set(ctx, impulse);

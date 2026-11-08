@@ -15,7 +15,6 @@
 // independent of that deck's playback volume logic (there isn't any yet —
 // this is deliberately kept UI-free so a future Claude-driven "brain"
 // milestone can drive it directly).
-import { PitchShifter } from "soundtouchjs";
 import type { AudioCore } from "./audio-core";
 import { duckStateInitial, duckStateOnDuck, duckStateOnUnduck, composeGain, type DuckState } from "./gain-math.ts";
 import {
@@ -37,8 +36,6 @@ export interface ProgressUpdate {
 
 type ProgressListener = (update: ProgressUpdate) => void;
 type EndedListener = () => void;
-
-const BUFFER_SIZE = 4096;
 
 // --- EQ (M4 Part A) ---
 const EQ_LOW_FREQ_HZ = 250; // lowshelf corner
@@ -72,7 +69,6 @@ export class Deck {
   private overlayDuckUntil = 0;
   private overlayDuckFactor = 1;
   private gainValue = 1;
-  private shifter: PitchShifter | null = null;
   private buffer: AudioBuffer | null = null;
   private reversedBufferCache: AudioBuffer | null = null;
   private playingState = false;
@@ -81,6 +77,7 @@ export class Deck {
   private progressListeners = new Set<ProgressListener>();
   private endedListeners = new Set<EndedListener>();
   private scheduledSource: { source: AudioBufferSourceNode; when: number; offset: number; rate: number; timer: ReturnType<typeof setInterval> } | null = null;
+  private liveSource: { source: AudioBufferSourceNode; when: number; offset: number; rate: number; timer: ReturnType<typeof setInterval> } | null = null;
 
   // EQ nodes + cached values (M4 Part A) — cached so setEq()/killX() can be
   // called (and reflected by getEq()) before ensureContext() has ever run,
@@ -215,7 +212,7 @@ export class Deck {
     return ctx;
   }
 
-  /** Decode raw file bytes into an AudioBuffer and wire up a fresh PitchShifter for it. */
+  /** Decode raw file bytes into an AudioBuffer and reset transport state. */
   async decode(arrayBuffer: ArrayBuffer, signal?: AbortSignal): Promise<AudioBuffer> {
     const ctx = this.ensureContext();
     this.pause();
@@ -223,43 +220,8 @@ export class Deck {
     signal?.throwIfAborted();
     this.buffer = decoded;
     this.reversedBufferCache = null; // invalidate the scratch engine's cached reverse copy — see getReversedBuffer()
-    this.positionSecondsValue = 0; // fresh PitchShifter below starts at source position 0
-    // Choir round #2 (P5): the fresh PitchShifter below is NOT connected —
-    // only play() connects it — so playingState must be false right after
-    // a decode(), same as position/buffer/reversedBufferCache above.
-    // Without this, re-decoding a deck whose playingState was stale-true
-    // (e.g. loadFromBlob's own pre-emptive pause() ran, then a manual Play
-    // tap raced the in-flight load and reconnected the OLD shifter before
-    // this decode() replaced it) left play() early-returning forever after
-    // (its own `if (this.playingState) return;` guard never firing the
-    // reconnect) — a silently dead deck. decode() now owns this reset
-    // itself rather than relying on every caller to pause() first.
+    this.positionSecondsValue = 0;
     this.playingState = false;
-
-    this.shifter?.off();
-    this.shifter?.disconnect();
-    this.shifter = new PitchShifter(ctx, decoded, BUFFER_SIZE, () => {
-      // Track finished: stop pulling silence forever and rewind for replay.
-      this.playingState = false;
-      if (this.shifter) {
-        this.shifter.disconnect();
-        this.shifter.percentagePlayed = 0;
-      }
-      this.positionSecondsValue = 0;
-      this.endedListeners.forEach((listener) => listener());
-    });
-    this.shifter.tempo = this.tempoValue;
-    this.shifter.pitch = 1; // pitch is never touched — tempo-only shift is the whole point
-    this.shifter.on("play", (detail) => {
-      this.positionSecondsValue = detail.timePlayed;
-      this.progressListeners.forEach((listener) =>
-        listener({
-          percentagePlayed: detail.percentagePlayed,
-          timePlayed: detail.timePlayed,
-          duration: this.duration,
-        })
-      );
-    });
 
     return decoded;
   }
@@ -278,10 +240,14 @@ export class Deck {
 
   get scheduledPlaybackTime(): number | null { return this.scheduledSource?.when ?? null; }
 
-  /** Current playback position, in SOURCE-track seconds. Updated from progress events and seeks. */
+  /** Current playback position, in SOURCE-track seconds. Updated from live audio clock and seeks. */
   get positionSeconds(): number {
     if (this.scheduledSource) {
       const s = this.scheduledSource;
+      return Math.min(this.duration, s.offset + Math.max(0, this.core.ensureContext().currentTime - s.when) * s.rate);
+    }
+    if (this.liveSource) {
+      const s = this.liveSource;
       return Math.min(this.duration, s.offset + Math.max(0, this.core.ensureContext().currentTime - s.when) * s.rate);
     }
     return this.positionSecondsValue;
@@ -291,7 +257,7 @@ export class Deck {
    * A prepared stem performance returns to the full mix at an absolute audio time.
    * This transport keeps the stems' playback-rate/pitch semantics through that
    * handoff, with no timer or SoundTouch block-start gap. A later tempo/seek/pause
-   * operation returns to the ordinary pitch-preserving transport. Callers must
+   * operation returns to the ordinary transport. Callers must
    * apply the same narrow tempo eligibility gate as the stems.
    */
   scheduleBufferPlayback(when: number, offset: number, rate: number): void {
@@ -304,12 +270,13 @@ export class Deck {
     source.connect(this.lowFilter!);
     const timer = setInterval(() => {
       const timePlayed = this.positionSeconds;
+      this.positionSecondsValue = timePlayed;
       this.progressListeners.forEach(listener => listener({ timePlayed, duration: this.duration, percentagePlayed: 100 * timePlayed / this.duration }));
-    }, 100);
+    }, 200);
+    (timer as unknown as { unref?: () => void }).unref?.();
     this.scheduledSource = { source, when, offset, rate, timer };
     this.positionSecondsValue = offset;
     this.tempoValue = rate;
-    if (this.shifter) this.shifter.tempo = rate;
     this.playingState = true;
     source.onended = () => {
       if (this.scheduledSource?.source !== source) return;
@@ -318,7 +285,6 @@ export class Deck {
       this.scheduledSource = null;
       this.playingState = false;
       this.positionSecondsValue = 0;
-      if (this.shifter) this.shifter.percentagePlayed = 0;
       this.endedListeners.forEach(listener => listener());
     };
     source.start(when, offset);
@@ -334,14 +300,46 @@ export class Deck {
     return () => this.endedListeners.delete(listener);
   }
 
-  /** Resume/start playback of whatever buffer is currently decoded. Call from a tap handler. */
+  /** Resume/start playback of whatever buffer is currently decoded on the native Web Audio thread. */
   play(): void {
-    if (!this.shifter || !this.gainNode) return;
+    if (!this.buffer || !this.gainNode) return;
     if (this.playingState) return;
-    this.ensureContext();
-    if (!this.lowFilter) return; // created by ensureContext() above; guard keeps this defensive like the gainNode check
-    this.shifter.connect(this.lowFilter);
+    const ctx = this.ensureContext();
+    if (!this.lowFilter) return;
+    const offset = Math.min(Math.max(0, this.positionSecondsValue), Math.max(0, this.duration - 0.001));
+    const rate = Number.isFinite(this.tempoValue) && this.tempoValue > 0 ? this.tempoValue : 1;
+    const source = ctx.createBufferSource();
+    source.buffer = this.buffer;
+    source.playbackRate.value = rate;
+    source.connect(this.lowFilter);
+    const when = ctx.currentTime;
+    const timer = setInterval(() => {
+      const timePlayed = this.positionSeconds;
+      this.positionSecondsValue = timePlayed;
+      const duration = this.duration;
+      if (duration > 0) {
+        this.progressListeners.forEach((listener) =>
+          listener({
+            percentagePlayed: (timePlayed / duration) * 100,
+            timePlayed,
+            duration,
+          })
+        );
+      }
+    }, 200);
+    (timer as unknown as { unref?: () => void }).unref?.();
+    this.liveSource = { source, when, offset, rate, timer };
     this.playingState = true;
+    source.onended = () => {
+      if (this.liveSource?.source !== source) return;
+      clearInterval(timer);
+      try { source.disconnect(); } catch { /* ignore */ }
+      this.liveSource = null;
+      this.playingState = false;
+      this.positionSecondsValue = 0;
+      this.endedListeners.forEach((listener) => listener());
+    };
+    source.start(0, offset);
   }
 
   pause(): void {
@@ -353,39 +351,58 @@ export class Deck {
       s.source.onended = null;
       try { s.source.stop(); } catch { /* already ended */ }
       s.source.disconnect();
-      if (this.shifter) this.shifter.percentagePlayed = this.positionSecondsValue / this.duration;
       this.playingState = false;
       return;
     }
-    if (!this.playingState || !this.shifter) return;
-    this.shifter.disconnect();
+    if (this.liveSource) {
+      const s = this.liveSource;
+      this.positionSecondsValue = this.positionSeconds;
+      this.liveSource = null;
+      clearInterval(s.timer);
+      s.source.onended = null;
+      try { s.source.stop(); } catch { /* already ended */ }
+      try { s.source.disconnect(); } catch { /* already disconnected */ }
+      this.playingState = false;
+      return;
+    }
     this.playingState = false;
   }
 
   setTempo(tempo: number): void {
-    const resume = this.scheduledSource !== null;
-    if (resume) this.pause();
-    this.tempoValue = tempo;
-    if (this.shifter) this.shifter.tempo = tempo;
-    if (resume) this.play();
+    const safeTempo = Number.isFinite(tempo) && tempo > 0 ? tempo : 1;
+    if (this.scheduledSource !== null) {
+      this.pause();
+      this.tempoValue = safeTempo;
+      this.play();
+      return;
+    }
+    if (this.liveSource) {
+      const now = this.core.ensureContext().currentTime;
+      const currentPos = this.positionSeconds;
+      this.liveSource.offset = currentPos;
+      this.liveSource.when = now;
+      this.liveSource.rate = safeTempo;
+      this.positionSecondsValue = currentPos;
+      try {
+        this.liveSource.source.playbackRate.cancelScheduledValues(now);
+        this.liveSource.source.playbackRate.setValueAtTime(safeTempo, now);
+      } catch {
+        this.liveSource.source.playbackRate.value = safeTempo;
+      }
+    }
+    this.tempoValue = safeTempo;
   }
 
   /**
    * Seek to an absolute SOURCE-seconds position (clamped to the track's
    * duration), used by Beat Sync's phase-align step and the manual nudge
-   * buttons (see page.tsx). Implemented via PitchShifter's
-   * `percentagePlayed` — NOTE its getter/setter are asymmetric in
-   * soundtouchjs: the getter returns 0..100, but the setter expects a bare
-   * 0..1 FRACTION (confirmed in node_modules/soundtouchjs's own example.js,
-   * which assigns a 0..1 fraction straight from a click position). We only
-   * ever use the setter here, as a fraction — never *100.
+   * buttons (see page.tsx).
    */
   seekTo(sourceSeconds: number): void {
-    if (!this.shifter || this.duration <= 0) return;
-    const resume = this.scheduledSource !== null;
+    if (!this.buffer || this.duration <= 0) return;
+    const resume = this.playingState;
     if (resume) this.pause();
     const clamped = Math.min(Math.max(sourceSeconds, 0), this.duration);
-    this.shifter.percentagePlayed = clamped / this.duration;
     this.positionSecondsValue = clamped;
     this.progressListeners.forEach((listener) =>
       listener({
@@ -759,8 +776,6 @@ export class Deck {
     // immediately and releases the sweep filters, covering every send this
     // deck owns.
     this.allNeutral();
-    this.shifter?.off();
-    this.shifter = null;
     this.buffer = null;
     this.reversedBufferCache = null;
   }

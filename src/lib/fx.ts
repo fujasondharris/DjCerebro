@@ -110,9 +110,17 @@ export class FxPlayer {
         const source = ctx.createBufferSource();
         source.buffer = buffer;
         const gain = ctx.createGain();
-        gain.gain.value = dbToLinear(opts.gainDb ?? 0);
+        gain.gain.value = dbToLinear(opts.gainDb ?? -2);
         source.connect(gain);
         gain.connect(this.core.master);
+        source.onended = () => {
+          try {
+            source.disconnect();
+            gain.disconnect();
+          } catch {
+            // ignore
+          }
+        };
         source.start();
         return true;
       })

@@ -169,9 +169,17 @@ export class VocalPlayer {
         const source = ctx.createBufferSource();
         source.buffer = buffer;
         const gain = ctx.createGain();
-        gain.gain.value = 1;
+        gain.gain.value = 0.82; // -1.7 dB headroom so vocal drops sit cleanly over full-scale music
         source.connect(gain);
         gain.connect(this.core.master);
+        source.onended = () => {
+          try {
+            source.disconnect();
+            gain.disconnect();
+          } catch {
+            // ignore
+          }
+        };
 
         source.start();
         opts.onResult?.(true);
