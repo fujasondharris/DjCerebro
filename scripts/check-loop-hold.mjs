@@ -234,7 +234,7 @@ for (const captureBars of [2, 4, 8]) {
 }
 
 // --- LOOP-COVERED TEMPO SWEEP (M7 Phase 4) ------------------------------
-// The answer to the clamped transition Jason rated down: an out-of-range BPM
+// The answer to the clamped transition defect: an out-of-range BPM
 // gap can only ever become a `cut` today, because syncTempo refuses to bend
 // a deck past its range. Riding the tempo UNDER the hold crosses the gap, so
 // the incoming track then enters at its own natural tempo, unclamped.

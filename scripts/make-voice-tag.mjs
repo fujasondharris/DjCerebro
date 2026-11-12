@@ -8,7 +8,7 @@
 //   trimmed off both ends, loudnorm.
 //
 // BRAND WALL (standing rule): "DJ Cerebro" / "El Cerebro" is his own name and
-// is fine. "DJ Supermercado" and "Los Descuentos" are Jason's exclusively and
+// is fine. "DJ Supermercado" and "Los Descuentos" are reserved external DJ brand names and
 // must never come out of El Cerebro's mouth — enforced here as a hard refusal
 // before any network call, not merely as a convention.
 //
@@ -34,7 +34,7 @@ const ANNOUNCER_STYLE =
   "energy, Spanish accent, rolled R's, like a reggaeton radio DJ voice tag " +
   "echoing over a packed club. Fast, punchy, larger than life.";
 
-/** Names that belong to Jason, never to El Cerebro. Checked case/accent-insensitively. */
+/** Reserved external brand names, never to El Cerebro. Checked case/accent-insensitively. */
 const BRAND_WALL_FORBIDDEN = ["dj supermercado", "supermercado", "los descuentos", "descuentos"];
 
 function loadEnvLocal() {
@@ -99,7 +99,7 @@ async function main() {
   }
   if (violatesBrandWall(text)) {
     console.error(
-      `REFUSED: "${text}" contains a name reserved for Jason ("DJ Supermercado" / "Los Descuentos"). ` +
+      `REFUSED: "${text}" contains a reserved external DJ brand name ("DJ Supermercado" / "Los Descuentos"). ` +
         "El Cerebro never says these — see the brand-wall rule in dj-tools\\tags\\README.txt."
     );
     process.exit(1);

@@ -1,6 +1,6 @@
-// M8.2 — the stem MIGRATION planner: Jason's real transition, as data.
+// M8.2 — the stem MIGRATION planner: real club transition, as data.
 //
-// This is the move he described (2026-08-15): "some live club and radio DJs will do
+// This is the live DJ move: "some live club and radio DJs will do
 // a bass loop for minutes while they migrate out the vocals, bass, guitar, other and
 // migrate in them from the next song." It is not a crossfade between two tracks — it
 // is a per-stem handover over a held rhythmic anchor.
@@ -9,7 +9,7 @@
 // stems.ts executes. That split is deliberate — the craft rules are the part worth
 // testing, and they are testable exactly because there is no audio in this file.
 //
-// THE RULES, in his words:
+// THE RULES, per club DJ craft practice:
 //  - "vocals go out first, the other and guitar are usually 2nd, and bass and drums
 //    last — like separate the harmony, melody, rhythm and bass."
 //  - "You always need rhythm and bass, and the harmony and melody can change around it."

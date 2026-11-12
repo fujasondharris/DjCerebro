@@ -521,7 +521,7 @@ export interface EntryPointOptions {
  * This is sharper than the generic RMS mixIn point energy.ts computes: mixIn
  * answers "where does this track stop being dead air", which on a track with
  * a long musical intro is still minutes before anything happens — exactly
- * Jason's `"didn't omit the long intro"` complaint. A drop-relative entry
+ * the `"didn't omit the long intro"` issue. A drop-relative entry
  * answers "where do I come in so the payoff lands".
  *
  * Returns null when the track has no detected drop, or when every candidate

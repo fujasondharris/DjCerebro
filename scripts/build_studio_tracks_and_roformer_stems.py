@@ -15,7 +15,7 @@ Pipeline:
 3. Runs real MLX GPU neural stem separation (`mlx-audio-separator`):
    - Stage A: `model_bs_roformer_ep_317_sdr_12.9755.ckpt` (BS-RoFormer SDR 12.98) for `vocals.mp3`
    - Stage B: `htdemucs_ft.yaml` (Fine-Tuned Hybrid Transformer Demucs) for `drums.mp3`, `bass.mp3`, `other.mp3`
-4. Writes `/Users/jasondharris/Desktop/GitHub/dj-supermercado/public/audio/manifest.json`
+4. Writes `public/audio/manifest.json` under repo root
    with exact BPM BeatGrid metadata, Camelot keys, LUFS measurements, and 4-stem pack verification.
 """
 
@@ -31,7 +31,9 @@ import sys
 import tempfile
 from pathlib import Path
 
-COMFY_PYTHON = Path("/Users/jasondharris/Desktop/ComfyUI/venv/bin/python")
+HOME = Path.home()
+REPO_ROOT = Path(os.environ.get("DJ_REPO_ROOT", str(Path(__file__).resolve().parent.parent)))
+COMFY_PYTHON = Path(os.environ.get("COMFY_PYTHON", str(HOME / "Desktop" / "ComfyUI" / "venv" / "bin" / "python")))
 if "kokoro_onnx" not in sys.modules:
     try:
         import kokoro_onnx  # noqa: F401
@@ -44,13 +46,12 @@ import numpy as np
 import soundfile as sf
 from kokoro_onnx import Kokoro
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
 AUDIO_ROOT = REPO_ROOT / "public" / "audio"
 TRACKS_DIR = AUDIO_ROOT / "tracks"
 STEMS_DIR = AUDIO_ROOT / "stems"
-MLX_SEPARATOR = Path("/Users/jasondharris/.local/bin/mlx-audio-separator")
-KOKORO_MODEL = Path("/Users/jasondharris/Desktop/ComfyUI/custom_nodes/comfyui-kokoro/kokoro_v1.onnx")
-KOKORO_VOICES = Path("/Users/jasondharris/Desktop/ComfyUI/custom_nodes/comfyui-kokoro/voices_v1.bin")
+MLX_SEPARATOR = Path(os.environ.get("MLX_AUDIO_SEPARATOR", str(HOME / ".local" / "bin" / "mlx-audio-separator")))
+KOKORO_MODEL = Path(os.environ.get("KOKORO_MODEL", str(HOME / "Desktop" / "ComfyUI" / "custom_nodes" / "comfyui-kokoro" / "kokoro_v1.onnx")))
+KOKORO_VOICES = Path(os.environ.get("KOKORO_VOICES", str(HOME / "Desktop" / "ComfyUI" / "custom_nodes" / "comfyui-kokoro" / "voices_v1.bin")))
 
 SR = 44100
 

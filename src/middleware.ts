@@ -1,4 +1,4 @@
-// Site-wide passcode gate (production-privacy addendum, 2026-07-26): Jason
+// Site-wide passcode gate (production-privacy addendum, 2026-07-26): the owner
 // wants the deployed site private, and Vercel Authentication doesn't cover
 // production domains on the Hobby plan — so the app gates itself here at
 // the edge instead. No-op (pass everything through) when DJ_PASSCODE is

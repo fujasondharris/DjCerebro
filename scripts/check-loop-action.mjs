@@ -5,8 +5,8 @@
 //
 // The point of the cadence assertions: before this split, page.tsx enforced
 // ONE 120s autopilot cooldown across every fx, so a beat roll cost the same
-// budget as an airhorn. That is why El Cerebro never performed and Jason
-// ended up pressing the pads himself — the fix is only real if rolls, the
+// budget as an airhorn. That is why El Cerebro never performed and the DJ
+// ended up pressing the pads manually — the fix is only real if rolls, the
 // hold and EQ are genuinely in a different class from the stingers.
 import {
   CommandSchema,

@@ -446,7 +446,7 @@ const gridB = { anchor: 0, bpm: 120, estimated: false };
   // Midpoint: BOTH decks sit partway — this is the actual fix. The old code
   // had one deck at 0 and the other at -40 here, with the whole handover
   // having completed in ~36ms (deck.ts ramps EQ at a 0.012s time constant),
-  // which is what Jason heard as "no transition , hard cut" on an
+  // which is what was diagnosed as "no transition , hard cut" on an
   // UNCLAMPED 8-bar swap.
   env.setTime(4000);
   env.tickInterval();

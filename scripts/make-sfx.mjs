@@ -182,7 +182,7 @@ function makeBrake() {
 // REAL-SFX SWAP (2026-07-26): airhorn/siren/rewind/laser/brake/cheer are now
 // real licensed recordings copied into public/sfx/ from
 // C:\Users\Shadow\dj-tools\sfx-real\ (provenance in public/sfx/LICENSES.txt)
-// — Jason's own call after hearing the synthesized airhorn ("sounds like a
+// — per listening review after hearing the synthesized airhorn ("sounds like a
 // clown-car horn"). makeAirhorn()/makeSiren()/makeRewind()/makeLaser()/
 // makeBrake() above stay in this file FOR REFERENCE ONLY (e.g. a fallback if
 // a license is ever revoked) — they are no longer part of this script's

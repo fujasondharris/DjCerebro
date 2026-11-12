@@ -2,7 +2,7 @@
 // Node-side smoke test for the Serato BeatGrid parser: imports the exact
 // same src/lib/serato.ts used by the browser and asserts it reads the
 // anchor/bpm correctly off (1) the hand-built fixture (see
-// scripts/make-grid-fixture.mjs) and (2) Jason's real tagged MP3s in
+// scripts/make-grid-fixture.mjs) and (2) real tagged MP3s in
 // Downloads, when present — those are read-only recon fixtures, never
 // modified, and this check skips gracefully (not a failure) if they've moved.
 import { readFile, readdir } from "node:fs/promises";
@@ -77,7 +77,7 @@ await assertGrid(
   true
 );
 
-// 2. Real tagged files, verified against Jason's actual Downloads folder
+// 2. Real tagged files, verified against an actual Downloads folder
 // today (see dispatch FACTS). Skipped gracefully (NOTICE, not FAIL) if the
 // folder/files moved OR if the parsed value has drifted from the pinned
 // FACTS — this is recon data, not a committed fixture.

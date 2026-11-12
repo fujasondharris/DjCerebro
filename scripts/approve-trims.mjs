@@ -11,7 +11,7 @@
 // detector cannot see. Real example (2026-08-15): Aventura's "Un Beso" opens with 27s
 // of live crowd noise and talking. That is neither silence nor music — it smears
 // broadband energy across every stem, so the instrumental-bed test reads it as music
-// and proposed a 4.4s head. Jason heard it correctly: the guitar enters at ~27s.
+// and proposed a 4.4s head. Ear review confirmed the guitar enters at ~27s.
 // Overrides are snapped to a downbeat like any other cut, marked ownerSet, and
 // never re-derived by make-trim-plan.
 //

@@ -261,7 +261,7 @@ export interface PlanHeldLoopOptions {
    * M7 Phase 4 — LOOP-COVERED TEMPO SWEEP. The rate the hold resolves TO,
    * instead of the default 1.0 (the track's own key).
    *
-   * This is the answer to the clamped transition Jason rated down (La
+   * This is the answer to clamped transitions (La
    * Gozadera -> Gasolina, `clamped: true`): today an out-of-±8% BPM gap can
    * only ever become a `cut`, because syncTempo refuses to bend a deck
    * further than its range. Riding the tempo UNDER a held loop crosses the

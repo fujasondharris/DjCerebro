@@ -2,7 +2,7 @@
 // Node-side check for the M7 residency blocker fix (src/lib/residency.ts):
 // parsing an explicit owner residency instruction out of a vibe note, the
 // "silence is not a cancellation" rule, and the consult-lead timing math.
-// The two headline cases are Jason's OWN ledger notes, verbatim. Plain
+// The two headline cases are verbatim owner ledger notes. Plain
 // asserts, no test framework.
 import {
   parseResidencyRequest,
@@ -147,7 +147,7 @@ const seconds = (text) => {
   assertOk("no target means never due (normal residency rules apply)", isResidencyConsultDue(500, null) === false);
   assertOk("a non-finite playedSeconds is never due", isResidencyConsultDue(NaN, 60) === false);
   assertOk(
-    "the 30s case Jason complained about now fires at 15s, well before the overshoot",
+    "the 30s case now fires at 15s, well before the overshoot",
     isResidencyConsultDue(15, 30) === true && isResidencyConsultDue(14, 30) === false
   );
 }

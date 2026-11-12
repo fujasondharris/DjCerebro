@@ -32,7 +32,7 @@ const RESNAP_DELAY_MS = 1000; // compensates the ~93ms ScriptProcessor slop (see
 const BASS_SWAP_LOW_KILL_DB = -40;
 const BASS_SWAP_LOW_FLAT_DB = 0;
 /**
- * M7 Phase 4 — ROOT CAUSE of Jason's `"no transition , hard cut"` note
+ * M7 Phase 4 — ROOT CAUSE of the `"no transition , hard cut"` defect
  * (2026-07-29, Gasolina -> Te Boté, bass_swap, 8 bars, UNCLAMPED, i.e. a
  * blend the engine believed it ran).
  *

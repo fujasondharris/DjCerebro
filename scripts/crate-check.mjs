@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Crate-readiness report for Jason's music pipeline: DJ Music Downloader
+// Crate-readiness report for the music pipeline: DJ Music Downloader
 // (tools/dl-music.ps1) drops MP3s in Downloads\dj-crate, then each needs a
 // Serato pass (BPM/key tags) before it's useful to the app. This scans that
 // folder (override via CRATE_DIR) and reports each file's TBPM/TKEY (the

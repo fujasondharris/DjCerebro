@@ -19,7 +19,7 @@ Three accounts, all with free tiers that work fine:
 This repo ships with a [`CLAUDE.md`](CLAUDE.md) setup runbook. If you use [Claude Code](https://claude.com/claude-code):
 
 ```bash
-git clone https://github.com/fujasondharris/DjCerebro.git
+git clone https://github.com/DjCerebro/DjCerebro.git
 cd DjCerebro
 claude
 ```
@@ -30,7 +30,7 @@ Then just say: **"set this up for me"**. Claude reads `CLAUDE.md` automatically 
 
 1. **Clone and install:**
    ```bash
-   git clone https://github.com/fujasondharris/DjCerebro.git
+   git clone https://github.com/DjCerebro/DjCerebro.git
    cd DjCerebro
    npm install
    ```

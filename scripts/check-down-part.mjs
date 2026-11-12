@@ -163,7 +163,7 @@ function profile() {
   assertOk("the name-drop clip is registered in the vocal manifest", Boolean(entry));
   assertOk("...and is categorized as a tag", entry && entry.category === "tag");
   assertOk(
-    "no clip reserved for Jason leaked into the manifest",
+    "no reserved external DJ brand clip leaked into the manifest",
     VOCAL_MANIFEST.every((e) => !violatesBrandWall(e.file))
   );
 }

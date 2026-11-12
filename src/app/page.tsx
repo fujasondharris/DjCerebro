@@ -405,7 +405,7 @@ const AUTOPILOT_FX_COOLDOWN_SECONDS = 120;
 // written for STINGERS (a horn every 90s is worse than silence, per the
 // 2026-07-26 FX research) but it was applied to every fx, so a beat roll cost
 // the same budget as an airhorn. That is why El Cerebro never performed and
-// Jason ended up pressing the pads himself. Performance moves — rolls, the
+// the performer ended up pressing the pads manually. Performance moves — rolls, the
 // band-isolated hold, EQ kills — are craft, not punctuation: a real
 // open-format DJ touches them constantly, so they get a much looser floor.
 // Salsa/bachata total suppression is a separate gate entirely and is

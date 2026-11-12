@@ -15,8 +15,8 @@
 // stem genuinely empty.
 //
 // The first version of this script used the drums stem alone and it was WRONG.
-// Validated against Jason's 25 hand-trimmed files: on "Dile Al Amor" it proposed
-// cutting 16.1s of head that he had deliberately kept. Measuring that region per
+// Validated against 25 hand-trimmed reference files: on "Dile Al Amor" it proposed
+// cutting 16.1s of head that had deliberately been kept. Measuring that region per
 // stem showed drums -85.5 dB and bass -91.0 dB (silent) but GUITAR -32.6 dB, the
 // same level as the body — a guitar-and-vocal intro, which is how bachata
 // routinely opens before the percussion enters. A drums-only detector amputates
@@ -308,7 +308,7 @@ for (const [id, entry] of Object.entries(stemManifest)) {
   // the gap between them is video noise and the tonal onset is the real music start.
   //
   // IMPORTANT — the tonal onset FLAGS the class, it does NOT set the cut point.
-  // Measured against Jason's ear on Un Beso (true music start 28.0s, downbeat 27.424s):
+  // Measured by ear on Un Beso (true music start 28.0s, downbeat 27.424s):
   //     TONAL_DB = -35  ->  17.84s  (undershoots ~10s: a bass thump inside the crowd
   //                                  noise reads -34.3 dB at 18s and trips it)
   //     TONAL_DB = -30  ->  35.09s  (overshoots ~7s, past the guitar entry)

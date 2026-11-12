@@ -527,8 +527,8 @@ assertOk(
 // M7 blocker fix: an EXPLICIT owner residency instruction has to beat the
 // standing window, the anthem exception, AND salsa/bachata's full-length
 // rule — the 2026-07-29 failure ("you are going way longer than 30 seconds")
-// was the standing 90-180s guidance quietly winning over what Jason asked
-// for. The 90-180s rule must also now be scoped to "no explicit request".
+// was the standing 90-180s guidance quietly winning over what was requested.
+// The 90-180s rule must also now be scoped to "no explicit request".
 assertOk(
   "SYSTEM_PROMPT: an explicit requestedResidencySeconds overrides the standing residency window",
   SYSTEM_PROMPT.includes("Residency OVERRIDE") &&

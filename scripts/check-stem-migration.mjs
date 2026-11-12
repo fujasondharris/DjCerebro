@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Golden for the stem migration planner (src/lib/stem-migration.ts).
 //
-// The planner is where Jason's craft rules live. This asserts them as PROPERTIES over
+// The planner is where the stem migration craft rules live. This asserts them as PROPERTIES over
 // many generated plans, not as one hand-checked example — because the invariant that
 // matters ("always a bassline looping") has to hold for every combination of stems,
 // tempo and length the brain might request, not just the one I happened to test.
@@ -87,7 +87,7 @@ assertOk("anchor:'in' — the incoming bass is at full from bar 0 and still at f
 assertOk("anchor:'in' still keeps a bassline at all times",
   hasContinuousBass(inv.ramps, inv.totalBars));
 
-// --- 7. role mapping is what Jason said, not what a filename implies ---
+// --- 7. role mapping reflects functional DJ practice, not what a filename implies ---
 assertOk("guitar, piano and other all map to HARMONY (harmony+melody are one layer to htdemucs)",
   STEM_ROLE.guitar === "harmony" && STEM_ROLE.piano === "harmony" && STEM_ROLE.other === "harmony");
 assertOk("drums=rhythm, bass=bass, vocals=vocals",

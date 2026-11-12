@@ -1,10 +1,10 @@
 // Craft pass #2, Part 3 — pure musical-key -> Camelot-notation converter.
 // TKEY (src/lib/id3.ts) is free-text per the ID3v2 spec (a note letter A-G,
 // optional #/b accidental, optional trailing "m" for minor — e.g. "Cm",
-// "F#", "Dbm"); some of Jason's real tagged tracks already carry Camelot
+// "F#", "Dbm"); some real tagged tracks already carry Camelot
 // notation directly (e.g. "8A", confirmed against the committed fixtures —
 // see CLAUDE_STATE.md), others carry musical notation (per the M3-era
-// Open/TODO note: "Jason's real keys are musical notation, not Camelot").
+// note: "source keys are musical notation, not Camelot").
 // toCamelot() normalizes either input to Camelot's own "<1-12><A|B>" form so
 // SYSTEM_PROMPT's harmonic-mixing rules can reason about one consistent
 // vocabulary. Unknown/unparseable input (e.g. TKEY's own "o" for "off key",
