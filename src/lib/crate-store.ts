@@ -1,5 +1,5 @@
 // localStorage-backed persistence for the Drive crate's METADATA list (the
-// lazy-crate architecture — see CLAUDE_STATE.md). Same defensive pattern as
+// lazy-crate architecture). Same defensive pattern as
 // history-store.ts/cost-store.ts: no-ops rather than throwing when
 // localStorage is unavailable (SSR/build-time import, or a check-*.mjs
 // script importing this file under Node).

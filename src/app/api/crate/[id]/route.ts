@@ -67,8 +67,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
   // Partial-fetch tag parsing (lazy-crate architecture): the client can send
   // a Range header (e.g. "bytes=0-262143") to fetch just the ID3v2 header
   // instead of the whole file — see src/lib/crate-lazy.ts. Forwarded to
-  // whichever upstream path is active; both generally honor Range (FACTS,
-  // see CLAUDE_STATE.md's lazy-crate section). Absent on a normal full-file
+  // whichever upstream path is active; both generally honor Range.
+  // Absent on a normal full-file
   // download (deck load / autopilot queue), which behaves exactly as before.
   const rangeHeaders = buildUpstreamRangeHeaders(request.headers.get("range"));
 

@@ -215,8 +215,7 @@ import styles from "./page.module.css";
 // CueSuggestionsFile/CueSuggestionEntry.
 const CUE_SUGGESTIONS = cueSuggestionsJson as CueSuggestionsFile;
 
-// Crate manifest's local-tag-matched data (M6.2 probe-storm fix, see
-// CLAUDE_STATE.md) — indexed once by Drive file id at module scope, so
+// Crate manifest's local-tag-matched data (M6.2 probe-storm fix) — indexed once by Drive file id at module scope, so
 // handleAddAllFromDrive's per-track lookup is O(1) instead of scanning the
 // whole manifest per track. Consulted regardless of whether the crate
 // LISTING itself came from this same manifest or (as in production today) a
@@ -541,8 +540,7 @@ async function fetchWithPasscode(url: string, init: RequestInit = {}): Promise<R
   return fetch(url, { ...init, headers: retryHeaders });
 }
 
-// Lazy-crate architecture (large-library re-architecture — see
-// CLAUDE_STATE.md): a crate entry is metadata-first. Drive entries carry NO
+// Lazy-crate architecture (large-library re-architecture): a crate entry is metadata-first. Drive entries carry NO
 // File blob at all — full audio is fetched on demand (deck load / autopilot
 // queue) and cached in IndexedDB, see getTrackForPlayback()/track-cache.ts.
 // Local file-picker entries keep their in-memory File exactly as before

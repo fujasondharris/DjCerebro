@@ -1,7 +1,7 @@
 // Craft pass #2, Part 2 — pure phrase-boundary math for phrase-aligned
 // transition firing. A "phrase" is 16 beats (grid.anchor + n*16 beats), same
 // convention src/lib/energy.ts's PHRASE_BEATS already uses for mix-in/mix-out
-// snapping (CLAUDE_STATE.md's own pinned FACTS). No AudioContext/timers here
+// snapping. No AudioContext/timers here
 // — src/app/page.tsx's executeQueueCommand computes candidates off this and
 // schedules the actual delayed setTimeout.
 import type { BeatGridLike } from "./beatclock";

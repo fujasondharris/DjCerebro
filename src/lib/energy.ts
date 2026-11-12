@@ -31,7 +31,7 @@ const MIN_RESIDENCY_SECONDS = 30; // "mixOut ≥ mixIn + 30s else fall back to f
 const EARLY_VOCAL_START_SECONDS = 4;
 const EARLY_VOCAL_MIN_SECONDS = 8;
 const EARLY_VOCAL_MAX_SKIP_SECONDS = 90;
-const PHRASE_BEATS = 16; // "phrase boundary = anchor + n*16 beats" (CLAUDE_STATE.md FACTS)
+const PHRASE_BEATS = 16; // "phrase boundary = anchor + n*16 beats"
 // A track that's uniformly at/near digital silence has no real "energy
 // build" for the heuristic to find — treated as a distinct low-confidence
 // case (see findMixPoints' file-header note) rather than reporting a

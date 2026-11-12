@@ -141,8 +141,8 @@ export class VocalPlayer {
   }
 
   /**
-   * Cue-point live firing (rehearsal → mark → assign → live-fire — see
-   * CLAUDE_STATE.md): plays ONE SPECIFIC clip by filename, not a category
+   * Cue-point live firing (rehearsal → mark → assign → live-fire):
+   * plays ONE SPECIFIC clip by filename, not a category
    * rotation — a pre-authored cue names an exact vocal line to land on an
    * exact lyric/beat, so there's no "pick next" step here at all. Same
    * duck/skip-during-transition/onResult contract as playCategory() (shares

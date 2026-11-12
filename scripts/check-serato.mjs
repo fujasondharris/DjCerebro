@@ -31,7 +31,7 @@ function approxEqual(a, b, epsilon) {
  * drifted from the pinned FACTS (e.g. float-precision differences between
  * this environment's exact decode and the FACTS' rounded "≈" figures) is the
  * same kind of "recon data, not a committed fixture" situation, not a real
- * regression to chase — see CLAUDE_STATE.md's cue-points milestone note.
+ * regression to chase — see the cue-points milestone note.
  */
 async function assertGrid(label, filePath, expectedAnchor, expectedBpm, epsilon = 0.001, strict = true) {
   const buffer = await readFile(filePath);

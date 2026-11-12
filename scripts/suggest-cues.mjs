@@ -6,7 +6,7 @@
 // and write them to src/data/cue-suggestions.json. page.tsx seeds these into
 // a track's cue list (as INERT, suggested:true cues) the first time it loads
 // with no user cues yet — see src/lib/cue-store.ts's buildSuggestedCues/
-// seedSuggestedCues and CLAUDE_STATE.md's cue-suggestion pipeline section.
+// seedSuggestedCues and the cue-suggestion pipeline documentation.
 //
 // Rerunnable/idempotent: lrclib responses are cached in .cache/lrclib/
 // (gitignored) keyed by request URL, so a rerun after adding new crate

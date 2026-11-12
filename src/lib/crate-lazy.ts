@@ -1,5 +1,5 @@
 // Partial-fetch tag parsing for the lazy-crate architecture (large-library
-// re-architecture — see CLAUDE_STATE.md). A real crate is ~264 mp3s
+// re-architecture). A real crate is ~264 mp3s
 // (~1.8GB); downloading every file in full just to read its BPM/key tag is
 // what made "Load crate" take 5-15 minutes and crash iOS Safari on memory.
 //

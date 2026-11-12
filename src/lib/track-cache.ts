@@ -1,5 +1,5 @@
 // On-demand full-file download + IndexedDB cache for the lazy-crate
-// architecture (see CLAUDE_STATE.md's lazy-crate section). Drive crate
+// architecture. Drive crate
 // entries carry only metadata (see crate-lazy.ts) until a deck or the
 // autopilot queue actually needs to play one — at that point getTrackBlob()
 // resolves the real audio Blob, from cache if present, over the network

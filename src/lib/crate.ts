@@ -80,7 +80,7 @@ export function resolveListingSource(hasApiKey: boolean, hasManifest: boolean): 
  * One entry in the committed manifest — id/name/size deliberately minimal
  * (no mimeType; mp3-ness is inferred from the filename, same as the live
  * Drive path's extension fallback). `bpm`/`key`/`durationSeconds`/`grid`
- * (M6.2 probe-storm fix, see CLAUDE_STATE.md) are filled in by
+ * (M6.2 probe-storm fix) are filled in by
  * scripts/make-crate-manifest.mjs from a LOCAL file match (the local
  * Downloads\dj-crate mirror) — null/undefined when no local match was found
  * or the local file carried no tag, in which case the client falls back to
@@ -132,8 +132,8 @@ export function hasUsableTags(tags: { bpm: number | null; key: string | null } |
  * handleAddAllFromDrive (M6.2 probe-storm fix). Deliberately independent of
  * resolveListingSource(): the manifest is consulted as a tag side-channel
  * here regardless of whether the crate LISTING itself came from this same
- * manifest or a live Drive API call (production runs "live" — see
- * CLAUDE_STATE.md — but the tag data below is still keyed by the same real
+ * manifest or a live Drive API call (production runs "live",
+ * but the tag data below is still keyed by the same real
  * Drive file ids either way). Pure, no I/O — checkable without a real
  * manifest file, see scripts/check-crate-route.mjs.
  */

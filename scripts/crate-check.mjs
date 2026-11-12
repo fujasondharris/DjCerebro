@@ -23,7 +23,7 @@ const crateDir =
   process.env.CRATE_DIR || path.join(process.env.USERPROFILE ?? __dirname, "Downloads", "dj-crate");
 
 console.log("");
-console.log("  DJ SUPERMERCADO CRATE CHECK");
+console.log("  DJ CEREBRO CRATE CHECK");
 console.log(`  scanning: ${crateDir}`);
 console.log("");
 
@@ -86,7 +86,7 @@ if (needsPass.length > 0) console.log(`  NEEDS SERATO PASS: ${needsPass.map((r) 
 
 console.log("");
 console.log(
-  "Next: run the NEEDS SERATO PASS files through Serato (BPM/key tags), then upload the READY files to the DJ Supermercado Crate Drive folder."
+  "Next: run the NEEDS SERATO PASS files through Serato (BPM/key tags), then upload the READY files to the Crate Drive folder."
 );
 
 process.exit(0);

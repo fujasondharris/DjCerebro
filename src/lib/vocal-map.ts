@@ -201,8 +201,7 @@ function intervalListOverlapSeconds(a: VocalInterval[], b: VocalInterval[]): num
  * tempo were ~1 — acceptable at tempo===1 exactly, but a real bug at any
  * other tempo (drifts by up to |1-tempo|, bounded to this app's own ±8%
  * sync range — small, but a free, real fix once named). blendSeconds
- * itself is still evaluated in wall-clock terms unconverted (documented,
- * out of this fix's scope — see CLAUDE_STATE.md).
+ * itself is still evaluated in wall-clock terms unconverted.
  *
  * The INCOMING track starts fresh at `incomingStartSeconds` the moment the
  * transition fires, so its own window is

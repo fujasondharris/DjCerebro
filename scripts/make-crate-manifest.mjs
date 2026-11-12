@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 // Rerunnable manifest generator + local tag-embedding pass for the crate
-// manifest (src/data/crate-manifest.json) — M6.2 probe-storm fix (see
-// CLAUDE_STATE.md). Two jobs in one pass:
+// manifest (src/data/crate-manifest.json) — M6.2 probe-storm fix. Two jobs in one pass:
 //   1. Lists the real "DJ Supermercado Crate" Drive folder (GOOGLE_API_KEY +
 //      GOOGLE_DRIVE_FOLDER_ID from .env.local, same live-listing call
 //      src/app/api/crate/route.ts makes) to get every track's real
@@ -19,8 +18,7 @@
 // existing Range-probe fallback still covers those.
 //
 // Why this matters even though GOOGLE_API_KEY is set in production (making
-// /api/crate return "live", not "manifest" — a discrepancy from this
-// dispatch's pinned FACTS, see CLAUDE_STATE.md's M6.2 section): this
+// /api/crate return "live", not "manifest"): this
 // manifest is no longer just the keyless-fallback LISTING, it's also
 // consulted client-side (src/lib/crate.ts's buildManifestTagIndex(), used in
 // page.tsx's handleAddAllFromDrive) as a tag lookup BY ID regardless of

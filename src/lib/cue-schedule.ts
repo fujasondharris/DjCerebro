@@ -1,6 +1,6 @@
 // Pure source-time -> wall-clock scheduling math for live cue-point firing.
 // No AudioContext/timers here (page.tsx owns the actual setTimeout/onProgress
-// wiring — see CLAUDE_STATE.md's cue-points section for the design), so this
+// wiring), so this
 // is testable without a browser, same spirit as beatclock.ts/gain-math.ts.
 import type { Cue } from "./cue-store";
 

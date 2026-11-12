@@ -1,8 +1,8 @@
 // Scratch engine for DJ Supermercado — Milestone 4 Part C.
 //
 // DESIGN CONSTRAINT, pinned deliberately: this repo has never had real-
-// device audio verification available in this environment (every milestone
-// through M3's CLAUDE_STATE.md says "NOT yet verified on a real phone", and
+// device audio verification available in this environment (historical milestones
+// noted "NOT yet verified on a real phone", and
 // there is no way to run a browser AudioContext from this harness to
 // ear-test glitches). Genuinely disconnecting/reconnecting the deck's live
 // PitchShifter mid-playback to splice in scratch segments is exactly the
