@@ -24,9 +24,12 @@ export interface ModelPricing {
 
 const SONNET_5_INTRO_EXPIRY = Date.parse("2026-08-31T23:59:59Z");
 
-const SONNET_5_STANDARD: ModelPricing = { inputPerMTok: 3, outputPerMTok: 15 };
-const SONNET_5_INTRO: ModelPricing = { inputPerMTok: 2, outputPerMTok: 10 };
-const OPUS_5: ModelPricing = { inputPerMTok: 5, outputPerMTok: 25 };
+export const FABLE_5_2: ModelPricing = { inputPerMTok: 8, outputPerMTok: 40 };
+export const OPUS_5_5: ModelPricing = { inputPerMTok: 4, outputPerMTok: 20 };
+export const OPUS_5: ModelPricing = { inputPerMTok: 5, outputPerMTok: 25 };
+export const SONNET_5_5: ModelPricing = { inputPerMTok: 2, outputPerMTok: 10 };
+export const SONNET_5_STANDARD: ModelPricing = { inputPerMTok: 3, outputPerMTok: 15 };
+export const SONNET_5_INTRO: ModelPricing = { inputPerMTok: 2, outputPerMTok: 10 };
 
 export const CACHE_READ_MULTIPLIER = 0.1;
 // 1h TTL rate (2x) — the only TTL this app's route actually requests.
@@ -38,7 +41,10 @@ export const CACHE_WRITE_MULTIPLIER = 2;
  * switchover is checkable without mocking the system clock.
  */
 export function pricingForModel(model: string, now: number = Date.now()): ModelPricing {
+  if (model.includes("fable")) return FABLE_5_2;
+  if (model.includes("opus-5-5") || model.includes("opus-5.5")) return OPUS_5_5;
   if (model.includes("opus")) return OPUS_5;
+  if (model.includes("sonnet-5-5") || model.includes("sonnet-5.5")) return SONNET_5_5;
   if (model.includes("sonnet")) {
     return now < SONNET_5_INTRO_EXPIRY ? SONNET_5_INTRO : SONNET_5_STANDARD;
   }

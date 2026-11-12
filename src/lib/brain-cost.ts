@@ -15,8 +15,8 @@ export function alternateBrainCost(id: BrainModelId, usage: Record<string, unkno
     if (!valid(input) || !valid(output)) return null;
     const cached = valid(usage.cachedContentTokenCount) ? usage.cachedContentTokenCount : 0;
     const thinking = valid(usage.thoughtsTokenCount) ? usage.thoughtsTokenCount : 0;
-    const multiplier = now < Date.parse("2027-01-01T00:00:00Z") ? 1 : 2;
-    return (Math.max(0, input - cached) * 0.75 + cached * 0.075 + (output + thinking) * 3.75) * multiplier / 1e6;
+    const multiplier = now < Date.parse("2026-12-01T00:00:00Z") ? 1 : 2;
+    return (Math.max(0, input - cached) * 2 + cached * 0.1 + (output + thinking) * 10) * multiplier / 1e6;
   }
   if (id !== "openai" && id !== "muse") return null;
   const input = usage.input_tokens;
@@ -24,7 +24,7 @@ export function alternateBrainCost(id: BrainModelId, usage: Record<string, unkno
   if (!valid(input) || !valid(output)) return null;
   const details = (usage.input_tokens_details ?? {}) as Record<string, unknown>;
   const cached = valid(details.cached_tokens) ? details.cached_tokens : 0;
-  if (id === "muse") return (Math.max(0, input - cached) * 1.25 + cached * 0.15 + output * 4.25) / 1e6;
+  if (id === "muse") return (Math.max(0, input - cached) * 4 + cached * 0.2 + output * 20) / 1e6;
   const writes = valid(details.cache_write_tokens) ? details.cache_write_tokens : 0;
   const long = input > 272000;
   // Cache writes replace the uncached-input rate, they are not an extra fee.

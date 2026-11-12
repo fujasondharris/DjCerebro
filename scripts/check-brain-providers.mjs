@@ -9,9 +9,11 @@ const body = { message: "Test", state: { live: null, idleDeck: "A", history: [],
   crate: [{ n: 0, t: "Artist - Song" }], crateCacheable: true, lessons: [], ledger: { global: [], perTrack: {} } };
 const env = Object.fromEntries(["ANTHROPIC", "GEMINI", "XAI", "OPENAI", "MUSE"].map(p => [`${p}_API_KEY`, `test-${p}`]));
 assert.equal(getBrainModels({}).filter(m => m.available).length, 0);
-assert.equal(getBrainModels(env).filter(m => m.available).length, 5);
-assert.equal(getBrainModels({ ...env, GEMINI_API_KEY: " " })[1].available, false);
-assert.equal(getBrainModels({ ...env, ANTHROPIC_MODEL: "claude-sonnet-5" })[0].model, "claude-sonnet-5");
+assert.equal(getBrainModels(env).filter(m => m.available).length, 6);
+assert.equal(getBrainModels({ ...env, GEMINI_API_KEY: " " }).find(m => m.id === "gemini").available, false);
+const overrideModels = getBrainModels({ ...env, ANTHROPIC_MODEL: "claude-sonnet-5-5" });
+assert.equal(overrideModels.find(m => m.id === "claude").model, "claude-sonnet-5-5");
+assert.equal(overrideModels.find(m => m.id === "fable").model, "claude-fable-5-2");
 assert.equal(isBrainModelId("https://wrong-host"), false);
 assert.equal(isBrainModelId("toString"), false);
 assert.ok(!JSON.stringify(getBrainModels(env)).includes("test-"), "catalog must not leak keys");
@@ -51,8 +53,8 @@ for (const command of [{ ...commands[0], trackId: null }, { ...commands[6], capt
 
 const wire = JSON.stringify({ command: commands[0], say: "Ready", followUpSeconds: null });
 const nativeWire = JSON.stringify({ command: { ...commands[0], maskFx: undefined }, say: "Ready" });
-const fixture = (id, text = wire) => id === "claude" ? {
-  id: "test", type: "message", role: "assistant", model: "claude-opus-5", content: [{ type: "text", text: nativeWire }],
+const fixture = (id, text = wire) => (id === "claude" || id === "fable") ? {
+  id: "test", type: "message", role: "assistant", model: id === "fable" ? "claude-fable-5-2" : "claude-opus-5-5", content: [{ type: "text", text: nativeWire }],
   stop_reason: "end_turn", usage: { input_tokens: 100, output_tokens: 20 },
 } : id === "gemini" ? {
   candidates: [{ finishReason: "STOP", content: { parts: [{ thought: true, text: "not JSON" }, { text }] } }],
@@ -64,15 +66,22 @@ for (const { id, model } of BRAIN_MODELS) {
   const fetcher = async (url, init) => {
     count++;
     const payload = JSON.parse(init.body);
-    assert.ok(String(url).startsWith({ claude: "https://api.anthropic.com/", gemini: "https://generativelanguage.googleapis.com/", grok: "https://api.x.ai/", openai: "https://api.openai.com/", muse: "https://api.meta.ai/" }[id]));
+    assert.ok(String(url).startsWith({
+      claude: "https://api.anthropic.com/",
+      fable: "https://api.anthropic.com/",
+      gemini: "https://generativelanguage.googleapis.com/",
+      grok: "https://api.x.ai/",
+      openai: "https://api.openai.com/",
+      muse: "https://api.meta.ai/",
+    }[id]));
     if (id !== "gemini") assert.equal(payload.model, model);
-    if (id === "gemini") assert.deepEqual(payload.generationConfig.thinkingConfig, { thinkingBudget: 0 }, "live Gemini calls must disable unbounded default thinking so 599-track crate calls do not exceed 50s");
-    if (id === "grok") assert.deepEqual(payload.reasoning,{effort:"low"},"live Grok calls must not inherit the high-effort default");
-    else assert.equal(payload.reasoning,undefined,"do not change other providers' contracts");
-    const instructions = id === "claude" ? payload.system[0].text : id === "gemini" ? payload.systemInstruction.parts[0].text : payload.instructions;
+    if (id === "gemini") assert.deepEqual(payload.generationConfig.thinkingConfig, { thinkingLevel: "LOW" }, "live Gemini 4 calls must pass thinkingLevel: LOW");
+    if (["openai", "grok", "muse"].includes(id)) assert.deepEqual(payload.reasoning, { effort: "low" }, "Responses API models must set effort: low");
+    else assert.equal(payload.reasoning, undefined, "do not change other providers' contracts");
+    const instructions = (id === "claude" || id === "fable") ? payload.system[0].text : id === "gemini" ? payload.systemInstruction.parts[0].text : payload.instructions;
     assert.ok(instructions.toLowerCase().includes("one json command"));
     assert.ok(JSON.stringify(payload).includes("Artist - Song"));
-    if (!["claude", "gemini"].includes(id)) { assert.equal(payload.store, false); assert.equal(payload.text.format.strict, true); }
+    if (!["claude", "fable", "gemini"].includes(id)) { assert.equal(payload.store, false); assert.equal(payload.text.format.strict, true); }
     return Response.json(fixture(id));
   };
   const result = await requestBrain(id, body, env, fetcher);
@@ -81,6 +90,30 @@ for (const { id, model } of BRAIN_MODELS) {
   assert.equal(result.provider, id);
   assert.equal(result.command.action, "queue");
   assert.ok(result.cost_usd > 0);
+}
+let fableCalls = 0;
+await requestBrain("fable", body, { ...env, ANTHROPIC_MODEL: "claude-sonnet-5-5" }, async (_url, init) => {
+  fableCalls++;
+  const payload = JSON.parse(init.body);
+  assert.equal(payload.model, "claude-fable-5-2", "fable model stays pinned to claude-fable-5-2 despite ANTHROPIC_MODEL");
+  assert.equal(payload.output_config.effort, "low", "fable passes effort: low");
+  assert.equal(payload.fallbacks, "default", "fable enables fallbacks");
+  return Response.json(fixture("fable"));
+});
+assert.equal(fableCalls, 1);
+for (const model of ["claude-sonnet-4-5", "claude-sonnet-4-5-20250929", "claude-opus-5", "claude-opus-5-5"]) {
+  let calls = 0;
+  await requestBrain("claude", body, { ...env, ANTHROPIC_MODEL: model }, async (_url, init) => {
+    calls++;
+    const payload = JSON.parse(init.body);
+    assert.equal(payload.model, model, "retain the configured model");
+    assert.ok(payload.output_config.format.schema, "keep structured DJ command output");
+    if (model.startsWith("claude-sonnet-4-5")) {
+      assert.equal("effort" in payload.output_config, false, "Sonnet 4.5 rejects effort with HTTP 400");
+    } else assert.equal(payload.output_config.effort, "low", "preserve effort for the current Opus model");
+    return Response.json(fixture("claude"));
+  });
+  assert.equal(calls, 1);
 }
 for (const status of [400, 401, 402, 429, 500]) {
   let calls = 0;
@@ -97,7 +130,8 @@ assert.equal(declined.command.action, "none");
 assert.equal(declined.cost_usd, null);
 assert.equal(alternateBrainCost("grok", { cost_in_usd_ticks: 264760000 }), 0.026476);
 assert.equal(alternateBrainCost("openai", { input_tokens: 1000, input_tokens_details: { cache_write_tokens: 500, cached_tokens: 300 }, output_tokens: 100 }), 0.00268);
-assert.equal(alternateBrainCost("gemini", { promptTokenCount: 1000, candidatesTokenCount: 100, thoughtsTokenCount: 100 }, Date.parse("2026-10-07")), 0.0015);
-assert.equal(alternateBrainCost("gemini", { promptTokenCount: 1000, candidatesTokenCount: 100, thoughtsTokenCount: 100 }, Date.parse("2027-01-01")), 0.003);
+assert.equal(alternateBrainCost("gemini", { promptTokenCount: 1000, candidatesTokenCount: 100, thoughtsTokenCount: 100 }, Date.parse("2026-11-11")), 0.004);
+assert.equal(alternateBrainCost("gemini", { promptTokenCount: 1000, candidatesTokenCount: 100, thoughtsTokenCount: 100 }, Date.parse("2026-12-01")), 0.008);
 assert.equal(alternateBrainCost("muse", {}), null);
-console.log("PASS: all five transports, ten actions, strict schemas, null semantics, refusal/failure/no-fallback, server-only keys and cost math");
+assert.equal(alternateBrainCost("muse", { input_tokens: 1000, input_tokens_details: { cached_tokens: 200 }, output_tokens: 100 }), 0.00524);
+console.log("PASS: all six transports, ten actions, strict schemas, null semantics, refusal/failure/no-fallback, server-only keys and cost math");

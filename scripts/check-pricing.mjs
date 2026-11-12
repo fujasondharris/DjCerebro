@@ -57,6 +57,48 @@ assertOk(
 );
 
 assertOk(
+  "pricingForModel: opus-5-5 uses $4/$20 regardless of date",
+  (() => {
+    const p1 = pricingForModel("claude-opus-5-5", INTRO_NOW);
+    const p2 = pricingForModel("claude-opus-5-5", POST_EXPIRY_NOW);
+    return (
+      approxEqual(p1.inputPerMTok, 4) &&
+      approxEqual(p1.outputPerMTok, 20) &&
+      approxEqual(p2.inputPerMTok, 4) &&
+      approxEqual(p2.outputPerMTok, 20)
+    );
+  })()
+);
+
+assertOk(
+  "pricingForModel: fable-5-2 uses $8/$40 regardless of date",
+  (() => {
+    const p1 = pricingForModel("claude-fable-5-2", INTRO_NOW);
+    const p2 = pricingForModel("claude-fable-5-2", POST_EXPIRY_NOW);
+    return (
+      approxEqual(p1.inputPerMTok, 8) &&
+      approxEqual(p1.outputPerMTok, 40) &&
+      approxEqual(p2.inputPerMTok, 8) &&
+      approxEqual(p2.outputPerMTok, 40)
+    );
+  })()
+);
+
+assertOk(
+  "pricingForModel: sonnet-5-5 uses $2/$10 regardless of date",
+  (() => {
+    const p1 = pricingForModel("claude-sonnet-5-5", INTRO_NOW);
+    const p2 = pricingForModel("claude-sonnet-5-5", POST_EXPIRY_NOW);
+    return (
+      approxEqual(p1.inputPerMTok, 2) &&
+      approxEqual(p1.outputPerMTok, 10) &&
+      approxEqual(p2.inputPerMTok, 2) &&
+      approxEqual(p2.outputPerMTok, 10)
+    );
+  })()
+);
+
+assertOk(
   "pricingForModel: unknown model falls back to sonnet-5 standard rather than throwing",
   (() => {
     const p = pricingForModel("claude-future-model-9", POST_EXPIRY_NOW);

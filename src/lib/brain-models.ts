@@ -1,10 +1,11 @@
 // Public IDs only. Credentials and provider transports never enter the browser.
 export const BRAIN_MODELS = [
-  { id: "claude", label: "Claude · Opus 5", model: "claude-opus-5" },
-  { id: "gemini", label: "Antigravity · Gemini 3.8", model: "gemini-3.8-flash" },
-  { id: "grok", label: "Grok · 4.7", model: "grok-4.7" },
+  { id: "claude", label: "Claude · Opus 5.5", model: "claude-opus-5-5" },
+  { id: "fable", label: "Claude · Fable 5.2 (Headliner)", model: "claude-fable-5-2" },
   { id: "openai", label: "OpenAI · GPT-6.1 Sol", model: "gpt-6.1-sol" },
-  { id: "muse", label: "Muse · Spark 1.3", model: "muse-spark-1.3" },
+  { id: "grok", label: "Grok · 4.7", model: "grok-4.7" },
+  { id: "gemini", label: "Antigravity · Gemini 4 Argon", model: "gemini-4-argon" },
+  { id: "muse", label: "Muse · Wonder 1.0", model: "muse-wonder-1.0" },
 ] as const;
 export type BrainModelId = typeof BRAIN_MODELS[number]["id"];
 export interface BrainModelOption { id: BrainModelId; label: string; model: string; available: boolean }

@@ -36,7 +36,7 @@ try {
     await context.route("**/api/crate-metadata", sync);
     const sent = [];
     await context.route("**/api/dj", async route => {
-      if (route.request().method() !== "POST") return route.fulfill({ json: { models: ["claude","gemini","grok","openai","muse"].map(id => ({id,label:id,model:id,available:true})) } });
+      if (route.request().method() !== "POST") return route.fulfill({ json: { models: ["claude","fable","gemini","grok","openai","muse"].map(id => ({id,label:id,model:id,available:true})) } });
       const body = route.request().postDataJSON(); sent.push(body);
       await route.fulfill({ json: { command: { action: "none", say: "UI test" }, provider: body.brainModel,
         model: body.brainModel, cost_usd: 0.001, latency_ms: 100 } });
@@ -73,7 +73,7 @@ try {
     await page.getByLabel("Filter crate by genre", { exact: true }).selectOption("Test genre");
     assert.equal(await crate.locator("ul").first().locator("li").count(), 1);
     // Every visible provider changes the actual next POST, not just the label.
-    for (const model of ["gemini", "grok", "openai", "muse", "claude"]) {
+    for (const model of ["gemini", "grok", "openai", "muse", "claude", "fable"]) {
       await page.getByLabel("Cerebro model", { exact: true }).selectOption(model);
       await page.getByLabel("Vibe note to the brain").fill("UI selection test; do nothing");
       await page.getByRole("button", { name: "Send", exact: true }).click();

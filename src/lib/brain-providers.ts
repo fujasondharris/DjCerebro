@@ -12,7 +12,7 @@ import { alternateBrainCost } from "./brain-cost.ts";
 
 type Env = Record<string, string | undefined>;
 const KEY_NAMES: Record<BrainModelId, string> = {
-  claude: "ANTHROPIC_API_KEY", gemini: "GEMINI_API_KEY", grok: "XAI_API_KEY",
+  claude: "ANTHROPIC_API_KEY", fable: "ANTHROPIC_API_KEY", gemini: "GEMINI_API_KEY", grok: "XAI_API_KEY",
   openai: "OPENAI_API_KEY", muse: "MUSE_API_KEY",
 };
 export class BrainProviderError extends Error {
@@ -94,14 +94,16 @@ export async function requestBrain(id: BrainModelId, body: DjRequestBody, env: E
   let usage: Record<string, unknown> = {};
   let cost: number | null = null;
   try {
-    if (id === "claude") {
+    if (id === "claude" || id === "fable") {
       const client = new Anthropic({ apiKey: key, maxRetries: 0, timeout: 50000, fetch: fetcher });
       const response = await client.beta.messages.create({
         model: option.model,
         ...(modelSupportsFallbacks(option.model)
           ? { betas: ["server-side-fallback-2026-07-01" as const], fallbacks: "default" as const } : {}),
         max_tokens: 1024,
-        output_config: { effort: "low", format },
+        // Sonnet 4.5 rejects effort with HTTP 400; omit only that unsupported option.
+        // https://platform.claude.com/docs/en/build-with-claude/effort
+        output_config: { ...(/^claude-sonnet-4-5(?:-|$)/.test(option.model) ? {} : { effort: "low" as const }), format },
         system, messages: [{ role: "user", content: blocks }],
       });
       text = response.content.filter(b => b.type === "text").map(b => b.text).join("");
@@ -127,13 +129,11 @@ export async function requestBrain(id: BrainModelId, body: DjRequestBody, env: E
           maxOutputTokens: 1024,
           responseMimeType: "application/json",
           responseJsonSchema: schema,
-          thinkingConfig: { thinkingBudget: 0 },
+          thinkingConfig: /^gemini-4(?:-|$)/.test(option.model) ? { thinkingLevel: "LOW" } : { thinkingBudget: 0 },
         },
       } : {
         model: option.model, instructions, input, store: false, max_output_tokens: 4096,
-        // Grok 4.7 defaults to high effort. A single live DJ command needs
-        // the documented latency-sensitive setting for tool calls.
-        ...(id === "grok" ? { reasoning: { effort: "low" } } : {}),
+        reasoning: { effort: "low" },
         text: { format: { type: "json_schema", name: "dj_command", strict: true, schema } },
       };
       const headers: Record<string, string> = { "Content-Type": "application/json" };
@@ -170,11 +170,11 @@ export async function requestBrain(id: BrainModelId, body: DjRequestBody, env: E
     // Raw upstream errors can contain credentials or request content.
     throw new BrainProviderError(failureMessage(option.label, status));
   }
-  if (id !== "claude") cost = alternateBrainCost(id, usage);
+  if (id !== "claude" && id !== "fable") cost = alternateBrainCost(id, usage);
   const meta = { provider: id, model: option.model, usage, cost_usd: cost, latency_ms: Date.now() - started };
   if (refusal) return { ...meta, command: noOpWithReason(`(${option.label} declined that one)`) };
   if (incomplete) throw new BrainProviderError(`${option.label}: incomplete response; no DJ command executed.`);
-  const parsed = id === "claude" ? parseBrainResponseText(text) : parseProviderText(text);
+  const parsed = (id === "claude" || id === "fable") ? parseBrainResponseText(text) : parseProviderText(text);
   if (!parsed.ok) throw new BrainProviderError(`${option.label}: reply failed DJ command validation; no command executed.`);
   return { ...meta, command: parsed.command };
 }

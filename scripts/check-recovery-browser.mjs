@@ -17,7 +17,7 @@ wav.writeUInt16LE(1,20);wav.writeUInt16LE(1,22);wav.writeUInt32LE(rate,24);wav.w
 wav.writeUInt16LE(2,32);wav.writeUInt16LE(16,34);wav.write('data',36);wav.writeUInt32LE(frames*2,40);
 for(let i=0;i<frames;i++)wav.writeInt16LE(Math.round(Math.sin(i/rate*2*Math.PI*180)*6000),44+i*2);
 const browser=await chromium.launch({headless:true});
-const catalog=['claude','gemini','grok','openai','muse'].map(id=>({id,label:id,model:id,available:true}));
+const catalog=['claude','fable','openai','grok','gemini','muse'].map(id=>({id,label:id,model:id,available:true}));
 async function setup(entries,reply) {
  const context=await browser.newContext({viewport:{width:1280,height:1000}});
  if(process.env.DJ_PASSCODE)await context.addCookies([{name:'dj_pass',value:process.env.DJ_PASSCODE,url:base}]);

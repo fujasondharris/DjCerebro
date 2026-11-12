@@ -5279,8 +5279,8 @@ export default function Home() {
   const [lastModel, setLastModel] = useState<string | null>(null);
   const [lastLatency, setLastLatency] = useState<number | null>(null);
   const [unpricedCalls, setUnpricedCalls] = useState(0);
-  const [selectedModel, setSelectedModel] = useState<BrainModelId>("gemini");
-  const selectedModelRef = useRef<BrainModelId>("gemini");
+  const [selectedModel, setSelectedModel] = useState<BrainModelId>("claude");
+  const selectedModelRef = useRef<BrainModelId>("claude");
   const [modelOptions, setModelOptions] = useState<BrainModelOption[]>(BRAIN_MODELS.map(option => ({ ...option, available: false })));
   const [modelOnly, setModelOnly] = useState(false);
   const modelOnlyRef = useRef(false);
